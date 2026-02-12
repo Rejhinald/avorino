@@ -498,20 +498,19 @@
 
   // NAV SCROLL THEME
   function initNavTheme() {
-    const nav = document.querySelector('.site-nav');
+    var nav = document.querySelector('.site-nav');
     if (!nav) return;
-    const darkSections = document.querySelectorAll('.hero, .stats, .testimonials, .cta-section, .footer');
-    function update() {
-      const navBottom = nav.getBoundingClientRect().bottom;
-      let onDark = false;
-      darkSections.forEach(function(s) {
-        const r = s.getBoundingClientRect();
-        if (r.top < navBottom && r.bottom > 0) onDark = true;
+    document.querySelectorAll('.hero,.cta-section').forEach(function(sec) {
+      ScrollTrigger.create({
+        trigger: sec,
+        start: 'top top',
+        end: 'bottom top',
+        onEnter: function() { nav.classList.add('nav--light'); },
+        onLeave: function() { nav.classList.remove('nav--light'); },
+        onEnterBack: function() { nav.classList.add('nav--light'); },
+        onLeaveBack: function() { nav.classList.remove('nav--light'); }
       });
-      nav.classList.toggle('nav--light', onDark);
-    }
-    window.addEventListener('scroll', update, { passive: true });
-    update();
+    });
   }
 
   // INIT
