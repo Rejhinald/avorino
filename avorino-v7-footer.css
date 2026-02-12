@@ -111,8 +111,9 @@ ul,ol{list-style:none;margin:0;padding:0}
 /* Featured panel initial */
 .featured-panel{transform:translateY(40px)}
 
-/* Flip card 3D */
+/* Flip card 3D + font override */
 .flip-card-inner{transform-style:preserve-3d}
+.flip-card-top,.flip-card-bottom,.flip-card-flip-top,.flip-card-flip-bottom,.stat-suffix,.stat-separator{font-family:'DM Serif Display',Georgia,serif}
 
 /* HOVER STATES */
 .cursor-ring.hover-link{width:64px;height:64px}
