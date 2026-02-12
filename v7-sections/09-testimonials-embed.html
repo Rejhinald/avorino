@@ -1,0 +1,64 @@
+<script>
+window.AV=window.AV||{};
+window.AV.testimonials=function(){
+var card=document.querySelector('.testimonial-card');
+if(!card)return;
+
+var dots=card.querySelectorAll('.testimonial-dot');
+var slides=card.querySelectorAll('.testimonial-slide');
+var arrows=card.querySelectorAll('.testimonial-arrow');
+var totalSlides=slides.length;
+var current=0;
+var isAnimating=false;
+
+if(!slides.length)return;
+
+function goToSlide(target){
+if(target===current||isAnimating||target<0||target>=totalSlides)return;
+isAnimating=true;
+
+var direction=target>current?1:-1;
+
+dots.forEach(function(d){d.classList.remove('active')});
+if(dots[target])dots[target].classList.add('active');
+
+var oldSlide=slides[current];
+var newSlide=slides[target];
+
+gsap.to(oldSlide,{
+opacity:0,
+x:-20*direction,
+duration:0.35,
+ease:'power2.in',
+onComplete:function(){
+oldSlide.classList.remove('active');
+gsap.set(oldSlide,{x:0});
+
+newSlide.classList.add('active');
+gsap.fromTo(newSlide,
+{opacity:0,x:20*direction},
+{opacity:1,x:0,duration:0.45,ease:'power3.out',
+onComplete:function(){current=target;isAnimating=false}}
+);
+}
+});
+}
+
+dots.forEach(function(dot){
+dot.addEventListener('click',function(e){
+e.stopPropagation();
+var target=parseInt(dot.getAttribute('data-goto'));
+goToSlide(target);
+});
+});
+
+arrows.forEach(function(arrow){
+arrow.addEventListener('click',function(e){
+e.stopPropagation();
+var dir=arrow.getAttribute('data-dir');
+if(dir==='next')goToSlide(current+1<totalSlides?current+1:0);
+else goToSlide(current-1>=0?current-1:totalSlides-1);
+});
+});
+};
+</script>

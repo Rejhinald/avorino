@@ -1,0 +1,437 @@
+<style>
+/* ══════════════════════════════════════════════════
+   AVORINO v6 — Responsive Overrides
+   Webflow: Page Settings > Custom Code > Head
+   ══════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════
+   LARGE VIEWPORTS — min-width ascending
+   ═══════════════════════════════════════════════════ */
+
+/* ── Large Desktop (1600px+) ── */
+@media (min-width: 1600px) {
+  .about,
+  .featured,
+  .process,
+  .testimonials,
+  .tools {
+    padding-left: 120px;
+    padding-right: 120px;
+  }
+  .services-header,
+  .services-track {
+    padding-left: 120px;
+    padding-right: 120px;
+  }
+  .stats {
+    padding-left: 120px;
+    padding-right: 120px;
+  }
+  .footer {
+    padding-left: 120px;
+    padding-right: 120px;
+  }
+  .flip-card {
+    width: 84px;
+    height: 112px;
+  }
+  .flip-card-top,
+  .flip-card-bottom,
+  .flip-card-flip-top,
+  .flip-card-flip-bottom {
+    font-size: 56px;
+  }
+  .stat-suffix,
+  .stat-separator {
+    font-size: 44px;
+  }
+}
+
+/* ── XL Desktop (1920px+) ── */
+@media (min-width: 1920px) {
+  .about,
+  .featured,
+  .process,
+  .testimonials,
+  .tools {
+    padding-left: 160px;
+    padding-right: 160px;
+  }
+  .services-header {
+    padding: 128px 160px 64px;
+  }
+  .services-track {
+    padding: 0 160px 128px;
+    gap: 40px;
+  }
+  .stats {
+    padding-left: 160px;
+    padding-right: 160px;
+  }
+  .footer {
+    padding-left: 160px;
+    padding-right: 160px;
+  }
+  .about-grid {
+    gap: 140px;
+  }
+  .testimonials-grid {
+    gap: 120px;
+  }
+  .tools-header {
+    gap: 120px;
+  }
+  .flip-card {
+    width: 96px;
+    height: 128px;
+  }
+  .flip-card-top,
+  .flip-card-bottom,
+  .flip-card-flip-top,
+  .flip-card-flip-bottom {
+    font-size: 64px;
+  }
+  .stat-suffix,
+  .stat-separator {
+    font-size: 52px;
+  }
+  .tool-card {
+    width: 340px;
+    padding: 56px 44px;
+  }
+  .service-card {
+    height: 58vh;
+    min-height: 480px;
+    max-height: 740px;
+  }
+  .service-card-content {
+    padding: 52px 52px 68px;
+  }
+}
+
+/* ── 4K (2560px+) ── */
+@media (min-width: 2560px) {
+  .about,
+  .featured,
+  .process,
+  .testimonials,
+  .tools {
+    padding-left: 240px;
+    padding-right: 240px;
+  }
+  .services-header {
+    padding: 160px 240px 80px;
+  }
+  .services-track {
+    padding: 0 240px 160px;
+    gap: 48px;
+  }
+  .stats {
+    padding-left: 240px;
+    padding-right: 240px;
+  }
+  .footer {
+    padding-left: 240px;
+    padding-right: 240px;
+  }
+  .service-card {
+    height: 55vh;
+    min-height: 500px;
+    max-height: 780px;
+  }
+  .service-card-content {
+    padding: 56px 56px 72px;
+  }
+  .service-title {
+    font-size: clamp(28px, 2vw, 42px) !important;
+  }
+  .service-number {
+    font-size: 12px;
+    margin-bottom: 28px;
+  }
+  .service-desc {
+    font-size: 15px;
+  }
+  .service-cta {
+    font-size: 15px;
+  }
+  .flip-card {
+    width: 108px;
+    height: 144px;
+  }
+  .flip-card-top,
+  .flip-card-bottom,
+  .flip-card-flip-top,
+  .flip-card-flip-bottom {
+    font-size: 72px;
+  }
+  .stat-suffix,
+  .stat-separator {
+    font-size: 60px;
+  }
+  .stats-grid {
+    gap: 96px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   SMALL VIEWPORTS — max-width descending
+   ═══════════════════════════════════════════════════ */
+
+/* ── Webflow Tablet (991px and down) ── */
+@media (max-width: 991px) {
+  .about-grid,
+  .process-header,
+  .testimonials-grid,
+  .tools-header {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  .services-header {
+    padding: 96px 48px 48px;
+  }
+  .services-track {
+    padding: 0 48px 96px;
+    gap: 24px;
+  }
+  .service-card {
+    width: 65vw;
+    min-width: 300px;
+    height: 55vh;
+    min-height: 380px;
+    max-height: 560px;
+  }
+  .service-card-content {
+    padding: 36px 36px 48px;
+  }
+  .service-title {
+    font-size: clamp(20px, 3vw, 28px) !important;
+  }
+  .service-number {
+    margin-bottom: 20px;
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 48px;
+  }
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+  .hero-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 32px;
+  }
+  .featured-panel {
+    margin-left: 32px;
+    margin-right: 32px;
+  }
+  .featured-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .featured-grid-card {
+    height: 38vh;
+    min-height: 260px;
+    max-height: 380px;
+  }
+  .process-timeline {
+    grid-template-columns: 48px 1px 1fr;
+    gap: 0 24px;
+  }
+  .process-step-number {
+    font-size: 48px;
+  }
+}
+
+/* ── Webflow Mobile Landscape (767px and down) ── */
+@media (max-width: 767px) {
+  .nav-burger {
+    display: flex;
+  }
+  .nav-links {
+    display: none;
+  }
+  .nav-mobile-overlay {
+    display: flex;
+  }
+  .section-pad,
+  .about,
+  .stats,
+  .featured,
+  .process,
+  .testimonials,
+  .tools,
+  .footer {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  .hero {
+    padding: 16px;
+  }
+  .hero-content {
+    left: 32px;
+    right: 32px;
+    bottom: 48px;
+  }
+  .cta-section {
+    padding: 16px;
+  }
+  .services-header {
+    padding: 80px 24px 32px;
+  }
+  .services-track {
+    padding: 0 24px 80px;
+    gap: 16px;
+  }
+  .service-card {
+    width: 72vw;
+    min-width: 260px;
+    height: 52vh;
+    min-height: 340px;
+    max-height: 500px;
+  }
+  .service-card-content {
+    padding: 28px 28px 40px;
+  }
+  .service-title {
+    font-size: clamp(18px, 4vw, 24px) !important;
+    margin-bottom: 12px !important;
+  }
+  .service-number {
+    font-size: 9px;
+    margin-bottom: 16px;
+  }
+  .service-desc {
+    opacity: 0.55;
+    max-height: 100px;
+    font-size: 13px;
+  }
+  .service-cta {
+    opacity: 0.6;
+    transform: translateY(0);
+    font-size: 13px;
+    margin-top: 16px;
+  }
+  .services-progress {
+    width: 80px;
+  }
+  .services-counter-wrap {
+    gap: 20px;
+  }
+  .stats {
+    padding: 96px 24px;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 24px;
+  }
+  .stat-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+  }
+  .flip-card {
+    width: 48px;
+    height: 64px;
+  }
+  .flip-card-top,
+  .flip-card-bottom,
+  .flip-card-flip-top,
+  .flip-card-flip-bottom {
+    font-size: 28px;
+  }
+  .stat-suffix {
+    font-size: 24px;
+  }
+  .stat-separator {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+  .footer-top {
+    grid-template-columns: 1fr;
+  }
+  .tools-cards {
+    flex-direction: column;
+    align-items: center;
+  }
+  .tool-card:nth-child(1),
+  .tool-card:nth-child(2),
+  .tool-card:nth-child(3) {
+    transform: translateY(0) !important;
+  }
+  .testimonials-left {
+    position: static;
+  }
+}
+
+/* ── Webflow Mobile Portrait (479px and down) ── */
+@media (max-width: 479px) {
+  .services-header {
+    padding: 64px 16px 24px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .services-track {
+    padding: 0 16px 64px;
+    gap: 12px;
+  }
+  .service-card {
+    width: 82vw;
+    min-width: 240px;
+    height: 48vh;
+    min-height: 300px;
+    max-height: 420px;
+  }
+  .service-card-content {
+    padding: 20px 20px 28px;
+  }
+  .service-title {
+    font-size: 18px !important;
+    margin-bottom: 8px !important;
+  }
+  .service-number {
+    font-size: 9px;
+    margin-bottom: 12px;
+  }
+  .service-desc {
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .service-cta {
+    font-size: 12px;
+    margin-top: 12px;
+  }
+  .services-counter {
+    font-size: 12px;
+  }
+  .services-progress {
+    width: 60px;
+  }
+  .stats-grid {
+    gap: 24px 16px;
+  }
+  .flip-card {
+    width: 40px;
+    height: 56px;
+  }
+  .flip-card-top,
+  .flip-card-bottom,
+  .flip-card-flip-top,
+  .flip-card-flip-bottom {
+    font-size: 24px;
+  }
+  .stat-suffix,
+  .stat-separator {
+    font-size: 20px;
+  }
+  .stat-digits {
+    gap: 4px;
+  }
+  .stat-label {
+    font-size: 8px;
+    letter-spacing: 0.15em;
+  }
+}
+</style>

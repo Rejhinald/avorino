@@ -1,0 +1,72 @@
+/* Avorino v7 — Preloader (HTMLtoFlow Section CSS) */
+
+/* ── Custom Cursor ── */
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #f0ede8;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cursor-ring span {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #f0ede8;
+  opacity: 0;
+}
+
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 4px;
+  background-color: #f0ede8;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10002;
+}
+
+/* ── Preloader ── */
+.preloader {
+  position: fixed;
+  inset: 0;
+  background-color: #111111;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.preloader-text {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-weight: 400;
+  font-size: 64px;
+  color: #f0ede8;
+  letter-spacing: 0.15em;
+  overflow: hidden;
+  position: relative;
+  z-index: 2;
+}
+
+.preloader-char {
+  display: inline-block;
+}
+
+.preloader-curtain {
+  position: absolute;
+  inset: 0;
+  background-color: #111111;
+  z-index: 1;
+}

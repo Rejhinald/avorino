@@ -1,0 +1,145 @@
+/* Avorino v7 — Services (HTMLtoFlow Section CSS) */
+
+.services {
+  position: relative;
+  overflow: hidden;
+  background-color: #e8e4df;
+}
+
+.services-header {
+  padding: 128px 80px 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.services-label {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.2;
+}
+
+.services-counter-wrap {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.services-counter {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  opacity: 0.3;
+}
+
+.services-progress {
+  width: 120px;
+  height: 2px;
+  background-color: rgba(17, 17, 17, 0.08);
+  position: relative;
+  border-radius: 1px;
+}
+
+.services-progress-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #c8222a;
+  border-radius: 1px;
+  transform-origin: left;
+}
+
+.services-track {
+  display: flex;
+  gap: 32px;
+  padding: 0 80px 128px;
+  width: max-content;
+}
+
+.service-card {
+  width: 38vw;
+  min-width: 320px;
+  height: 62vh;
+  min-height: 450px;
+  max-height: 680px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+}
+
+.service-card-image {
+  position: absolute;
+  inset: 0;
+}
+
+.service-card-img {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+.service-card-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  padding: 48px 48px 64px;
+  color: #f0ede8;
+  display: flex;
+  flex-direction: column;
+}
+
+.service-number {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.5;
+  margin-bottom: 24px;
+}
+
+.service-title {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin-bottom: 16px;
+}
+
+.service-desc {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.7;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+}
+
+.service-cta {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  opacity: 0;
+  margin-top: 24px;
+}
+
+.service-cta .arrow {
+  display: inline-block;
+}

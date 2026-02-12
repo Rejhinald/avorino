@@ -1,0 +1,16 @@
+<script>
+window.AV=window.AV||{};
+window.AV.tools=function(){
+var cards=document.querySelectorAll('[data-animate="fade-up-tool"]');
+cards.forEach(function(card,i){
+gsap.from(card,{
+y:60,
+opacity:0,
+duration:1.2,
+delay:i*0.15,
+ease:'power3.out',
+scrollTrigger:{trigger:card,start:'top 85%'}
+});
+});
+};
+</script>

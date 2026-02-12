@@ -1,0 +1,107 @@
+/* Avorino v7 — Tools (HTMLtoFlow Section CSS) */
+
+.tools {
+  padding: 128px 80px;
+  background-color: #e8e4df;
+  color: #111111;
+  position: relative;
+  overflow: hidden;
+}
+
+.tools-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 96px;
+  margin-bottom: 96px;
+}
+
+.tools-heading {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.tools-intro {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.9;
+  opacity: 0.6;
+  max-width: 520px;
+  padding-top: 8px;
+}
+
+.tools-cards {
+  display: flex;
+  gap: 32px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.tool-card {
+  width: 280px;
+  padding: 48px 36px;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  border-radius: 8px;
+  background-color: #e8e4df;
+}
+
+.tool-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(17, 17, 17, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  margin-bottom: 24px;
+  font-weight: 500;
+  color: #111111;
+  opacity: 0.5;
+  letter-spacing: -0.02em;
+}
+
+.tool-name {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-weight: 400;
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+.tool-desc {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.7;
+  opacity: 0.4;
+  margin-bottom: 24px;
+}
+
+.tool-cta {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  opacity: 0.6;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Tools Float Instances ── */
+.float-tools-1 {
+  top: 18%;
+  right: 7%;
+  border: 1px solid rgba(17,17,17,0.04);
+  color: rgba(17,17,17,0.04);
+}
+
+.float-tools-2 {
+  bottom: 22%;
+  left: 6%;
+  height: 36px;
+  background-color: rgba(17,17,17,0.04);
+  color: rgba(17,17,17,0.04);
+}

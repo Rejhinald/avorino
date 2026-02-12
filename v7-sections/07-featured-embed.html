@@ -1,0 +1,46 @@
+<script>
+window.AV=window.AV||{};
+window.AV.featured=function(){
+var imageWrap=document.querySelector('.featured-image-wrap');
+var image=document.querySelector('.featured-image');
+var panel=document.querySelector('.featured-panel');
+
+if(imageWrap)gsap.set(imageWrap,{clipPath:'inset(100% 0 0 0)'});
+if(image)gsap.set(image,{scale:1.3});
+
+if(imageWrap){
+gsap.to(imageWrap,{
+clipPath:'inset(0% 0 0 0)',
+duration:1.4,
+ease:'power4.inOut',
+scrollTrigger:{trigger:imageWrap,start:'top 70%'}
+});
+
+if(image){
+gsap.to(image,{
+scale:1,
+duration:2,
+ease:'power3.out',
+scrollTrigger:{trigger:imageWrap,start:'top 70%'}
+});
+
+imageWrap.addEventListener('mouseenter',function(){
+gsap.to(image,{scale:1.04,duration:6,ease:'power2.out'});
+});
+imageWrap.addEventListener('mouseleave',function(){
+gsap.to(image,{scale:1,duration:2,ease:'power2.out'});
+});
+}
+}
+
+if(panel){
+gsap.to(panel,{
+opacity:1,
+y:0,
+duration:1,
+ease:'power3.out',
+scrollTrigger:{trigger:panel,start:'top 90%'}
+});
+}
+};
+</script>

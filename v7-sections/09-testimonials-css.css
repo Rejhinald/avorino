@@ -1,0 +1,166 @@
+/* Avorino v7 — Testimonials (HTMLtoFlow Section CSS) */
+
+.testimonials {
+  padding: 128px 80px;
+  background-color: #e8e4df;
+  color: #111111;
+  position: relative;
+  overflow: hidden;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 96px;
+  align-items: start;
+}
+
+.testimonials-left {
+  order: 2;
+  position: sticky;
+  top: 200px;
+}
+
+.testimonials-heading {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin-bottom: 32px;
+}
+
+.testimonials-count {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  opacity: 0.4;
+}
+
+.testimonial-card {
+  background-color: #111111;
+  border-radius: 8px;
+  color: #f0ede8;
+  position: relative;
+  overflow: hidden;
+  min-height: 460px;
+}
+
+.testimonial-slide {
+  position: absolute;
+  inset: 0;
+  padding: 64px 64px 100px;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.testimonial-slide.active {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 2;
+}
+
+.testimonial-stars {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 18px;
+  letter-spacing: 4px;
+  margin-bottom: 32px;
+  color: #c8222a;
+}
+
+.testimonial-quote {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.7;
+  opacity: 0.7;
+  margin-bottom: 48px;
+  flex: 1;
+}
+
+.testimonial-author {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  opacity: 0.6;
+  margin-bottom: 2px;
+}
+
+.testimonial-location {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  opacity: 0.3;
+}
+
+.testimonial-nav {
+  position: absolute;
+  bottom: 48px;
+  left: 64px;
+  right: 64px;
+  z-index: 10;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.testimonial-dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.testimonial-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(240, 237, 232, 0.2);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+}
+
+.testimonial-dot.active {
+  background-color: #f0ede8;
+  width: 24px;
+  border-radius: 4px;
+}
+
+.testimonial-arrows {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.testimonial-arrow {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(240, 237, 232, 0.15);
+  background-color: transparent;
+  color: #f0ede8;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* ── Testimonials Float Instances ── */
+.float-testimonials-1 {
+  top: 15%;
+  left: 5%;
+  color: rgba(17,17,17,0.04);
+}
+
+.float-testimonials-2 {
+  bottom: 20%;
+  right: 8%;
+  background-color: rgba(17,17,17,0.05);
+  color: rgba(17,17,17,0.05);
+}

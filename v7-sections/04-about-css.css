@@ -1,0 +1,122 @@
+/* Avorino v7 — About + Press (HTMLtoFlow Section CSS) */
+
+/* ── About ── */
+.about {
+  padding: 160px 80px 128px;
+  background-color: #e8e4df;
+  position: relative;
+  overflow: hidden;
+}
+
+.about-label {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.2;
+  margin-bottom: 64px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 96px;
+  margin-bottom: 96px;
+}
+
+.about-heading {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-weight: 400;
+  font-size: 80px;
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+}
+
+.about-heading .line {
+  display: block;
+}
+
+.about-body-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-top: 8px;
+}
+
+.about-body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.9;
+  letter-spacing: 0.005em;
+  word-spacing: 0.06em;
+  max-width: 520px;
+  opacity: 0.7;
+  margin-bottom: 48px;
+}
+
+.about-link {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  opacity: 0.6;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.about-link .arrow {
+  display: inline-block;
+}
+
+/* ── Press ── */
+.press {
+  padding-top: 96px;
+  margin-top: 32px;
+  border-top: 1px solid rgba(17,17,17,0.08);
+}
+
+.press-label {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.2;
+  margin-bottom: 32px;
+}
+
+.press-logos {
+  display: flex;
+  align-items: center;
+  gap: 64px;
+  flex-wrap: wrap;
+}
+
+.press-logos span {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.2;
+}
+
+/* ── About Float Instances ── */
+.float-about-1 {
+  top: 15%;
+  right: 6%;
+  border: 1px solid rgba(17,17,17,0.06);
+  color: rgba(17,17,17,0.06);
+}
+
+.float-about-2 {
+  bottom: 20%;
+  left: 4%;
+  color: rgba(17,17,17,0.05);
+}

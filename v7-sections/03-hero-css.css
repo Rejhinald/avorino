@@ -1,0 +1,146 @@
+/* Avorino v7 — Hero (HTMLtoFlow Section CSS) */
+
+/* ── Hero ── */
+.hero {
+  position: relative;
+  height: 100vh;
+  padding: 96px 48px 48px;
+  overflow: hidden;
+}
+
+.hero-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.hero-image {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-img {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: #000000;
+  opacity: 0.35;
+  z-index: 1;
+}
+
+.hero-content {
+  position: absolute;
+  bottom: 80px;
+  left: 80px;
+  right: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  z-index: 2;
+}
+
+.hero-text {
+  max-width: 680px;
+}
+
+.hero-title {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-weight: 400;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  word-spacing: 0.15em;
+  color: #f0ede8;
+  margin-bottom: 24px;
+  perspective: 600px;
+}
+
+.hero-subtitle {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(240,237,232,0.45);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.hero-cta-wrap {
+  flex-shrink: 0;
+}
+
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #111111;
+  background-color: #f0ede8;
+  padding: 16px 36px;
+  border-radius: 100px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.btn-pill .arrow {
+  display: inline-block;
+}
+
+/* ── Floating Elements ── */
+.float-el {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+}
+
+.float-el--line {
+  width: 1px;
+  height: 48px;
+}
+
+.float-el--cross {
+  width: 14px;
+  height: 14px;
+}
+
+.float-el--dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+.float-el--ring {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+}
+
+/* ── Hero Float Instances ── */
+.float-hero-1 {
+  top: 18%;
+  right: 12%;
+  color: rgba(240,237,232,0.15);
+}
+
+.float-hero-2 {
+  bottom: 28%;
+  right: 22%;
+  background-color: rgba(240,237,232,0.2);
+  color: rgba(240,237,232,0.2);
+}
+
+.float-hero-3 {
+  top: 35%;
+  right: 8%;
+  background-color: rgba(240,237,232,0.1);
+  color: rgba(240,237,232,0.1);
+}

@@ -1,0 +1,160 @@
+/* Avorino v7 — Featured Project (HTMLtoFlow Section CSS) */
+
+.featured {
+  padding: 128px 80px;
+  background-color: #e8e4df;
+  position: relative;
+  overflow: hidden;
+}
+
+.featured-label {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.2;
+  margin-bottom: 64px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.featured-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 72vh;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.featured-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.featured-image-placeholder {
+  width: 100%;
+  height: 100%;
+}
+
+.featured-panel {
+  position: relative;
+  margin-top: -80px;
+  margin-left: 80px;
+  max-width: 520px;
+  background-color: #111111;
+  border-radius: 8px;
+  padding: 64px;
+  color: #f0ede8;
+  z-index: 2;
+  opacity: 0;
+}
+
+.featured-panel-title {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-weight: 400;
+  font-size: 44px;
+  line-height: 1.12;
+  margin-bottom: 32px;
+}
+
+.featured-panel-meta {
+  display: flex;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+
+.featured-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.featured-meta-label {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  opacity: 0.4;
+}
+
+.featured-meta-value {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+.featured-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-top: 96px;
+}
+
+.featured-grid-card {
+  position: relative;
+  height: 42vh;
+  min-height: 300px;
+  max-height: 480px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.featured-grid-card-image {
+  position: absolute;
+  inset: 0;
+}
+
+.featured-grid-img {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+.featured-grid-card-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  padding: 48px;
+  color: #f0ede8;
+}
+
+.featured-grid-card-title {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.featured-grid-card-meta {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  display: flex;
+  gap: 24px;
+  font-size: 14px;
+  opacity: 0.5;
+}
+
+/* ── Featured Float Instances ── */
+.float-featured-1 {
+  top: 10%;
+  right: 5%;
+  background-color: rgba(17,17,17,0.05);
+  color: rgba(17,17,17,0.05);
+}
+
+.float-featured-2 {
+  bottom: 30%;
+  left: 3%;
+  height: 40px;
+  background-color: rgba(17,17,17,0.04);
+  color: rgba(17,17,17,0.04);
+}
