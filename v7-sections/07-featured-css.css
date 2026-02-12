@@ -129,6 +129,15 @@
   background-position: center;
 }
 
+.featured-grid-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.25) 40%, transparent 70%);
+  pointer-events: none;
+}
+
 .featured-grid-card-content {
   position: absolute;
   bottom: 0;
