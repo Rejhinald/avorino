@@ -57,6 +57,7 @@
 
 .process-line-fill {
   position: absolute;
+  top: var(--line-top, 61px);
   width: 1px;
   height: 0;
   background-color: #c8222a;
