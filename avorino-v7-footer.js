@@ -120,7 +120,6 @@
     const nav = document.querySelector('.site-nav') || document.querySelector('.nav');
 
     if (nav) gsap.set(nav, { opacity: 0 });
-    if (nav && document.querySelector('.hero-container')) nav.classList.add('nav--light');
     if (heroImage) gsap.set(heroImage, { clipPath: 'inset(6%)', scale: 1.25 });
     gsap.set('.preloader-char', { opacity: 0, y: 60, rotateX: -90, filter: 'blur(4px)' });
     if (preloader) gsap.set(preloader, { display: 'flex' });
@@ -166,50 +165,42 @@
 
   // SCROLL ANIMATIONS
   function initScrollAnimations() {
-    // Line-wipe: About heading (auto-detect visual lines)
-    const aboutHeading = document.querySelector('.about-heading');
-    if (aboutHeading) {
-      // Wrap each word in a temp span to detect visual line breaks
-      const words = aboutHeading.textContent.trim().split(/\s+/);
-      aboutHeading.innerHTML = '';
-      const wordSpans = words.map(w => {
-        const s = document.createElement('span');
-        s.textContent = w + ' ';
-        s.style.display = 'inline';
-        aboutHeading.appendChild(s);
-        return s;
-      });
-      // Group words sharing the same visual line (same offsetTop)
-      const lines = [];
-      let curLine = [];
-      let curTop = null;
-      wordSpans.forEach((s, idx) => {
-        const top = s.getBoundingClientRect().top;
-        if (curTop === null || Math.abs(top - curTop) < 4) {
-          curLine.push(words[idx]);
-          if (curTop === null) curTop = top;
+    // Line-wipe: About heading (auto-detect visual lines like hero char-split)
+    document.querySelectorAll('[data-animate="line-wipe"]').forEach(function(el) {
+      var text = el.textContent.trim();
+      if (!text) return;
+      var words = text.split(/\s+/);
+      // Inject word spans for measurement (spaces between, not inside)
+      el.innerHTML = words.map(function(w) { return '<span>' + w + '</span>'; }).join(' ');
+      var spans = el.querySelectorAll('span');
+      // Group by visual line
+      var lines = [], curWords = [], prevTop = -9999;
+      spans.forEach(function(s, i) {
+        var t = s.getBoundingClientRect().top;
+        if (i === 0 || Math.abs(t - prevTop) < 4) {
+          curWords.push(words[i]);
         } else {
-          lines.push(curLine.join(' '));
-          curLine = [words[idx]];
-          curTop = top;
+          lines.push(curWords.join(' '));
+          curWords = [words[i]];
         }
+        prevTop = t;
       });
-      if (curLine.length) lines.push(curLine.join(' '));
-      // Replace with .line spans and animate
-      aboutHeading.innerHTML = '';
-      lines.forEach((text, i) => {
-        const span = document.createElement('span');
+      if (curWords.length) lines.push(curWords.join(' '));
+      // Build .line spans with clip-path wipe
+      el.innerHTML = '';
+      lines.forEach(function(lineText, i) {
+        var span = document.createElement('span');
         span.className = 'line';
         span.style.display = 'block';
         span.style.clipPath = 'inset(0 100% 0 0)';
-        span.textContent = text;
-        aboutHeading.appendChild(span);
+        span.textContent = lineText;
+        el.appendChild(span);
         gsap.to(span, {
           clipPath: 'inset(0 0% 0 0)', ease: 'power3.inOut',
-          scrollTrigger: { trigger: aboutHeading, start: 'top ' + (78 - i * 12) + '%', end: 'top ' + (45 - i * 12) + '%', scrub: 1 }
+          scrollTrigger: { trigger: el, start: 'top ' + (78 - i * 12) + '%', end: 'top ' + (45 - i * 12) + '%', scrub: 1 }
         });
       });
-    }
+    });
 
     // Opacity-sweep
     document.querySelectorAll('[data-animate="opacity-sweep"]').forEach(el => {
@@ -536,30 +527,19 @@
   function initNavTheme() {
     var nav = document.querySelector('.site-nav');
     if (!nav) return;
-    // Hero — already light from initPreloader, just track when we leave/re-enter
-    var heroContainer = document.querySelector('.hero-container');
-    if (heroContainer) {
+    var navH = nav.offsetHeight || 80;
+    // Dark sections — nav goes light only when their dark area overlaps the nav
+    document.querySelectorAll('.hero-image,.cta-container').forEach(function(sec) {
       ScrollTrigger.create({
-        trigger: heroContainer,
-        start: 'top top',
-        end: 'bottom top',
-        onLeave: function() { nav.classList.remove('nav--light'); },
-        onEnterBack: function() { nav.classList.add('nav--light'); }
-      });
-    }
-    // CTA
-    var ctaContainer = document.querySelector('.cta-container');
-    if (ctaContainer) {
-      ScrollTrigger.create({
-        trigger: ctaContainer,
-        start: 'top top',
+        trigger: sec,
+        start: 'top ' + navH,
         end: 'bottom top',
         onEnter: function() { nav.classList.add('nav--light'); },
         onLeave: function() { nav.classList.remove('nav--light'); },
         onEnterBack: function() { nav.classList.add('nav--light'); },
         onLeaveBack: function() { nav.classList.remove('nav--light'); }
       });
-    }
+    });
   }
 
   // INIT
