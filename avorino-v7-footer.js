@@ -165,44 +165,31 @@
 
   // SCROLL ANIMATIONS
   function initScrollAnimations() {
-    // Line-wipe: detect lines from <br> tags (Webflow editor) or auto-detect visual lines
+    // Line-wipe: animate .line children (or auto-detect if none exist)
     document.querySelectorAll('[data-animate="line-wipe"]').forEach(function(el) {
-      var html = el.innerHTML;
-      var lines;
-      if (/<br\s*\/?>/i.test(html)) {
-        // Split on <br> added in Webflow editor
-        lines = html.split(/<br\s*\/?>/i).map(function(s) { return s.replace(/<[^>]*>/g, '').trim(); }).filter(Boolean);
-      } else {
-        // Auto-detect visual lines by measuring word positions
-        var text = el.textContent.trim();
-        if (!text) return;
-        var words = text.split(/\s+/);
-        el.innerHTML = words.map(function(w) { return '<span>' + w + '</span>'; }).join(' ');
-        var spans = el.querySelectorAll('span');
-        lines = [];
-        var curWords = [], prevTop = -9999;
-        spans.forEach(function(s, i) {
-          var t = s.getBoundingClientRect().top;
-          if (i === 0 || Math.abs(t - prevTop) < 4) {
-            curWords.push(words[i]);
-          } else {
-            lines.push(curWords.join(' '));
-            curWords = [words[i]];
-          }
-          prevTop = t;
+      var lineEls = el.querySelectorAll('.line');
+      if (!lineEls.length) {
+        // Fallback: no .line children, try <br> split or auto-detect
+        var html = el.innerHTML;
+        var texts;
+        if (/<br\s*\/?>/i.test(html)) {
+          texts = html.split(/<br\s*\/?>/i).map(function(s) { return s.replace(/<[^>]*>/g, '').trim(); }).filter(Boolean);
+        } else {
+          texts = [el.textContent.trim()];
+        }
+        el.innerHTML = '';
+        texts.forEach(function(t) {
+          var d = document.createElement('div');
+          d.className = 'line';
+          d.textContent = t;
+          el.appendChild(d);
         });
-        if (curWords.length) lines.push(curWords.join(' '));
+        lineEls = el.querySelectorAll('.line');
       }
-      // Build .line spans with clip-path wipe
-      el.innerHTML = '';
-      lines.forEach(function(lineText, i) {
-        var span = document.createElement('span');
-        span.className = 'line';
-        span.style.display = 'block';
-        span.style.clipPath = 'inset(0 100% 0 0)';
-        span.textContent = lineText;
-        el.appendChild(span);
-        gsap.to(span, {
+      // Animate each .line with staggered clip-path wipe
+      lineEls.forEach(function(line, i) {
+        gsap.set(line, { clipPath: 'inset(0 100% 0 0)' });
+        gsap.to(line, {
           clipPath: 'inset(0 0% 0 0)', ease: 'power3.inOut',
           scrollTrigger: { trigger: el, start: 'top ' + (78 - i * 12) + '%', end: 'top ' + (45 - i * 12) + '%', scrub: 1 }
         });
