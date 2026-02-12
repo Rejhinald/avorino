@@ -500,7 +500,7 @@
   function initNavTheme() {
     var nav = document.querySelector('.site-nav');
     if (!nav) return;
-    document.querySelectorAll('.hero,.cta-section').forEach(function(sec) {
+    document.querySelectorAll('.hero-container,.cta-container').forEach(function(sec) {
       ScrollTrigger.create({
         trigger: sec,
         start: 'top top',
