@@ -232,6 +232,7 @@
     initCTAAnimation();
     initToolsAnimation();
     initFloatingElements();
+    initNavTheme();
 
     // Parallax depth
     document.querySelectorAll('[data-animate="parallax-depth"]').forEach(el => {
@@ -517,7 +518,6 @@
   window.addEventListener('DOMContentLoaded', () => {
     initTestimonials();
     initMobileNav();
-    initNavTheme();
     initPreloader();
   });
 })();
