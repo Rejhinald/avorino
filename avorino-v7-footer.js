@@ -165,27 +165,34 @@
 
   // SCROLL ANIMATIONS
   function initScrollAnimations() {
-    // Line-wipe: About heading (auto-detect visual lines like hero char-split)
+    // Line-wipe: detect lines from <br> tags (Webflow editor) or auto-detect visual lines
     document.querySelectorAll('[data-animate="line-wipe"]').forEach(function(el) {
-      var text = el.textContent.trim();
-      if (!text) return;
-      var words = text.split(/\s+/);
-      // Inject word spans for measurement (spaces between, not inside)
-      el.innerHTML = words.map(function(w) { return '<span>' + w + '</span>'; }).join(' ');
-      var spans = el.querySelectorAll('span');
-      // Group by visual line
-      var lines = [], curWords = [], prevTop = -9999;
-      spans.forEach(function(s, i) {
-        var t = s.getBoundingClientRect().top;
-        if (i === 0 || Math.abs(t - prevTop) < 4) {
-          curWords.push(words[i]);
-        } else {
-          lines.push(curWords.join(' '));
-          curWords = [words[i]];
-        }
-        prevTop = t;
-      });
-      if (curWords.length) lines.push(curWords.join(' '));
+      var html = el.innerHTML;
+      var lines;
+      if (/<br\s*\/?>/i.test(html)) {
+        // Split on <br> added in Webflow editor
+        lines = html.split(/<br\s*\/?>/i).map(function(s) { return s.replace(/<[^>]*>/g, '').trim(); }).filter(Boolean);
+      } else {
+        // Auto-detect visual lines by measuring word positions
+        var text = el.textContent.trim();
+        if (!text) return;
+        var words = text.split(/\s+/);
+        el.innerHTML = words.map(function(w) { return '<span>' + w + '</span>'; }).join(' ');
+        var spans = el.querySelectorAll('span');
+        lines = [];
+        var curWords = [], prevTop = -9999;
+        spans.forEach(function(s, i) {
+          var t = s.getBoundingClientRect().top;
+          if (i === 0 || Math.abs(t - prevTop) < 4) {
+            curWords.push(words[i]);
+          } else {
+            lines.push(curWords.join(' '));
+            curWords = [words[i]];
+          }
+          prevTop = t;
+        });
+        if (curWords.length) lines.push(curWords.join(' '));
+      }
       // Build .line spans with clip-path wipe
       el.innerHTML = '';
       lines.forEach(function(lineText, i) {
@@ -523,23 +530,23 @@
     });
   }
 
-  // NAV SCROLL THEME
+  // NAV SCROLL THEME — simple rect overlap check
   function initNavTheme() {
     var nav = document.querySelector('.site-nav');
     if (!nav) return;
-    var navH = nav.offsetHeight || 80;
-    // Dark sections — nav goes light only when their dark area overlaps the nav
-    document.querySelectorAll('.hero-image,.cta-container').forEach(function(sec) {
-      ScrollTrigger.create({
-        trigger: sec,
-        start: 'top ' + navH,
-        end: 'bottom top',
-        onEnter: function() { nav.classList.add('nav--light'); },
-        onLeave: function() { nav.classList.remove('nav--light'); },
-        onEnterBack: function() { nav.classList.add('nav--light'); },
-        onLeaveBack: function() { nav.classList.remove('nav--light'); }
+    var darkEls = document.querySelectorAll('.hero-image,.cta-container');
+    if (!darkEls.length) return;
+    function update() {
+      var navBottom = nav.getBoundingClientRect().bottom;
+      var onDark = false;
+      darkEls.forEach(function(el) {
+        var r = el.getBoundingClientRect();
+        if (r.top < navBottom && r.bottom > 0) onDark = true;
       });
-    });
+      nav.classList.toggle('nav--light', onDark);
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    update();
   }
 
   // INIT
