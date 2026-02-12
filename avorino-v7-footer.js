@@ -258,10 +258,12 @@
       gsap.to(el, { yPercent: -12, ease: 'none', scrollTrigger: { trigger: el.closest('section') || el.parentElement, start: 'top bottom', end: 'bottom top', scrub: 1 } });
     });
 
-    // Refresh ScrollTrigger after all images/fonts load so measurements are correct
-    if (document.readyState === 'complete') {
-      ScrollTrigger.refresh();
-    } else {
+    // Refresh ScrollTrigger after layout settles (pin needs a render frame)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => { ScrollTrigger.refresh(); });
+    });
+    // Safety net: refresh again after all images/fonts finish loading
+    if (document.readyState !== 'complete') {
       window.addEventListener('load', () => ScrollTrigger.refresh());
     }
   }
