@@ -21,7 +21,8 @@ ul,ol{list-style:none;margin:0;padding:0}
 
 /* RESPONSIVE TYPOGRAPHY (clamp) */
 .hero-title{font-size:clamp(56px,7vw,96px)}
-.about-heading{font-size:clamp(44px,5.5vw,80px)}
+.about-heading{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(44px,5.5vw,80px);line-height:1.06;letter-spacing:-.025em}
+.about-heading .line{display:block}
 .process-heading,.testimonials-heading,.tools-heading,.cta-title{font-size:clamp(40px,4.5vw,64px)}
 .process-step-title,.featured-panel-title{font-size:clamp(28px,3vw,44px)}
 .service-title{font-size:clamp(22px,2.2vw,36px)}
