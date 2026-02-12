@@ -257,6 +257,13 @@
     document.querySelectorAll('[data-animate="parallax-depth"]').forEach(el => {
       gsap.to(el, { yPercent: -12, ease: 'none', scrollTrigger: { trigger: el.closest('section') || el.parentElement, start: 'top bottom', end: 'bottom top', scrub: 1 } });
     });
+
+    // Refresh ScrollTrigger after all images/fonts load so measurements are correct
+    if (document.readyState === 'complete') {
+      ScrollTrigger.refresh();
+    } else {
+      window.addEventListener('load', () => ScrollTrigger.refresh());
+    }
   }
 
   // FLOATING ELEMENTS
@@ -307,7 +314,6 @@
         }
       }
     });
-    setTimeout(function() { ScrollTrigger.refresh(); }, 200);
   }
 
   // FLIP CLOCK STATS
