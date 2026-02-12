@@ -252,7 +252,6 @@
     initCTAAnimation();
     initToolsAnimation();
     initFloatingElements();
-    initNavTheme();
 
     // Parallax depth
     document.querySelectorAll('[data-animate="parallax-depth"]').forEach(el => {
@@ -517,18 +516,19 @@
     });
   }
 
-  // NAV SCROLL THEME — simple rect overlap check
+  // NAV SCROLL THEME — check if nav midpoint is inside a dark section
   function initNavTheme() {
     var nav = document.querySelector('.site-nav');
     if (!nav) return;
-    var darkEls = document.querySelectorAll('.hero-image,.cta-container');
+    var darkEls = document.querySelectorAll('.hero-container,.cta-container');
     if (!darkEls.length) return;
     function update() {
-      var navBottom = nav.getBoundingClientRect().bottom;
+      var rect = nav.getBoundingClientRect();
+      var navMid = rect.top + rect.height / 2;
       var onDark = false;
       darkEls.forEach(function(el) {
         var r = el.getBoundingClientRect();
-        if (r.top < navBottom && r.bottom > 0) onDark = true;
+        if (r.top <= navMid && r.bottom >= navMid) onDark = true;
       });
       nav.classList.toggle('nav--dark', onDark);
     }
