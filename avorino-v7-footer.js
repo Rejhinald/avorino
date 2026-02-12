@@ -530,7 +530,7 @@
   function initNavTheme() {
     var nav = document.querySelector('.site-nav');
     if (!nav) return;
-    var darkEls = document.querySelectorAll('.hero-container,.cta-container');
+    var darkEls = document.querySelectorAll('.hero-container,.cta-container,.stats');
     if (!darkEls.length) return;
     function update() {
       var rect = nav.getBoundingClientRect();
