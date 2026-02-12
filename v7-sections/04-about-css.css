@@ -29,6 +29,7 @@
 }
 
 .about-heading {
+  display: block;
   font-family: 'DM Serif Display', Georgia, serif;
   font-weight: 400;
   font-size: 80px;
@@ -38,6 +39,7 @@
 
 .about-heading .line {
   display: block;
+  width: 100%;
 }
 
 .about-body-wrap {
