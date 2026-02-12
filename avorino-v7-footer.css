@@ -109,11 +109,26 @@ ul,ol{list-style:none;margin:0;padding:0}
 .services-progress-bar{transform-origin:left;transform:scaleX(0)}
 
 /* Featured panel initial */
-.featured-panel{transform:translateY(40px)}
+.featured-panel{opacity:0;transform:translateY(40px)}
 
 /* Flip card 3D + font override */
 .flip-card-inner{transform-style:preserve-3d}
 .flip-card-top,.flip-card-bottom,.flip-card-flip-top,.flip-card-flip-bottom,.stat-suffix,.stat-separator{font-family:'DM Serif Display',Georgia,serif}
+
+/* Heading-div font overrides — Webflow body font breaks inheritance on child divs/spans */
+.featured-panel-title,.featured-panel-title>div,.featured-panel-title>div>span,
+.featured-grid-card-title,.featured-grid-card-title>div,.featured-grid-card-title>div>span{font-family:'DM Serif Display',Georgia,serif;font-weight:400;color:#f0ede8}
+.process-heading,.process-heading>div,.process-heading>div>span,
+.process-step-title{font-family:'DM Serif Display',Georgia,serif;font-weight:400;color:#111}
+.testimonials-heading,.testimonials-heading>div,.testimonials-heading>div>span{font-family:'DM Serif Display',Georgia,serif;font-weight:400;color:#111}
+.tools-heading,.tools-heading>div,.tools-heading>div>span{font-family:'DM Serif Display',Georgia,serif;font-weight:400;color:#111}
+.testimonial-quote{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-style:italic;color:#f0ede8}
+.footer-brand-name{font-family:'DM Serif Display',Georgia,serif;font-weight:400;color:#f0ede8}
+.featured-label,.featured-meta-label,.featured-meta-value,.featured-grid-card-meta,.featured-grid-card-meta>span{font-family:'DM Sans',system-ui,sans-serif;font-weight:400}
+.footer-col a,.footer-bottom-links a,.footer-brand-desc,.footer-license,.footer-copy,.footer-cities-list,.footer-cities-label,.footer-col-title{font-family:'DM Sans',system-ui,sans-serif;color:#f0ede8}
+.testimonial-author,.testimonial-location{font-family:'DM Sans',system-ui,sans-serif;color:#f0ede8}
+.tool-name{font-family:'DM Serif Display',Georgia,serif;color:#111}
+.tool-desc,.tool-cta{font-family:'DM Sans',system-ui,sans-serif;color:#111}
 
 /* HOVER STATES */
 .cursor-ring.hover-link{width:64px;height:64px}
