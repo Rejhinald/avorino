@@ -165,11 +165,19 @@
 
   // SCROLL ANIMATIONS
   function initScrollAnimations() {
-    // Line-wipe: About heading
+    // Line-wipe: About heading (split on <br> into .line spans)
     const aboutHeading = document.querySelector('.about-heading');
     if (aboutHeading) {
-      aboutHeading.querySelectorAll('.line').forEach((line, i) => {
-        gsap.to(line, {
+      const parts = aboutHeading.innerHTML.split(/<br\s*\/?>/i);
+      aboutHeading.innerHTML = '';
+      parts.forEach((text, i) => {
+        const span = document.createElement('span');
+        span.className = 'line';
+        span.style.display = 'block';
+        span.style.clipPath = 'inset(0 100% 0 0)';
+        span.textContent = text.trim();
+        aboutHeading.appendChild(span);
+        gsap.to(span, {
           clipPath: 'inset(0 0% 0 0)', ease: 'power3.inOut',
           scrollTrigger: { trigger: aboutHeading, start: 'top ' + (78 - i * 12) + '%', end: 'top ' + (45 - i * 12) + '%', scrub: 1 }
         });
