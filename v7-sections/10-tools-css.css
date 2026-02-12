@@ -20,6 +20,7 @@
   font-weight: 400;
   line-height: 1.08;
   letter-spacing: -0.02em;
+  color: #111111;
 }
 
 .tools-intro {
@@ -27,6 +28,7 @@
   font-weight: 400;
   font-size: 17px;
   line-height: 1.9;
+  color: #111111;
   opacity: 0.6;
   max-width: 520px;
   padding-top: 8px;
@@ -67,6 +69,7 @@
   font-family: 'DM Serif Display', Georgia, serif;
   font-weight: 400;
   font-size: 22px;
+  color: #111111;
   margin-bottom: 16px;
 }
 
@@ -75,6 +78,7 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 1.7;
+  color: #111111;
   opacity: 0.4;
   margin-bottom: 24px;
 }
@@ -84,10 +88,12 @@
   font-size: 14px;
   font-weight: 400;
   letter-spacing: 0.04em;
+  color: #111111;
   opacity: 0.6;
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  text-decoration: none;
 }
 
 /* ── Tools Float Instances ── */

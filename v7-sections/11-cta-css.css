@@ -50,6 +50,7 @@
   padding: 18px 40px;
   border-radius: 100px;
   letter-spacing: 0.04em;
+  text-decoration: none;
 }
 
 .cta-btn .arrow {
