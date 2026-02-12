@@ -35,11 +35,7 @@
   font-size: 80px;
   line-height: 1.06;
   letter-spacing: -0.025em;
-}
-
-.about-heading .line {
-  display: block;
-  width: 100%;
+  max-width: 580px;
 }
 
 .about-body-wrap {

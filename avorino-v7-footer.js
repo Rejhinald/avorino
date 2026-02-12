@@ -530,7 +530,7 @@
         var r = el.getBoundingClientRect();
         if (r.top < navBottom && r.bottom > 0) onDark = true;
       });
-      nav.classList.toggle('nav--light', onDark);
+      nav.classList.toggle('nav--dark', onDark);
     }
     window.addEventListener('scroll', update, { passive: true });
     update();

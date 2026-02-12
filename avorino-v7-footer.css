@@ -21,8 +21,7 @@ ul,ol{list-style:none;margin:0;padding:0}
 
 /* RESPONSIVE TYPOGRAPHY (clamp) */
 .hero-title{font-size:clamp(56px,7vw,96px)}
-.about-heading{display:block;font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(44px,5.5vw,80px);line-height:1.06;letter-spacing:-.025em}
-.about-heading .line{display:block;width:100%}
+.about-heading{display:block;font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(44px,5.5vw,80px);line-height:1.06;letter-spacing:-.025em;max-width:580px}
 .process-heading,.testimonials-heading,.tools-heading,.cta-title{font-size:clamp(40px,4.5vw,64px)}
 .process-step-title,.featured-panel-title{font-size:clamp(28px,3vw,44px)}
 .service-title{font-size:clamp(22px,2.2vw,36px)}
@@ -53,10 +52,10 @@ ul,ol{list-style:none;margin:0;padding:0}
 .site-nav .nav-logo,.site-nav .nav-link{color:#111}
 .site-nav .nav-cta{color:#f0ede8;background-color:#111}
 .site-nav .nav-burger span{background-color:#111}
-/* nav--light: inverts to light for dark sections (hero-image, cta) */
-.nav--light .nav-logo,.nav--light .nav-link{color:#f0ede8}
-.nav--light .nav-cta{color:#111;background-color:#f0ede8}
-.nav--light .nav-burger span{background-color:#f0ede8}
+/* nav--dark: light text for dark sections (hero-image, cta) */
+.nav--dark .nav-logo,.nav--dark .nav-link{color:#f0ede8}
+.nav--dark .nav-cta{color:#111;background-color:#f0ede8}
+.nav--dark .nav-burger span{background-color:#f0ede8}
 
 /* Burger menu */
 .nav-burger span{transition:transform .3s ease,opacity .3s ease}
