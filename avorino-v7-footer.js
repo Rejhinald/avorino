@@ -538,6 +538,7 @@
 
   // INIT
   window.addEventListener('DOMContentLoaded', () => {
+    initNavTheme();
     initTestimonials();
     initMobileNav();
     initPreloader();
