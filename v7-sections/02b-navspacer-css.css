@@ -4,3 +4,16 @@
   height: 96px;
   background-color: #e8e4df;
 }
+
+/* Nav defaults — dark text for beige (beats Webflow + old CDN cache) */
+nav.site-nav .nav-logo,
+nav.site-nav .nav-link {
+  color: #111111;
+}
+nav.site-nav .nav-cta {
+  color: #f0ede8;
+  background-color: #111111;
+}
+nav.site-nav .nav-burger span {
+  background-color: #111111;
+}
