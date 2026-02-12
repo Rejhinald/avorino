@@ -120,6 +120,7 @@
     const nav = document.querySelector('.site-nav') || document.querySelector('.nav');
 
     if (nav) gsap.set(nav, { opacity: 0 });
+    if (nav && document.querySelector('.hero-container')) nav.classList.add('nav--light');
     if (heroImage) gsap.set(heroImage, { clipPath: 'inset(6%)', scale: 1.25 });
     gsap.set('.preloader-char', { opacity: 0, y: 60, rotateX: -90, filter: 'blur(4px)' });
     if (preloader) gsap.set(preloader, { display: 'flex' });
@@ -165,17 +166,43 @@
 
   // SCROLL ANIMATIONS
   function initScrollAnimations() {
-    // Line-wipe: About heading (split on <br> into .line spans)
+    // Line-wipe: About heading (auto-detect visual lines)
     const aboutHeading = document.querySelector('.about-heading');
     if (aboutHeading) {
-      const parts = aboutHeading.innerHTML.split(/<br\s*\/?>/i);
+      // Wrap each word in a temp span to detect visual line breaks
+      const words = aboutHeading.textContent.trim().split(/\s+/);
       aboutHeading.innerHTML = '';
-      parts.forEach((text, i) => {
+      const wordSpans = words.map(w => {
+        const s = document.createElement('span');
+        s.textContent = w + ' ';
+        s.style.display = 'inline';
+        aboutHeading.appendChild(s);
+        return s;
+      });
+      // Group words sharing the same visual line (same offsetTop)
+      const lines = [];
+      let curLine = [];
+      let curTop = null;
+      wordSpans.forEach((s, idx) => {
+        const top = s.getBoundingClientRect().top;
+        if (curTop === null || Math.abs(top - curTop) < 4) {
+          curLine.push(words[idx]);
+          if (curTop === null) curTop = top;
+        } else {
+          lines.push(curLine.join(' '));
+          curLine = [words[idx]];
+          curTop = top;
+        }
+      });
+      if (curLine.length) lines.push(curLine.join(' '));
+      // Replace with .line spans and animate
+      aboutHeading.innerHTML = '';
+      lines.forEach((text, i) => {
         const span = document.createElement('span');
         span.className = 'line';
         span.style.display = 'block';
         span.style.clipPath = 'inset(0 100% 0 0)';
-        span.textContent = text.trim();
+        span.textContent = text;
         aboutHeading.appendChild(span);
         gsap.to(span, {
           clipPath: 'inset(0 0% 0 0)', ease: 'power3.inOut',
@@ -509,9 +536,22 @@
   function initNavTheme() {
     var nav = document.querySelector('.site-nav');
     if (!nav) return;
-    document.querySelectorAll('.hero-image,.cta-container').forEach(function(sec) {
+    // Hero — already light from initPreloader, just track when we leave/re-enter
+    var heroContainer = document.querySelector('.hero-container');
+    if (heroContainer) {
       ScrollTrigger.create({
-        trigger: sec,
+        trigger: heroContainer,
+        start: 'top top',
+        end: 'bottom top',
+        onLeave: function() { nav.classList.remove('nav--light'); },
+        onEnterBack: function() { nav.classList.add('nav--light'); }
+      });
+    }
+    // CTA
+    var ctaContainer = document.querySelector('.cta-container');
+    if (ctaContainer) {
+      ScrollTrigger.create({
+        trigger: ctaContainer,
         start: 'top top',
         end: 'bottom top',
         onEnter: function() { nav.classList.add('nav--light'); },
@@ -519,7 +559,7 @@
         onEnterBack: function() { nav.classList.add('nav--light'); },
         onLeaveBack: function() { nav.classList.remove('nav--light'); }
       });
-    });
+    }
   }
 
   // INIT
