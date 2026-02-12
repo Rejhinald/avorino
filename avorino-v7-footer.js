@@ -186,12 +186,12 @@
         });
         lineEls = el.querySelectorAll('.line');
       }
-      // Animate each .line with staggered clip-path wipe
+      // Animate each .line sequentially (no overlap between lines)
       lineEls.forEach(function(line, i) {
         gsap.set(line, { clipPath: 'inset(0 100% 0 0)' });
         gsap.to(line, {
           clipPath: 'inset(0 0% 0 0)', ease: 'power3.inOut',
-          scrollTrigger: { trigger: el, start: 'top ' + (78 - i * 12) + '%', end: 'top ' + (45 - i * 12) + '%', scrub: 1 }
+          scrollTrigger: { trigger: el, start: 'top ' + (88 - i * 20) + '%', end: 'top ' + (68 - i * 20) + '%', scrub: 1 }
         });
       });
     });
