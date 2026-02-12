@@ -48,10 +48,13 @@ ul,ol{list-style:none;margin:0;padding:0}
 .cursor-ring span{transition:opacity .2s ease}
 .cursor-dot{transform:translate(-50%,-50%);transition:opacity .2s ease}
 
-/* Nav scroll-theme */
+/* Nav scroll-theme — default is dark (for beige sections) */
 .site-nav .nav-logo,.site-nav .nav-link,.site-nav .nav-cta,.site-nav .nav-burger span{transition:color .3s ease,background-color .3s ease}
-.nav--light .nav-logo{color:#f0ede8}
-.nav--light .nav-link{color:#f0ede8}
+.site-nav .nav-logo,.site-nav .nav-link{color:#111}
+.site-nav .nav-cta{color:#f0ede8;background-color:#111}
+.site-nav .nav-burger span{background-color:#111}
+/* nav--light: inverts to light for dark sections (hero-image, cta) */
+.nav--light .nav-logo,.nav--light .nav-link{color:#f0ede8}
 .nav--light .nav-cta{color:#111;background-color:#f0ede8}
 .nav--light .nav-burger span{background-color:#f0ede8}
 

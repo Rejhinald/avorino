@@ -4,7 +4,7 @@
 .hero {
   position: relative;
   height: 100vh;
-  padding: 96px 48px 48px;
+  padding: 0 48px 48px;
   overflow: hidden;
 }
 
