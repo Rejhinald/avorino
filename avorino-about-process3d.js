@@ -52,34 +52,28 @@
     { s:[30,12], e:[30,20], opens:[
       { type:'window', pos:0.50, w:WIN_W, h:WIN_H, sill:WIN_SILL },
     ]},
-    // Exterior north
-    { s:[30,20], e:[8,20], opens:[] },
-    { s:[8,20], e:[0,20], opens:[] },
-    // Exterior west
-    { s:[0,20], e:[0,12], opens:[
-      { type:'window', pos:0.50, w:WIN_W, h:WIN_H, sill:WIN_SILL },
-    ]},
-    { s:[0,12], e:[0,0], opens:[] },
+    // Exterior north — REMOVED (cutaway: lets camera see inside)
+    // Exterior west — REMOVED (cutaway: lets camera see inside)
     // Interior horizontal at z=12
-    { s:[0,12], e:[8,12], opens:[
+    { s:[0,12], e:[8,12], interior:true, opens:[
       { type:'door', pos:0.44, w:DOOR_W, h:DOOR_H, sill:0 },
     ]},
-    { s:[8,12], e:[15,12], opens:[
+    { s:[8,12], e:[15,12], interior:true, opens:[
       { type:'door', pos:0.57, w:DOOR_W, h:DOOR_H, sill:0 },
     ]},
-    { s:[15,12], e:[30,12], opens:[] },
+    { s:[15,12], e:[30,12], interior:true, opens:[] },
     // Interior vertical
-    { s:[15,0], e:[15,12], opens:[
+    { s:[15,0], e:[15,12], interior:true, opens:[
       { type:'door', pos:0.50, w:DOOR_W, h:DOOR_H, sill:0 },
     ]},
-    { s:[8,12], e:[8,20], opens:[] },
+    { s:[8,12], e:[8,20], interior:true, opens:[] },
   ];
 
   var roomDefs = [
-    { name:'Living',   color:0xEBE5DB, verts:[[0,0],[15,0],[15,12],[0,12]] },
-    { name:'Kitchen',  color:0xF0E6D3, verts:[[15,0],[30,0],[30,12],[15,12]] },
-    { name:'Bedroom',  color:0xE8DFD5, verts:[[8,12],[30,12],[30,20],[8,20]] },
-    { name:'Bathroom', color:0xD9E7ED, verts:[[0,12],[8,12],[8,20],[0,20]] },
+    { name:'Living',   color:0xC4A882, rough:0.9, verts:[[0,0],[15,0],[15,12],[0,12]] },      // warm oak wood
+    { name:'Kitchen',  color:0xE8E2D8, rough:0.6, verts:[[15,0],[30,0],[30,12],[15,12]] },    // light stone tile
+    { name:'Bedroom',  color:0xBFA477, rough:0.85, verts:[[8,12],[30,12],[30,20],[8,20]] },    // honey wood
+    { name:'Bathroom', color:0xD4D8DB, rough:0.4, verts:[[0,12],[8,12],[8,20],[0,20]] },      // cool ceramic tile
   ];
 
   var furnitureDefs = [
@@ -120,10 +114,10 @@
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     resizeRenderer();
 
-    // Camera — angled view looking at ADU center (wide FOV for portrait canvas)
-    camera = new THREE.PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 0.1, 300);
-    camera.position.set(CX, 45, ADU_D + 45);
-    camera.lookAt(CX, 0, CZ);
+    // Camera — angled view looking at ADU center
+    camera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 300);
+    camera.position.set(CX, 28, ADU_D + 28);
+    camera.lookAt(CX, 3, CZ);
 
     // Lighting
     var hemi = new THREE.HemisphereLight(0xB1E1FF, 0xB97A20, 0.5);
@@ -149,9 +143,9 @@
     var ambient = new THREE.AmbientLight(0xffffff, 0.3);
     scene.add(ambient);
 
-    // Ground plane
+    // Ground plane — warm concrete/landscape
     var groundGeo = new THREE.PlaneGeometry(120, 120);
-    var groundMat = new THREE.MeshStandardMaterial({ color: 0xC8C8C8, roughness: 0.9 });
+    var groundMat = new THREE.MeshStandardMaterial({ color: 0xD5CFBF, roughness: 0.95 });
     var ground = new THREE.Mesh(groundGeo, groundMat);
     ground.rotation.x = -Math.PI / 2;
     ground.position.set(CX, -0.01, CZ);
@@ -208,7 +202,8 @@
   /* ═══════════════════════════════════════════════
      GEOMETRY BUILDERS
      ═══════════════════════════════════════════════ */
-  var wallMat = new THREE.MeshStandardMaterial({ color: 0xF0EDE8, roughness: 0.9 });
+  var wallMatExt = new THREE.MeshStandardMaterial({ color: 0xEDE8E0, roughness: 0.82 });
+  var wallMatInt = new THREE.MeshStandardMaterial({ color: 0xF8F5F0, roughness: 0.92 });
 
   // ── Foundation slab ──
   function buildFoundation() {
@@ -234,7 +229,7 @@
       shape.closePath();
       var geo = new THREE.ShapeGeometry(shape);
       var mat = new THREE.MeshStandardMaterial({
-        color: room.color, roughness: 0.8, side: THREE.DoubleSide,
+        color: room.color, roughness: room.rough || 0.8, side: THREE.DoubleSide,
       });
       var mesh = new THREE.Mesh(geo, mat);
       mesh.rotation.x = -Math.PI / 2;
@@ -254,10 +249,11 @@
       var dx = ex - sx, dz = ez - sz;
       var length = Math.sqrt(dx * dx + dz * dz);
       var angle = Math.atan2(dz, dx);
+      var wMat = wall.interior ? wallMatInt : wallMatExt;
 
       if (!wall.opens || wall.opens.length === 0) {
         // Simple wall — no openings
-        var mesh = makeWallBox(length, WALL_H, WALL_T);
+        var mesh = makeWallBox(length, WALL_H, WALL_T, wMat);
         mesh.position.set(length / 2, WALL_H / 2, 0);
         var wrap = new THREE.Group();
         wrap.position.set(sx, 0, sz);
@@ -285,7 +281,7 @@
         // Segment before opening
         if (opStart > lastEnd + 0.05) {
           var segLen = opStart - lastEnd;
-          var m = makeWallBox(segLen, WALL_H, WALL_T);
+          var m = makeWallBox(segLen, WALL_H, WALL_T, wMat);
           m.position.set(lastEnd + segLen / 2, WALL_H / 2, 0);
           wrap.add(m);
         }
@@ -293,14 +289,14 @@
         // Segment above opening
         var topH = WALL_H - (op.sill + op.h);
         if (topH > 0.05) {
-          var m = makeWallBox(op.w, topH, WALL_T);
+          var m = makeWallBox(op.w, topH, WALL_T, wMat);
           m.position.set(center, op.sill + op.h + topH / 2, 0);
           wrap.add(m);
         }
 
         // Segment below opening (windows)
         if (op.sill > 0.05) {
-          var m = makeWallBox(op.w, op.sill, WALL_T);
+          var m = makeWallBox(op.w, op.sill, WALL_T, wMat);
           m.position.set(center, op.sill / 2, 0);
           wrap.add(m);
         }
@@ -311,7 +307,7 @@
       // Segment after last opening
       if (lastEnd < length - 0.05) {
         var segLen = length - lastEnd;
-        var m = makeWallBox(segLen, WALL_H, WALL_T);
+        var m = makeWallBox(segLen, WALL_H, WALL_T, wMat);
         m.position.set(lastEnd + segLen / 2, WALL_H / 2, 0);
         wrap.add(m);
       }
@@ -321,9 +317,9 @@
     return g;
   }
 
-  function makeWallBox(w, h, t) {
+  function makeWallBox(w, h, t, material) {
     var geo = new THREE.BoxGeometry(w, h, t);
-    var mesh = new THREE.Mesh(geo, wallMat);
+    var mesh = new THREE.Mesh(geo, material || wallMatExt);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     return mesh;
@@ -518,7 +514,7 @@
   }
 
   function buildSofa(g, w, d) {
-    var seatMat = mat(0x6B8E9F, 0.8);
+    var seatMat = mat(0x5B7A8A, 0.85);
     // Seat
     var seat = box(w, 1.2, d, seatMat);
     seat.position.y = 0.6;
@@ -1004,12 +1000,20 @@
     }
   }
 
-  // ── Step 2: 3D Model Orbit (scrub-driven camera) ──
+  // ── Step 2: Complete Model Showcase (dramatic L-to-R pan, zoomed in) ──
   function prepareModelOrbit() {
     if (!canvasEl || !camera) return;
 
+    // Show the COMPLETE fully-built model
     setGroupsVisible(true);
-    // Reset materials
+
+    // Reset all geometry to full state (like step 5 finished)
+    aduGroups.foundation.position.y = 0;
+    aduGroups.floors.scale.set(1, 1, 1);
+    aduGroups.walls.scale.set(1, 1, 1);
+    aduGroups.furniture.children.forEach(function (p) { p.scale.set(1, 1, 1); });
+
+    // Reset window glass to normal
     aduGroups.openings.traverse(function (obj) {
       if (obj.isMesh && obj.material && obj.material.transparent) {
         obj.material.opacity = 0.3;
@@ -1018,8 +1022,17 @@
       }
     });
 
-    camera.position.set(CX, 45, ADU_D + 45);
-    camera.lookAt(CX, 2, CZ);
+    // Make all openings fully opaque
+    aduGroups.openings.traverse(function (obj) {
+      if (obj.isMesh && obj.material) {
+        obj.material.opacity = obj.material.transparent ? 0.3 : 1;
+        obj.material.needsUpdate = true;
+      }
+    });
+
+    // Start camera on LEFT side, close and low — dramatic angle
+    camera.position.set(CX - 25, 18, ADU_D + 18);
+    camera.lookAt(CX, 3, CZ);
     gsap.to(canvasEl, { opacity: 1, duration: 0.6, overwrite: 'auto' });
     markDirty();
   }
@@ -1027,12 +1040,14 @@
   function scrubModelOrbit(subP) {
     if (!camera) return;
     var t = smoothstep(subP);
+
+    // Dramatic left-to-right pan: camera sweeps from left to right, staying close
     camera.position.set(
-      CX + 30 * t,
-      45 - 15 * t,
-      ADU_D + 45 - 15 * t
+      CX - 25 + 50 * t,   // sweep from -25 to +25 (left to right)
+      18 + 6 * t,          // slight rise 18 → 24
+      ADU_D + 18 - 4 * t   // subtle push in
     );
-    camera.lookAt(CX, 2, CZ);
+    camera.lookAt(CX, 3, CZ);
     markDirty();
   }
 
@@ -1301,9 +1316,9 @@
       piece.scale.set(0, 0, 0);
     });
 
-    // Camera: wide angle for full building view
-    camera.position.set(CX - 20, 50, ADU_D + 50);
-    camera.lookAt(CX, 2, CZ);
+    // Camera: pulled back but not too far — watch it build
+    camera.position.set(CX - 12, 28, ADU_D + 28);
+    camera.lookAt(CX, 3, CZ);
     gsap.to(canvasEl, { opacity: 1, duration: 0.5, overwrite: 'auto' });
     markDirty();
   }
@@ -1382,11 +1397,11 @@
     if (!camera) return;
     var t = smoothstep(subP);
 
-    // Camera pulls to hero angle
+    // Camera sweeps to hero angle — close and intimate
     camera.position.set(
-      CX - 20 + 30 * t,
-      50 - 18 * t,
-      ADU_D + 50 - 10 * t
+      CX - 12 + 22 * t,
+      28 - 8 * t,
+      ADU_D + 28 - 6 * t
     );
     camera.lookAt(CX, 3, CZ);
 
