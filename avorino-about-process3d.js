@@ -4,7 +4,7 @@
   /* ═══════════════════════════════════════════════
      AVORINO PROCESS SECTION — SCROLL-LOCK + THREE.JS
      Separate CDN file for the About page process section.
-     Requires: Three.js r182+, GSAP + ScrollTrigger, Lenis
+     Requires: Three.js r149 (global build), GSAP + ScrollTrigger, Lenis
      ═══════════════════════════════════════════════ */
 
   // ── Skip on mobile or if dependencies missing ──
