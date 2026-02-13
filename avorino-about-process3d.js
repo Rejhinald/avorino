@@ -120,9 +120,9 @@
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     resizeRenderer();
 
-    // Camera — angled view looking at ADU center
-    camera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 200);
-    camera.position.set(CX, 35, ADU_D + 28);
+    // Camera — angled view looking at ADU center (wide FOV for portrait canvas)
+    camera = new THREE.PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 0.1, 300);
+    camera.position.set(CX, 45, ADU_D + 45);
     camera.lookAt(CX, 0, CZ);
 
     // Lighting
@@ -953,9 +953,9 @@
 
     gsap.to(canvasEl, { opacity: 1, duration: 0.6 });
 
-    // Camera orbit
+    // Camera orbit — wider angle for portrait canvas
     gsap.to(camera.position, {
-      x: CX + 20, y: 25, z: ADU_D + 20,
+      x: CX + 30, y: 35, z: ADU_D + 35,
       duration: 3, ease: 'power2.inOut',
       onUpdate: function () {
         camera.lookAt(CX, 2, CZ);
@@ -1187,9 +1187,9 @@
     if (!canvasEl || !camera) return;
     gsap.to(canvasEl, { opacity: 1, duration: 0.5 });
 
-    // Camera wider angle
+    // Camera wider angle — pulled back for full building view
     gsap.to(camera.position, {
-      x: CX - 15, y: 40, z: ADU_D + 35,
+      x: CX - 20, y: 50, z: ADU_D + 50,
       duration: 1.2, ease: 'power2.inOut',
       onUpdate: function () {
         camera.lookAt(CX, 2, CZ);
@@ -1277,9 +1277,9 @@
 
     gsap.to(canvasEl, { opacity: 1, duration: 0.6 });
 
-    // Camera pulls back to hero angle
+    // Camera pulls back to hero angle — warm evening view
     gsap.to(camera.position, {
-      x: CX + 5, y: 22, z: ADU_D + 25,
+      x: CX + 10, y: 32, z: ADU_D + 40,
       duration: 2, ease: 'power2.inOut',
       onUpdate: function () {
         camera.lookAt(CX, 3, CZ);

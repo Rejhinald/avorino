@@ -612,10 +612,12 @@ async function buildAboutPage() {
   await clearAndSet(await freshStyle('about-process-card-title'), 'about-process-card-title', {
     'font-family': 'DM Serif Display', 'font-size': '24px',
     'line-height': '1.2', 'font-weight': '400', 'margin-bottom': '12px',
+    'color': v['av-cream'],
   });
   await clearAndSet(await freshStyle('about-process-card-desc'), 'about-process-card-desc', {
     'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
     'line-height': '1.7', 'opacity': '0.5',
+    'color': v['av-cream'],
   });
   await wait(500);
 
