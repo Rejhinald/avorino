@@ -164,7 +164,6 @@
     aduGroups.walls = buildWalls();
     aduGroups.openings = buildOpenings();
     aduGroups.furniture = buildFurniture();
-    aduGroups.roof = buildRoof();
     aduGroups.interior = buildInteriorLights();
 
     scene.add(aduGroups.foundation);
@@ -172,7 +171,6 @@
     scene.add(aduGroups.walls);
     scene.add(aduGroups.openings);
     scene.add(aduGroups.furniture);
-    scene.add(aduGroups.roof);
     scene.add(aduGroups.interior);
 
     // Start render loop
@@ -660,61 +658,6 @@
     g.add(inner);
   }
 
-  // ── Roof (pitched, pivot-based for correct eave alignment) ──
-  function buildRoof() {
-    var g = new THREE.Group();
-    var roofMat = new THREE.MeshStandardMaterial({
-      color: 0x7A6E5D, roughness: 0.8, side: THREE.DoubleSide,
-    });
-    var ovh = 1.0;
-    var pitch = 5;
-    var roofW = ADU_W + ovh * 2;
-    var halfRun = ADU_D / 2 + ovh;
-    var slopeLen = Math.sqrt(halfRun * halfRun + pitch * pitch);
-    var slopeAngle = Math.atan2(pitch, halfRun);
-    var t = 0.2;
-
-    // South slope — eave at (CX, WALL_H, -ovh), rises to ridge at (CX, WALL_H+pitch, CZ)
-    var sPivot = new THREE.Group();
-    sPivot.position.set(CX, WALL_H, -ovh);
-    sPivot.rotation.x = -slopeAngle;
-    var sPanel = new THREE.Mesh(new THREE.BoxGeometry(roofW, t, slopeLen), roofMat);
-    sPanel.position.set(0, 0, slopeLen / 2);
-    sPanel.castShadow = true;
-    sPanel.receiveShadow = true;
-    sPivot.add(sPanel);
-    g.add(sPivot);
-
-    // North slope — eave at (CX, WALL_H, ADU_D+ovh), rises to ridge
-    var nPivot = new THREE.Group();
-    nPivot.position.set(CX, WALL_H, ADU_D + ovh);
-    nPivot.rotation.x = slopeAngle;
-    var nPanel = new THREE.Mesh(new THREE.BoxGeometry(roofW, t, slopeLen), roofMat);
-    nPanel.position.set(0, 0, -slopeLen / 2);
-    nPanel.castShadow = true;
-    nPanel.receiveShadow = true;
-    nPivot.add(nPanel);
-    g.add(nPivot);
-
-    // Ridge beam (dark timber along the peak)
-    var ridgeMat = new THREE.MeshStandardMaterial({ color: 0x5A4A3A, roughness: 0.7 });
-    var ridge = new THREE.Mesh(new THREE.BoxGeometry(roofW + 0.2, 0.35, 0.35), ridgeMat);
-    ridge.position.set(CX, WALL_H + pitch, CZ);
-    ridge.castShadow = true;
-    g.add(ridge);
-
-    // Fascia boards (eave trim)
-    var fasciaMat = new THREE.MeshStandardMaterial({ color: 0xE8E4E0, roughness: 0.8 });
-    var sFascia = new THREE.Mesh(new THREE.BoxGeometry(roofW, 0.6, 0.15), fasciaMat);
-    sFascia.position.set(CX, WALL_H - 0.1, -ovh);
-    g.add(sFascia);
-    var nFascia = new THREE.Mesh(new THREE.BoxGeometry(roofW, 0.6, 0.15), fasciaMat);
-    nFascia.position.set(CX, WALL_H - 0.1, ADU_D + ovh);
-    g.add(nFascia);
-
-    return g;
-  }
-
   // ── Interior lights (for warm glow in step 6) ──
   function buildInteriorLights() {
     var g = new THREE.Group();
@@ -800,12 +743,11 @@
     });
 
     updateNavDots(navEl, idx);
-    triggerStepVisual(idx, prevIdx);
   }
 
   /* ═══════════════════════════════════════════════
-     STEP VISUAL ANIMATIONS
-     Each step has a unique visual on the left side.
+     STEP VISUAL ANIMATIONS — SCROLL-DRIVEN
+     Each step's animation is driven by scroll sub-progress.
      ═══════════════════════════════════════════════ */
   var canvasEl = null;
   var fxEl = null;
@@ -813,39 +755,65 @@
   var moneyCanvas = null;
   var stampSvg = null;
   var moneyAnimId = null;
+  var activeVisual = -1;
 
-  function triggerStepVisual(idx, prevIdx) {
+  // ── Easing helpers ──
+  function smoothstep(t) {
+    t = Math.max(0, Math.min(1, t));
+    return t * t * (3 - 2 * t);
+  }
+
+  function easeOutBack(t) {
+    if (t <= 0) return 0;
+    if (t >= 1) return 1;
+    var s = 1.5;
+    var p = t - 1;
+    return p * p * ((s + 1) * p + s) + 1;
+  }
+
+  function remap(value, inMin, inMax) {
+    return Math.max(0, Math.min(1, (value - inMin) / (inMax - inMin)));
+  }
+
+  // ── Visual lifecycle ──
+  function prepareVisual(step) {
     if (isMobile) return;
-
-    // Clean up previous step visuals
-    cleanupStepVisual(prevIdx);
-
-    switch (idx) {
-      case 0: showBlueprint(); break;
-      case 1: showModelOrbit(); break;
-      case 2: showMoneyRain(); break;
-      case 3: showStamp(); break;
-      case 4: showConstruction(); break;
-      case 5: showWarmGlow(); break;
+    switch (step) {
+      case 0: prepareBlueprint(); break;
+      case 1: prepareModelOrbit(); break;
+      case 2: prepareMoneyRain(); break;
+      case 3: prepareStamp(); break;
+      case 4: prepareConstruction(); break;
+      case 5: prepareWarmGlow(); break;
     }
   }
 
-  function cleanupStepVisual(idx) {
-    if (idx === -1) return;
-    switch (idx) {
-      case 0: hideBlueprint(); break;
-      case 1: hideModelOrbit(); break;
-      case 2: hideMoneyRain(); break;
-      case 3: hideStamp(); break;
-      case 4: hideConstruction(); break;
-      case 5: hideWarmGlow(); break;
+  function scrubVisual(step, subP) {
+    if (isMobile) return;
+    switch (step) {
+      case 1: scrubModelOrbit(subP); break;
+      case 3: scrubStamp(subP); break;
+      case 4: scrubConstruction(subP); break;
+      case 5: scrubWarmGlow(subP); break;
     }
   }
 
-  // ── Step 1: Blueprint Line Drawing ──
-  function showBlueprint() {
+  function cleanupVisual(step) {
+    if (isMobile) return;
+    switch (step) {
+      case 0: cleanupBlueprint(); break;
+      case 1: cleanupModelOrbit(); break;
+      case 2: cleanupMoneyRain(); break;
+      case 3: cleanupStamp(); break;
+      case 4: cleanupConstruction(); break;
+      case 5: cleanupWarmGlow(); break;
+    }
+  }
+
+  // ── Step 1: Blueprint Line Drawing (auto-play on enter) ──
+  function prepareBlueprint() {
     if (!fxEl) return;
-    if (canvasEl) canvasEl.style.opacity = '0';
+    if (canvasEl) gsap.set(canvasEl, { opacity: 0 });
 
     if (!blueprintSvg) {
       blueprintSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -853,7 +821,6 @@
       blueprintSvg.setAttribute('viewBox', '0 0 400 300');
       blueprintSvg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
-      // Background grid dots
       var defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
       var pattern = document.createElementNS('http://www.w3.org/2000/svg', 'pattern');
       pattern.setAttribute('id', 'bp-grid');
@@ -875,18 +842,14 @@
       bg.setAttribute('fill', 'url(#bp-grid)');
       blueprintSvg.appendChild(bg);
 
-      // Scale: 30ft → 300px, 20ft → 200px. Offset 50,50
       var ox = 50, oy = 50, sc = 10;
       var lines = [
-        // Exterior
         [0,0,15,0],[15,0,30,0],[30,0,30,12],[30,12,30,20],
         [30,20,8,20],[8,20,0,20],[0,20,0,12],[0,12,0,0],
-        // Interior
         [0,12,8,12],[8,12,15,12],[15,12,30,12],
         [15,0,15,12],[8,12,8,20],
       ];
 
-      // Room labels
       var labels = [
         { text: 'LIVING', x: 7.5, y: 6 },
         { text: 'KITCHEN', x: 22.5, y: 6 },
@@ -894,7 +857,6 @@
         { text: 'BATH', x: 4, y: 16 },
       ];
 
-      // Dimension lines
       var dims = [
         { text: "30'", x1: 0, y1: -1.5, x2: 30, y2: -1.5 },
         { text: "20'", x1: -1.5, y1: 0, x2: -1.5, y2: 20 },
@@ -964,7 +926,7 @@
     gsap.set(blueprintSvg, { opacity: 0 });
     gsap.to(blueprintSvg, { opacity: 1, duration: 0.5 });
 
-    // Animate lines drawing in
+    // Auto-play line drawing (step 0 has no scroll-into)
     var paths = blueprintSvg._paths;
     paths.forEach(function (p, i) {
       if (p.isText) {
@@ -978,13 +940,12 @@
     });
   }
 
-  function hideBlueprint() {
+  function cleanupBlueprint() {
     if (blueprintSvg && blueprintSvg.parentElement) {
       gsap.to(blueprintSvg, {
         opacity: 0, duration: 0.3,
         onComplete: function () {
           if (blueprintSvg.parentElement) blueprintSvg.parentElement.removeChild(blueprintSvg);
-          // Reset for next time
           var paths = blueprintSvg._paths;
           if (paths) paths.forEach(function (p) {
             if (p.isText) gsap.set(p.el, { opacity: 0 });
@@ -995,15 +956,12 @@
     }
   }
 
-  // ── Step 2: 3D Model Orbit ──
-  var orbitTween = null;
-
-  function showModelOrbit() {
+  // ── Step 2: 3D Model Orbit (scrub-driven camera) ──
+  function prepareModelOrbit() {
     if (!canvasEl || !camera) return;
 
-    // Show all groups at full
     setGroupsVisible(true);
-    // Reset materials in case coming from warm glow
+    // Reset materials
     aduGroups.openings.traverse(function (obj) {
       if (obj.isMesh && obj.material && obj.material.transparent) {
         obj.material.opacity = 0.3;
@@ -1012,35 +970,32 @@
       }
     });
 
-    // Start camera from initial position for smooth reveal
     camera.position.set(CX, 45, ADU_D + 45);
     camera.lookAt(CX, 2, CZ);
+    gsap.to(canvasEl, { opacity: 1, duration: 0.6, overwrite: 'auto' });
     markDirty();
-
-    gsap.to(canvasEl, { opacity: 1, duration: 0.8, ease: 'power2.out' });
-
-    // Camera orbit — smooth cinematic sweep
-    orbitTween = gsap.to(camera.position, {
-      x: CX + 30, y: 30, z: ADU_D + 30,
-      duration: 4, ease: 'power1.inOut',
-      onUpdate: function () {
-        camera.lookAt(CX, 2, CZ);
-        markDirty();
-      },
-    });
   }
 
-  function hideModelOrbit() {
-    if (orbitTween) { orbitTween.kill(); orbitTween = null; }
-    if (canvasEl) gsap.to(canvasEl, { opacity: 0, duration: 0.4 });
+  function scrubModelOrbit(subP) {
+    if (!camera) return;
+    var t = smoothstep(subP);
+    camera.position.set(
+      CX + 30 * t,
+      45 - 15 * t,
+      ADU_D + 45 - 15 * t
+    );
+    camera.lookAt(CX, 2, CZ);
+    markDirty();
   }
 
-  // ── Step 3: Money Rain ──
-  function showMoneyRain() {
+  function cleanupModelOrbit() {
+    // Canvas opacity managed by next step's prepare
+  }
+
+  // ── Step 3: Money Rain (auto-play particle system) ──
+  function prepareMoneyRain() {
     if (!fxEl) return;
-    if (canvasEl) {
-      gsap.to(canvasEl, { opacity: 0.15, duration: 0.4 });
-    }
+    if (canvasEl) gsap.to(canvasEl, { opacity: 0.15, duration: 0.4, overwrite: 'auto' });
 
     if (!moneyCanvas) {
       moneyCanvas = document.createElement('canvas');
@@ -1089,14 +1044,12 @@
         ctx.rotate(b.rot);
         ctx.globalAlpha = b.opacity;
 
-        // Bill rectangle
         ctx.fillStyle = '#4a8c5c';
         ctx.fillRect(-b.w / 2, -b.h / 2, b.w, b.h);
         ctx.strokeStyle = '#2d6b3f';
         ctx.lineWidth = 1;
         ctx.strokeRect(-b.w / 2 + 2, -b.h / 2 + 2, b.w - 4, b.h - 4);
 
-        // $ symbol
         ctx.fillStyle = '#2d6b3f';
         ctx.font = 'bold ' + Math.round(b.h * 0.7) + 'px DM Sans, sans-serif';
         ctx.textAlign = 'center';
@@ -1109,7 +1062,7 @@
     animateMoney();
   }
 
-  function hideMoneyRain() {
+  function cleanupMoneyRain() {
     if (moneyAnimId) { cancelAnimationFrame(moneyAnimId); moneyAnimId = null; }
     if (moneyCanvas && moneyCanvas.parentElement) {
       gsap.to(moneyCanvas, {
@@ -1121,19 +1074,16 @@
     }
   }
 
-  // ── Step 4: Permit Stamp (Premium Wax Seal) ──
-  var stampTl = null;
-
+  // ── Step 4: Permit Stamp (scrub-driven wax seal) ──
   function svgEl(tag, attrs) {
     var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
     if (attrs) Object.keys(attrs).forEach(function (k) { el.setAttribute(k, attrs[k]); });
     return el;
   }
 
-  function showStamp() {
+  function prepareStamp() {
     if (!fxEl) return;
-    if (canvasEl) gsap.to(canvasEl, { opacity: 0.06, duration: 0.5 });
-    if (stampTl) { stampTl.kill(); stampTl = null; }
+    if (canvasEl) gsap.to(canvasEl, { opacity: 0.06, duration: 0.3, overwrite: 'auto' });
 
     if (!stampSvg) {
       stampSvg = svgEl('svg', {
@@ -1142,9 +1092,7 @@
       });
       stampSvg.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;';
 
-      // SVG filter for embossed/3D seal effect
       var defs = svgEl('defs');
-      // Drop shadow
       var fShadow = svgEl('filter', { id: 'seal-shadow', x: '-20%', y: '-20%', width: '140%', height: '140%' });
       var feOff = svgEl('feOffset', { dx: '0', dy: '4', in: 'SourceAlpha', result: 'off' });
       var feBlur = svgEl('feGaussianBlur', { stdDeviation: '8', in: 'off', result: 'blur' });
@@ -1160,14 +1108,12 @@
       fShadow.appendChild(feMerge);
       defs.appendChild(fShadow);
 
-      // Radial gradient for wax seal body
       var grad = svgEl('radialGradient', { id: 'seal-grad', cx: '40%', cy: '35%', r: '60%' });
       grad.appendChild(svgEl('stop', { offset: '0%', 'stop-color': '#d4343c' }));
       grad.appendChild(svgEl('stop', { offset: '50%', 'stop-color': '#b8202a' }));
       grad.appendChild(svgEl('stop', { offset: '100%', 'stop-color': '#8a1820' }));
       defs.appendChild(grad);
 
-      // Inner highlight gradient
       var hGrad = svgEl('radialGradient', { id: 'seal-highlight', cx: '35%', cy: '30%', r: '50%' });
       hGrad.appendChild(svgEl('stop', { offset: '0%', 'stop-color': 'rgba(255,255,255,0.15)' }));
       hGrad.appendChild(svgEl('stop', { offset: '100%', 'stop-color': 'rgba(255,255,255,0)' }));
@@ -1175,34 +1121,15 @@
 
       stampSvg.appendChild(defs);
 
-      // Main stamp group with shadow filter
       var sg = svgEl('g', { filter: 'url(#seal-shadow)' });
       stampSvg.appendChild(sg);
 
-      // Wax seal body — filled circle with gradient
-      sg.appendChild(svgEl('circle', {
-        r: '130', fill: 'url(#seal-grad)',
-      }));
+      sg.appendChild(svgEl('circle', { r: '130', fill: 'url(#seal-grad)' }));
+      sg.appendChild(svgEl('circle', { r: '130', fill: 'url(#seal-highlight)' }));
+      sg.appendChild(svgEl('circle', { r: '124', fill: 'none', stroke: 'rgba(255,255,255,0.12)', 'stroke-width': '2' }));
+      sg.appendChild(svgEl('circle', { r: '118', fill: 'none', stroke: 'rgba(255,255,255,0.08)', 'stroke-width': '1' }));
+      sg.appendChild(svgEl('circle', { r: '100', fill: 'none', stroke: 'rgba(255,255,255,0.1)', 'stroke-width': '1' }));
 
-      // Glossy highlight overlay
-      sg.appendChild(svgEl('circle', {
-        r: '130', fill: 'url(#seal-highlight)',
-      }));
-
-      // Outer embossed rim
-      sg.appendChild(svgEl('circle', {
-        r: '124', fill: 'none', stroke: 'rgba(255,255,255,0.12)', 'stroke-width': '2',
-      }));
-      sg.appendChild(svgEl('circle', {
-        r: '118', fill: 'none', stroke: 'rgba(255,255,255,0.08)', 'stroke-width': '1',
-      }));
-
-      // Inner embossed rim
-      sg.appendChild(svgEl('circle', {
-        r: '100', fill: 'none', stroke: 'rgba(255,255,255,0.1)', 'stroke-width': '1',
-      }));
-
-      // Decorative dot border ring
       var dotCount = 48;
       for (var di = 0; di < dotCount; di++) {
         var angle = (di / dotCount) * Math.PI * 2;
@@ -1214,25 +1141,11 @@
         }));
       }
 
-      // Divider lines (embossed look)
-      sg.appendChild(svgEl('line', {
-        x1: '-85', y1: '-14', x2: '-35', y2: '-14',
-        stroke: 'rgba(255,255,255,0.12)', 'stroke-width': '1',
-      }));
-      sg.appendChild(svgEl('line', {
-        x1: '35', y1: '-14', x2: '85', y2: '-14',
-        stroke: 'rgba(255,255,255,0.12)', 'stroke-width': '1',
-      }));
-      sg.appendChild(svgEl('line', {
-        x1: '-85', y1: '24', x2: '-35', y2: '24',
-        stroke: 'rgba(255,255,255,0.12)', 'stroke-width': '1',
-      }));
-      sg.appendChild(svgEl('line', {
-        x1: '35', y1: '24', x2: '85', y2: '24',
-        stroke: 'rgba(255,255,255,0.12)', 'stroke-width': '1',
-      }));
+      sg.appendChild(svgEl('line', { x1: '-85', y1: '-14', x2: '-35', y2: '-14', stroke: 'rgba(255,255,255,0.12)', 'stroke-width': '1' }));
+      sg.appendChild(svgEl('line', { x1: '35', y1: '-14', x2: '85', y2: '-14', stroke: 'rgba(255,255,255,0.12)', 'stroke-width': '1' }));
+      sg.appendChild(svgEl('line', { x1: '-85', y1: '24', x2: '-35', y2: '24', stroke: 'rgba(255,255,255,0.12)', 'stroke-width': '1' }));
+      sg.appendChild(svgEl('line', { x1: '35', y1: '24', x2: '85', y2: '24', stroke: 'rgba(255,255,255,0.12)', 'stroke-width': '1' }));
 
-      // Stars
       [-62, 62].forEach(function (xOff) {
         var star = svgEl('text', {
           x: String(xOff), y: '-9', 'text-anchor': 'middle',
@@ -1242,42 +1155,36 @@
         sg.appendChild(star);
       });
 
-      // "CITY OF" text
       sg.appendChild(Object.assign(svgEl('text', {
         y: '-58', 'text-anchor': 'middle', fill: 'rgba(255,255,255,0.6)',
         'font-size': '10', 'font-family': 'DM Sans, sans-serif',
         'font-weight': '700', 'letter-spacing': '0.4em',
       }), { textContent: 'CITY OF' }));
 
-      // "ORANGE COUNTY"
       sg.appendChild(Object.assign(svgEl('text', {
         y: '-40', 'text-anchor': 'middle', fill: 'rgba(255,255,255,0.7)',
         'font-size': '13', 'font-family': 'DM Sans, sans-serif',
         'font-weight': '700', 'letter-spacing': '0.25em',
       }), { textContent: 'ORANGE COUNTY' }));
 
-      // "APPROVED" — hero text
       sg.appendChild(Object.assign(svgEl('text', {
         y: '14', 'text-anchor': 'middle', fill: 'rgba(255,255,255,0.95)',
         'font-size': '38', 'font-family': 'DM Serif Display, serif',
         'font-weight': '400', 'letter-spacing': '0.06em',
       }), { textContent: 'APPROVED' }));
 
-      // "BUILDING PERMIT"
       sg.appendChild(Object.assign(svgEl('text', {
         y: '46', 'text-anchor': 'middle', fill: 'rgba(255,255,255,0.6)',
         'font-size': '11', 'font-family': 'DM Sans, sans-serif',
         'font-weight': '600', 'letter-spacing': '0.3em',
       }), { textContent: 'BUILDING PERMIT' }));
 
-      // Permit number
       sg.appendChild(Object.assign(svgEl('text', {
         y: '66', 'text-anchor': 'middle', fill: 'rgba(255,255,255,0.35)',
         'font-size': '8', 'font-family': 'DM Sans, sans-serif',
         'letter-spacing': '0.12em',
       }), { textContent: 'NO. 2025-ADU-04782  \u2022  CALIFORNIA' }));
 
-      // Bottom text
       sg.appendChild(Object.assign(svgEl('text', {
         y: '82', 'text-anchor': 'middle', fill: 'rgba(255,255,255,0.3)',
         'font-size': '8', 'font-family': 'DM Sans, sans-serif',
@@ -1288,52 +1195,32 @@
     }
 
     fxEl.appendChild(stampSvg);
-    gsap.set(stampSvg, { opacity: 0 });
+    gsap.set(stampSvg, { opacity: 1 });
 
+    // Position above — scrub will bring it down
     var sg = stampSvg._stamp;
-
-    // Start: seal above viewport, large, rotated
     sg.setAttribute('transform', 'translate(250,-200) rotate(-8) scale(2.5)');
-
-    stampTl = gsap.timeline();
-
-    // Fade in background
-    stampTl.to(stampSvg, { opacity: 1, duration: 0.15 }, 0);
-
-    // Seal presses down with authority — heavy, not bouncy
-    stampTl.to(sg, {
-      attr: { transform: 'translate(250,250) rotate(-4) scale(1)' },
-      duration: 0.55, ease: 'power4.out',
-    }, 0.05);
-
-    // Brief compression squash on impact
-    stampTl.to(sg, {
-      attr: { transform: 'translate(250,252) rotate(-4) scale(1.03,0.97)' },
-      duration: 0.08, ease: 'power2.in',
-    }, 0.58);
-
-    // Settle back to rest
-    stampTl.to(sg, {
-      attr: { transform: 'translate(250,250) rotate(-4) scale(1)' },
-      duration: 0.3, ease: 'power2.out',
-    }, 0.66);
-
-    // Subtle screen shake on impact
-    stampTl.fromTo(fxEl,
-      { x: 0, y: 0 },
-      {
-        x: 3, y: -2, duration: 0.04, yoyo: true, repeat: 3,
-        ease: 'none',
-        onComplete: function () { gsap.set(fxEl, { x: 0, y: 0 }); },
-      },
-    0.58);
   }
 
-  function hideStamp() {
-    if (stampTl) { stampTl.kill(); stampTl = null; }
+  function scrubStamp(subP) {
+    if (!stampSvg || !stampSvg._stamp) return;
+    var sg = stampSvg._stamp;
+    var t = smoothstep(subP);
+
+    // Interpolate from above viewport to center
+    var y = -200 + 450 * t;
+    var rot = -8 + 4 * t;
+    var scale = 2.5 - 1.5 * t;
+
+    sg.setAttribute('transform',
+      'translate(250,' + y.toFixed(0) + ') rotate(' + rot.toFixed(1) + ') scale(' + scale.toFixed(3) + ')'
+    );
+  }
+
+  function cleanupStamp() {
     if (stampSvg && stampSvg.parentElement) {
       gsap.to(stampSvg, {
-        opacity: 0, duration: 0.35,
+        opacity: 0, duration: 0.3,
         onComplete: function () {
           if (stampSvg.parentElement) stampSvg.parentElement.removeChild(stampSvg);
         },
@@ -1342,72 +1229,14 @@
     if (fxEl) gsap.set(fxEl, { x: 0, y: 0 });
   }
 
-  // ── Step 5: Construction — Building Animation ──
-  var constructionTl = null;
-
-  function showConstruction() {
+  // ── Step 5: Construction — Scrub-Driven Building ──
+  function prepareConstruction() {
     if (!canvasEl || !camera) return;
 
-    // Kill any previous construction timeline
-    if (constructionTl) { constructionTl.kill(); constructionTl = null; }
-
-    // Reset ALL groups to invisible first
+    // Reset all groups to invisible
     setGroupsVisible(false);
-    // Reset all materials to fully opaque
-    aduGroups.openings.traverse(function (obj) {
-      if (obj.isMesh && obj.material) {
-        obj.material.transparent = false;
-        obj.material.opacity = 1;
-        obj.material.needsUpdate = true;
-      }
-    });
-    // Reset furniture scales
-    aduGroups.furniture.children.forEach(function (piece) {
-      piece.scale.set(1, 1, 1);
-    });
-    // Reset positions
-    aduGroups.foundation.position.y = 0;
-    aduGroups.walls.scale.set(1, 1, 1);
-    aduGroups.roof.position.y = 0;
 
-    gsap.to(canvasEl, { opacity: 1, duration: 0.5 });
-
-    // Camera wider angle — pulled back for full building view
-    gsap.to(camera.position, {
-      x: CX - 20, y: 50, z: ADU_D + 50,
-      duration: 1.2, ease: 'power2.inOut',
-      onUpdate: function () {
-        camera.lookAt(CX, 2, CZ);
-        markDirty();
-      },
-    });
-
-    // Sequential build animation
-    constructionTl = gsap.timeline({ delay: 0.3 });
-
-    // Foundation rises
-    aduGroups.foundation.position.y = -2;
-    aduGroups.foundation.visible = true;
-    constructionTl.to(aduGroups.foundation.position, {
-      y: 0, duration: 0.8, ease: 'power2.out', onUpdate: markDirty,
-    }, 0);
-
-    // Floors appear
-    aduGroups.floors.visible = true;
-    aduGroups.floors.scale.y = 0;
-    constructionTl.to(aduGroups.floors.scale, {
-      y: 1, duration: 0.4, ease: 'power2.out', onUpdate: markDirty,
-    }, 0.5);
-
-    // Walls rise from ground
-    aduGroups.walls.visible = true;
-    aduGroups.walls.scale.y = 0;
-    constructionTl.to(aduGroups.walls.scale, {
-      y: 1, duration: 1.2, ease: 'power2.out', onUpdate: markDirty,
-    }, 0.8);
-
-    // Doors + windows fade in
-    aduGroups.openings.visible = true;
+    // Reset material states
     aduGroups.openings.traverse(function (obj) {
       if (obj.isMesh && obj.material) {
         obj.material.transparent = true;
@@ -1415,110 +1244,135 @@
         obj.material.needsUpdate = true;
       }
     });
-    constructionTl.add(function () {
-      aduGroups.openings.traverse(function (obj) {
-        if (obj.isMesh && obj.material) {
-          gsap.to(obj.material, {
-            opacity: 1, duration: 0.8, onUpdate: markDirty,
-          });
-        }
-      });
-    }, 2.0);
 
-    // Furniture fades in piece by piece
-    aduGroups.furniture.visible = true;
-    aduGroups.furniture.children.forEach(function (piece, i) {
+    // Reset positions and scales
+    aduGroups.foundation.position.y = -2;
+    aduGroups.floors.scale.y = 0;
+    aduGroups.walls.scale.set(1, 0, 1);
+    aduGroups.furniture.children.forEach(function (piece) {
       piece.scale.set(0, 0, 0);
-      constructionTl.to(piece.scale, {
-        x: 1, y: 1, z: 1, duration: 0.5,
-        ease: 'back.out(1.5)', onUpdate: markDirty,
-      }, 2.5 + i * 0.12);
     });
 
-    // Roof descends
-    aduGroups.roof.visible = true;
-    aduGroups.roof.position.y = 10;
-    constructionTl.to(aduGroups.roof.position, {
-      y: 0, duration: 1.0, ease: 'power3.out', onUpdate: markDirty,
-    }, 3.5);
+    // Camera: wide angle for full building view
+    camera.position.set(CX - 20, 50, ADU_D + 50);
+    camera.lookAt(CX, 2, CZ);
+    gsap.to(canvasEl, { opacity: 1, duration: 0.5, overwrite: 'auto' });
+    markDirty();
   }
 
-  function hideConstruction() {
-    if (constructionTl) { constructionTl.kill(); constructionTl = null; }
-    if (canvasEl) gsap.to(canvasEl, { opacity: 0, duration: 0.3 });
+  function scrubConstruction(subP) {
+    if (!aduGroups.foundation) return;
+
+    // Foundation: 0% – 15%
+    var foundP = smoothstep(remap(subP, 0, 0.15));
+    aduGroups.foundation.visible = subP > 0.01;
+    aduGroups.foundation.position.y = -2 + 2 * foundP;
+
+    // Floors: 10% – 25%
+    var floorP = smoothstep(remap(subP, 0.10, 0.25));
+    aduGroups.floors.visible = subP > 0.08;
+    aduGroups.floors.scale.y = floorP;
+
+    // Walls: 20% – 55%
+    var wallP = smoothstep(remap(subP, 0.20, 0.55));
+    aduGroups.walls.visible = subP > 0.18;
+    aduGroups.walls.scale.y = wallP;
+
+    // Openings (doors/windows): 45% – 65%
+    var openP = remap(subP, 0.45, 0.65);
+    aduGroups.openings.visible = subP > 0.42;
+    aduGroups.openings.traverse(function (obj) {
+      if (obj.isMesh && obj.material) {
+        obj.material.opacity = openP;
+        obj.material.needsUpdate = true;
+      }
+    });
+
+    // Furniture: 60% – 100% (staggered per piece)
+    var count = aduGroups.furniture.children.length;
+    aduGroups.furniture.visible = subP > 0.55;
+    aduGroups.furniture.children.forEach(function (piece, i) {
+      var pieceStart = 0.60 + (i / count) * 0.25;
+      var pieceP = remap(subP, pieceStart, pieceStart + 0.12);
+      var s = easeOutBack(pieceP);
+      piece.scale.set(s, s, s);
+    });
+
+    markDirty();
   }
 
-  // ── Step 6: Warm Glow ──
-  function showWarmGlow() {
+  function cleanupConstruction() {
+    // Canvas opacity managed by next step's prepare
+  }
+
+  // ── Step 6: Warm Glow (scrub-driven) ──
+  function prepareWarmGlow() {
     if (!canvasEl || !camera) return;
 
-    // Ensure all groups visible and materials reset
+    // Ensure full model visible with solid materials
     setGroupsVisible(true);
     aduGroups.openings.traverse(function (obj) {
       if (obj.isMesh && obj.material) {
         obj.material.transparent = true;
-        obj.material.opacity = obj.material.opacity || 1;
+        obj.material.opacity = 1;
         obj.material.needsUpdate = true;
       }
     });
-    // Reset furniture/wall positions in case coming from construction
     aduGroups.foundation.position.y = 0;
     aduGroups.walls.scale.set(1, 1, 1);
-    aduGroups.roof.position.y = 0;
     aduGroups.furniture.children.forEach(function (p) { p.scale.set(1, 1, 1); });
 
-    gsap.to(canvasEl, { opacity: 1, duration: 0.8, ease: 'power2.out' });
+    // Reset interior light
+    var light = aduGroups.interior.userData.light;
+    if (light) light.intensity = 0;
 
-    // Camera pulls back to hero angle — warm evening view
-    gsap.to(camera.position, {
-      x: CX + 10, y: 32, z: ADU_D + 40,
-      duration: 2.5, ease: 'power2.inOut',
-      onUpdate: function () {
-        camera.lookAt(CX, 3, CZ);
-        markDirty();
-      },
-    });
+    gsap.to(canvasEl, { opacity: 1, duration: 0.6, overwrite: 'auto' });
+    markDirty();
+  }
+
+  function scrubWarmGlow(subP) {
+    if (!camera) return;
+    var t = smoothstep(subP);
+
+    // Camera pulls to hero angle
+    camera.position.set(
+      CX - 20 + 30 * t,
+      50 - 18 * t,
+      ADU_D + 50 - 10 * t
+    );
+    camera.lookAt(CX, 3, CZ);
 
     // Interior light warms up
     var light = aduGroups.interior.userData.light;
-    if (light) {
-      gsap.to(light, {
-        intensity: 300, duration: 2.5, ease: 'power2.inOut',
-        onUpdate: markDirty,
-      });
-    }
+    if (light) light.intensity = t * 300;
 
-    // Window glass goes warm golden
+    // Window glass warms to golden
     aduGroups.openings.traverse(function (obj) {
       if (obj.isMesh && obj.material && obj.material.transparent) {
-        gsap.to(obj.material.color, {
-          r: 1, g: 0.9, b: 0.5, duration: 2.5,
-          ease: 'power2.inOut', onUpdate: markDirty,
-        });
-        gsap.to(obj.material, {
-          opacity: 0.6, duration: 2.5,
-          onUpdate: markDirty,
-        });
+        obj.material.color.setRGB(
+          0.529 + (1 - 0.529) * t,
+          0.808 + (0.9 - 0.808) * t,
+          0.922 + (0.5 - 0.922) * t
+        );
+        obj.material.opacity = 0.3 + 0.3 * t;
+        obj.material.needsUpdate = true;
       }
     });
+
+    markDirty();
   }
 
-  function hideWarmGlow() {
-    // Reset interior light
+  function cleanupWarmGlow() {
     var light = aduGroups.interior.userData.light;
-    if (light) gsap.to(light, { intensity: 0, duration: 0.3, onUpdate: markDirty });
-
-    // Reset window glass
+    if (light) light.intensity = 0;
     aduGroups.openings.traverse(function (obj) {
       if (obj.isMesh && obj.material && obj.material.transparent) {
-        gsap.to(obj.material.color, {
-          r: 0.529, g: 0.808, b: 0.922, duration: 0.3, onUpdate: markDirty,
-        });
-        gsap.to(obj.material, { opacity: 0.3, duration: 0.3, onUpdate: markDirty });
+        obj.material.color.setRGB(0.529, 0.808, 0.922);
+        obj.material.opacity = 0.3;
+        obj.material.needsUpdate = true;
       }
     });
-
-    if (canvasEl) gsap.to(canvasEl, { opacity: 0, duration: 0.3 });
+    markDirty();
   }
 
   function setGroupsVisible(visible) {
@@ -1567,10 +1421,13 @@
       setGroupsVisible(false);
     }
 
-    // Trigger first step visual
-    triggerStepVisual(0, -1);
+    // Initialize first step visual
+    activeVisual = 0;
+    prepareVisual(0);
 
     if (!isMobile) {
+      var stepFrac = 1 / (totalSteps - 1);
+
       // Scroll-lock: pin the section and scrub through steps
       ScrollTrigger.create({
         trigger: pinned,
@@ -1585,10 +1442,34 @@
           ease: 'power2.inOut',
         },
         onUpdate: function (self) {
-          var step = Math.round(self.progress * (totalSteps - 1));
+          var progress = self.progress;
+          var step = Math.round(progress * (totalSteps - 1));
           step = Math.max(0, Math.min(totalSteps - 1, step));
+
+          // Card transitions
           transitionToStep(cards, step, navEl);
-          updateProgressBar(navEl, self.progress);
+          updateProgressBar(navEl, progress);
+
+          // Sub-progress: how far into this step's scroll-driven animation
+          // Animation plays from midpoint (where step switches) to snap position
+          var subP;
+          if (step === 0) {
+            subP = 1; // step 0 auto-plays on enter, always "complete"
+          } else {
+            var midpoint = (step - 0.5) * stepFrac;
+            var snapPos = step * stepFrac;
+            subP = Math.max(0, Math.min(1, (progress - midpoint) / (snapPos - midpoint)));
+          }
+
+          // Switch visual mode when step changes
+          if (step !== activeVisual) {
+            cleanupVisual(activeVisual);
+            prepareVisual(step);
+            activeVisual = step;
+          }
+
+          // Scrub the current step's animation
+          scrubVisual(step, subP);
         },
       });
     }
