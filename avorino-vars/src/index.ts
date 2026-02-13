@@ -582,23 +582,24 @@ async function buildAboutPage() {
     'overflow-x': 'hidden', 'overflow-y': 'hidden',
   });
   await clearAndSet(await freshStyle('about-process-visual'), 'about-process-visual', {
-    'width': '55%', 'height': '100%', 'position': 'relative',
+    'width': '100%', 'height': '100%', 'position': 'relative',
   });
   await clearAndSet(await freshStyle('about-process-fx'), 'about-process-fx', {
     'position': 'absolute', 'top': '0px', 'left': '0px',
     'width': '100%', 'height': '100%',
   });
   await clearAndSet(await freshStyle('about-process-cards'), 'about-process-cards', {
-    'width': '45%', 'height': '100%', 'display': 'flex',
-    'align-items': 'center', 'justify-content': 'center', 'position': 'relative',
+    'position': 'absolute', 'top': '0px', 'left': '0px',
+    'width': '100%', 'height': '100%', 'z-index': '2',
   });
   await clearAndSet(await freshStyle('about-process-card'), 'about-process-card', {
     'position': 'absolute', 'background-color': v['av-dark'], 'color': v['av-cream'],
     'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
     'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
-    'padding-top': '48px', 'padding-bottom': '48px',
-    'padding-left': '40px', 'padding-right': '40px',
-    'max-width': '420px', 'width': '100%',
+    'padding-top': '56px', 'padding-bottom': '56px',
+    'padding-left': '48px', 'padding-right': '48px',
+    'max-width': '500px', 'width': '100%',
+    'top': '50%', 'left': '50%',
   });
   await clearAndSet(await freshStyle('about-process-nav'), 'about-process-nav', {
     'position': 'absolute', 'bottom': '32px', 'left': '0px',
@@ -611,8 +612,8 @@ async function buildAboutPage() {
     'color': v['av-cream'],
   });
   await clearAndSet(await freshStyle('about-process-card-title'), 'about-process-card-title', {
-    'font-family': 'DM Serif Display', 'font-size': '24px',
-    'line-height': '1.2', 'font-weight': '400', 'margin-bottom': '12px',
+    'font-family': 'DM Serif Display', 'font-size': '28px',
+    'line-height': '1.2', 'font-weight': '400', 'margin-bottom': '14px',
     'color': v['av-cream'],
   });
   await clearAndSet(await freshStyle('about-process-card-desc'), 'about-process-card-desc', {

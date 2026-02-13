@@ -54,19 +54,19 @@
     ]},
     // Exterior north — REMOVED (cutaway: lets camera see inside)
     // Exterior west — REMOVED (cutaway: lets camera see inside)
-    // Interior horizontal at z=12
-    { s:[0,12], e:[8,12], interior:true, opens:[
+    // Interior horizontal at z=12 (behind bed/bath — semi-transparent for visibility)
+    { s:[0,12], e:[8,12], interior:true, semiTrans:true, opens:[
       { type:'door', pos:0.44, w:DOOR_W, h:DOOR_H, sill:0 },
     ]},
-    { s:[8,12], e:[15,12], interior:true, opens:[
+    { s:[8,12], e:[15,12], interior:true, semiTrans:true, opens:[
       { type:'door', pos:0.57, w:DOOR_W, h:DOOR_H, sill:0 },
     ]},
-    { s:[15,12], e:[30,12], interior:true, opens:[] },
+    { s:[15,12], e:[30,12], interior:true, semiTrans:true, opens:[] },
     // Interior vertical
     { s:[15,0], e:[15,12], interior:true, opens:[
       { type:'door', pos:0.50, w:DOOR_W, h:DOOR_H, sill:0 },
     ]},
-    { s:[8,12], e:[8,20], interior:true, opens:[] },
+    { s:[8,12], e:[8,20], interior:true, semiTrans:true, opens:[] },
   ];
 
   var roomDefs = [
@@ -79,19 +79,21 @@
   var furnitureDefs = [
     // Bedroom
     { type:'bed',        x:19,   z:16,   w:5,   d:6.5, rot:0 },
-    { type:'nightstand', x:14.5, z:14.5, w:1.5, d:1.5, rot:0 },
+    { type:'nightstand', x:22.5, z:13.5, w:1.5, d:1.5, rot:0 },  // right of bed, against back wall
+    { type:'rug',        x:19,   z:16,   w:6.5, d:5,   rot:0, color:0x6B7B8D },  // muted blue-gray bedroom rug
     // Living
     { type:'sofa',         x:7,   z:8,   w:7,   d:3,   rot:0 },
     { type:'coffee_table', x:7,   z:4.5, w:3.5, d:2,   rot:0 },
+    { type:'rug',          x:7,   z:6,   w:9,   d:6,   rot:0, color:0x8B5E3C },  // warm brown living rug
     // Kitchen
     { type:'counter',      x:28,  z:6,   w:2,   d:10,  rot:0 },
     { type:'stove',        x:22,  z:1.2, w:2.5, d:2,   rot:0 },
     { type:'fridge',       x:18,  z:1.2, w:2.5, d:2.5, rot:0 },
     { type:'dining_table', x:21,  z:8,   w:4,   d:3,   rot:0 },
-    // Bathroom
-    { type:'toilet',  x:2,   z:14.5, w:1.5, d:2,   rot:0 },
-    { type:'sink',    x:5.5, z:13.5, w:2,   d:1.5, rot:0 },
-    { type:'bathtub', x:4,   z:18,   w:5,   d:2.5, rot:0 },
+    // Bathroom — flush against walls
+    { type:'toilet',  x:7,   z:17,    w:1.5, d:2,   rot:-90 },  // flush against east wall (x=8)
+    { type:'sink',    x:5.5, z:12.8,  w:2,   d:1.5, rot:0 },    // flush against south wall (z=12)
+    { type:'bathtub', x:4,   z:18.75, w:5,   d:2.5, rot:180 },  // flush against north edge
   ];
 
   /* ═══════════════════════════════════════════════
@@ -204,6 +206,10 @@
      ═══════════════════════════════════════════════ */
   var wallMatExt = new THREE.MeshStandardMaterial({ color: 0xEDE8E0, roughness: 0.82 });
   var wallMatInt = new THREE.MeshStandardMaterial({ color: 0xF8F5F0, roughness: 0.92 });
+  var wallMatTrans = new THREE.MeshStandardMaterial({
+    color: 0xF8F5F0, roughness: 0.92,
+    transparent: true, opacity: 0.35, depthWrite: false,
+  });
 
   // ── Foundation slab ──
   function buildFoundation() {
@@ -249,7 +255,7 @@
       var dx = ex - sx, dz = ez - sz;
       var length = Math.sqrt(dx * dx + dz * dz);
       var angle = Math.atan2(dz, dx);
-      var wMat = wall.interior ? wallMatInt : wallMatExt;
+      var wMat = wall.semiTrans ? wallMatTrans : (wall.interior ? wallMatInt : wallMatExt);
 
       if (!wall.opens || wall.opens.length === 0) {
         // Simple wall — no openings
@@ -438,6 +444,31 @@
     );
     sillMesh.position.set(localX, sill - 0.05, WALL_T * 0.5 + 0.15);
     parent.add(sillMesh);
+
+    // Shutters (left + right panels with louver detail)
+    var shutterMat = new THREE.MeshStandardMaterial({ color: 0x3D5C4A, roughness: 0.75 });
+    var shutterW = w * 0.38;
+    var shutterH = h + 0.1;
+    var shutterGeo = new THREE.BoxGeometry(shutterW, shutterH, 0.12);
+    var louverMat = new THREE.MeshStandardMaterial({ color: 0x2E4A38, roughness: 0.8 });
+
+    [-1, 1].forEach(function (side) {
+      var shutter = new THREE.Mesh(shutterGeo, shutterMat);
+      shutter.position.set(localX + side * (w / 2 + shutterW / 2 + 0.05), sill + h / 2, WALL_T * 0.5 + 0.06);
+      shutter.castShadow = true;
+      parent.add(shutter);
+
+      // Louver lines (4 horizontal grooves)
+      for (var li = 0; li < 4; li++) {
+        var louver = new THREE.Mesh(
+          new THREE.BoxGeometry(shutterW * 0.85, 0.06, 0.14),
+          louverMat
+        );
+        var ly = sill + h * 0.2 + (li / 3) * h * 0.6;
+        louver.position.set(localX + side * (w / 2 + shutterW / 2 + 0.05), ly, WALL_T * 0.5 + 0.06);
+        parent.add(louver);
+      }
+    });
   }
 
   // ── Furniture (enhanced multi-box compositions) ──
@@ -460,6 +491,7 @@
         case 'toilet': buildToilet(piece, f.w, f.d); break;
         case 'sink': buildSink(piece, f.w, f.d); break;
         case 'bathtub': buildBathtub(piece, f.w, f.d); break;
+        case 'rug': buildRug(piece, f.w, f.d, f.color); break;
       }
 
       g.add(piece);
@@ -654,13 +686,37 @@
     g.add(inner);
   }
 
+  function buildRug(g, w, d, color) {
+    var rugMat = mat(color || 0x8B5E3C, 0.95);
+    var rug = box(w, 0.06, d, rugMat);
+    rug.position.y = 0.04;
+    rug.receiveShadow = true;
+    g.add(rug);
+    // Subtle border/fringe
+    var borderMat = mat((color || 0x8B5E3C) - 0x111111, 0.9);
+    var border = box(w + 0.3, 0.04, d + 0.3, borderMat);
+    border.position.y = 0.02;
+    border.receiveShadow = true;
+    g.add(border);
+  }
+
   // ── Interior lights (for warm glow in step 6) ──
   function buildInteriorLights() {
     var g = new THREE.Group();
-    var light = new THREE.PointLight(0xFFD699, 0, 25, 2);
-    light.position.set(CX, WALL_H - 1, CZ);
-    g.add(light);
-    g.userData.light = light;
+    // Per-room point lights for warm glow effect
+    var living = new THREE.PointLight(0xFFD699, 0, 22, 2);
+    living.position.set(7.5, WALL_H - 2, 6);
+    g.add(living);
+    var kitchen = new THREE.PointLight(0xFFF0D0, 0, 22, 2);
+    kitchen.position.set(22.5, WALL_H - 2, 6);
+    g.add(kitchen);
+    var bedroom = new THREE.PointLight(0xFFE4B5, 0, 22, 2);
+    bedroom.position.set(19, WALL_H - 2, 16);
+    g.add(bedroom);
+    var bathroom = new THREE.PointLight(0xFFF5EE, 0, 18, 2);
+    bathroom.position.set(4, WALL_H - 2, 16);
+    g.add(bathroom);
+    g.userData.lights = [living, kitchen, bedroom, bathroom];
     return g;
   }
 
@@ -713,80 +769,120 @@
      CARD TRANSITIONS
      ═══════════════════════════════════════════════ */
   var currentStep = -1;
+  var step5CardShown = false;
 
-  // Card layout variations — alternating positions + entrance directions
-  var cardLayouts = [
-    { offsetY: 0,   enterX: 0,   enterY: 60,  enterRot: 0   },  // center, rises
-    { offsetY: -50, enterX: 80,  enterY: 0,   enterRot: 2   },  // higher, from right
-    { offsetY: 30,  enterX: 0,   enterY: 60,  enterRot: 0   },  // lower, rises
-    { offsetY: -40, enterX: -60, enterY: 20,  enterRot: -2  },  // higher, from left
-    { offsetY: 20,  enterX: 60,  enterY: 20,  enterRot: 1   },  // lower, from right
-    { offsetY: -30, enterX: 0,   enterY: -60, enterRot: 0   },  // higher, descends
+  // Card positions — alternating left/right on full-width canvas
+  var cardPositions = [
+    { side: 'left',   enterFrom: 'left' },    // 0: Pre-construction
+    { side: 'right',  enterFrom: 'right' },    // 1: Design
+    { side: 'center', enterFrom: 'below' },    // 2: Financing
+    { side: 'left',   enterFrom: 'left' },     // 3: Permitting
+    { side: 'center', enterFrom: 'below', delayed: true },  // 4: Construction
+    { side: 'right',  enterFrom: 'right' },    // 5: Post-construction
   ];
 
-  // Text stagger timing per child element (step num, title, description)
-  var textAnims = [
-    { fromY: 10, dur: 0.4, delay: 0.15 },
-    { fromY: 25, dur: 0.7, delay: 0.25 },
-    { fromY: 15, dur: 0.6, delay: 0.40 },
-  ];
+  function getSideOffset() {
+    var el = document.querySelector('[data-process-pinned]');
+    var cw = el ? el.clientWidth : window.innerWidth;
+    var cardW = 500;
+    var margin = Math.max(60, cw * 0.06);
+    return (cw / 2) - (cardW / 2) - margin;
+  }
+
+  function getCardX(pos) {
+    var offset = getSideOffset();
+    if (pos.side === 'left') return -offset;
+    if (pos.side === 'right') return offset;
+    return 0;
+  }
 
   function transitionToStep(cards, idx, navEl) {
     if (idx === currentStep) return;
     var prevIdx = currentStep;
     currentStep = idx;
+    step5CardShown = false;
 
-    var layout = cardLayouts[idx] || cardLayouts[0];
+    var pos = cardPositions[idx];
+    var targetX = getCardX(pos);
 
     cards.forEach(function (card, i) {
       if (i === idx) {
+        // Skip card entrance for delayed steps (step 5 — shows after build)
+        if (pos.delayed) {
+          gsap.set(card, { opacity: 0, xPercent: -50, yPercent: -50, x: 0, y: 0 });
+          return;
+        }
+
         // Reset children for stagger entrance
         var ch = card.children;
         for (var c = 0; c < ch.length; c++) {
-          var ta = textAnims[c] || textAnims[textAnims.length - 1];
-          gsap.set(ch[c], { opacity: 0, y: ta.fromY });
+          gsap.set(ch[c], { opacity: 0, y: 15 });
         }
 
-        // Card entrance from layout-specific direction
+        // Entrance from direction matching card side
+        var enterX = targetX;
+        var enterY = 0;
+        if (pos.enterFrom === 'left') enterX -= 100;
+        else if (pos.enterFrom === 'right') enterX += 100;
+        else if (pos.enterFrom === 'below') enterY = 70;
+
         gsap.set(card, {
-          opacity: 0,
-          x: layout.enterX,
-          y: layout.offsetY + layout.enterY,
-          scale: 0.96,
-          rotation: layout.enterRot,
+          opacity: 0, xPercent: -50, yPercent: -50,
+          x: enterX, y: enterY, scale: 0.96,
         });
 
         gsap.to(card, {
-          opacity: 1, x: 0, y: layout.offsetY,
-          scale: 1, rotation: 0,
-          duration: 0.8, ease: 'expo.out', overwrite: true,
+          opacity: 1, x: targetX, y: 0,
+          scale: 1, duration: 0.8, ease: 'expo.out', overwrite: true,
         });
 
-        // Text stagger — each child element animates in sequentially
+        // Text stagger
         for (var c = 0; c < ch.length; c++) {
-          var ta = textAnims[c] || textAnims[textAnims.length - 1];
           gsap.to(ch[c], {
             opacity: 1, y: 0,
-            duration: ta.dur, ease: 'power3.out',
-            delay: ta.delay,
+            duration: 0.5, ease: 'power3.out',
+            delay: 0.15 + c * 0.12,
           });
         }
       } else if (i === prevIdx) {
-        // Exit: slide out in opposite direction with slight shrink
-        var prevLayout = cardLayouts[i] || cardLayouts[0];
+        // Exit animation
         var exitDir = i < idx ? -1 : 1;
         gsap.to(card, {
-          opacity: 0,
-          y: prevLayout.offsetY + exitDir * 40,
-          scale: 0.97,
-          duration: 0.5, ease: 'power3.in', overwrite: true,
+          opacity: 0, y: exitDir * 40,
+          scale: 0.97, duration: 0.5, ease: 'power3.in', overwrite: true,
         });
       } else {
-        gsap.set(card, { opacity: 0, y: 40 });
+        gsap.set(card, { opacity: 0, xPercent: -50, yPercent: -50 });
       }
     });
 
     updateNavDots(navEl, idx);
+  }
+
+  // Show step 5 card after construction build completes
+  function showStep5Card() {
+    var cards = document.querySelectorAll('[data-process-card]');
+    var card = cards[4];
+    if (!card) return;
+
+    var ch = card.children;
+    for (var c = 0; c < ch.length; c++) {
+      gsap.set(ch[c], { opacity: 0, y: 15 });
+    }
+
+    gsap.to(card, {
+      opacity: 1, x: 0, y: 0,
+      xPercent: -50, yPercent: -50,
+      scale: 1, duration: 0.9, ease: 'expo.out',
+    });
+
+    for (var c = 0; c < ch.length; c++) {
+      gsap.to(ch[c], {
+        opacity: 1, y: 0,
+        duration: 0.5, ease: 'power3.out',
+        delay: 0.2 + c * 0.12,
+      });
+    }
   }
 
   /* ═══════════════════════════════════════════════
@@ -795,7 +891,6 @@
      ═══════════════════════════════════════════════ */
   var canvasEl = null;
   var fxEl = null;
-  var blueprintSvg = null;
   var moneyCanvas = null;
   var stampSvg = null;
   var moneyAnimId = null;
@@ -854,150 +949,80 @@
     }
   }
 
-  // ── Step 1: Blueprint Line Drawing (auto-play on enter) ──
+  // ── Step 1: 3D Blueprint View (overhead → descending reveal) ──
+  var bpMatSolid = null;
+  var bpMatFloor = null;
+
   function prepareBlueprint() {
-    if (!fxEl) return;
-    if (canvasEl) gsap.set(canvasEl, { opacity: 0 });
+    if (!canvasEl || !camera) return;
 
-    if (!blueprintSvg) {
-      blueprintSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      blueprintSvg.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;';
-      blueprintSvg.setAttribute('viewBox', '0 0 400 300');
-      blueprintSvg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-
-      var defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-      var pattern = document.createElementNS('http://www.w3.org/2000/svg', 'pattern');
-      pattern.setAttribute('id', 'bp-grid');
-      pattern.setAttribute('width', '20');
-      pattern.setAttribute('height', '20');
-      pattern.setAttribute('patternUnits', 'userSpaceOnUse');
-      var dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      dot.setAttribute('cx', '10');
-      dot.setAttribute('cy', '10');
-      dot.setAttribute('r', '0.8');
-      dot.setAttribute('fill', 'rgba(200,200,220,0.3)');
-      pattern.appendChild(dot);
-      defs.appendChild(pattern);
-      blueprintSvg.appendChild(defs);
-
-      var bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      bg.setAttribute('width', '400');
-      bg.setAttribute('height', '300');
-      bg.setAttribute('fill', 'url(#bp-grid)');
-      blueprintSvg.appendChild(bg);
-
-      var ox = 50, oy = 50, sc = 10;
-      var lines = [
-        [0,0,15,0],[15,0,30,0],[30,0,30,12],[30,12,30,20],
-        [30,20,8,20],[8,20,0,20],[0,20,0,12],[0,12,0,0],
-        [0,12,8,12],[8,12,15,12],[15,12,30,12],
-        [15,0,15,12],[8,12,8,20],
-      ];
-
-      var labels = [
-        { text: 'LIVING', x: 7.5, y: 6 },
-        { text: 'KITCHEN', x: 22.5, y: 6 },
-        { text: 'BEDROOM', x: 19, y: 16 },
-        { text: 'BATH', x: 4, y: 16 },
-      ];
-
-      var dims = [
-        { text: "30'", x1: 0, y1: -1.5, x2: 30, y2: -1.5 },
-        { text: "20'", x1: -1.5, y1: 0, x2: -1.5, y2: 20 },
-      ];
-
-      var allPaths = [];
-
-      lines.forEach(function (l) {
-        var path = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        path.setAttribute('x1', String(ox + l[0] * sc));
-        path.setAttribute('y1', String(oy + l[1] * sc));
-        path.setAttribute('x2', String(ox + l[2] * sc));
-        path.setAttribute('y2', String(oy + l[3] * sc));
-        path.setAttribute('stroke', 'rgba(220,225,240,0.9)');
-        path.setAttribute('stroke-width', '1.5');
-        var len = Math.sqrt(Math.pow((l[2] - l[0]) * sc, 2) + Math.pow((l[3] - l[1]) * sc, 2));
-        path.setAttribute('stroke-dasharray', String(len));
-        path.setAttribute('stroke-dashoffset', String(len));
-        blueprintSvg.appendChild(path);
-        allPaths.push({ el: path, len: len });
+    // Create blueprint materials on first use
+    if (!bpMatSolid) {
+      bpMatSolid = new THREE.MeshStandardMaterial({
+        color: 0x3377BB, roughness: 0.95, transparent: true, opacity: 0.85,
       });
-
-      labels.forEach(function (lb) {
-        var txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        txt.setAttribute('x', String(ox + lb.x * sc));
-        txt.setAttribute('y', String(oy + lb.y * sc));
-        txt.setAttribute('text-anchor', 'middle');
-        txt.setAttribute('fill', 'rgba(200,200,220,0.6)');
-        txt.setAttribute('font-size', '9');
-        txt.setAttribute('font-family', 'DM Sans, sans-serif');
-        txt.setAttribute('letter-spacing', '0.15em');
-        txt.setAttribute('opacity', '0');
-        txt.textContent = lb.text;
-        blueprintSvg.appendChild(txt);
-        allPaths.push({ el: txt, isText: true });
+      bpMatFloor = new THREE.MeshStandardMaterial({
+        color: 0x5599DD, roughness: 0.95, transparent: true, opacity: 0.55,
       });
-
-      dims.forEach(function (dm) {
-        var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line.setAttribute('x1', String(ox + dm.x1 * sc));
-        line.setAttribute('y1', String(oy + dm.y1 * sc));
-        line.setAttribute('x2', String(ox + dm.x2 * sc));
-        line.setAttribute('y2', String(oy + dm.y2 * sc));
-        line.setAttribute('stroke', 'rgba(200,34,42,0.4)');
-        line.setAttribute('stroke-width', '0.5');
-        line.setAttribute('opacity', '0');
-        blueprintSvg.appendChild(line);
-
-        var txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        txt.setAttribute('x', String(ox + (dm.x1 + dm.x2) / 2 * sc));
-        txt.setAttribute('y', String(oy + (dm.y1 + dm.y2) / 2 * sc - 3));
-        txt.setAttribute('text-anchor', 'middle');
-        txt.setAttribute('fill', 'rgba(200,34,42,0.6)');
-        txt.setAttribute('font-size', '8');
-        txt.setAttribute('font-family', 'DM Sans, sans-serif');
-        txt.setAttribute('opacity', '0');
-        txt.textContent = dm.text;
-        blueprintSvg.appendChild(txt);
-        allPaths.push({ el: line, isText: true });
-        allPaths.push({ el: txt, isText: true });
-      });
-
-      blueprintSvg._paths = allPaths;
     }
 
-    fxEl.appendChild(blueprintSvg);
-    gsap.set(blueprintSvg, { opacity: 0 });
-    gsap.to(blueprintSvg, { opacity: 1, duration: 0.5 });
-
-    // Auto-play line drawing (step 0 has no scroll-into)
-    var paths = blueprintSvg._paths;
-    paths.forEach(function (p, i) {
-      if (p.isText) {
-        gsap.to(p.el, { opacity: 1, duration: 0.6, delay: 0.8 + i * 0.05 });
-      } else {
-        gsap.to(p.el, {
-          strokeDashoffset: 0, duration: 1.0,
-          delay: i * 0.08, ease: 'power2.inOut',
-        });
+    // Show the COMPLETE model
+    setGroupsVisible(true);
+    aduGroups.foundation.position.y = 0;
+    aduGroups.floors.scale.set(1, 1, 1);
+    aduGroups.walls.scale.set(1, 1, 1);
+    aduGroups.furniture.children.forEach(function (p) { p.scale.set(1, 1, 1); });
+    aduGroups.openings.traverse(function (obj) {
+      if (obj.isMesh && obj.material) {
+        obj.material.transparent = true;
+        obj.material.opacity = 1;
+        obj.material.needsUpdate = true;
       }
     });
+
+    // Override all ADU meshes to blueprint tint
+    Object.keys(aduGroups).forEach(function (key) {
+      if (key === 'interior') return;
+      aduGroups[key].traverse(function (obj) {
+        if (obj.isMesh && obj.material) {
+          obj.userData._origMat = obj.material;
+          obj.material = (key === 'floors' || key === 'foundation') ? bpMatFloor : bpMatSolid;
+        }
+      });
+    });
+
+    // Camera: start high overhead (blueprint table view)
+    camera.position.set(CX, 50, CZ + 6);
+    camera.lookAt(CX, 0, CZ);
+
+    gsap.set(canvasEl, { opacity: 0 });
+    gsap.to(canvasEl, { opacity: 1, duration: 1.2, ease: 'power2.out' });
+
+    // Auto-play: dramatic camera descent from overhead to 3/4 angle
+    gsap.to(camera.position, {
+      x: CX - 10, y: 32, z: CZ + 26,
+      duration: 4, ease: 'power2.inOut',
+      onUpdate: function () {
+        camera.lookAt(CX, 0, CZ);
+        markDirty();
+      },
+    });
+
+    markDirty();
   }
 
   function cleanupBlueprint() {
-    if (blueprintSvg && blueprintSvg.parentElement) {
-      gsap.to(blueprintSvg, {
-        opacity: 0, duration: 0.3,
-        onComplete: function () {
-          if (blueprintSvg.parentElement) blueprintSvg.parentElement.removeChild(blueprintSvg);
-          var paths = blueprintSvg._paths;
-          if (paths) paths.forEach(function (p) {
-            if (p.isText) gsap.set(p.el, { opacity: 0 });
-            else gsap.set(p.el, { strokeDashoffset: p.len });
-          });
+    // Restore original materials
+    Object.keys(aduGroups).forEach(function (key) {
+      if (key === 'interior') return;
+      aduGroups[key].traverse(function (obj) {
+        if (obj.isMesh && obj.userData._origMat) {
+          obj.material = obj.userData._origMat;
+          delete obj.userData._origMat;
         }
       });
-    }
+    });
+    markDirty();
   }
 
   // ── Step 2: Complete Model Showcase (dramatic L-to-R pan, zoomed in) ──
@@ -1326,24 +1351,24 @@
   function scrubConstruction(subP) {
     if (!aduGroups.foundation) return;
 
-    // Foundation: 0% – 15%
-    var foundP = smoothstep(remap(subP, 0, 0.15));
+    // Foundation: 0% – 12%
+    var foundP = smoothstep(remap(subP, 0, 0.12));
     aduGroups.foundation.visible = subP > 0.01;
     aduGroups.foundation.position.y = -2 + 2 * foundP;
 
-    // Floors: 10% – 25%
-    var floorP = smoothstep(remap(subP, 0.10, 0.25));
-    aduGroups.floors.visible = subP > 0.08;
+    // Floors: 8% – 20%
+    var floorP = smoothstep(remap(subP, 0.08, 0.20));
+    aduGroups.floors.visible = subP > 0.06;
     aduGroups.floors.scale.y = floorP;
 
-    // Walls: 20% – 55%
-    var wallP = smoothstep(remap(subP, 0.20, 0.55));
-    aduGroups.walls.visible = subP > 0.18;
+    // Walls: 18% – 45%
+    var wallP = smoothstep(remap(subP, 0.18, 0.45));
+    aduGroups.walls.visible = subP > 0.16;
     aduGroups.walls.scale.y = wallP;
 
-    // Openings (doors/windows): 45% – 65%
-    var openP = remap(subP, 0.45, 0.65);
-    aduGroups.openings.visible = subP > 0.42;
+    // Openings (doors/windows): 40% – 55%
+    var openP = remap(subP, 0.40, 0.55);
+    aduGroups.openings.visible = subP > 0.38;
     aduGroups.openings.traverse(function (obj) {
       if (obj.isMesh && obj.material) {
         obj.material.opacity = openP;
@@ -1351,15 +1376,21 @@
       }
     });
 
-    // Furniture: 60% – 100% (staggered per piece)
+    // Furniture: 50% – 80% (staggered per piece)
     var count = aduGroups.furniture.children.length;
-    aduGroups.furniture.visible = subP > 0.55;
+    aduGroups.furniture.visible = subP > 0.48;
     aduGroups.furniture.children.forEach(function (piece, i) {
-      var pieceStart = 0.60 + (i / count) * 0.25;
-      var pieceP = remap(subP, pieceStart, pieceStart + 0.12);
+      var pieceStart = 0.50 + (i / count) * 0.22;
+      var pieceP = remap(subP, pieceStart, pieceStart + 0.10);
       var s = easeOutBack(pieceP);
       piece.scale.set(s, s, s);
     });
+
+    // Show card after build completes (80%+)
+    if (subP > 0.80 && !step5CardShown) {
+      step5CardShown = true;
+      showStep5Card();
+    }
 
     markDirty();
   }
@@ -1385,9 +1416,9 @@
     aduGroups.walls.scale.set(1, 1, 1);
     aduGroups.furniture.children.forEach(function (p) { p.scale.set(1, 1, 1); });
 
-    // Reset interior light
-    var light = aduGroups.interior.userData.light;
-    if (light) light.intensity = 0;
+    // Reset interior lights
+    var lights = aduGroups.interior.userData.lights;
+    if (lights) lights.forEach(function (l) { l.intensity = 0; });
 
     gsap.to(canvasEl, { opacity: 1, duration: 0.6, overwrite: 'auto' });
     markDirty();
@@ -1405,9 +1436,14 @@
     );
     camera.lookAt(CX, 3, CZ);
 
-    // Interior light warms up
-    var light = aduGroups.interior.userData.light;
-    if (light) light.intensity = t * 300;
+    // Interior lights warm up — staggered per room
+    var lights = aduGroups.interior.userData.lights;
+    if (lights) {
+      lights.forEach(function (light, i) {
+        var lightT = smoothstep(remap(t, i * 0.12, 0.4 + i * 0.1));
+        light.intensity = lightT * 180;
+      });
+    }
 
     // Window glass warms to golden
     aduGroups.openings.traverse(function (obj) {
@@ -1417,7 +1453,10 @@
           0.808 + (0.9 - 0.808) * t,
           0.922 + (0.5 - 0.922) * t
         );
-        obj.material.opacity = 0.3 + 0.3 * t;
+        obj.material.opacity = 0.3 + 0.4 * t;
+        if (obj.material.emissive) {
+          obj.material.emissive.setRGB(t * 0.3, t * 0.25, t * 0.1);
+        }
         obj.material.needsUpdate = true;
       }
     });
@@ -1426,12 +1465,13 @@
   }
 
   function cleanupWarmGlow() {
-    var light = aduGroups.interior.userData.light;
-    if (light) light.intensity = 0;
+    var lights = aduGroups.interior.userData.lights;
+    if (lights) lights.forEach(function (l) { l.intensity = 0; });
     aduGroups.openings.traverse(function (obj) {
       if (obj.isMesh && obj.material && obj.material.transparent) {
         obj.material.color.setRGB(0.529, 0.808, 0.922);
         obj.material.opacity = 0.3;
+        if (obj.material.emissive) obj.material.emissive.setRGB(0, 0, 0);
         obj.material.needsUpdate = true;
       }
     });
@@ -1466,12 +1506,12 @@
     if (navEl) buildNavDots(navEl, totalSteps);
 
     // Initialize cards — first card at its layout position, rest hidden
+    var firstX = getCardX(cardPositions[0]);
     cards.forEach(function (card, i) {
       if (i === 0) {
-        var l = cardLayouts[0];
-        gsap.set(card, { opacity: 1, y: l.offsetY, x: 0, scale: 1, rotation: 0 });
+        gsap.set(card, { opacity: 1, xPercent: -50, yPercent: -50, x: firstX, y: 0, scale: 1 });
       } else {
-        gsap.set(card, { opacity: 0, y: 40 });
+        gsap.set(card, { opacity: 0, xPercent: -50, yPercent: -50 });
       }
     });
     currentStep = 0;
@@ -1500,7 +1540,7 @@
       ScrollTrigger.create({
         trigger: pinned,
         start: 'top top',
-        end: '+=' + (window.innerHeight * totalSteps),
+        end: '+=' + (window.innerHeight * (totalSteps + 2)),  // extra scroll range for slower feel
         pin: true,
         scrub: true,
         snap: {
