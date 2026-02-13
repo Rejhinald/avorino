@@ -735,15 +735,19 @@
     cards.forEach(function (card, i) {
       if (i === idx) {
         gsap.to(card, {
-          opacity: 1, y: 0, duration: 0.6,
-          ease: 'power3.out', overwrite: true,
+          opacity: 1, y: 0, duration: 0.7,
+          ease: 'expo.out', overwrite: true,
+        });
+      } else if (i === prevIdx) {
+        // Previous card slides out in opposite direction
+        var dir = i < idx ? -50 : 50;
+        gsap.to(card, {
+          opacity: 0, y: dir, duration: 0.5,
+          ease: 'power3.in', overwrite: true,
         });
       } else {
-        var dir = i < idx ? -30 : 40;
-        gsap.to(card, {
-          opacity: 0, y: dir, duration: 0.4,
-          ease: 'power2.in', overwrite: true,
-        });
+        // Other cards just stay hidden
+        gsap.set(card, { opacity: 0, y: 40 });
       }
     });
 
@@ -944,19 +948,33 @@
   }
 
   // ── Step 2: 3D Model Orbit ──
+  var orbitTween = null;
+
   function showModelOrbit() {
     if (!canvasEl || !camera) return;
 
     // Show all groups at full
     setGroupsVisible(true);
-    aduGroups.roof.visible = true;
+    // Reset materials in case coming from warm glow
+    aduGroups.openings.traverse(function (obj) {
+      if (obj.isMesh && obj.material && obj.material.transparent) {
+        obj.material.opacity = 0.3;
+        obj.material.color.setRGB(0.529, 0.808, 0.922);
+        obj.material.needsUpdate = true;
+      }
+    });
 
-    gsap.to(canvasEl, { opacity: 1, duration: 0.6 });
+    // Start camera from initial position for smooth reveal
+    camera.position.set(CX, 45, ADU_D + 45);
+    camera.lookAt(CX, 2, CZ);
+    markDirty();
 
-    // Camera orbit — wider angle for portrait canvas
-    gsap.to(camera.position, {
-      x: CX + 30, y: 35, z: ADU_D + 35,
-      duration: 3, ease: 'power2.inOut',
+    gsap.to(canvasEl, { opacity: 1, duration: 0.8, ease: 'power2.out' });
+
+    // Camera orbit — smooth cinematic sweep
+    orbitTween = gsap.to(camera.position, {
+      x: CX + 30, y: 30, z: ADU_D + 30,
+      duration: 4, ease: 'power1.inOut',
       onUpdate: function () {
         camera.lookAt(CX, 2, CZ);
         markDirty();
@@ -965,7 +983,8 @@
   }
 
   function hideModelOrbit() {
-    if (canvasEl) gsap.to(canvasEl, { opacity: 0, duration: 0.3 });
+    if (orbitTween) { orbitTween.kill(); orbitTween = null; }
+    if (canvasEl) gsap.to(canvasEl, { opacity: 0, duration: 0.4 });
   }
 
   // ── Step 3: Money Rain ──
@@ -1054,91 +1073,148 @@
     }
   }
 
-  // ── Step 4: Permit Stamp ──
+  // ── Step 4: Permit Stamp (Luxurious) ──
+  var stampTl = null;
+
+  function svgEl(tag, attrs) {
+    var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) { el.setAttribute(k, attrs[k]); });
+    return el;
+  }
+
   function showStamp() {
     if (!fxEl) return;
-    if (canvasEl) gsap.to(canvasEl, { opacity: 0.1, duration: 0.3 });
+    if (canvasEl) gsap.to(canvasEl, { opacity: 0.08, duration: 0.4 });
+    if (stampTl) { stampTl.kill(); stampTl = null; }
 
     if (!stampSvg) {
-      stampSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      stampSvg = svgEl('svg', {
+        viewBox: '0 0 500 500',
+        preserveAspectRatio: 'xMidYMid meet',
+      });
       stampSvg.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;';
-      stampSvg.setAttribute('viewBox', '0 0 400 400');
-      stampSvg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
-      // Red overlay tint
-      var tint = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      tint.setAttribute('width', '400');
-      tint.setAttribute('height', '400');
-      tint.setAttribute('fill', 'rgba(200,34,42,0.05)');
-      stampSvg.appendChild(tint);
+      // Subtle parchment background
+      var bgRect = svgEl('rect', { width: '500', height: '500', fill: 'rgba(200,34,42,0.03)' });
+      stampSvg.appendChild(bgRect);
 
-      // Stamp group
-      var sg = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-      sg.setAttribute('transform', 'translate(200,200)');
+      // Ink splatter layer (behind stamp)
+      var splatGroup = svgEl('g', { opacity: '0' });
+      splatGroup.setAttribute('class', 'stamp-splats');
+      var splatPositions = [
+        { cx: 250, cy: 250, r: 140 }, { cx: 180, cy: 190, r: 4 }, { cx: 320, cy: 180, r: 6 },
+        { cx: 160, cy: 280, r: 3 }, { cx: 340, cy: 310, r: 5 }, { cx: 200, cy: 330, r: 7 },
+        { cx: 300, cy: 170, r: 3.5 }, { cx: 350, cy: 260, r: 4.5 }, { cx: 170, cy: 220, r: 2.5 },
+        { cx: 310, cy: 340, r: 3 }, { cx: 220, cy: 160, r: 5 }, { cx: 280, cy: 350, r: 4 },
+      ];
+      splatPositions.forEach(function (s) {
+        var c = svgEl('circle', { cx: String(s.cx), cy: String(s.cy), r: String(s.r), fill: 'rgba(200,34,42,0.12)' });
+        splatGroup.appendChild(c);
+      });
+      stampSvg.appendChild(splatGroup);
+      stampSvg._splats = splatGroup;
+
+      // Main stamp group
+      var sg = svgEl('g');
       stampSvg.appendChild(sg);
 
-      // Outer circle
-      var c1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      c1.setAttribute('r', '100');
-      c1.setAttribute('fill', 'none');
-      c1.setAttribute('stroke', '#c8222a');
-      c1.setAttribute('stroke-width', '5');
-      sg.appendChild(c1);
+      // Outer ring (thick, slightly irregular via dasharray for worn look)
+      sg.appendChild(svgEl('circle', {
+        r: '120', fill: 'none', stroke: '#c8222a', 'stroke-width': '6',
+        'stroke-dasharray': '8 2 12 3 6 2 15 2 10 3',
+      }));
 
-      // Inner circle
-      var c2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      c2.setAttribute('r', '85');
-      c2.setAttribute('fill', 'none');
-      c2.setAttribute('stroke', '#c8222a');
-      c2.setAttribute('stroke-width', '2');
-      sg.appendChild(c2);
+      // Second ring
+      sg.appendChild(svgEl('circle', {
+        r: '108', fill: 'none', stroke: '#c8222a', 'stroke-width': '1.5',
+      }));
 
-      // PERMIT text (top arc)
-      var t1 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      t1.setAttribute('y', '-25');
-      t1.setAttribute('text-anchor', 'middle');
-      t1.setAttribute('fill', '#c8222a');
-      t1.setAttribute('font-size', '22');
-      t1.setAttribute('font-family', 'DM Sans, sans-serif');
-      t1.setAttribute('font-weight', '700');
-      t1.setAttribute('letter-spacing', '0.3em');
-      t1.textContent = 'PERMIT';
-      sg.appendChild(t1);
+      // Inner ring
+      sg.appendChild(svgEl('circle', {
+        r: '104', fill: 'none', stroke: '#c8222a', 'stroke-width': '1.5',
+      }));
 
-      // APPROVED text (large)
-      var t2 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      t2.setAttribute('y', '12');
-      t2.setAttribute('text-anchor', 'middle');
-      t2.setAttribute('fill', '#c8222a');
-      t2.setAttribute('font-size', '30');
-      t2.setAttribute('font-family', 'DM Serif Display, serif');
-      t2.setAttribute('font-weight', '400');
-      t2.textContent = 'APPROVED';
-      sg.appendChild(t2);
+      // Decorative line dividers
+      sg.appendChild(svgEl('line', {
+        x1: '-90', y1: '-10', x2: '-40', y2: '-10',
+        stroke: '#c8222a', 'stroke-width': '1.5',
+      }));
+      sg.appendChild(svgEl('line', {
+        x1: '40', y1: '-10', x2: '90', y2: '-10',
+        stroke: '#c8222a', 'stroke-width': '1.5',
+      }));
+      sg.appendChild(svgEl('line', {
+        x1: '-90', y1: '22', x2: '-40', y2: '22',
+        stroke: '#c8222a', 'stroke-width': '1.5',
+      }));
+      sg.appendChild(svgEl('line', {
+        x1: '40', y1: '22', x2: '90', y2: '22',
+        stroke: '#c8222a', 'stroke-width': '1.5',
+      }));
 
-      // Date
-      var t3 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      t3.setAttribute('y', '40');
-      t3.setAttribute('text-anchor', 'middle');
-      t3.setAttribute('fill', '#c8222a');
-      t3.setAttribute('font-size', '10');
-      t3.setAttribute('font-family', 'DM Sans, sans-serif');
-      t3.setAttribute('letter-spacing', '0.15em');
-      t3.setAttribute('opacity', '0.7');
-      t3.textContent = 'ORANGE COUNTY, CA';
-      sg.appendChild(t3);
-
-      // Stars
-      [-60, 60].forEach(function (xOff) {
-        var star = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        star.setAttribute('x', String(xOff));
-        star.setAttribute('y', '-22');
-        star.setAttribute('text-anchor', 'middle');
-        star.setAttribute('fill', '#c8222a');
-        star.setAttribute('font-size', '14');
+      // Stars flanking the text
+      [-70, 70].forEach(function (xOff) {
+        var star = svgEl('text', {
+          x: String(xOff), y: '-6', 'text-anchor': 'middle',
+          fill: '#c8222a', 'font-size': '18',
+        });
         star.textContent = '\u2605';
         sg.appendChild(star);
       });
+
+      // "CITY OF" text (top)
+      var tCity = svgEl('text', {
+        y: '-55', 'text-anchor': 'middle', fill: '#c8222a',
+        'font-size': '11', 'font-family': 'DM Sans, sans-serif',
+        'font-weight': '700', 'letter-spacing': '0.35em',
+      });
+      tCity.textContent = 'CITY OF';
+      sg.appendChild(tCity);
+
+      // "ORANGE COUNTY" text (curved feel via positioned text)
+      var tCounty = svgEl('text', {
+        y: '-38', 'text-anchor': 'middle', fill: '#c8222a',
+        'font-size': '14', 'font-family': 'DM Sans, sans-serif',
+        'font-weight': '700', 'letter-spacing': '0.25em',
+      });
+      tCounty.textContent = 'ORANGE COUNTY';
+      sg.appendChild(tCounty);
+
+      // "APPROVED" text (hero — large, serif)
+      var tApproved = svgEl('text', {
+        y: '14', 'text-anchor': 'middle', fill: '#c8222a',
+        'font-size': '36', 'font-family': 'DM Serif Display, serif',
+        'font-weight': '400', 'letter-spacing': '0.08em',
+      });
+      tApproved.textContent = 'APPROVED';
+      sg.appendChild(tApproved);
+
+      // "BUILDING PERMIT" text (below)
+      var tPermit = svgEl('text', {
+        y: '44', 'text-anchor': 'middle', fill: '#c8222a',
+        'font-size': '12', 'font-family': 'DM Sans, sans-serif',
+        'font-weight': '600', 'letter-spacing': '0.3em',
+      });
+      tPermit.textContent = 'BUILDING PERMIT';
+      sg.appendChild(tPermit);
+
+      // Date + permit number
+      var tDate = svgEl('text', {
+        y: '65', 'text-anchor': 'middle', fill: '#c8222a',
+        'font-size': '9', 'font-family': 'DM Sans, sans-serif',
+        'letter-spacing': '0.12em', opacity: '0.6',
+      });
+      tDate.textContent = 'NO. 2025-ADU-04782  \u2022  CALIFORNIA';
+      sg.appendChild(tDate);
+
+      // Bottom decorative arc text
+      var tBottom = svgEl('text', {
+        y: '82', 'text-anchor': 'middle', fill: '#c8222a',
+        'font-size': '9', 'font-family': 'DM Sans, sans-serif',
+        'font-weight': '600', 'letter-spacing': '0.2em', opacity: '0.5',
+      });
+      tBottom.textContent = 'RESIDENTIAL CONSTRUCTION';
+      sg.appendChild(tBottom);
 
       stampSvg._stamp = sg;
     }
@@ -1146,32 +1222,45 @@
     fxEl.appendChild(stampSvg);
     gsap.set(stampSvg, { opacity: 1 });
 
+    // Position stamp centered
     var sg = stampSvg._stamp;
-    gsap.set(sg, { scale: 2.5, rotation: -15, y: -300, opacity: 0, transformOrigin: 'center center' });
+    var splats = stampSvg._splats;
 
-    gsap.to(sg, {
-      scale: 1, rotation: -6, y: 0, opacity: 1,
-      duration: 0.6, ease: 'back.out(2)',
-      attr: { transform: 'translate(200,200) rotate(-6) scale(1)' },
-      onComplete: function () {
-        // Impact ripple
-        gsap.fromTo(sg, { scale: 1 }, {
-          scale: 1.03, duration: 0.15, yoyo: true, repeat: 3,
-          ease: 'power2.inOut',
-        });
-      },
-    });
-    // Actually use gsap with the SVG group properly
-    gsap.fromTo(stampSvg._stamp,
-      { attr: { transform: 'translate(200,-100) rotate(-15) scale(2.5)' } },
-      {
-        attr: { transform: 'translate(200,200) rotate(-6) scale(1)' },
-        duration: 0.7, ease: 'elastic.out(1, 0.4)',
-      }
-    );
+    // Start stamp way above and large, slam it down
+    sg.setAttribute('transform', 'translate(250,-200) rotate(-12) scale(3)');
+    gsap.set(splats, { opacity: 0 });
+
+    stampTl = gsap.timeline();
+
+    // Slam the stamp down with elastic bounce
+    stampTl.to(sg, {
+      attr: { transform: 'translate(250,250) rotate(-6) scale(1)' },
+      duration: 0.8, ease: 'elastic.out(1.2, 0.35)',
+    }, 0);
+
+    // Ink splatters appear on impact
+    stampTl.to(splats, {
+      opacity: 1, duration: 0.1,
+    }, 0.25);
+
+    // Screen shake effect via parent transform
+    stampTl.fromTo(fxEl, {
+      x: 0, y: 0,
+    }, {
+      x: 4, y: -3, duration: 0.06, yoyo: true, repeat: 5,
+      ease: 'none',
+      onComplete: function () { gsap.set(fxEl, { x: 0, y: 0 }); },
+    }, 0.28);
+
+    // Subtle pulse after landing
+    stampTl.to(sg, {
+      attr: { transform: 'translate(250,250) rotate(-6) scale(1.02)' },
+      duration: 0.2, yoyo: true, repeat: 1, ease: 'power2.inOut',
+    }, 1.0);
   }
 
   function hideStamp() {
+    if (stampTl) { stampTl.kill(); stampTl = null; }
     if (stampSvg && stampSvg.parentElement) {
       gsap.to(stampSvg, {
         opacity: 0, duration: 0.3,
@@ -1180,11 +1269,38 @@
         },
       });
     }
+    // Reset fxEl position in case shake was interrupted
+    if (fxEl) gsap.set(fxEl, { x: 0, y: 0 });
   }
 
   // ── Step 5: Construction — Building Animation ──
+  var constructionTl = null;
+
   function showConstruction() {
     if (!canvasEl || !camera) return;
+
+    // Kill any previous construction timeline
+    if (constructionTl) { constructionTl.kill(); constructionTl = null; }
+
+    // Reset ALL groups to invisible first
+    setGroupsVisible(false);
+    // Reset all materials to fully opaque
+    aduGroups.openings.traverse(function (obj) {
+      if (obj.isMesh && obj.material) {
+        obj.material.transparent = false;
+        obj.material.opacity = 1;
+        obj.material.needsUpdate = true;
+      }
+    });
+    // Reset furniture scales
+    aduGroups.furniture.children.forEach(function (piece) {
+      piece.scale.set(1, 1, 1);
+    });
+    // Reset positions
+    aduGroups.foundation.position.y = 0;
+    aduGroups.walls.scale.set(1, 1, 1);
+    aduGroups.roof.position.y = 0;
+
     gsap.to(canvasEl, { opacity: 1, duration: 0.5 });
 
     // Camera wider angle — pulled back for full building view
@@ -1198,45 +1314,39 @@
     });
 
     // Sequential build animation
-    var tl = gsap.timeline({ delay: 0.3 });
+    constructionTl = gsap.timeline({ delay: 0.3 });
 
     // Foundation rises
-    gsap.set(aduGroups.foundation.position, { y: -2 });
-    gsap.set(aduGroups.foundation, { visible: true });
-    tl.to(aduGroups.foundation.position, {
+    aduGroups.foundation.position.y = -2;
+    aduGroups.foundation.visible = true;
+    constructionTl.to(aduGroups.foundation.position, {
       y: 0, duration: 0.8, ease: 'power2.out', onUpdate: markDirty,
     }, 0);
 
     // Floors appear
-    gsap.set(aduGroups.floors, { visible: true });
-    gsap.set(aduGroups.floors.scale, { y: 0 });
-    tl.to(aduGroups.floors.scale, {
+    aduGroups.floors.visible = true;
+    aduGroups.floors.scale.y = 0;
+    constructionTl.to(aduGroups.floors.scale, {
       y: 1, duration: 0.4, ease: 'power2.out', onUpdate: markDirty,
     }, 0.5);
 
     // Walls rise from ground
-    gsap.set(aduGroups.walls, { visible: true });
-    gsap.set(aduGroups.walls.scale, { y: 0 });
-    aduGroups.walls.children.forEach(function (child) {
-      child.traverse(function (obj) {
-        if (obj.isMesh) {
-          var geo = obj.geometry;
-          if (geo && geo.boundingBox === null) geo.computeBoundingBox();
-        }
-      });
-    });
-    tl.to(aduGroups.walls.scale, {
+    aduGroups.walls.visible = true;
+    aduGroups.walls.scale.y = 0;
+    constructionTl.to(aduGroups.walls.scale, {
       y: 1, duration: 1.2, ease: 'power2.out', onUpdate: markDirty,
     }, 0.8);
 
     // Doors + windows fade in
-    gsap.set(aduGroups.openings, { visible: true });
+    aduGroups.openings.visible = true;
     aduGroups.openings.traverse(function (obj) {
       if (obj.isMesh && obj.material) {
-        gsap.set(obj.material, { opacity: 0, transparent: true });
+        obj.material.transparent = true;
+        obj.material.opacity = 0;
+        obj.material.needsUpdate = true;
       }
     });
-    tl.add(function () {
+    constructionTl.add(function () {
       aduGroups.openings.traverse(function (obj) {
         if (obj.isMesh && obj.material) {
           gsap.to(obj.material, {
@@ -1247,24 +1357,25 @@
     }, 2.0);
 
     // Furniture fades in piece by piece
-    gsap.set(aduGroups.furniture, { visible: true });
+    aduGroups.furniture.visible = true;
     aduGroups.furniture.children.forEach(function (piece, i) {
-      gsap.set(piece.scale, { x: 0, y: 0, z: 0 });
-      tl.to(piece.scale, {
+      piece.scale.set(0, 0, 0);
+      constructionTl.to(piece.scale, {
         x: 1, y: 1, z: 1, duration: 0.5,
         ease: 'back.out(1.5)', onUpdate: markDirty,
       }, 2.5 + i * 0.12);
     });
 
     // Roof descends
-    gsap.set(aduGroups.roof, { visible: true });
-    gsap.set(aduGroups.roof.position, { y: 10 });
-    tl.to(aduGroups.roof.position, {
+    aduGroups.roof.visible = true;
+    aduGroups.roof.position.y = 10;
+    constructionTl.to(aduGroups.roof.position, {
       y: 0, duration: 1.0, ease: 'power3.out', onUpdate: markDirty,
     }, 3.5);
   }
 
   function hideConstruction() {
+    if (constructionTl) { constructionTl.kill(); constructionTl = null; }
     if (canvasEl) gsap.to(canvasEl, { opacity: 0, duration: 0.3 });
   }
 
@@ -1272,15 +1383,27 @@
   function showWarmGlow() {
     if (!canvasEl || !camera) return;
 
+    // Ensure all groups visible and materials reset
     setGroupsVisible(true);
-    aduGroups.roof.visible = true;
+    aduGroups.openings.traverse(function (obj) {
+      if (obj.isMesh && obj.material) {
+        obj.material.transparent = true;
+        obj.material.opacity = obj.material.opacity || 1;
+        obj.material.needsUpdate = true;
+      }
+    });
+    // Reset furniture/wall positions in case coming from construction
+    aduGroups.foundation.position.y = 0;
+    aduGroups.walls.scale.set(1, 1, 1);
+    aduGroups.roof.position.y = 0;
+    aduGroups.furniture.children.forEach(function (p) { p.scale.set(1, 1, 1); });
 
-    gsap.to(canvasEl, { opacity: 1, duration: 0.6 });
+    gsap.to(canvasEl, { opacity: 1, duration: 0.8, ease: 'power2.out' });
 
     // Camera pulls back to hero angle — warm evening view
     gsap.to(camera.position, {
       x: CX + 10, y: 32, z: ADU_D + 40,
-      duration: 2, ease: 'power2.inOut',
+      duration: 2.5, ease: 'power2.inOut',
       onUpdate: function () {
         camera.lookAt(CX, 3, CZ);
         markDirty();
@@ -1291,20 +1414,20 @@
     var light = aduGroups.interior.userData.light;
     if (light) {
       gsap.to(light, {
-        intensity: 300, duration: 2, ease: 'power2.inOut',
+        intensity: 300, duration: 2.5, ease: 'power2.inOut',
         onUpdate: markDirty,
       });
     }
 
-    // Window glass goes warm
+    // Window glass goes warm golden
     aduGroups.openings.traverse(function (obj) {
       if (obj.isMesh && obj.material && obj.material.transparent) {
         gsap.to(obj.material.color, {
-          r: 1, g: 0.9, b: 0.5, duration: 2,
+          r: 1, g: 0.9, b: 0.5, duration: 2.5,
           ease: 'power2.inOut', onUpdate: markDirty,
         });
         gsap.to(obj.material, {
-          opacity: 0.6, emissiveIntensity: 0.3, duration: 2,
+          opacity: 0.6, duration: 2.5,
           onUpdate: markDirty,
         });
       }
@@ -1385,11 +1508,12 @@
         start: 'top top',
         end: '+=' + (window.innerHeight * totalSteps),
         pin: true,
-        scrub: 0.5,
+        scrub: 1,
         snap: {
           snapTo: 1 / (totalSteps - 1),
-          duration: { min: 0.2, max: 0.5 },
-          ease: 'power2.inOut',
+          duration: { min: 0.3, max: 0.7 },
+          delay: 0.1,
+          ease: 'power3.inOut',
         },
         onUpdate: function (self) {
           var step = Math.round(self.progress * (totalSteps - 1));

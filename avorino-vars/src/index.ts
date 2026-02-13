@@ -608,6 +608,7 @@ async function buildAboutPage() {
     'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
     'letter-spacing': '0.2em', 'text-transform': 'uppercase',
     'opacity': '0.4', 'margin-bottom': '16px',
+    'color': v['av-cream'],
   });
   await clearAndSet(await freshStyle('about-process-card-title'), 'about-process-card-title', {
     'font-family': 'DM Serif Display', 'font-size': '24px',
