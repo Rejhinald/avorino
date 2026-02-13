@@ -718,26 +718,74 @@
      ═══════════════════════════════════════════════ */
   var currentStep = -1;
 
+  // Card layout variations — alternating positions + entrance directions
+  var cardLayouts = [
+    { offsetY: 0,   enterX: 0,   enterY: 60,  enterRot: 0   },  // center, rises
+    { offsetY: -50, enterX: 80,  enterY: 0,   enterRot: 2   },  // higher, from right
+    { offsetY: 30,  enterX: 0,   enterY: 60,  enterRot: 0   },  // lower, rises
+    { offsetY: -40, enterX: -60, enterY: 20,  enterRot: -2  },  // higher, from left
+    { offsetY: 20,  enterX: 60,  enterY: 20,  enterRot: 1   },  // lower, from right
+    { offsetY: -30, enterX: 0,   enterY: -60, enterRot: 0   },  // higher, descends
+  ];
+
+  // Text stagger timing per child element (step num, title, description)
+  var textAnims = [
+    { fromY: 10, dur: 0.4, delay: 0.15 },
+    { fromY: 25, dur: 0.7, delay: 0.25 },
+    { fromY: 15, dur: 0.6, delay: 0.40 },
+  ];
+
   function transitionToStep(cards, idx, navEl) {
     if (idx === currentStep) return;
     var prevIdx = currentStep;
     currentStep = idx;
 
+    var layout = cardLayouts[idx] || cardLayouts[0];
+
     cards.forEach(function (card, i) {
       if (i === idx) {
-        gsap.to(card, {
-          opacity: 1, y: 0, duration: 0.7,
-          ease: 'expo.out', overwrite: true,
+        // Reset children for stagger entrance
+        var ch = card.children;
+        for (var c = 0; c < ch.length; c++) {
+          var ta = textAnims[c] || textAnims[textAnims.length - 1];
+          gsap.set(ch[c], { opacity: 0, y: ta.fromY });
+        }
+
+        // Card entrance from layout-specific direction
+        gsap.set(card, {
+          opacity: 0,
+          x: layout.enterX,
+          y: layout.offsetY + layout.enterY,
+          scale: 0.96,
+          rotation: layout.enterRot,
         });
-      } else if (i === prevIdx) {
-        // Previous card slides out in opposite direction
-        var dir = i < idx ? -50 : 50;
+
         gsap.to(card, {
-          opacity: 0, y: dir, duration: 0.5,
-          ease: 'power3.in', overwrite: true,
+          opacity: 1, x: 0, y: layout.offsetY,
+          scale: 1, rotation: 0,
+          duration: 0.8, ease: 'expo.out', overwrite: true,
+        });
+
+        // Text stagger — each child element animates in sequentially
+        for (var c = 0; c < ch.length; c++) {
+          var ta = textAnims[c] || textAnims[textAnims.length - 1];
+          gsap.to(ch[c], {
+            opacity: 1, y: 0,
+            duration: ta.dur, ease: 'power3.out',
+            delay: ta.delay,
+          });
+        }
+      } else if (i === prevIdx) {
+        // Exit: slide out in opposite direction with slight shrink
+        var prevLayout = cardLayouts[i] || cardLayouts[0];
+        var exitDir = i < idx ? -1 : 1;
+        gsap.to(card, {
+          opacity: 0,
+          y: prevLayout.offsetY + exitDir * 40,
+          scale: 0.97,
+          duration: 0.5, ease: 'power3.in', overwrite: true,
         });
       } else {
-        // Other cards just stay hidden
         gsap.set(card, { opacity: 0, y: 40 });
       }
     });
@@ -1402,9 +1450,14 @@
     // Build nav dots
     if (navEl) buildNavDots(navEl, totalSteps);
 
-    // Initialize cards — first card visible, rest hidden
+    // Initialize cards — first card at its layout position, rest hidden
     cards.forEach(function (card, i) {
-      gsap.set(card, { opacity: i === 0 ? 1 : 0, y: i === 0 ? 0 : 40 });
+      if (i === 0) {
+        var l = cardLayouts[0];
+        gsap.set(card, { opacity: 1, y: l.offsetY, x: 0, scale: 1, rotation: 0 });
+      } else {
+        gsap.set(card, { opacity: 0, y: 40 });
+      }
     });
     currentStep = 0;
 
