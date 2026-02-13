@@ -1436,12 +1436,12 @@
     );
     camera.lookAt(CX, 3, CZ);
 
-    // Interior lights warm up — staggered per room
+    // Interior lights warm up — staggered per room (gentle glow, not blinding)
     var lights = aduGroups.interior.userData.lights;
     if (lights) {
       lights.forEach(function (light, i) {
         var lightT = smoothstep(remap(t, i * 0.12, 0.4 + i * 0.1));
-        light.intensity = lightT * 180;
+        light.intensity = lightT * 8;
       });
     }
 
@@ -1455,7 +1455,7 @@
         );
         obj.material.opacity = 0.3 + 0.4 * t;
         if (obj.material.emissive) {
-          obj.material.emissive.setRGB(t * 0.3, t * 0.25, t * 0.1);
+          obj.material.emissive.setRGB(t * 0.15, t * 0.12, t * 0.05);
         }
         obj.material.needsUpdate = true;
       }
