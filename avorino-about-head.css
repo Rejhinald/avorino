@@ -182,13 +182,11 @@ a, button { cursor: none; }
 }
 
 /* ─── 3D Transform Support ─── */
-body {
-  perspective: 1200px;
-}
+/* NOTE: perspective on body breaks position:fixed (ScrollTrigger pin).
+   Apply perspective only to containers that need 3D child transforms. */
 .about-values-card,
 .about-process-card,
 .av-card-dark {
-  transform-style: preserve-3d;
   backface-visibility: hidden;
 }
 
