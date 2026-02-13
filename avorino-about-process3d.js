@@ -1434,12 +1434,19 @@
   /* ═══════════════════════════════════════════════
      INIT
      ═══════════════════════════════════════════════ */
-  window.addEventListener('DOMContentLoaded', function () {
+  function boot() {
     if (isMobile) {
       initProcessMobile();
     } else {
       initProcessSection();
     }
-  });
+  }
+
+  // Script may load after DOMContentLoaded has already fired (CDN async)
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
 
 })();
