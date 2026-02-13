@@ -1,0 +1,45 @@
+<link rel="stylesheet" href="./styles.css">
+<div class="container">
+  <h2>Avorino Builder</h2>
+  <p class="desc">Design tokens + page builders for the Avorino website.</p>
+
+  <div class="section-label">Variables</div>
+  <button id="inject-btn">Create All Variables</button>
+
+  <div class="divider"></div>
+
+  <div class="section-label">Page Builders</div>
+  <button id="build-about" class="btn-secondary">Build About Page</button>
+
+  <div id="status"></div>
+  <div id="error-log"></div>
+
+  <div class="divider"></div>
+
+  <details class="code-instructions">
+    <summary>Custom Code Instructions (after building page)</summary>
+    <p>The Designer Extension API cannot set page custom code. You must add these manually:</p>
+
+    <div class="code-step">
+      <strong>1. Page Settings → Custom Code → Head Code</strong>
+      <pre><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@COMMIT/avorino-about-head.css"&gt;</code></pre>
+      <button class="copy-btn" data-copy="head">Copy</button>
+    </div>
+
+    <div class="code-step">
+      <strong>2. Page Settings → Custom Code → Footer Code</strong>
+      <pre><code>&lt;script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@COMMIT/avorino-about-footer.js"&gt;&lt;/script&gt;</code></pre>
+      <button class="copy-btn" data-copy="footer">Copy</button>
+    </div>
+
+    <div class="code-step">
+      <strong>3. Set breakpoints manually in Designer</strong>
+      <p>Select each section/grid, switch to Tablet/Mobile breakpoints, and adjust padding &amp; grid columns.</p>
+    </div>
+  </details>
+</div>
+
+<script type="module" src="./index.js"></script>
