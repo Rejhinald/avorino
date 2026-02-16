@@ -1558,12 +1558,13 @@
         start: 'top top',
         end: '+=' + (window.innerHeight * (totalSteps + 2)),  // extra scroll range for slower feel
         pin: true,
-        scrub: true,
+        scrub: 2,
         snap: {
           snapTo: 1 / (totalSteps - 1),
-          duration: { min: 0.25, max: 0.6 },
-          delay: 0.15,
+          duration: { min: 0.3, max: 0.8 },
+          delay: 0.4,
           ease: 'power2.inOut',
+          inertia: false,
         },
         onUpdate: function (self) {
           var progress = self.progress;
