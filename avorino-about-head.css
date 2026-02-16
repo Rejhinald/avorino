@@ -115,31 +115,6 @@ html, body { overflow-x: hidden; }
   transform: scale(1.4);
 }
 
-/* Mobile: stack cards, hide canvas */
-@media (max-width: 991px) {
-  .about-process-pinned {
-    height: auto !important;
-    flex-direction: column;
-  }
-  .about-process-visual { display: none; }
-  .about-process-cards,
-  [data-process-cards] {
-    width: 100% !important;
-    position: relative !important;
-    flex-direction: column;
-    gap: 32px;
-    pointer-events: auto;
-  }
-  .about-process-card {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    opacity: 1 !important;
-    transform: none !important;
-    pointer-events: auto;
-  }
-}
-
 /* ─── Line Wipe Animation ─── */
 [data-animate="line-wipe"] .line {
   will-change: clip-path;
@@ -157,4 +132,298 @@ html, body { overflow-x: hidden; }
 /* ─── Mission/Vision Overflow Fix ─── */
 #about-mission-vision {
   overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+   ═══════════════════════════════════════════════ */
+
+/* ─── Tablet (≤991px) ─── */
+@media (max-width: 991px) {
+  /* Section padding */
+  .av-section-warm,
+  .av-section-dark {
+    padding-top: 80px !important;
+    padding-bottom: 80px !important;
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+  }
+
+  /* Hero */
+  .about-hero {
+    min-height: 50vh !important;
+    padding-top: 120px !important;
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+  }
+
+  /* All 2-column grids → 1 column */
+  .av-grid-2col {
+    grid-template-columns: 1fr !important;
+    gap: 48px !important;
+  }
+
+  /* Stats: 3 col → 3 col, tighter gap */
+  .about-stats-grid {
+    gap: 32px !important;
+  }
+
+  /* Values zigzag: 1 column, hide spacers + snake */
+  .about-values-row {
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+  }
+  .about-values-spacer {
+    display: none !important;
+  }
+  .about-values-snake-anchor {
+    display: none !important;
+  }
+
+  /* Communication */
+  .about-comm {
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+  }
+  .about-comm-grid {
+    grid-template-columns: 1fr !important;
+    gap: 48px !important;
+  }
+  .about-comm-img {
+    height: 300px !important;
+  }
+
+  /* CTA */
+  .about-cta {
+    padding: 40px !important;
+  }
+  .about-cta-container {
+    padding: 80px 40px !important;
+  }
+
+  /* ADU card */
+  .about-adu-card {
+    padding: 64px 40px !important;
+  }
+
+  /* Process: full-width fix */
+  #about-process {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .about-process-pinned {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .about-process-card {
+    max-width: 100% !important;
+    padding: 40px 32px !important;
+  }
+  .about-process-nav {
+    display: none !important;
+  }
+}
+
+/* ─── Mobile Landscape (≤767px) ─── */
+@media (max-width: 767px) {
+  /* Section padding */
+  .av-section-warm,
+  .av-section-dark {
+    padding-top: 64px !important;
+    padding-bottom: 64px !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+
+  /* Hero */
+  .about-hero {
+    min-height: 45vh !important;
+    padding-top: 100px !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+  .about-hero-subtitle {
+    font-size: 15px !important;
+  }
+
+  /* Grid gaps */
+  .av-grid-2col {
+    gap: 32px !important;
+  }
+
+  /* Stats: 3 col → 1 col */
+  .about-stats-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+  .about-stat-number {
+    font-size: clamp(48px, 12vw, 72px) !important;
+  }
+
+  /* Cards padding */
+  .av-card-dark {
+    padding: 40px 32px !important;
+  }
+  .about-values-card {
+    padding: 36px 28px !important;
+  }
+
+  /* Communication */
+  .about-comm {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+  .about-comm-img {
+    height: 240px !important;
+  }
+
+  /* CTA */
+  .about-cta {
+    padding: 24px !important;
+  }
+  .about-cta-container {
+    padding: 64px 24px !important;
+  }
+  .about-cta-btns {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  /* ADU card */
+  .about-adu-card {
+    padding: 48px 24px !important;
+  }
+
+  /* Heading sizes — tighten up */
+  .av-heading-xl {
+    font-size: clamp(36px, 8vw, 56px) !important;
+  }
+  .av-heading-lg {
+    font-size: clamp(28px, 6vw, 40px) !important;
+  }
+
+  /* Utility margin reductions */
+  .av-mb-96 {
+    margin-bottom: 48px !important;
+  }
+  .av-mb-64 {
+    margin-bottom: 32px !important;
+  }
+
+  /* Process cards */
+  .about-process-card {
+    padding: 32px 24px !important;
+  }
+}
+
+/* ─── Mobile Portrait (≤478px) ─── */
+@media (max-width: 478px) {
+  /* Section padding */
+  .av-section-warm,
+  .av-section-dark {
+    padding-top: 48px !important;
+    padding-bottom: 48px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* Hero */
+  .about-hero {
+    min-height: 40vh !important;
+    padding-top: 80px !important;
+    padding-bottom: 48px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* Heading sizes */
+  .av-heading-xl {
+    font-size: clamp(28px, 9vw, 42px) !important;
+  }
+  .av-heading-lg {
+    font-size: clamp(24px, 6vw, 32px) !important;
+  }
+  .av-heading-md {
+    font-size: clamp(20px, 5vw, 28px) !important;
+  }
+
+  /* Cards */
+  .av-card-dark {
+    padding: 32px 20px !important;
+  }
+  .about-values-card {
+    padding: 28px 20px !important;
+  }
+  .about-card-heading {
+    font-size: 22px !important;
+  }
+  .about-value-num {
+    font-size: 40px !important;
+  }
+  .about-value-title {
+    font-size: 20px !important;
+  }
+
+  /* Stats */
+  .about-stat-number {
+    font-size: clamp(40px, 14vw, 56px) !important;
+  }
+
+  /* Communication */
+  .about-comm {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  .about-comm-img {
+    height: 200px !important;
+  }
+
+  /* CTA */
+  .about-cta {
+    padding: 16px !important;
+  }
+  .about-cta-container {
+    padding: 48px 16px !important;
+  }
+  .about-cta-heading {
+    font-size: clamp(24px, 7vw, 36px) !important;
+  }
+  .about-cta-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+
+  /* ADU card */
+  .about-adu-card {
+    padding: 40px 16px !important;
+  }
+
+  /* Process cards */
+  .about-process-card {
+    padding: 28px 20px !important;
+  }
+  .about-process-card-title {
+    font-size: 22px !important;
+  }
+
+  /* Utility margins */
+  .av-mb-96 {
+    margin-bottom: 32px !important;
+  }
+  .av-mb-64 {
+    margin-bottom: 24px !important;
+  }
+  .av-mb-48 {
+    margin-bottom: 20px !important;
+  }
+
+  /* Story image */
+  .about-story-img {
+    min-height: 280px !important;
+  }
 }
