@@ -38,11 +38,15 @@
      UTILITY — TEXT SPLITTING
      ═══════════════════════════════════════════════ */
   function splitIntoWords(el) {
+    var computed = getComputedStyle(el);
+    var textAlign = computed.textAlign;
     var text = el.textContent.trim();
     el.innerHTML = '';
     el.style.display = 'flex';
     el.style.flexWrap = 'wrap';
     el.style.gap = '0 0.3em';
+    if (textAlign === 'center') el.style.justifyContent = 'center';
+    else if (textAlign === 'right' || textAlign === 'end') el.style.justifyContent = 'flex-end';
     var wordEls = [];
     text.split(/\s+/).forEach(function (word) {
       var wrapper = document.createElement('span');

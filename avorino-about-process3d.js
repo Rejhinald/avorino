@@ -1621,11 +1621,20 @@
     var pinned = section.querySelector('[data-process-pinned]');
     if (!pinned) return;
 
-    // Full-bleed the pinned area — break out of parent section padding
-    var pRect = pinned.getBoundingClientRect();
-    pinned.style.marginLeft = (-pRect.left) + 'px';
-    pinned.style.width = '100vw';
-    pinned.style.maxWidth = '100vw';
+    // Full-bleed: strip section horizontal padding so pinned area fills viewport.
+    // Re-add padding to non-pinned siblings (label, heading above the pinned area).
+    var cs = getComputedStyle(section);
+    var padL = cs.paddingLeft;
+    var padR = cs.paddingRight;
+    section.style.paddingLeft = '0';
+    section.style.paddingRight = '0';
+    for (var i = 0; i < section.children.length; i++) {
+      var child = section.children[i];
+      if (!child.hasAttribute('data-process-pinned')) {
+        child.style.paddingLeft = padL;
+        child.style.paddingRight = padR;
+      }
+    }
 
     var visualEl = section.querySelector('[data-process-visual]');
     fxEl = section.querySelector('[data-process-fx]');
@@ -1677,9 +1686,9 @@
       ScrollTrigger.create({
         trigger: pinned,
         start: 'top top',
-        end: '+=' + (window.innerHeight * (totalSteps + 2)),
+        end: '+=' + (window.innerHeight * totalSteps * 2),
         pin: true,
-        scrub: 1,
+        scrub: 0.5,
         onUpdate: function (self) {
           var progress = self.progress;
           var step = Math.round(progress * (totalSteps - 1));
