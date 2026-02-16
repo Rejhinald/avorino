@@ -893,7 +893,6 @@
   var fxEl = null;
   var moneyCanvas = null;
   var stampSvg = null;
-  var moneyAnimId = null;
   var activeVisual = -1;
 
   // ── Easing helpers ──
@@ -930,7 +929,9 @@
   function scrubVisual(step, subP) {
     if (isMobile) return;
     switch (step) {
+      case 0: scrubBlueprint(subP); break;
       case 1: scrubModelOrbit(subP); break;
+      case 2: scrubMoneyRain(subP); break;
       case 3: scrubStamp(subP); break;
       case 4: scrubConstruction(subP); break;
       case 5: scrubWarmGlow(subP); break;
@@ -991,23 +992,25 @@
       });
     });
 
-    // Camera: start high overhead (blueprint table view)
+    // Camera: start high overhead (blueprint table view) — scrub will descend
     camera.position.set(CX, 50, CZ + 6);
     camera.lookAt(CX, 0, CZ);
 
-    gsap.set(canvasEl, { opacity: 0 });
-    gsap.to(canvasEl, { opacity: 1, duration: 1.2, ease: 'power2.out' });
+    gsap.to(canvasEl, { opacity: 1, duration: 0.6, overwrite: 'auto' });
+    markDirty();
+  }
 
-    // Auto-play: dramatic camera descent from overhead to 3/4 angle
-    gsap.to(camera.position, {
-      x: CX - 10, y: 32, z: CZ + 26,
-      duration: 4, ease: 'power2.inOut',
-      onUpdate: function () {
-        camera.lookAt(CX, 0, CZ);
-        markDirty();
-      },
-    });
+  function scrubBlueprint(subP) {
+    if (!camera) return;
+    var t = smoothstep(subP);
 
+    // Camera descends from high overhead (blueprint table) to 3/4 angle
+    camera.position.set(
+      CX - 10 * t,        // 15 → 5
+      50 - 18 * t,         // 50 → 32
+      CZ + 6 + 20 * t      // 16 → 36
+    );
+    camera.lookAt(CX, 0, CZ);
     markDirty();
   }
 
@@ -1080,7 +1083,7 @@
     // Canvas opacity managed by next step's prepare
   }
 
-  // ── Step 3: Money Rain (auto-play particle system) ──
+  // ── Step 3: Money Rain (scroll-driven particle system) ──
   function prepareMoneyRain() {
     if (!fxEl) return;
     if (canvasEl) gsap.to(canvasEl, { opacity: 0.15, duration: 0.4, overwrite: 'auto' });
@@ -1093,65 +1096,78 @@
     gsap.set(moneyCanvas, { opacity: 0 });
     gsap.to(moneyCanvas, { opacity: 1, duration: 0.4 });
 
-    var ctx = moneyCanvas.getContext('2d');
     var w = fxEl.clientWidth;
     var h = fxEl.clientHeight;
     moneyCanvas.width = w;
     moneyCanvas.height = h;
 
-    var bills = [];
-    for (var i = 0; i < 50; i++) {
-      bills.push({
-        x: Math.random() * w,
-        y: Math.random() * h - h,
-        w: 28 + Math.random() * 20,
-        h: 14 + Math.random() * 10,
-        rot: Math.random() * Math.PI * 2,
-        rotSpeed: (Math.random() - 0.5) * 0.04,
-        vy: 1.5 + Math.random() * 2.5,
-        vx: (Math.random() - 0.5) * 0.8,
-        opacity: 0.5 + Math.random() * 0.5,
-      });
+    // Pre-compute bill properties for scroll-driven rendering
+    if (!moneyCanvas._bills) {
+      var bills = [];
+      for (var i = 0; i < 50; i++) {
+        bills.push({
+          x: Math.random() * w,
+          startY: -60 - Math.random() * h,
+          w: 28 + Math.random() * 20,
+          h: 14 + Math.random() * 10,
+          baseRot: Math.random() * Math.PI * 2,
+          rotSpeed: (Math.random() - 0.5) * 6,
+          speed: 1.2 + Math.random() * 1.8,
+          wobble: 3 + Math.random() * 5,
+          phase: Math.random() * Math.PI * 2,
+          opacity: 0.5 + Math.random() * 0.5,
+        });
+      }
+      moneyCanvas._bills = bills;
     }
 
-    function animateMoney() {
-      moneyAnimId = requestAnimationFrame(animateMoney);
-      ctx.clearRect(0, 0, w, h);
+    // Render initial frame
+    scrubMoneyRain(0);
+  }
 
-      bills.forEach(function (b) {
-        b.y += b.vy;
-        b.x += b.vx;
-        b.rot += b.rotSpeed;
-        if (b.y > h + 30) {
-          b.y = -30;
-          b.x = Math.random() * w;
-        }
+  function scrubMoneyRain(subP) {
+    if (!moneyCanvas || !moneyCanvas._bills) return;
+    var ctx = moneyCanvas.getContext('2d');
+    var w = moneyCanvas.width;
+    var h = moneyCanvas.height;
+    if (w === 0 || h === 0) return;
+    ctx.clearRect(0, 0, w, h);
 
-        ctx.save();
-        ctx.translate(b.x, b.y);
-        ctx.rotate(b.rot);
-        ctx.globalAlpha = b.opacity;
+    var bills = moneyCanvas._bills;
+    bills.forEach(function (b) {
+      // Y position: fall from above into view based on scroll
+      var totalTravel = (h + 120) * b.speed;
+      var y = b.startY + subP * totalTravel;
+      // Wrap within visible range
+      var range = h + 80;
+      y = ((y % range) + range) % range - 40;
 
-        ctx.fillStyle = '#4a8c5c';
-        ctx.fillRect(-b.w / 2, -b.h / 2, b.w, b.h);
-        ctx.strokeStyle = '#2d6b3f';
-        ctx.lineWidth = 1;
-        ctx.strokeRect(-b.w / 2 + 2, -b.h / 2 + 2, b.w - 4, b.h - 4);
+      // X wobble based on scroll
+      var x = b.x + Math.sin(subP * b.wobble + b.phase) * 25;
+      var rot = b.baseRot + subP * b.rotSpeed;
 
-        ctx.fillStyle = '#2d6b3f';
-        ctx.font = 'bold ' + Math.round(b.h * 0.7) + 'px DM Sans, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('$', 0, 0);
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rot);
+      ctx.globalAlpha = b.opacity;
 
-        ctx.restore();
-      });
-    }
-    animateMoney();
+      ctx.fillStyle = '#4a8c5c';
+      ctx.fillRect(-b.w / 2, -b.h / 2, b.w, b.h);
+      ctx.strokeStyle = '#2d6b3f';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(-b.w / 2 + 2, -b.h / 2 + 2, b.w - 4, b.h - 4);
+
+      ctx.fillStyle = '#2d6b3f';
+      ctx.font = 'bold ' + Math.round(b.h * 0.7) + 'px DM Sans, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('$', 0, 0);
+
+      ctx.restore();
+    });
   }
 
   function cleanupMoneyRain() {
-    if (moneyAnimId) { cancelAnimationFrame(moneyAnimId); moneyAnimId = null; }
     if (moneyCanvas && moneyCanvas.parentElement) {
       gsap.to(moneyCanvas, {
         opacity: 0, duration: 0.3,
@@ -1559,10 +1575,12 @@
           updateProgressBar(navEl, progress);
 
           // Sub-progress: how far into this step's scroll-driven animation
-          // Animation plays from midpoint (where step switches) to snap position
+          // All steps are scroll-driven — subP goes 0→1 within each step's range
           var subP;
           if (step === 0) {
-            subP = 1; // step 0 auto-plays on enter, always "complete"
+            // Step 0: animate from progress 0 to halfway toward step 1
+            var halfStep = 0.5 * stepFrac;
+            subP = Math.max(0, Math.min(1, progress / halfStep));
           } else {
             var midpoint = (step - 0.5) * stepFrac;
             var snapPos = step * stepFrac;
