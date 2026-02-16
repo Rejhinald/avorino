@@ -163,6 +163,7 @@
     aduGroups.openings = buildOpenings();
     aduGroups.furniture = buildFurniture();
     aduGroups.interior = buildInteriorLights();
+    aduGroups.environment = buildEnvironment();
 
     scene.add(aduGroups.foundation);
     scene.add(aduGroups.floors);
@@ -170,6 +171,7 @@
     scene.add(aduGroups.openings);
     scene.add(aduGroups.furniture);
     scene.add(aduGroups.interior);
+    scene.add(aduGroups.environment);
 
     // Start render loop
     renderLoop();
@@ -725,42 +727,133 @@
   function buildInteriorLights() {
     var g = new THREE.Group();
     var lights = [];
-    var fixtureMat = new THREE.MeshStandardMaterial({
-      color: 0x222222, roughness: 0.4, metalness: 0.3,
-    });
-    var lensMat = new THREE.MeshStandardMaterial({
-      color: 0xFFEED0, roughness: 0.2,
-      emissive: 0xFFE8C0, emissiveIntensity: 0,
-    });
 
     ceilingLightDefs.forEach(function (def) {
-      // Recessed housing — small cylinder flush with ceiling
-      var housing = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.4, 0.4, 0.2, 16),
-        fixtureMat
-      );
-      housing.position.set(def.x, WALL_H - 0.1, def.z);
-      g.add(housing);
-
-      // Light lens/diffuser — slightly recessed warm disc
-      var lens = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.3, 0.3, 0.05, 16),
-        lensMat.clone()
-      );
-      lens.position.set(def.x, WALL_H - 0.22, def.z);
-      g.add(lens);
-
-      // PointLight — warm, aimed downward
+      // PointLight — warm, aimed downward (fixture geometry invisible)
       var light = new THREE.PointLight(def.color, def.intensity, 18, 2);
       light.position.set(def.x, WALL_H - 0.5, def.z);
       light.castShadow = false;
       g.add(light);
       light.userData._maxIntensity = def.intensity;
-      light.userData._lens = lens;
       lights.push(light);
     });
 
     g.userData.lights = lights;
+    return g;
+  }
+
+  // ── Outdoor environment (trees, bushes, walkway, fence) ──
+  function buildEnvironment() {
+    var g = new THREE.Group();
+
+    // Materials
+    var trunkMat = mat(0x2A1F14, 0.9);
+    var canopyMat = mat(0x1A2E1A, 0.95);
+    var bushMat = mat(0x1C2D1C, 0.95);
+    var pathMat = new THREE.MeshStandardMaterial({ color: 0x3A3530, roughness: 0.92 });
+    var fenceMat = mat(0x3D3028, 0.85);
+    var postMat = mat(0x2E2418, 0.8);
+
+    // Helper: tree (trunk cylinder + canopy sphere)
+    function addTree(x, z, height, canopyR) {
+      var trunk = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.3, 0.4, height, 8),
+        trunkMat
+      );
+      trunk.position.set(x, height / 2, z);
+      trunk.castShadow = true;
+      g.add(trunk);
+
+      var canopy = new THREE.Mesh(
+        new THREE.SphereGeometry(canopyR, 12, 10),
+        canopyMat
+      );
+      canopy.position.set(x, height + canopyR * 0.6, z);
+      canopy.castShadow = true;
+      g.add(canopy);
+    }
+
+    // Helper: bush (squashed sphere)
+    function addBush(x, z, r) {
+      var bush = new THREE.Mesh(
+        new THREE.SphereGeometry(r, 10, 8),
+        bushMat
+      );
+      bush.position.set(x, r * 0.6, z);
+      bush.scale.y = 0.65;
+      bush.castShadow = true;
+      g.add(bush);
+    }
+
+    // Trees — scattered around the ADU
+    addTree(-6, 5, 8, 3.5);       // left front
+    addTree(-4, 18, 10, 4);       // left rear
+    addTree(36, 3, 9, 3.8);       // right front
+    addTree(38, 16, 7, 3);        // right rear
+    addTree(15, -8, 11, 4.5);     // front center (behind camera usually)
+
+    // Bushes — along the ADU perimeter
+    addBush(-1.5, 2, 1.2);        // left front corner
+    addBush(-1.5, 6, 1.0);
+    addBush(31.5, 2, 1.1);        // right front corner
+    addBush(31.5, 8, 0.9);
+    addBush(10, -1.5, 1.0);       // front hedge
+    addBush(13, -1.8, 1.3);
+    addBush(20, -1.5, 1.1);
+    addBush(24, -1.8, 0.9);
+
+    // Walkway — path from front door to "street" (extends toward camera)
+    var walkGeo = new THREE.BoxGeometry(3.5, 0.08, 12);
+    var walk = new THREE.Mesh(walkGeo, pathMat);
+    walk.position.set(7, 0.04, -6);
+    walk.receiveShadow = true;
+    g.add(walk);
+
+    // Small patio slab at front door
+    var patio = new THREE.Mesh(
+      new THREE.BoxGeometry(6, 0.06, 3),
+      pathMat
+    );
+    patio.position.set(7, 0.03, -1);
+    patio.receiveShadow = true;
+    g.add(patio);
+
+    // Fence — short picket fence along front (south) side
+    var fenceLen = 10;
+    var fenceH = 2.5;
+    // Left section
+    var fenceL = new THREE.Mesh(
+      new THREE.BoxGeometry(fenceLen, fenceH, 0.15),
+      fenceMat
+    );
+    fenceL.position.set(-3, fenceH / 2, -3);
+    fenceL.castShadow = true;
+    g.add(fenceL);
+    // Right section
+    var fenceR = new THREE.Mesh(
+      new THREE.BoxGeometry(12, fenceH, 0.15),
+      fenceMat
+    );
+    fenceR.position.set(28, fenceH / 2, -3);
+    fenceR.castShadow = true;
+    g.add(fenceR);
+
+    // Fence posts
+    [[-8, -3], [2, -3], [22, -3], [34, -3]].forEach(function (p) {
+      var post = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.15, 0.15, fenceH + 0.5, 6),
+        postMat
+      );
+      post.position.set(p[0], (fenceH + 0.5) / 2, p[1]);
+      post.castShadow = true;
+      g.add(post);
+    });
+
+    // Small exterior light near front door (warm glow)
+    var porchLight = new THREE.PointLight(0xFFD080, 2, 8, 2);
+    porchLight.position.set(7, 6, -0.5);
+    g.add(porchLight);
+
     return g;
   }
 
@@ -1030,7 +1123,7 @@
 
     // Override all ADU meshes to blueprint tint
     Object.keys(aduGroups).forEach(function (key) {
-      if (key === 'interior') return;
+      if (key === 'interior' || key === 'environment') return;
       aduGroups[key].traverse(function (obj) {
         if (obj.isMesh && obj.material) {
           obj.userData._origMat = obj.material;
@@ -1064,7 +1157,7 @@
   function cleanupBlueprint() {
     // Restore original materials
     Object.keys(aduGroups).forEach(function (key) {
-      if (key === 'interior') return;
+      if (key === 'interior' || key === 'environment') return;
       aduGroups[key].traverse(function (obj) {
         if (obj.isMesh && obj.userData._origMat) {
           obj.material = obj.userData._origMat;
@@ -1460,21 +1553,9 @@
     );
     camera.lookAt(CX, 3, CZ);
 
-    // Boost ceiling lights from normal (1x) to warm glow (1.6x) + lens glow
+    // Boost ceiling lights from normal (1x) to warm glow (1.6x)
     var boostFactor = 1 + 0.6 * t;
     setLightsIntensity(boostFactor);
-
-    // Lens emissive glow
-    var lights = aduGroups.interior.userData.lights;
-    if (lights) {
-      lights.forEach(function (light) {
-        var lens = light.userData._lens;
-        if (lens && lens.material) {
-          lens.material.emissiveIntensity = t * 1.5;
-          lens.material.needsUpdate = true;
-        }
-      });
-    }
 
     // Window glass warms to golden
     aduGroups.openings.traverse(function (obj) {
@@ -1497,17 +1578,6 @@
 
   function cleanupWarmGlow() {
     setLightsIntensity(1);
-    // Reset lens glow
-    var lights = aduGroups.interior.userData.lights;
-    if (lights) {
-      lights.forEach(function (light) {
-        var lens = light.userData._lens;
-        if (lens && lens.material) {
-          lens.material.emissiveIntensity = 0;
-          lens.material.needsUpdate = true;
-        }
-      });
-    }
     resetWindowGlass();
     markDirty();
   }
@@ -1536,6 +1606,7 @@
 
   function setGroupsVisible(visible) {
     Object.keys(aduGroups).forEach(function (key) {
+      if (key === 'environment') return; // always visible
       aduGroups[key].visible = visible;
     });
   }
