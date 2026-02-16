@@ -23,42 +23,6 @@
   ScrollTrigger.addEventListener('refresh', function () { lenis.resize(); });
 
   /* ═══════════════════════════════════════════════
-     CUSTOM CURSOR
-     ═══════════════════════════════════════════════ */
-  var cursorRing = document.querySelector('.cursor-ring');
-  var cursorDot = document.querySelector('.cursor-dot');
-  var mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
-
-  if (cursorRing && cursorDot && window.innerWidth > 768) {
-    document.addEventListener('mousemove', function (e) {
-      mouseX = e.clientX; mouseY = e.clientY;
-      gsap.set(cursorDot, { x: mouseX, y: mouseY });
-    });
-    gsap.ticker.add(function () {
-      ringX += (mouseX - ringX) * 0.12;
-      ringY += (mouseY - ringY) * 0.12;
-      gsap.set(cursorRing, { x: ringX, y: ringY });
-    });
-
-    document.querySelectorAll('a, button, [data-magnetic]').forEach(function (el) {
-      el.addEventListener('mouseenter', function () { cursorRing.classList.add('hover-link'); });
-      el.addEventListener('mouseleave', function () { cursorRing.classList.remove('hover-link'); });
-    });
-
-    document.querySelectorAll('[data-magnetic]').forEach(function (btn) {
-      btn.addEventListener('mousemove', function (e) {
-        var rect = btn.getBoundingClientRect();
-        var dx = e.clientX - (rect.left + rect.width / 2);
-        var dy = e.clientY - (rect.top + rect.height / 2);
-        gsap.to(btn, { x: dx * 0.25, y: dy * 0.25, duration: 0.4, ease: 'power3.out' });
-      });
-      btn.addEventListener('mouseleave', function () {
-        gsap.to(btn, { x: 0, y: 0, duration: 0.8, ease: 'elastic.out(1, 0.5)' });
-      });
-    });
-  }
-
-  /* ═══════════════════════════════════════════════
      UTILITY — TEXT SPLITTING
      Fixed: uses flex gap instead of marginRight
      ═══════════════════════════════════════════════ */

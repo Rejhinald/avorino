@@ -105,13 +105,13 @@
 
   function createScene(canvas) {
     scene = new THREE.Scene();
-    scene.background = null; // transparent
+    scene.background = new THREE.Color(0x0B0E18); // dark night sky
 
     // Renderer
-    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.0;
+    renderer.toneMappingExposure = 0.9;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     resizeRenderer();
@@ -121,33 +121,35 @@
     camera.position.set(CX, 28, ADU_D + 28);
     camera.lookAt(CX, 3, CZ);
 
-    // Lighting
-    var hemi = new THREE.HemisphereLight(0xB1E1FF, 0xB97A20, 0.5);
+    // Lighting — nighttime: cool moonlight + dim ambient
+    var hemi = new THREE.HemisphereLight(0x1a2040, 0x0a0a15, 0.15);
     scene.add(hemi);
 
-    var sun = new THREE.DirectionalLight(0xffffff, 1.2);
-    sun.position.set(CX + 30, 50, CZ + 30);
-    sun.castShadow = true;
-    sun.shadow.mapSize.width = 2048;
-    sun.shadow.mapSize.height = 2048;
-    sun.shadow.camera.left = -40;
-    sun.shadow.camera.right = 40;
-    sun.shadow.camera.top = 40;
-    sun.shadow.camera.bottom = -40;
-    sun.shadow.camera.far = 120;
-    sun.shadow.bias = -0.0005;
-    scene.add(sun);
+    // Moonlight — cool blue-white, low intensity, from upper-left
+    var moon = new THREE.DirectionalLight(0x8899CC, 0.35);
+    moon.position.set(CX - 25, 55, CZ + 35);
+    moon.castShadow = true;
+    moon.shadow.mapSize.width = 2048;
+    moon.shadow.mapSize.height = 2048;
+    moon.shadow.camera.left = -40;
+    moon.shadow.camera.right = 40;
+    moon.shadow.camera.top = 40;
+    moon.shadow.camera.bottom = -40;
+    moon.shadow.camera.far = 120;
+    moon.shadow.bias = -0.0005;
+    scene.add(moon);
 
-    var fill = new THREE.DirectionalLight(0xffffff, 0.4);
-    fill.position.set(CX - 20, 30, CZ - 20);
+    // Very subtle fill from opposite side
+    var fill = new THREE.DirectionalLight(0x334466, 0.1);
+    fill.position.set(CX + 20, 25, CZ - 20);
     scene.add(fill);
 
-    var ambient = new THREE.AmbientLight(0xffffff, 0.3);
+    var ambient = new THREE.AmbientLight(0x1a1a2e, 0.25);
     scene.add(ambient);
 
-    // Ground plane — warm concrete/landscape
+    // Ground plane — dark landscape
     var groundGeo = new THREE.PlaneGeometry(120, 120);
-    var groundMat = new THREE.MeshStandardMaterial({ color: 0xD5CFBF, roughness: 0.95 });
+    var groundMat = new THREE.MeshStandardMaterial({ color: 0x1A1C22, roughness: 0.95 });
     var ground = new THREE.Mesh(groundGeo, groundMat);
     ground.rotation.x = -Math.PI / 2;
     ground.position.set(CX, -0.01, CZ);
@@ -700,23 +702,65 @@
     g.add(border);
   }
 
-  // ── Interior lights (for warm glow in step 6) ──
+  // ── Interior recessed ceiling lights ──
+  // Each room gets 2-3 recessed can lights (fixture geometry + PointLight)
+  var ceilingLightDefs = [
+    // Living room (0-15, 0-12): 3 lights
+    { x: 5,  z: 4,  color: 0xFFD699, intensity: 6 },
+    { x: 10, z: 4,  color: 0xFFD699, intensity: 6 },
+    { x: 7.5,z: 9,  color: 0xFFD699, intensity: 5 },
+    // Kitchen (15-30, 0-12): 3 lights
+    { x: 20, z: 3,  color: 0xFFF0D0, intensity: 6 },
+    { x: 26, z: 3,  color: 0xFFF0D0, intensity: 6 },
+    { x: 23, z: 9,  color: 0xFFF0D0, intensity: 5 },
+    // Bedroom (8-30, 12-20): 3 lights
+    { x: 14, z: 15, color: 0xFFE4B5, intensity: 5 },
+    { x: 22, z: 15, color: 0xFFE4B5, intensity: 5 },
+    { x: 18, z: 18, color: 0xFFE4B5, intensity: 4 },
+    // Bathroom (0-8, 12-20): 2 lights
+    { x: 4,  z: 14.5, color: 0xFFF5EE, intensity: 5 },
+    { x: 4,  z: 18,   color: 0xFFF5EE, intensity: 4 },
+  ];
+
   function buildInteriorLights() {
     var g = new THREE.Group();
-    // Per-room point lights for warm glow effect
-    var living = new THREE.PointLight(0xFFD699, 0, 22, 2);
-    living.position.set(7.5, WALL_H - 2, 6);
-    g.add(living);
-    var kitchen = new THREE.PointLight(0xFFF0D0, 0, 22, 2);
-    kitchen.position.set(22.5, WALL_H - 2, 6);
-    g.add(kitchen);
-    var bedroom = new THREE.PointLight(0xFFE4B5, 0, 22, 2);
-    bedroom.position.set(19, WALL_H - 2, 16);
-    g.add(bedroom);
-    var bathroom = new THREE.PointLight(0xFFF5EE, 0, 18, 2);
-    bathroom.position.set(4, WALL_H - 2, 16);
-    g.add(bathroom);
-    g.userData.lights = [living, kitchen, bedroom, bathroom];
+    var lights = [];
+    var fixtureMat = new THREE.MeshStandardMaterial({
+      color: 0x222222, roughness: 0.4, metalness: 0.3,
+    });
+    var lensMat = new THREE.MeshStandardMaterial({
+      color: 0xFFEED0, roughness: 0.2,
+      emissive: 0xFFE8C0, emissiveIntensity: 0,
+    });
+
+    ceilingLightDefs.forEach(function (def) {
+      // Recessed housing — small cylinder flush with ceiling
+      var housing = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.4, 0.4, 0.2, 16),
+        fixtureMat
+      );
+      housing.position.set(def.x, WALL_H - 0.1, def.z);
+      g.add(housing);
+
+      // Light lens/diffuser — slightly recessed warm disc
+      var lens = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.3, 0.3, 0.05, 16),
+        lensMat.clone()
+      );
+      lens.position.set(def.x, WALL_H - 0.22, def.z);
+      g.add(lens);
+
+      // PointLight — warm, aimed downward
+      var light = new THREE.PointLight(def.color, def.intensity, 18, 2);
+      light.position.set(def.x, WALL_H - 0.5, def.z);
+      light.castShadow = false;
+      g.add(light);
+      light.userData._maxIntensity = def.intensity;
+      light.userData._lens = lens;
+      lights.push(light);
+    });
+
+    g.userData.lights = lights;
     return g;
   }
 
@@ -981,6 +1025,9 @@
       }
     });
 
+    // Dim ceiling lights for blueprint view
+    setLightsIntensity(0.15);
+
     // Override all ADU meshes to blueprint tint
     Object.keys(aduGroups).forEach(function (key) {
       if (key === 'interior') return;
@@ -1041,14 +1088,11 @@
     aduGroups.walls.scale.set(1, 1, 1);
     aduGroups.furniture.children.forEach(function (p) { p.scale.set(1, 1, 1); });
 
-    // Reset window glass to normal
-    aduGroups.openings.traverse(function (obj) {
-      if (obj.isMesh && obj.material && obj.material.transparent) {
-        obj.material.opacity = 0.3;
-        obj.material.color.setRGB(0.529, 0.808, 0.922);
-        obj.material.needsUpdate = true;
-      }
-    });
+    // Ceiling lights ON — nighttime showcase
+    setLightsIntensity(1);
+
+    // Reset window glass — warm glow at night
+    resetWindowGlass();
 
     // Make all openings fully opaque
     aduGroups.openings.traverse(function (obj) {
@@ -1086,7 +1130,7 @@
   // ── Step 3: Money Rain (scroll-driven particle system) ──
   function prepareMoneyRain() {
     if (!fxEl) return;
-    if (canvasEl) gsap.to(canvasEl, { opacity: 0.15, duration: 0.4, overwrite: 'auto' });
+    if (canvasEl) gsap.to(canvasEl, { opacity: 0.25, duration: 0.4, overwrite: 'auto' });
 
     if (!moneyCanvas) {
       moneyCanvas = document.createElement('canvas');
@@ -1187,7 +1231,7 @@
 
   function prepareStamp() {
     if (!fxEl) return;
-    if (canvasEl) gsap.to(canvasEl, { opacity: 0.06, duration: 0.3, overwrite: 'auto' });
+    if (canvasEl) gsap.to(canvasEl, { opacity: 0.15, duration: 0.3, overwrite: 'auto' });
 
     if (!stampSvg) {
       stampSvg = svgEl('svg', {
@@ -1195,105 +1239,63 @@
         preserveAspectRatio: 'xMidYMid meet',
       });
       stampSvg.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;';
+      stampSvg.appendChild(svgEl('defs'));
 
-      var defs = svgEl('defs');
-      var fShadow = svgEl('filter', { id: 'seal-shadow', x: '-20%', y: '-20%', width: '140%', height: '140%' });
-      var feOff = svgEl('feOffset', { dx: '0', dy: '4', in: 'SourceAlpha', result: 'off' });
-      var feBlur = svgEl('feGaussianBlur', { stdDeviation: '8', in: 'off', result: 'blur' });
-      var feColor = svgEl('feFlood', { 'flood-color': 'rgba(0,0,0,0.15)', result: 'color' });
-      var feComp = svgEl('feComposite', { in: 'color', in2: 'blur', operator: 'in', result: 'shadow' });
-      var feMerge = svgEl('feMerge');
-      feMerge.appendChild(svgEl('feMergeNode', { in: 'shadow' }));
-      feMerge.appendChild(svgEl('feMergeNode', { in: 'SourceGraphic' }));
-      fShadow.appendChild(feOff);
-      fShadow.appendChild(feBlur);
-      fShadow.appendChild(feColor);
-      fShadow.appendChild(feComp);
-      fShadow.appendChild(feMerge);
-      defs.appendChild(fShadow);
-
-      var grad = svgEl('radialGradient', { id: 'seal-grad', cx: '40%', cy: '35%', r: '60%' });
-      grad.appendChild(svgEl('stop', { offset: '0%', 'stop-color': '#d4343c' }));
-      grad.appendChild(svgEl('stop', { offset: '50%', 'stop-color': '#b8202a' }));
-      grad.appendChild(svgEl('stop', { offset: '100%', 'stop-color': '#8a1820' }));
-      defs.appendChild(grad);
-
-      var hGrad = svgEl('radialGradient', { id: 'seal-highlight', cx: '35%', cy: '30%', r: '50%' });
-      hGrad.appendChild(svgEl('stop', { offset: '0%', 'stop-color': 'rgba(255,255,255,0.15)' }));
-      hGrad.appendChild(svgEl('stop', { offset: '100%', 'stop-color': 'rgba(255,255,255,0)' }));
-      defs.appendChild(hGrad);
-
-      stampSvg.appendChild(defs);
-
-      var sg = svgEl('g', { filter: 'url(#seal-shadow)' });
+      var sg = svgEl('g');
       stampSvg.appendChild(sg);
 
-      sg.appendChild(svgEl('circle', { r: '130', fill: 'url(#seal-grad)' }));
-      sg.appendChild(svgEl('circle', { r: '130', fill: 'url(#seal-highlight)' }));
-      sg.appendChild(svgEl('circle', { r: '124', fill: 'none', stroke: 'rgba(255,255,255,0.12)', 'stroke-width': '2' }));
-      sg.appendChild(svgEl('circle', { r: '118', fill: 'none', stroke: 'rgba(255,255,255,0.08)', 'stroke-width': '1' }));
-      sg.appendChild(svgEl('circle', { r: '100', fill: 'none', stroke: 'rgba(255,255,255,0.1)', 'stroke-width': '1' }));
+      // Minimal stamp — thin cream circles + clean text
+      var strokeColor = 'rgba(240, 237, 232, 0.6)';
+      var textColor = 'rgba(240, 237, 232, 0.9)';
+      var dimColor = 'rgba(240, 237, 232, 0.35)';
 
-      var dotCount = 48;
-      for (var di = 0; di < dotCount; di++) {
-        var angle = (di / dotCount) * Math.PI * 2;
-        var dx = Math.cos(angle) * 111;
-        var dy = Math.sin(angle) * 111;
-        sg.appendChild(svgEl('circle', {
-          cx: String(dx.toFixed(1)), cy: String(dy.toFixed(1)),
-          r: '1.5', fill: 'rgba(255,255,255,0.15)',
-        }));
-      }
+      // Outer circle
+      sg.appendChild(svgEl('circle', {
+        r: '120', fill: 'none', stroke: strokeColor, 'stroke-width': '1.5',
+      }));
+      // Inner circle
+      sg.appendChild(svgEl('circle', {
+        r: '105', fill: 'none', stroke: strokeColor, 'stroke-width': '0.5',
+      }));
 
-      sg.appendChild(svgEl('line', { x1: '-85', y1: '-14', x2: '-35', y2: '-14', stroke: 'rgba(255,255,255,0.12)', 'stroke-width': '1' }));
-      sg.appendChild(svgEl('line', { x1: '35', y1: '-14', x2: '85', y2: '-14', stroke: 'rgba(255,255,255,0.12)', 'stroke-width': '1' }));
-      sg.appendChild(svgEl('line', { x1: '-85', y1: '24', x2: '-35', y2: '24', stroke: 'rgba(255,255,255,0.12)', 'stroke-width': '1' }));
-      sg.appendChild(svgEl('line', { x1: '35', y1: '24', x2: '85', y2: '24', stroke: 'rgba(255,255,255,0.12)', 'stroke-width': '1' }));
+      // Horizontal rules flanking text
+      sg.appendChild(svgEl('line', {
+        x1: '-80', y1: '-16', x2: '-20', y2: '-16',
+        stroke: dimColor, 'stroke-width': '0.5',
+      }));
+      sg.appendChild(svgEl('line', {
+        x1: '20', y1: '-16', x2: '80', y2: '-16',
+        stroke: dimColor, 'stroke-width': '0.5',
+      }));
+      sg.appendChild(svgEl('line', {
+        x1: '-80', y1: '22', x2: '-20', y2: '22',
+        stroke: dimColor, 'stroke-width': '0.5',
+      }));
+      sg.appendChild(svgEl('line', {
+        x1: '20', y1: '22', x2: '80', y2: '22',
+        stroke: dimColor, 'stroke-width': '0.5',
+      }));
 
-      [-62, 62].forEach(function (xOff) {
-        var star = svgEl('text', {
-          x: String(xOff), y: '-9', 'text-anchor': 'middle',
-          fill: 'rgba(255,255,255,0.7)', 'font-size': '16',
-        });
-        star.textContent = '\u2605';
-        sg.appendChild(star);
-      });
-
+      // "PERMIT" — small caps above
       sg.appendChild(Object.assign(svgEl('text', {
-        y: '-58', 'text-anchor': 'middle', fill: 'rgba(255,255,255,0.6)',
+        y: '-32', 'text-anchor': 'middle', fill: dimColor,
         'font-size': '10', 'font-family': 'DM Sans, sans-serif',
-        'font-weight': '700', 'letter-spacing': '0.4em',
-      }), { textContent: 'CITY OF' }));
-
-      sg.appendChild(Object.assign(svgEl('text', {
-        y: '-40', 'text-anchor': 'middle', fill: 'rgba(255,255,255,0.7)',
-        'font-size': '13', 'font-family': 'DM Sans, sans-serif',
-        'font-weight': '700', 'letter-spacing': '0.25em',
-      }), { textContent: 'ORANGE COUNTY' }));
-
-      sg.appendChild(Object.assign(svgEl('text', {
-        y: '14', 'text-anchor': 'middle', fill: 'rgba(255,255,255,0.95)',
-        'font-size': '38', 'font-family': 'DM Serif Display, serif',
-        'font-weight': '400', 'letter-spacing': '0.06em',
-      }), { textContent: 'APPROVED' }));
-
-      sg.appendChild(Object.assign(svgEl('text', {
-        y: '46', 'text-anchor': 'middle', fill: 'rgba(255,255,255,0.6)',
-        'font-size': '11', 'font-family': 'DM Sans, sans-serif',
-        'font-weight': '600', 'letter-spacing': '0.3em',
+        'font-weight': '500', 'letter-spacing': '0.35em',
       }), { textContent: 'BUILDING PERMIT' }));
 
+      // "APPROVED" — main text
       sg.appendChild(Object.assign(svgEl('text', {
-        y: '66', 'text-anchor': 'middle', fill: 'rgba(255,255,255,0.35)',
-        'font-size': '8', 'font-family': 'DM Sans, sans-serif',
-        'letter-spacing': '0.12em',
-      }), { textContent: 'NO. 2025-ADU-04782  \u2022  CALIFORNIA' }));
+        y: '12', 'text-anchor': 'middle', fill: textColor,
+        'font-size': '34', 'font-family': 'DM Serif Display, serif',
+        'font-weight': '400', 'letter-spacing': '0.08em',
+      }), { textContent: 'APPROVED' }));
 
+      // Permit number
       sg.appendChild(Object.assign(svgEl('text', {
-        y: '82', 'text-anchor': 'middle', fill: 'rgba(255,255,255,0.3)',
-        'font-size': '8', 'font-family': 'DM Sans, sans-serif',
-        'font-weight': '600', 'letter-spacing': '0.2em',
-      }), { textContent: 'RESIDENTIAL CONSTRUCTION' }));
+        y: '42', 'text-anchor': 'middle', fill: dimColor,
+        'font-size': '7.5', 'font-family': 'DM Sans, sans-serif',
+        'letter-spacing': '0.15em',
+      }), { textContent: 'NO. 2025-ADU-04782' }));
 
       stampSvg._stamp = sg;
     }
@@ -1339,6 +1341,9 @@
 
     // Reset all groups to invisible
     setGroupsVisible(false);
+
+    // Lights off at start — will turn on as building progresses
+    setLightsIntensity(0);
 
     // Reset material states
     aduGroups.openings.traverse(function (obj) {
@@ -1402,6 +1407,10 @@
       piece.scale.set(s, s, s);
     });
 
+    // Ceiling lights fade on as furniture appears (60% – 85%)
+    var lightP = smoothstep(remap(subP, 0.60, 0.85));
+    setLightsIntensity(lightP);
+
     // Show card after build completes (80%+)
     if (subP > 0.80 && !step5CardShown) {
       step5CardShown = true;
@@ -1432,9 +1441,8 @@
     aduGroups.walls.scale.set(1, 1, 1);
     aduGroups.furniture.children.forEach(function (p) { p.scale.set(1, 1, 1); });
 
-    // Reset interior lights
-    var lights = aduGroups.interior.userData.lights;
-    if (lights) lights.forEach(function (l) { l.intensity = 0; });
+    // Start with normal ceiling lights
+    setLightsIntensity(1);
 
     gsap.to(canvasEl, { opacity: 1, duration: 0.6, overwrite: 'auto' });
     markDirty();
@@ -1452,12 +1460,19 @@
     );
     camera.lookAt(CX, 3, CZ);
 
-    // Interior lights warm up — staggered per room (gentle glow, not blinding)
+    // Boost ceiling lights from normal (1x) to warm glow (1.6x) + lens glow
+    var boostFactor = 1 + 0.6 * t;
+    setLightsIntensity(boostFactor);
+
+    // Lens emissive glow
     var lights = aduGroups.interior.userData.lights;
     if (lights) {
-      lights.forEach(function (light, i) {
-        var lightT = smoothstep(remap(t, i * 0.12, 0.4 + i * 0.1));
-        light.intensity = lightT * 8;
+      lights.forEach(function (light) {
+        var lens = light.userData._lens;
+        if (lens && lens.material) {
+          lens.material.emissiveIntensity = t * 1.5;
+          lens.material.needsUpdate = true;
+        }
       });
     }
 
@@ -1481,8 +1496,34 @@
   }
 
   function cleanupWarmGlow() {
+    setLightsIntensity(1);
+    // Reset lens glow
     var lights = aduGroups.interior.userData.lights;
-    if (lights) lights.forEach(function (l) { l.intensity = 0; });
+    if (lights) {
+      lights.forEach(function (light) {
+        var lens = light.userData._lens;
+        if (lens && lens.material) {
+          lens.material.emissiveIntensity = 0;
+          lens.material.needsUpdate = true;
+        }
+      });
+    }
+    resetWindowGlass();
+    markDirty();
+  }
+
+  // Set all ceiling lights to a fraction of their max intensity (0=off, 1=normal, >1=boosted)
+  function setLightsIntensity(fraction) {
+    var lights = aduGroups.interior && aduGroups.interior.userData.lights;
+    if (!lights) return;
+    lights.forEach(function (light) {
+      light.intensity = (light.userData._maxIntensity || 6) * fraction;
+    });
+  }
+
+  // Reset window glass to default cool blue
+  function resetWindowGlass() {
+    if (!aduGroups.openings) return;
     aduGroups.openings.traverse(function (obj) {
       if (obj.isMesh && obj.material && obj.material.transparent) {
         obj.material.color.setRGB(0.529, 0.808, 0.922);
@@ -1491,7 +1532,6 @@
         obj.material.needsUpdate = true;
       }
     });
-    markDirty();
   }
 
   function setGroupsVisible(visible) {
@@ -1533,6 +1573,9 @@
     currentStep = 0;
 
     if (!isMobile && typeof THREE !== 'undefined' && visualEl) {
+      // Dark background so 2D overlay steps (money rain, stamp) stay dark
+      visualEl.style.backgroundColor = '#0B0E18';
+
       // Create Three.js canvas
       canvasEl = document.createElement('canvas');
       canvasEl.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;';

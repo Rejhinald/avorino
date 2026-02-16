@@ -1,56 +1,9 @@
 /* Avorino About Page — Head CSS
    Page Settings → Custom Code → Head Code
-   Covers: custom cursor, interactive transitions, hover states */
+   Covers: interactive transitions, hover states */
 
 /* ─── Prevent Horizontal Scroll ─── */
 html, body { overflow-x: hidden; }
-
-/* ─── Hide Default Cursor ─── */
-body { cursor: none; }
-a, button { cursor: none; }
-
-/* ─── Custom Cursor: Ring ─── */
-.cursor-ring {
-  position: fixed;
-  top: 0; left: 0;
-  width: 40px; height: 40px;
-  border: 1px solid rgba(240, 237, 232, 0.5);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  mix-blend-mode: difference;
-  transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
-  transform: translate(-50%, -50%);
-  will-change: transform;
-}
-
-/* ─── Custom Cursor: Dot ─── */
-.cursor-dot {
-  position: fixed;
-  top: 0; left: 0;
-  width: 6px; height: 6px;
-  background: rgba(240, 237, 232, 0.8);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  mix-blend-mode: difference;
-  transform: translate(-50%, -50%);
-  transition: opacity 0.2s ease;
-  will-change: transform;
-}
-
-/* ─── Cursor Hover States ─── */
-.cursor-ring.hover-link {
-  width: 64px; height: 64px;
-  border-color: rgba(240, 237, 232, 0.3);
-}
-.cursor-ring.hover-link ~ .cursor-dot { opacity: 0; }
-
-/* ─── Hide Cursor on Touch/Mobile ─── */
-@media (max-width: 767px) {
-  body, a, button { cursor: auto; }
-  .cursor-ring, .cursor-dot { display: none; }
-}
 
 /* ─── Button Transitions ─── */
 .about-cta-btn {
