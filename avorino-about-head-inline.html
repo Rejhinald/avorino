@@ -85,6 +85,13 @@ html, body { overflow-x: hidden; }
 /* ─── Process Section: Full-Width Scroll-Lock + Three.js ─── */
 #about-process {
   overflow: hidden;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+/* Restore horizontal spacing for header elements above the pinned viewport */
+#about-process > :not([data-process-pinned]) {
+  margin-left: 80px;
+  margin-right: 80px;
 }
 .about-process-pinned {
   width: 100vw !important;
@@ -215,6 +222,10 @@ html, body { overflow-x: hidden; }
     width: 100% !important;
     max-width: 100% !important;
   }
+  #about-process > :not([data-process-pinned]) {
+    margin-left: 40px !important;
+    margin-right: 40px !important;
+  }
   .about-process-pinned {
     height: auto !important;
     flex-direction: column;
@@ -228,6 +239,7 @@ html, body { overflow-x: hidden; }
     position: relative !important;
     flex-direction: column;
     gap: 32px;
+    padding: 0 40px;
     pointer-events: auto;
   }
   .about-process-card {
@@ -331,7 +343,14 @@ html, body { overflow-x: hidden; }
     margin-bottom: 32px !important;
   }
 
-  /* Process cards */
+  /* Process header + cards */
+  #about-process > :not([data-process-pinned]) {
+    margin-left: 24px !important;
+    margin-right: 24px !important;
+  }
+  [data-process-cards] {
+    padding: 0 24px !important;
+  }
   .about-process-card {
     padding: 32px 24px !important;
   }
@@ -421,7 +440,14 @@ html, body { overflow-x: hidden; }
     padding: 40px 16px !important;
   }
 
-  /* Process cards */
+  /* Process header + cards */
+  #about-process > :not([data-process-pinned]) {
+    margin-left: 16px !important;
+    margin-right: 16px !important;
+  }
+  [data-process-cards] {
+    padding: 0 16px !important;
+  }
   .about-process-card {
     padding: 28px 20px !important;
   }
