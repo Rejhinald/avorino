@@ -1618,14 +1618,14 @@
     var section = document.getElementById('about-process');
     if (!section) return;
 
-    // Full-bleed: compute exact left offset and negate it
-    var rect = section.getBoundingClientRect();
-    section.style.marginLeft = (-rect.left) + 'px';
-    section.style.width = '100vw';
-    section.style.maxWidth = '100vw';
-
     var pinned = section.querySelector('[data-process-pinned]');
     if (!pinned) return;
+
+    // Full-bleed the pinned area — break out of parent section padding
+    var pRect = pinned.getBoundingClientRect();
+    pinned.style.marginLeft = (-pRect.left) + 'px';
+    pinned.style.width = '100vw';
+    pinned.style.maxWidth = '100vw';
 
     var visualEl = section.querySelector('[data-process-visual]');
     fxEl = section.querySelector('[data-process-fx]');
@@ -1677,16 +1677,9 @@
       ScrollTrigger.create({
         trigger: pinned,
         start: 'top top',
-        end: '+=' + (window.innerHeight * (totalSteps + 2)),  // extra scroll range for slower feel
+        end: '+=' + (window.innerHeight * (totalSteps + 2)),
         pin: true,
-        scrub: 2,
-        snap: {
-          snapTo: 1 / (totalSteps - 1),
-          duration: { min: 0.3, max: 0.8 },
-          delay: 0.4,
-          ease: 'power2.inOut',
-          inertia: false,
-        },
+        scrub: 1,
         onUpdate: function (self) {
           var progress = self.progress;
           var step = Math.round(progress * (totalSteps - 1));
