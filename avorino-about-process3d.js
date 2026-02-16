@@ -1617,6 +1617,13 @@
   function initProcessSection() {
     var section = document.getElementById('about-process');
     if (!section) return;
+
+    // Full-bleed: compute exact left offset and negate it
+    var rect = section.getBoundingClientRect();
+    section.style.marginLeft = (-rect.left) + 'px';
+    section.style.width = '100vw';
+    section.style.maxWidth = '100vw';
+
     var pinned = section.querySelector('[data-process-pinned]');
     if (!pinned) return;
 
