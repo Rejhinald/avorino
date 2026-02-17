@@ -1,0 +1,12 @@
+/* Service Sub-Page — shared across all 5 service pages */
+
+/* Cost stat numbers are text ranges, smaller font */
+#sv-cost .page-stat-number {
+  font-size: clamp(28px, 5vw, 48px);
+}
+
+@media (max-width: 767px) {
+  #sv-cost .page-stats {
+    grid-template-columns: 1fr !important;
+  }
+}

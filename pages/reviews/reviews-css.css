@@ -1,0 +1,16 @@
+/* Client Reviews Page — /clientreviews */
+
+.reviews-card {
+  display: flex;
+  flex-direction: column;
+}
+.reviews-stars {
+  font-size: 18px;
+  color: #f5c518;
+  letter-spacing: 2px;
+}
+.reviews-author {
+  margin-top: auto;
+  padding-top: 24px;
+  border-top: 1px solid rgba(240, 237, 232, 0.1);
+}

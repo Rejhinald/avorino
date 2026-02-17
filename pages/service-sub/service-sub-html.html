@@ -1,0 +1,85 @@
+<!-- Service Sub-Page Template
+     Used for: /buildcustomhome, /newconstruction, /addition, /garageconversion, /commercial
+     Replace {{SERVICE_NAME}}, {{SUBTITLE}}, {{DESCRIPTION}}, {{COST}}, {{TIMELINE}} with data from service-sub-data.js -->
+
+<!-- Hero -->
+<section class="page-hero" id="sv-hero">
+  <div class="page-hero-content">
+    <p class="page-label page-mb-16" data-animate="fade-up">Our Services</p>
+    <h1 data-animate="line-wipe">{{SERVICE_NAME}}</h1>
+    <p class="page-hero-subtitle" data-animate="fade-up">{{SUBTITLE}}</p>
+  </div>
+</section>
+
+<!-- Overview -->
+<section class="page-section page-section--warm" id="sv-overview">
+  <div class="page-grid-2col">
+    <div class="page-img-placeholder" data-animate="parallax-depth"></div>
+    <div>
+      <p class="page-label page-mb-16" data-animate="fade-up">Overview</p>
+      <h2 class="page-heading-xl page-mb-32" data-animate="blur-focus">{{SERVICE_NAME}}</h2>
+      <p class="page-body page-body--muted page-mb-24" data-animate="fade-up">{{DESCRIPTION}}</p>
+      <p class="page-body page-body--muted" data-animate="fade-up">From design to construction, we manage the entire process — collaborating with you on every detail while handling engineering, permits, and build.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Process -->
+<section class="page-section page-section--cream" id="sv-process">
+  <div class="page-mb-64 page-text-center">
+    <p class="page-label page-mb-16" data-animate="fade-up">Our Process</p>
+    <h2 class="page-heading-xl" data-animate="blur-focus">How we work</h2>
+  </div>
+
+  <div class="page-steps" data-animate="fade-up-stagger">
+    <div class="page-step" data-animate="fade-up">
+      <p class="page-step-number">Step 01</p>
+      <h3 class="page-step-title">Design</h3>
+      <p class="page-step-body">Work with our architects and engineers to create customized plans tailored to your vision, needs, and budget.</p>
+    </div>
+    <div class="page-step" data-animate="fade-up">
+      <p class="page-step-number">Step 02</p>
+      <h3 class="page-step-title">Permits</h3>
+      <p class="page-step-body">We submit plans to the city, manage all approvals, and secure every permit needed before breaking ground.</p>
+    </div>
+    <div class="page-step" data-animate="fade-up">
+      <p class="page-step-number">Step 03</p>
+      <h3 class="page-step-title">Build</h3>
+      <p class="page-step-body">Our licensed crew builds from start to finish with weekly updates, transparent pricing, and on-time delivery.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Cost -->
+<section class="page-section page-section--dark" id="sv-cost">
+  <div class="page-mb-64 page-text-center">
+    <p class="page-label page-mb-16" data-animate="fade-up">Pricing</p>
+    <h2 class="page-heading-xl" data-animate="blur-focus">Transparent costs</h2>
+  </div>
+
+  <div class="page-stats" style="grid-template-columns: 1fr 1fr;" data-animate="fade-up-stagger">
+    <div class="page-stat" data-animate="fade-up">
+      <div class="page-stat-number">{{COST}}</div>
+      <div class="page-stat-label">Estimated Cost</div>
+    </div>
+    <div class="page-stat" data-animate="fade-up">
+      <div class="page-stat-number">{{TIMELINE}}</div>
+      <div class="page-stat-label">Typical Timeline</div>
+    </div>
+  </div>
+
+  <div class="page-text-center" style="margin-top: 48px;">
+    <p class="page-body page-body--muted page-max-640 page-mx-auto" data-animate="fade-up">Once we provide a detailed proposal, pricing remains fixed. No surprises, no hidden fees — guaranteed.</p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="page-cta-section">
+  <div class="page-cta-container">
+    <h2 class="page-cta-heading" data-animate="word-stagger-elastic">Ready to get started?</h2>
+    <div class="page-cta-btns">
+      <a href="/free-estimate" class="page-btn page-btn--primary" data-magnetic>Get a Free Estimate <span>→</span></a>
+      <a href="/schedule-a-meeting" class="page-btn page-btn--outline" data-magnetic>Schedule a Call <span>→</span></a>
+    </div>
+  </div>
+</section>

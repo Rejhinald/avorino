@@ -1,0 +1,22 @@
+/* Investment / Flipping Opportunity Pages */
+
+.invest-fact + .invest-fact {
+  padding-top: 24px;
+  border-top: 1px solid rgba(240, 237, 232, 0.1);
+}
+
+#invest-returns .page-stat-number {
+  font-size: clamp(28px, 5vw, 48px);
+}
+
+.invest-cashflow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 767px) {
+  #invest-returns .page-stats {
+    grid-template-columns: 1fr !important;
+  }
+}

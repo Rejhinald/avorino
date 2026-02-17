@@ -1,0 +1,25 @@
+/* ADU Page — /adu */
+
+.adu-timeline-cards {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cost section: smaller stat numbers for ranges */
+#adu-cost .page-stat-number {
+  font-size: clamp(28px, 5vw, 48px);
+}
+
+@media (max-width: 991px) {
+  #adu-cost .page-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 478px) {
+  #adu-cost .page-stats {
+    grid-template-columns: 1fr;
+  }
+  #adu-cost .page-stat-number {
+    font-size: clamp(24px, 8vw, 36px);
+  }
+}

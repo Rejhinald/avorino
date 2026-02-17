@@ -1,0 +1,22 @@
+/* City ADU Template — shared across all 25+ city pages */
+
+.city-regulation {
+  background-color: var(--cream);
+  border-radius: 8px;
+  padding: 40px 32px;
+}
+.city-fact + .city-fact {
+  padding-top: 24px;
+  border-top: 1px solid rgba(240, 237, 232, 0.1);
+}
+
+/* Cost stat numbers are text ranges, smaller font */
+#city-cost .page-stat-number {
+  font-size: clamp(24px, 4vw, 40px);
+}
+
+@media (max-width: 767px) {
+  #city-cost .page-stats {
+    grid-template-columns: 1fr !important;
+  }
+}

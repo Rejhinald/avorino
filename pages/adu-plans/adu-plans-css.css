@@ -1,0 +1,44 @@
+/* ADU Plan Samples Page */
+
+.plans-card {
+  overflow: hidden;
+}
+
+.plans-img {
+  height: 200px;
+  border-radius: 8px 8px 0 0;
+  margin: -24px -24px 24px -24px;
+  width: calc(100% + 48px);
+}
+
+.plans-card-body {
+  padding: 0;
+}
+
+.plans-specs {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.plans-specs span {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cream);
+  background: rgba(240, 237, 232, 0.08);
+  padding: 4px 12px;
+  border-radius: 100px;
+}
+
+.plans-included-item + .plans-included-item {
+  padding-top: 16px;
+  border-top: 1px solid rgba(240, 237, 232, 0.1);
+}
+
+@media (max-width: 767px) {
+  .plans-img {
+    height: 160px;
+  }
+}

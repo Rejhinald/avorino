@@ -1,0 +1,20 @@
+/* Contact Page — /contact */
+
+.contact-info-card {
+  position: sticky;
+  top: 120px;
+}
+.contact-info-link {
+  text-decoration: none;
+  color: var(--cream);
+  transition: color 0.3s ease;
+}
+.contact-info-link:hover {
+  color: var(--red);
+}
+
+@media (max-width: 991px) {
+  .contact-info-card {
+    position: static;
+  }
+}

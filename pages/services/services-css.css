@@ -1,0 +1,13 @@
+/* Services Page — /services */
+
+.services-card {
+  text-decoration: none;
+  color: var(--cream);
+  display: flex;
+  flex-direction: column;
+}
+.services-card-img {
+  height: 200px;
+  border-radius: 6px;
+  background-color: rgba(240, 237, 232, 0.06);
+}
