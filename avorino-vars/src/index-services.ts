@@ -9,6 +9,7 @@ import {
   clearAndSet, createSharedStyles, setSharedStyleProps,
   createAllVariables, createPageWithSlug,
   buildCTASection, applyCTAStyleProps,
+  CALENDLY_CSS, CALENDLY_JS,
 } from './shared.js';
 
 // ── Page config ──
@@ -16,14 +17,19 @@ const PAGE_NAME = 'Services';
 const PAGE_SLUG = 'services';
 const PAGE_TITLE = 'Our Services — Avorino Construction in Orange County';
 const PAGE_DESC = 'ADU construction, custom homes, new builds, additions, garage conversions, and commercial projects in Orange County. Licensed, insured, and fully permitted.';
-const HEAD_CODE = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@COMMIT/pages/shared/shared-page-css.css">\n<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@COMMIT/pages/services/services-css.css">';
+const HEAD_CODE = [
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-responsive.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-nav-footer.css">',
+  CALENDLY_CSS,
+].join('\n');
 const FOOTER_CODE = [
   '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
   '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
-  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@COMMIT/avorino-about-process3d.js"><\/script>',
-  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@COMMIT/avorino-animations.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-about-process3d.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-animations.js"><\/script>',
+  CALENDLY_JS,
 ].join('\n');
 
 // ── Update panel UI ──
@@ -73,13 +79,6 @@ const SERVICES = [
   },
 ];
 
-const STATS = [
-  { number: '15+', label: 'Years Experience' },
-  { number: '200+', label: 'Projects Completed' },
-  { number: '4.9', label: 'Google Rating' },
-  { number: '100%', label: 'Licensed & Insured' },
-];
-
 // ── Build function ──
 async function buildServicesPage() {
   clearErrorLog();
@@ -106,11 +105,6 @@ async function buildServicesPage() {
   const svCardTitle = await getOrCreateStyle('sv-card-title');
   const svCardDesc = await getOrCreateStyle('sv-card-desc');
   const svCardCta = await getOrCreateStyle('sv-card-cta');
-  // Stats
-  const svStatsGrid = await getOrCreateStyle('sv-stats-grid');
-  const svStatItem = await getOrCreateStyle('sv-stat-item');
-  const svStatNumber = await getOrCreateStyle('sv-stat-number');
-  const svStatLabel = await getOrCreateStyle('sv-stat-label');
   // Process (Three.js 3D section — moved from About page)
   const processPinned = await getOrCreateStyle('about-process-pinned');
   const processVisual = await getOrCreateStyle('about-process-visual');
@@ -202,30 +196,6 @@ async function buildServicesPage() {
       'display': 'inline-flex', 'align-items': 'center', 'grid-column-gap': '8px',
       'color': v['av-cream'], 'margin-top': '24px',
       'text-decoration': 'none',
-    });
-    await wait(500);
-
-    // Stats — inspired by v7-sections flip-clock stats
-    logDetail('Setting stats props...', 'info');
-    await clearAndSet(await freshStyle('sv-stats-grid'), 'sv-stats-grid', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr 1fr 1fr',
-      'grid-column-gap': '64px', 'grid-row-gap': '64px',
-      'text-align': 'center',
-    });
-    await clearAndSet(await freshStyle('sv-stat-item'), 'sv-stat-item', {
-      'display': 'flex', 'flex-direction': 'column', 'align-items': 'center',
-      'grid-row-gap': '24px',
-    });
-    await clearAndSet(await freshStyle('sv-stat-number'), 'sv-stat-number', {
-      'font-family': 'DM Serif Display',
-      'font-size': 'clamp(48px, 6vw, 80px)',
-      'line-height': '1', 'letter-spacing': '-0.03em', 'font-weight': '400',
-      'color': v['av-cream'],
-    });
-    await clearAndSet(await freshStyle('sv-stat-label'), 'sv-stat-label', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-label'],
-      'letter-spacing': '0.25em', 'text-transform': 'uppercase',
-      'opacity': '0.4', 'color': v['av-cream'],
     });
     await wait(500);
 
@@ -365,39 +335,8 @@ async function buildServicesPage() {
   await safeCall('append:services', () => body.append(svcSection));
   logDetail('Section 2: Service Grid appended', 'ok');
 
-  // SECTION 3: STATS (dark bg, 4-col, like v7 stats section)
-  log('Building Section 3: Stats...');
-  const statsSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  statsSection.setTag('section');
-  statsSection.setStyles([s.section, s.sectionDark]);
-  statsSection.setAttribute('id', 'sv-stats');
-
-  const statsG = statsSection.append(webflow.elementPresets.DOM);
-  statsG.setTag('div');
-  statsG.setStyles([svStatsGrid]);
-
-  STATS.forEach(stat => {
-    const item = statsG.append(webflow.elementPresets.DOM);
-    item.setTag('div');
-    item.setStyles([svStatItem]);
-    item.setAttribute('data-animate', 'fade-up');
-
-    const num = item.append(webflow.elementPresets.DOM);
-    num.setTag('div');
-    num.setStyles([svStatNumber]);
-    num.setTextContent(stat.number);
-
-    const lbl = item.append(webflow.elementPresets.DOM);
-    lbl.setTag('div');
-    lbl.setStyles([svStatLabel]);
-    lbl.setTextContent(stat.label);
-  });
-
-  await safeCall('append:stats', () => body.append(statsSection));
-  logDetail('Section 3: Stats appended', 'ok');
-
-  // SECTION 4: PROCESS (Three.js 3D — pinned scroll section)
-  log('Building Section 4: Process...');
+  // SECTION 3: PROCESS (Three.js 3D — pinned scroll section)
+  log('Building Section 3: Process...');
   const proc = webflow.elementBuilder(webflow.elementPresets.DOM);
   proc.setTag('section'); proc.setStyles([s.section, s.sectionWarm]); proc.setAttribute('id', 'about-process');
 
@@ -430,14 +369,14 @@ async function buildServicesPage() {
   const nav = pinned.append(webflow.elementPresets.DOM); nav.setTag('div'); nav.setStyles([processNav]); nav.setAttribute('data-process-nav', '');
 
   await safeCall('append:process', () => body.append(proc));
-  logDetail('Section 4: Process appended', 'ok');
+  logDetail('Section 3: Process appended', 'ok');
 
-  // SECTION 5: CTA (v7 rounded container style)
-  log('Building Section 5: CTA...');
+  // SECTION 4: CTA
+  log('Building Section 4: CTA...');
   await buildCTASection(
     body, v,
     "Let's talk about your next project",
-    'Get a Free Estimate', '/free-estimate',
+    'Schedule a Meeting', '/schedule-a-meeting',
     'Schedule a Call', '/schedule-a-meeting',
   );
 

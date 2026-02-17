@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   AVORINO — RESPONSIVE OVERRIDES
+   AVORINO — RESPONSIVE OVERRIDES (v2)
    Adds mobile/tablet breakpoints to Webflow-generated styles.
    Breakpoints: 991px (tablet), 767px (mobile-l), 478px (mobile-p)
    ═══════════════════════════════════════════════════════ */
@@ -30,38 +30,56 @@
     min-height: 45vh !important;
   }
 
-  /* ── 4-col grids → 2-col ── */
-  .sv-stats-grid,
-  .adu-grid-4,
-  .adu-stats-grid {
-    grid-template-columns: 1fr 1fr !important;
+  /* ── Split layouts → single column ── */
+  .av-split-60-40,
+  .av-split-40-60,
+  .fin-hero,
+  .cy-hero,
+  .adu-hero {
+    grid-template-columns: 1fr !important;
+    grid-column-gap: 48px !important;
+  }
+
+  /* ── Alternating image+text rows → single column ── */
+  .adu-type-row,
+  .svsub-narr-row {
+    grid-template-columns: 1fr !important;
+    grid-column-gap: 0 !important;
+    grid-row-gap: 32px !important;
   }
 
   /* ── 3-col grids → 2-col ── */
   .sv-grid,
   .av-grid-3col,
   .about-stats-grid,
-  .rv-grid,
-  .fin-grid-3,
-  .est-steps-grid,
-  .adu-steps-grid,
-  .inv-stats-grid,
-  .inv-step-grid,
-  .svsub-step-grid,
-  .pl-grid,
-  .cy-stats-grid {
+  .pl-grid {
     grid-template-columns: 1fr 1fr !important;
   }
 
   /* ── 2-col grids: reduce gap ── */
   .av-grid-2col,
-  .ct-grid,
-  .ct-form-grid,
-  .est-form-grid,
-  .svsub-stats-grid,
+  .rv-grid,
+  .av-form-grid-2,
   .tl-related-grid {
     grid-column-gap: 32px !important;
     grid-row-gap: 32px !important;
+  }
+
+  /* ── Definition rows: tighten label column ── */
+  .cy-reg-row {
+    grid-template-columns: 160px 1fr !important;
+    grid-column-gap: 32px !important;
+  }
+
+  /* ── Step rows: keep layout but tighten ── */
+  .adu-step-row,
+  .cy-step-row {
+    grid-column-gap: 16px !important;
+  }
+
+  /* ── Image placeholders: reduce heights ── */
+  .av-img-tall {
+    min-height: 400px !important;
   }
 
   /* ── CTA: tighten ── */
@@ -119,30 +137,33 @@
   .av-grid-3col,
   .av-grid-2col,
   .rv-grid,
-  .fin-grid-3,
-  .est-steps-grid,
-  .adu-steps-grid,
-  .adu-grid-4,
-  .inv-step-grid,
-  .svsub-step-grid,
   .pl-grid,
-  .ct-grid,
-  .ct-form-grid,
-  .est-form-grid,
   .tl-related-grid {
     grid-template-columns: 1fr !important;
   }
 
-  /* ── Stats grids: stay 2-col, tighter ── */
-  .sv-stats-grid,
-  .about-stats-grid,
-  .adu-stats-grid,
-  .cy-stats-grid,
-  .inv-stats-grid,
-  .svsub-stats-grid {
-    grid-template-columns: 1fr 1fr !important;
-    grid-column-gap: 24px !important;
-    grid-row-gap: 24px !important;
+  /* ── Form grids → 1-col ── */
+  .av-form-grid-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Definition rows → stacked ── */
+  .cy-reg-row {
+    grid-template-columns: 1fr !important;
+    grid-row-gap: 8px !important;
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+  }
+
+  /* ── Step rows → stacked ── */
+  .adu-step-row,
+  .cy-step-row {
+    grid-template-columns: 1fr !important;
+    grid-row-gap: 8px !important;
+  }
+  .adu-step-num-col,
+  .cy-step-num-col {
+    justify-content: flex-start !important;
   }
 
   /* ── CTA ── */
@@ -169,16 +190,6 @@
     padding: 32px 24px !important;
   }
 
-  /* ── Stat numbers: smaller ── */
-  .sv-stat-number,
-  .about-stat-number,
-  .adu-stat-num,
-  .cy-stat-num,
-  .inv-stat-num,
-  .svsub-stat-num {
-    font-size: clamp(36px, 10vw, 56px) !important;
-  }
-
   /* ── Process cards ── */
   .about-process-card {
     max-width: 320px !important;
@@ -189,8 +200,15 @@
   }
 
   /* ── Image placeholders ── */
-  .adu-img-placeholder,
-  .svsub-img-placeholder,
+  .av-img-hero {
+    min-height: 300px !important;
+  }
+  .av-img-tall {
+    min-height: 300px !important;
+  }
+  .av-img-landscape {
+    min-height: 250px !important;
+  }
   .about-story-img {
     min-height: 220px !important;
   }
@@ -200,14 +218,10 @@
     padding: 32px 24px !important;
   }
 
-  /* ── Contact info card: full width ── */
-  .ct-info-card {
-    padding: 32px 24px !important;
-  }
-
-  /* ── Forms: prevent iOS zoom ── */
-  .ct-input, .ct-textarea, .ct-select,
-  .est-input, .est-textarea, .est-select {
+  /* ── Forms: prevent iOS zoom (16px minimum) ── */
+  .av-input-clean,
+  .av-textarea-clean,
+  .av-select-clean {
     font-size: 16px !important;
   }
 
@@ -215,9 +229,7 @@
   .av-mb-96, .sv-mb-96 {
     margin-bottom: 40px !important;
   }
-  .av-mb-64, .sv-mb-64, .adu-mb-64,
-  .ct-mb-64, .est-mb-64, .fin-mb-64,
-  .inv-mb-64, .cy-mb-64, .pl-mb-64, .tl-mb-64 {
+  .av-mb-64, .sv-mb-64 {
     margin-bottom: 28px !important;
   }
 
@@ -262,16 +274,9 @@
     min-height: auto !important;
   }
 
-  /* ── Stats: 1-col ── */
-  .sv-stats-grid,
-  .about-stats-grid,
-  .adu-stats-grid,
-  .cy-stats-grid,
-  .inv-stats-grid,
-  .svsub-stats-grid {
-    grid-template-columns: 1fr !important;
-    grid-column-gap: 16px !important;
-    grid-row-gap: 20px !important;
+  /* ── Service-sub hero overlay: tighter ── */
+  .svsub-hero-overlay {
+    padding: 24px 16px !important;
   }
 
   /* ── CTA: minimal ── */
@@ -309,28 +314,15 @@
     font-size: 13px !important;
   }
 
-  /* ── Buttons ── */
+  /* ── Buttons: full width ── */
   .av-btn-primary,
   .av-btn-outline,
   .av-cta-btn,
-  .ct-submit-btn,
-  .est-submit-btn {
+  .av-submit-btn {
     padding: 14px 28px !important;
     font-size: 13px !important;
     width: 100%;
     justify-content: center !important;
-  }
-
-  /* ── Cards: tighten ── */
-  .av-card-dark,
-  .av-card-light,
-  .fin-benefit-card,
-  .adu-type-card,
-  .inv-step,
-  .est-step,
-  .fin-step,
-  .svsub-step {
-    padding: 28px 20px !important;
   }
 
   /* ── Review cards ── */
@@ -338,19 +330,23 @@
     padding: 24px 20px !important;
   }
 
+  /* ── Image placeholders: further reduce ── */
+  .av-img-hero {
+    min-height: 220px !important;
+  }
+  .av-img-tall {
+    min-height: 220px !important;
+  }
+  .av-img-landscape {
+    min-height: 180px !important;
+  }
+
   /* ── Spacing: minimal ── */
   .av-mb-96, .sv-mb-96 {
     margin-bottom: 32px !important;
   }
-  .av-mb-64, .sv-mb-64, .adu-mb-64,
-  .ct-mb-64, .est-mb-64, .fin-mb-64,
-  .inv-mb-64, .cy-mb-64, .pl-mb-64, .tl-mb-64 {
+  .av-mb-64, .sv-mb-64 {
     margin-bottom: 24px !important;
-  }
-  .av-mb-48, .adu-mb-32, .ct-mb-32,
-  .est-mb-32, .fin-mb-32, .inv-mb-32,
-  .cy-mb-32, .pl-mb-32, .tl-mb-32 {
-    margin-bottom: 16px !important;
   }
 
   /* ── Label: smaller ── */
@@ -368,13 +364,20 @@
     min-height: 300px !important;
   }
 
-  /* ── City info card ── */
-  .cy-info-card {
-    padding: 24px 16px !important;
-  }
-
   /* ── ADU plan cards ── */
   .pl-card {
     padding: 20px !important;
+  }
+
+  /* ── Investment hero stat: reduce ── */
+  .inv-hero-stat {
+    font-size: clamp(48px, 12vw, 80px) !important;
+  }
+
+  /* ── Dividers: tighten ── */
+  .av-divider,
+  .av-divider-light {
+    margin-top: 24px !important;
+    margin-bottom: 24px !important;
   }
 }

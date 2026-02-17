@@ -13,6 +13,7 @@ import {
   clearAndSet, createSharedStyles, setSharedStyleProps,
   createAllVariables, createPageWithSlug,
   buildCTASection, applyCTAStyleProps,
+  CALENDLY_CSS, CALENDLY_JS,
 } from './shared.js';
 
 // ═══ CHANGE THIS INDEX TO BUILD A DIFFERENT TOOL PAGE ═══
@@ -42,11 +43,17 @@ const TOOLS = [
 const TOOL = TOOLS[TOOL_INDEX];
 const OTHER_TOOLS = TOOLS.filter((_, i) => i !== TOOL_INDEX);
 
-const HEAD_CODE = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@COMMIT/pages/shared/shared-page-css.css">';
+const HEAD_CODE = [
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-responsive.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-nav-footer.css">',
+  CALENDLY_CSS,
+].join('\n');
 const FOOTER_CODE = [
   '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-animations.js"><\/script>',
+  CALENDLY_JS,
 ].join('\n');
 
 document.getElementById('page-name')!.textContent = TOOL.name;
@@ -234,7 +241,7 @@ async function buildToolPage() {
 
   // SECTION 4: CTA
   log('Building Section 4: CTA...');
-  await buildCTASection(body, v, 'Get a free estimate', 'Get a Free Estimate', '/free-estimate');
+  await buildCTASection(body, v, 'Book a consultation', 'Schedule a Meeting', '/schedule-a-meeting');
 
   await applyStyleProperties();
 

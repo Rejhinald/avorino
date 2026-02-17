@@ -1,6 +1,6 @@
 // ════════════════════════════════════════════════════════════════
-// Avorino Builder — INVESTMENT PAGE TEMPLATE
-// Rename this to index.ts to build an investment page.
+// Avorino Builder — INVESTMENT PAGE TEMPLATE (v2 redesign)
+// Hero with promoted stat + merged overview/process + CTA
 // Change PAGE_INDEX below:
 //   0 = Investment Opportunity (/investment)
 //   1 = Flipping Opportunity (/flippingopportunity)
@@ -12,6 +12,7 @@ import {
   clearAndSet, createSharedStyles, setSharedStyleProps,
   createAllVariables, createPageWithSlug,
   buildCTASection, applyCTAStyleProps,
+  CALENDLY_CSS, CALENDLY_JS,
 } from './shared.js';
 
 // ═══ CHANGE THIS INDEX ═══
@@ -20,13 +21,13 @@ const PAGE_INDEX = 0;
 const PAGES = [
   {
     slug: 'investment', name: 'Investment Opportunity',
-    subtitle: 'Build equity and generate rental income with an ADU.',
-    desc: 'Adding an ADU to your property is one of the highest-ROI home improvements in California. Generate monthly rental income while increasing your property value.',
+    heroStat: '+30%', heroStatLabel: 'average property value increase with an ADU',
+    desc: 'Adding an ADU to your property is one of the highest-ROI home improvements in California. Generate $2K–$4.5K+ in monthly rental income while building long-term equity.',
     title: 'Investment Opportunity — Avorino', seoDesc: 'ADU investment opportunities in Orange County. 5–12% annual ROI with rental income.',
   },
   {
     slug: 'flippingopportunity', name: 'Flipping Opportunity',
-    subtitle: 'Increase property value with a permitted ADU.',
+    heroStat: '+30%', heroStatLabel: 'average property value increase with a permitted ADU',
     desc: 'Properties with permitted ADUs sell for significantly more. Build an ADU to increase resale value, then sell the package for a premium.',
     title: 'Flipping Opportunity — Avorino', seoDesc: 'ADU flipping opportunities in Orange County. Increase property value with a permitted ADU.',
   },
@@ -34,23 +35,33 @@ const PAGES = [
 
 const PAGE = PAGES[PAGE_INDEX];
 
-const STATS = [
-  { number: '+30%', label: 'Property Value Increase' },
-  { number: '5–12%', label: 'Annual ROI' },
-  { number: '$2K–$4.5K+', label: 'Monthly Rental' },
+// ── Content blocks (stacked text with dividers, replaces stats + process) ──
+const BLOCKS = [
+  {
+    title: 'Find the right property',
+    desc: 'Identify a property with ADU potential — lot size, zoning, and market demand. We help evaluate feasibility before you commit.',
+  },
+  {
+    title: 'Design, permit, and build',
+    desc: 'We handle all architecture, engineering, and city approvals. Construction is fully managed — you focus on the investment, not the jobsite.',
+  },
+  {
+    title: 'Rent or sell for profit',
+    desc: 'Rent for $2K–$4.5K+/month in cash flow, or sell the property with a permitted ADU for a premium. ADU investors in Orange County see 5–12% annual ROI.',
+  },
 ];
 
-const STEPS = [
-  { number: '01', title: 'Find property', desc: 'Identify a property with ADU potential — lot size, zoning, and market demand.' },
-  { number: '02', title: 'Design & permit', desc: 'We handle all architecture, engineering, and city approvals.' },
-  { number: '03', title: 'Build & profit', desc: 'Rent for cash flow or sell the property with a permitted ADU for a premium.' },
-];
-
-const HEAD_CODE = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@COMMIT/pages/shared/shared-page-css.css">';
+const HEAD_CODE = [
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-responsive.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-nav-footer.css">',
+  CALENDLY_CSS,
+].join('\n');
 const FOOTER_CODE = [
   '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-animations.js"><\/script>',
+  CALENDLY_JS,
 ].join('\n');
 
 document.getElementById('page-name')!.textContent = PAGE.name;
@@ -61,28 +72,21 @@ if (footerCodeEl) footerCodeEl.textContent = FOOTER_CODE;
 
 async function buildInvestmentPage() {
   clearErrorLog();
-  logDetail(`Starting ${PAGE.name} page build...`, 'info');
+  logDetail(`Starting ${PAGE.name} page build (v2)...`, 'info');
   const v = await getAvorinVars();
 
   log('Creating shared styles...');
   const s = await createSharedStyles();
 
-  log('Creating page-specific styles...');
+  // ── Page-specific styles ──
+  log('Creating investment-specific styles...');
   const invHero = await getOrCreateStyle('inv-hero');
   const invHeroContent = await getOrCreateStyle('inv-hero-content');
-  const invHeroSub = await getOrCreateStyle('inv-hero-subtitle');
-  const invStatsGrid = await getOrCreateStyle('inv-stats-grid');
-  const invStatItem = await getOrCreateStyle('inv-stat-item');
-  const invStatNum = await getOrCreateStyle('inv-stat-num');
-  const invStatLabel = await getOrCreateStyle('inv-stat-label');
-  const invStepGrid = await getOrCreateStyle('inv-step-grid');
-  const invStep = await getOrCreateStyle('inv-step');
-  const invStepNum = await getOrCreateStyle('inv-step-num');
-  const invStepTitle = await getOrCreateStyle('inv-step-title');
-  const invStepDesc = await getOrCreateStyle('inv-step-desc');
-  const invMb32 = await getOrCreateStyle('inv-mb-32');
-  const invMb64 = await getOrCreateStyle('inv-mb-64');
-  const invLabelLine = await getOrCreateStyle('inv-label-line');
+  const invHeroStat = await getOrCreateStyle('inv-hero-stat');
+  const invHeroStatLabel = await getOrCreateStyle('inv-hero-stat-label');
+  const invBlockTitle = await getOrCreateStyle('inv-block-title');
+  const invBlockDesc = await getOrCreateStyle('inv-block-desc');
+  const invOverview = await getOrCreateStyle('inv-overview');
 
   const { body } = await createPageWithSlug(PAGE.name, PAGE.slug, PAGE.title, PAGE.seoDesc);
 
@@ -91,78 +95,56 @@ async function buildInvestmentPage() {
     await setSharedStyleProps(s, v);
     await wait(1000);
 
-    log('Setting page-specific style properties...');
+    log('Setting investment-specific style properties...');
 
+    // Hero: centered, dark, with promoted stat
     await clearAndSet(await freshStyle('inv-hero'), 'inv-hero', {
-      'min-height': '50vh', 'display': 'flex', 'align-items': 'flex-end',
+      'min-height': '70vh', 'display': 'flex', 'align-items': 'center', 'justify-content': 'center',
       'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
       'background-color': v['av-dark'], 'color': v['av-cream'],
-      'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
+      'text-align': 'center',
     });
     await clearAndSet(await freshStyle('inv-hero-content'), 'inv-hero-content', {
-      'position': 'relative', 'z-index': '2', 'max-width': '700px',
+      'max-width': '800px',
     });
-    await clearAndSet(await freshStyle('inv-hero-subtitle'), 'inv-hero-subtitle', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'line-height': '1.9', 'opacity': '0.6', 'margin-top': '24px', 'color': v['av-cream'],
-    });
-    await wait(500);
-
-    // Stats
-    await clearAndSet(await freshStyle('inv-stats-grid'), 'inv-stats-grid', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr 1fr',
-      'grid-column-gap': '64px', 'grid-row-gap': '64px', 'text-align': 'center',
-    });
-    await clearAndSet(await freshStyle('inv-stat-item'), 'inv-stat-item', {
-      'display': 'flex', 'flex-direction': 'column', 'align-items': 'center', 'grid-row-gap': '24px',
-    });
-    await clearAndSet(await freshStyle('inv-stat-num'), 'inv-stat-num', {
+    await clearAndSet(await freshStyle('inv-hero-stat'), 'inv-hero-stat', {
       'font-family': 'DM Serif Display',
-      'font-size': 'clamp(40px, 5vw, 72px)',
+      'font-size': 'clamp(64px, 8vw, 120px)',
       'line-height': '1', 'letter-spacing': '-0.03em', 'font-weight': '400',
-      'color': v['av-cream'],
+      'margin-bottom': '16px',
     });
-    await clearAndSet(await freshStyle('inv-stat-label'), 'inv-stat-label', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-label'],
-      'letter-spacing': '0.25em', 'text-transform': 'uppercase',
-      'opacity': '0.4', 'color': v['av-cream'],
+    await clearAndSet(await freshStyle('inv-hero-stat-label'), 'inv-hero-stat-label', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
+      'line-height': '1.7', 'opacity': '0.5', 'margin-bottom': '48px',
     });
     await wait(500);
 
-    // Steps
-    await clearAndSet(await freshStyle('inv-step-grid'), 'inv-step-grid', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr 1fr',
-      'grid-column-gap': '32px', 'grid-row-gap': '32px',
+    // Overview paragraph
+    await clearAndSet(await freshStyle('inv-overview'), 'inv-overview', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
+      'line-height': '1.9', 'opacity': '0.6', 'max-width': '700px',
+      'margin-left': 'auto', 'margin-right': 'auto', 'text-align': 'center',
+      'margin-bottom': '64px',
     });
-    await clearAndSet(await freshStyle('inv-step'), 'inv-step', {
-      'display': 'flex', 'flex-direction': 'column',
-    });
-    await clearAndSet(await freshStyle('inv-step-num'), 'inv-step-num', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-label'],
-      'letter-spacing': '0.3em', 'text-transform': 'uppercase',
-      'opacity': '0.3', 'margin-bottom': '24px',
-    });
-    await clearAndSet(await freshStyle('inv-step-title'), 'inv-step-title', {
+
+    // Content blocks (stacked text with dividers)
+    await clearAndSet(await freshStyle('inv-block-title'), 'inv-block-title', {
       'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
       'line-height': '1.12', 'font-weight': '400', 'margin-bottom': '16px',
     });
-    await clearAndSet(await freshStyle('inv-step-desc'), 'inv-step-desc', {
+    await clearAndSet(await freshStyle('inv-block-desc'), 'inv-block-desc', {
       'font-family': 'DM Sans', 'font-size': v['av-text-body'],
       'line-height': '1.9', 'opacity': '0.6',
     });
     await wait(500);
-
-    await clearAndSet(await freshStyle('inv-mb-32'), 'inv-mb-32', { 'margin-bottom': v['av-gap-sm'] });
-    await clearAndSet(await freshStyle('inv-mb-64'), 'inv-mb-64', { 'margin-bottom': v['av-gap-md'] });
-    await clearAndSet(await freshStyle('inv-label-line'), 'inv-label-line', { 'flex-grow': '1', 'height': '1px', 'background-color': v['av-dark-15'] });
 
     await applyCTAStyleProps(v);
   }
 
   // ═══════════════ BUILD ELEMENTS ═══════════════
 
-  // SECTION 1: HERO
+  // SECTION 1: HERO (dark, centered, promoted stat)
   log('Building Section 1: Hero...');
   const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
   hero.setTag('section');
@@ -181,119 +163,71 @@ async function buildInvestmentPage() {
   heroLabelTxt.setTag('div');
   heroLabelTxt.setTextContent(`// ${PAGE.name}`);
 
+  // Promoted stat as hero visual
+  const heroStat = heroC.append(webflow.elementPresets.DOM);
+  heroStat.setTag('div');
+  heroStat.setStyles([invHeroStat]);
+  heroStat.setTextContent(PAGE.heroStat);
+  heroStat.setAttribute('data-animate', 'blur-focus');
+
+  const heroStatLabel = heroC.append(webflow.elementPresets.DOM);
+  heroStatLabel.setTag('div');
+  heroStatLabel.setStyles([invHeroStatLabel]);
+  heroStatLabel.setTextContent(PAGE.heroStatLabel);
+  heroStatLabel.setAttribute('data-animate', 'fade-up');
+
   const heroH = heroC.append(webflow.elementPresets.DOM);
   heroH.setTag('h1');
-  heroH.setStyles([s.headingXL]);
+  heroH.setStyles([s.headingLG]);
   heroH.setTextContent(PAGE.name);
-  heroH.setAttribute('data-animate', 'opacity-sweep');
-
-  const heroSub = heroC.append(webflow.elementPresets.DOM);
-  heroSub.setTag('p');
-  heroSub.setStyles([invHeroSub]);
-  heroSub.setTextContent(PAGE.subtitle);
-  heroSub.setAttribute('data-animate', 'fade-up');
+  heroH.setAttribute('data-animate', 'word-stagger-elastic');
 
   await safeCall('append:hero', () => body.append(hero));
+  logDetail('Section 1: Hero appended', 'ok');
 
-  // SECTION 2: OVERVIEW + DESCRIPTION (warm, centered)
-  log('Building Section 2: Overview...');
-  const overSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  overSection.setTag('section');
-  overSection.setStyles([s.section, s.sectionWarm]);
-  overSection.setAttribute('id', 'inv-overview');
+  // SECTION 2: OVERVIEW + STEPS (cream bg, stacked text blocks with dividers)
+  log('Building Section 2: Overview + Steps...');
+  const mainSection = webflow.elementBuilder(webflow.elementPresets.DOM);
+  mainSection.setTag('section');
+  mainSection.setStyles([s.section, s.sectionCream]);
+  mainSection.setAttribute('id', 'inv-main');
 
-  const overP = overSection.append(webflow.elementPresets.DOM);
+  // Overview paragraph (centered)
+  const overP = mainSection.append(webflow.elementPresets.DOM);
   overP.setTag('p');
-  overP.setStyles([s.body, s.bodyMuted]);
+  overP.setStyles([invOverview]);
   overP.setTextContent(PAGE.desc);
   overP.setAttribute('data-animate', 'fade-up');
 
-  await safeCall('append:overview', () => body.append(overSection));
+  // Stacked text blocks with dividers
+  BLOCKS.forEach((block, i) => {
+    if (i > 0) {
+      const div = mainSection.append(webflow.elementPresets.DOM);
+      div.setTag('div');
+      div.setStyles([s.divider]);
+    }
 
-  // SECTION 3: RETURNS (dark, stats)
-  log('Building Section 3: Returns...');
-  const statsSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  statsSection.setTag('section');
-  statsSection.setStyles([s.section, s.sectionDark]);
-  statsSection.setAttribute('id', 'inv-returns');
-
-  const statsG = statsSection.append(webflow.elementPresets.DOM);
-  statsG.setTag('div');
-  statsG.setStyles([invStatsGrid]);
-
-  STATS.forEach(stat => {
-    const item = statsG.append(webflow.elementPresets.DOM);
-    item.setTag('div');
-    item.setStyles([invStatItem]);
-    item.setAttribute('data-animate', 'fade-up');
-
-    const num = item.append(webflow.elementPresets.DOM);
-    num.setTag('div');
-    num.setStyles([invStatNum]);
-    num.setTextContent(stat.number);
-
-    const lbl = item.append(webflow.elementPresets.DOM);
-    lbl.setTag('div');
-    lbl.setStyles([invStatLabel]);
-    lbl.setTextContent(stat.label);
-  });
-
-  await safeCall('append:returns', () => body.append(statsSection));
-
-  // SECTION 4: PROCESS (cream, 3-step)
-  log('Building Section 4: Process...');
-  const procSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  procSection.setTag('section');
-  procSection.setStyles([s.section, s.sectionCream]);
-  procSection.setAttribute('id', 'inv-process');
-
-  const procHeader = procSection.append(webflow.elementPresets.DOM);
-  procHeader.setTag('div');
-  procHeader.setStyles([invMb64]);
-
-  const procLabel = procHeader.append(webflow.elementPresets.DOM);
-  procLabel.setTag('div');
-  procLabel.setStyles([s.label, invMb32]);
-  procLabel.setAttribute('data-animate', 'fade-up');
-  const procLabelTxt = procLabel.append(webflow.elementPresets.DOM);
-  procLabelTxt.setTag('div');
-  procLabelTxt.setTextContent('How It Works');
-  const procLabelLine = procLabel.append(webflow.elementPresets.DOM);
-  procLabelLine.setTag('div');
-  procLabelLine.setStyles([invLabelLine]);
-
-  const stepGrid = procSection.append(webflow.elementPresets.DOM);
-  stepGrid.setTag('div');
-  stepGrid.setStyles([invStepGrid]);
-  stepGrid.setAttribute('data-animate', 'fade-up-stagger');
-
-  STEPS.forEach(step => {
-    const el = stepGrid.append(webflow.elementPresets.DOM);
+    const el = mainSection.append(webflow.elementPresets.DOM);
     el.setTag('div');
-    el.setStyles([invStep]);
     el.setAttribute('data-animate', 'fade-up');
-
-    const num = el.append(webflow.elementPresets.DOM);
-    num.setTag('div');
-    num.setStyles([invStepNum]);
-    num.setTextContent(step.number);
 
     const title = el.append(webflow.elementPresets.DOM);
     title.setTag('h3');
-    title.setStyles([invStepTitle]);
-    title.setTextContent(step.title);
+    title.setStyles([invBlockTitle]);
+    title.setTextContent(block.title);
 
     const desc = el.append(webflow.elementPresets.DOM);
     desc.setTag('p');
-    desc.setStyles([invStepDesc]);
-    desc.setTextContent(step.desc);
+    desc.setStyles([invBlockDesc]);
+    desc.setTextContent(block.desc);
   });
 
-  await safeCall('append:process', () => body.append(procSection));
+  await safeCall('append:main', () => body.append(mainSection));
+  logDetail('Section 2: Overview + Steps appended', 'ok');
 
-  // SECTION 5: CTA
-  log('Building Section 5: CTA...');
-  await buildCTASection(body, v, 'Get started', 'Get a Free Estimate', '/free-estimate', 'ROI Calculator', '/roi-calculator');
+  // SECTION 3: CTA
+  log('Building Section 3: CTA...');
+  await buildCTASection(body, v, 'Get started', 'Schedule a Meeting', '/schedule-a-meeting', 'View Financing', '/financing');
 
   await applyStyleProperties();
 

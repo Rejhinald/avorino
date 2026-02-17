@@ -9,17 +9,24 @@ import {
   clearAndSet, createSharedStyles, setSharedStyleProps,
   createAllVariables, createPageWithSlug,
   buildCTASection, applyCTAStyleProps,
+  CALENDLY_CSS, CALENDLY_JS,
 } from './shared.js';
 
 const PAGE_NAME = 'ADU Plan Samples';
 const PAGE_SLUG = 'adu-plan-samples';
 const PAGE_TITLE = 'ADU Floor Plan Samples — Avorino Construction';
 const PAGE_DESC = 'Browse ADU floor plan samples. Studio, 1-bed, and 2-bed layouts designed for Orange County properties.';
-const HEAD_CODE = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@COMMIT/pages/shared/shared-page-css.css">';
+const HEAD_CODE = [
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-responsive.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-nav-footer.css">',
+  CALENDLY_CSS,
+].join('\n');
 const FOOTER_CODE = [
   '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-animations.js"><\/script>',
+  CALENDLY_JS,
 ].join('\n');
 
 document.getElementById('page-name')!.textContent = PAGE_NAME;
@@ -90,7 +97,7 @@ async function buildPlansPage() {
       'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
     await clearAndSet(await freshStyle('pl-card-img'), 'pl-card-img', {
-      'background-color': 'rgba(240,237,232,0.06)', 'min-height': '240px',
+      'background-color': '#1a1a1a', 'min-height': '240px',
     });
     await clearAndSet(await freshStyle('pl-card-name'), 'pl-card-name', {
       'font-family': 'DM Serif Display', 'font-size': '24px',
@@ -212,7 +219,7 @@ async function buildPlansPage() {
 
   // SECTION 4: CTA
   log('Building Section 4: CTA...');
-  await buildCTASection(body, v, 'Get started', 'Get a Free Estimate', '/free-estimate', 'ADU Cost Calculator', '/adu-cost-estimator');
+  await buildCTASection(body, v, 'Get started', 'Schedule a Meeting', '/schedule-a-meeting', 'ADU Cost Calculator', '/adu-cost-estimator');
 
   await applyStyleProperties();
 

@@ -1,12 +1,14 @@
 // ════════════════════════════════════════════════════════════════
-// Avorino Builder — SERVICE SUB-PAGE TEMPLATE
-// Rename this to index.ts to build a service sub-page.
+// Avorino Builder — SERVICE SUB-PAGE TEMPLATE (v2 redesign)
+// Image hero + 2 alternating narrative rows + CTA
 // Change SERVICE_INDEX below to select which service to build:
 //   0 = Custom Home (/buildcustomhome)
 //   1 = New Construction (/newconstruction)
 //   2 = Property Additions (/addition)
 //   3 = Garage Conversion (/garageconversion)
 //   4 = Commercial (/commercial)
+//   5 = Build ADU 2024 (/buildadu2024)
+//   6 = Real Rendering (/realrendering)
 // ════════════════════════════════════════════════════════════════
 
 import {
@@ -15,6 +17,7 @@ import {
   clearAndSet, createSharedStyles, setSharedStyleProps,
   createAllVariables, createPageWithSlug,
   buildCTASection, applyCTAStyleProps,
+  CALENDLY_CSS, CALENDLY_JS,
 } from './shared.js';
 
 // ═══ CHANGE THIS INDEX TO BUILD A DIFFERENT SERVICE PAGE ═══
@@ -25,7 +28,8 @@ const SERVICES = [
   {
     slug: 'buildcustomhome', name: 'Custom Home Building',
     subtitle: 'Ground-up custom residences in Orange County.',
-    desc: 'Build a home designed around your life — from floor plan to finishes. We handle architecture, engineering, permitting, and construction.',
+    desc: 'Build a home designed around your life — from floor plan to finishes. We handle architecture, engineering, permitting, and construction. Every detail is tailored to your vision.',
+    processDesc: 'Our process is straightforward: we start with your goals and site conditions, develop full architectural and engineering plans, handle all city permits, then build with a licensed crew delivering weekly updates through final inspection.',
     cost: '$350–$550/sqft', timeline: '12–18 months',
     title: 'Custom Home Building — Avorino Construction',
     seoDesc: 'Custom home construction in Orange County. Full design-to-build service by Avorino.',
@@ -33,7 +37,8 @@ const SERVICES = [
   {
     slug: 'newconstruction', name: 'New Construction',
     subtitle: 'New builds for landowners in Orange County.',
-    desc: 'Turn your vacant lot into a finished home. Full build from site prep through final inspection — engineering, permits, and all finishes.',
+    desc: 'Turn your vacant lot into a finished home. Full build from site prep through final inspection — engineering, permits, and all finishes included.',
+    processDesc: 'We evaluate your lot, create custom plans with structural engineering, manage all permit submissions and plan-check corrections, then build on a transparent schedule with weekly progress reports.',
     cost: '$350–$550/sqft', timeline: '6–10 months',
     title: 'New Construction — Avorino Construction',
     seoDesc: 'New construction for landowners in Orange County. Engineering, permits, and full-service building.',
@@ -41,7 +46,8 @@ const SERVICES = [
   {
     slug: 'addition', name: 'Property Additions',
     subtitle: 'Expand your living space without moving.',
-    desc: 'Room additions, second stories, and extensions. Maximize your square footage and property value without relocating.',
+    desc: 'Room additions, second stories, and extensions. Maximize your square footage and property value without relocating. We match the addition seamlessly to your existing home.',
+    processDesc: 'We assess your property for structural feasibility, design the addition to integrate with your existing home, handle permits, then build with minimal disruption to your daily life.',
     cost: '$300–$500/sqft', timeline: '4–8 months',
     title: 'Property Additions — Avorino Construction',
     seoDesc: 'Room additions and second-story extensions in Orange County. Licensed and fully permitted.',
@@ -49,7 +55,8 @@ const SERVICES = [
   {
     slug: 'garageconversion', name: 'Garage Conversion',
     subtitle: 'The most affordable ADU option.',
-    desc: 'Convert your garage into a functional living space. Uses existing structure and utilities, keeping costs lower than new construction.',
+    desc: 'Convert your garage into a functional living space. Uses existing structure and utilities, keeping costs lower than new construction. Full kitchen, bath, and independent entrance included.',
+    processDesc: 'We evaluate your garage structure, design the conversion to maximize livable space, handle all permits including Title 24 energy compliance, then build out the full unit in the shortest timeline of any ADU type.',
     cost: '$75K–$150K', timeline: '3–5 months',
     title: 'Garage Conversion — Avorino Construction',
     seoDesc: 'Garage conversions in Orange County starting at $75K. Fully permitted by Avorino.',
@@ -57,26 +64,45 @@ const SERVICES = [
   {
     slug: 'commercial', name: 'Commercial Construction',
     subtitle: 'Tenant improvements and renovations.',
-    desc: 'Office buildouts, retail renovations, and tenant improvements. Functional, visually compelling commercial spaces delivered on time.',
+    desc: 'Office buildouts, retail renovations, and tenant improvements. Functional, visually compelling commercial spaces delivered on time and within budget.',
+    processDesc: 'We work with your architect or provide design-build services, manage all commercial permits and inspections, then execute the buildout with minimal disruption to adjacent tenants.',
     cost: 'Varies', timeline: 'Varies',
     title: 'Commercial Construction — Avorino Construction',
     seoDesc: 'Tenant improvements and commercial renovations in Orange County by Avorino.',
+  },
+  {
+    slug: 'buildadu2024', name: 'Build an ADU in 2024',
+    subtitle: 'Everything you need to know about building an ADU this year.',
+    desc: 'California\u2019s latest ADU regulations make it easier than ever to add a unit to your property. From streamlined permitting to pre-approved plans, 2024 is the ideal year to build.',
+    processDesc: 'We evaluate your lot, design to current code, handle city permits with expedited timelines, and build your ADU from foundation to final inspection \u2014 typically 10\u201314 months total.',
+    cost: '$150K\u2013$450K+', timeline: '10\u201314 months',
+    title: 'Build an ADU in 2024 \u2014 Avorino Construction',
+    seoDesc: 'Build an ADU in Orange County in 2024. Streamlined permits, pre-approved plans, and full-service construction by Avorino.',
+  },
+  {
+    slug: 'realrendering', name: '3D Rendering Services',
+    subtitle: 'Photorealistic visualizations of your project before construction begins.',
+    desc: 'See your project before it\u2019s built. Our 3D rendering service produces photorealistic interior and exterior visualizations, helping you make confident design decisions and secure financing.',
+    processDesc: 'Share your architectural plans and design preferences. We produce high-resolution 3D renders within 5\u20137 business days, with two rounds of revisions included.',
+    cost: 'Starting at $1,500', timeline: '5\u20137 business days',
+    title: '3D Rendering Services \u2014 Avorino Construction',
+    seoDesc: 'Photorealistic 3D rendering services for construction projects in Orange County by Avorino.',
   },
 ];
 
 const SVC = SERVICES[SERVICE_INDEX];
 
-const PROCESS = [
-  { number: '01', title: 'Design', desc: 'Custom plans tailored to your goals. Full architectural and engineering support.' },
-  { number: '02', title: 'Permits', desc: 'We handle all city submissions, plan checks, and approvals.' },
-  { number: '03', title: 'Build', desc: 'Licensed crew, transparent timeline, on-budget delivery.' },
-];
-
-const HEAD_CODE = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@COMMIT/pages/shared/shared-page-css.css">';
+const HEAD_CODE = [
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-responsive.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-nav-footer.css">',
+  CALENDLY_CSS,
+].join('\n');
 const FOOTER_CODE = [
   '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-animations.js"><\/script>',
+  CALENDLY_JS,
 ].join('\n');
 
 // ── Update panel UI ──
@@ -89,7 +115,7 @@ if (footerCodeEl) footerCodeEl.textContent = FOOTER_CODE;
 // ── Build function ──
 async function buildServiceSubPage() {
   clearErrorLog();
-  logDetail(`Starting ${SVC.name} page build...`, 'info');
+  logDetail(`Starting ${SVC.name} page build (v2)...`, 'info');
   const v = await getAvorinVars();
 
   log('Creating shared styles...');
@@ -98,21 +124,13 @@ async function buildServiceSubPage() {
   // ── Page-specific styles ──
   log('Creating page-specific styles...');
   const svHero = await getOrCreateStyle('svsub-hero');
+  const svHeroOverlay = await getOrCreateStyle('svsub-hero-overlay');
   const svHeroContent = await getOrCreateStyle('svsub-hero-content');
-  const svHeroSub = await getOrCreateStyle('svsub-hero-subtitle');
-  const svImgPlaceholder = await getOrCreateStyle('svsub-img-placeholder');
-  const svStepGrid = await getOrCreateStyle('svsub-step-grid');
-  const svStep = await getOrCreateStyle('svsub-step');
-  const svStepNum = await getOrCreateStyle('svsub-step-num');
-  const svStepTitle = await getOrCreateStyle('svsub-step-title');
-  const svStepDesc = await getOrCreateStyle('svsub-step-desc');
-  const svStatsGrid = await getOrCreateStyle('svsub-stats-grid');
-  const svStatItem = await getOrCreateStyle('svsub-stat-item');
-  const svStatNum = await getOrCreateStyle('svsub-stat-num');
-  const svStatLabel = await getOrCreateStyle('svsub-stat-label');
-  const svMb32 = await getOrCreateStyle('svsub-mb-32');
-  const svMb64 = await getOrCreateStyle('svsub-mb-64');
-  const svLabelLine = await getOrCreateStyle('svsub-label-line');
+  const svHeroMeta = await getOrCreateStyle('svsub-hero-meta');
+  const svNarrRow = await getOrCreateStyle('svsub-narr-row');
+  const svNarrText = await getOrCreateStyle('svsub-narr-text');
+  const svNarrHeading = await getOrCreateStyle('svsub-narr-heading');
+  const svNarrBody = await getOrCreateStyle('svsub-narr-body');
 
   const { body } = await createPageWithSlug(SVC.name, SVC.slug, SVC.title, SVC.seoDesc);
 
@@ -123,256 +141,160 @@ async function buildServiceSubPage() {
 
     log('Setting page-specific style properties...');
 
-    // Hero
+    // Hero: full-width image area with text at bottom
     await clearAndSet(await freshStyle('svsub-hero'), 'svsub-hero', {
-      'min-height': '50vh', 'display': 'flex', 'align-items': 'flex-end',
+      'min-height': '70vh', 'display': 'flex', 'align-items': 'flex-end',
       'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
       'background-color': v['av-dark'], 'color': v['av-cream'],
       'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
+    // Subtle gradient overlay at bottom for text readability
+    await clearAndSet(await freshStyle('svsub-hero-overlay'), 'svsub-hero-overlay', {
+      'position': 'absolute', 'left': '0px', 'right': '0px', 'bottom': '0px',
+      'height': '60%',
+      'background-image': 'linear-gradient(transparent, rgba(17,17,17,0.9))',
+    });
     await clearAndSet(await freshStyle('svsub-hero-content'), 'svsub-hero-content', {
       'position': 'relative', 'z-index': '2', 'max-width': '700px',
     });
-    await clearAndSet(await freshStyle('svsub-hero-subtitle'), 'svsub-hero-subtitle', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'line-height': '1.9', 'opacity': '0.6', 'margin-top': '24px', 'color': v['av-cream'],
+    await clearAndSet(await freshStyle('svsub-hero-meta'), 'svsub-hero-meta', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
+      'opacity': '0.4', 'margin-top': '24px',
     });
     await wait(500);
 
-    // Image placeholder
-    await clearAndSet(await freshStyle('svsub-img-placeholder'), 'svsub-img-placeholder', {
-      'background-color': 'rgba(240,237,232,0.06)',
-      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
-      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
-      'min-height': '400px',
+    // Narrative rows (alternating image+text)
+    await clearAndSet(await freshStyle('svsub-narr-row'), 'svsub-narr-row', {
+      'display': 'grid', 'grid-template-columns': '1fr 1fr',
+      'grid-column-gap': '96px', 'grid-row-gap': '48px', 'align-items': 'center',
     });
-    await wait(500);
-
-    // Process steps
-    await clearAndSet(await freshStyle('svsub-step-grid'), 'svsub-step-grid', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr 1fr',
-      'grid-column-gap': '32px', 'grid-row-gap': '32px',
-    });
-    await clearAndSet(await freshStyle('svsub-step'), 'svsub-step', {
+    await clearAndSet(await freshStyle('svsub-narr-text'), 'svsub-narr-text', {
       'display': 'flex', 'flex-direction': 'column',
     });
-    await clearAndSet(await freshStyle('svsub-step-num'), 'svsub-step-num', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-label'],
-      'letter-spacing': '0.3em', 'text-transform': 'uppercase',
-      'opacity': '0.3', 'margin-bottom': '24px',
-    });
-    await clearAndSet(await freshStyle('svsub-step-title'), 'svsub-step-title', {
+    await clearAndSet(await freshStyle('svsub-narr-heading'), 'svsub-narr-heading', {
       'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
       'line-height': '1.12', 'font-weight': '400', 'margin-bottom': '16px',
     });
-    await clearAndSet(await freshStyle('svsub-step-desc'), 'svsub-step-desc', {
+    await clearAndSet(await freshStyle('svsub-narr-body'), 'svsub-narr-body', {
       'font-family': 'DM Sans', 'font-size': v['av-text-body'],
       'line-height': '1.9', 'opacity': '0.6',
     });
     await wait(500);
-
-    // Stats (cost + timeline)
-    await clearAndSet(await freshStyle('svsub-stats-grid'), 'svsub-stats-grid', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr',
-      'grid-column-gap': '64px', 'grid-row-gap': '64px', 'text-align': 'center',
-    });
-    await clearAndSet(await freshStyle('svsub-stat-item'), 'svsub-stat-item', {
-      'display': 'flex', 'flex-direction': 'column', 'align-items': 'center', 'grid-row-gap': '24px',
-    });
-    await clearAndSet(await freshStyle('svsub-stat-num'), 'svsub-stat-num', {
-      'font-family': 'DM Serif Display',
-      'font-size': 'clamp(36px, 5vw, 64px)',
-      'line-height': '1', 'letter-spacing': '-0.03em', 'font-weight': '400',
-      'color': v['av-cream'],
-    });
-    await clearAndSet(await freshStyle('svsub-stat-label'), 'svsub-stat-label', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-label'],
-      'letter-spacing': '0.25em', 'text-transform': 'uppercase',
-      'opacity': '0.4', 'color': v['av-cream'],
-    });
-    await wait(500);
-
-    // Utility
-    await clearAndSet(await freshStyle('svsub-mb-32'), 'svsub-mb-32', { 'margin-bottom': v['av-gap-sm'] });
-    await clearAndSet(await freshStyle('svsub-mb-64'), 'svsub-mb-64', { 'margin-bottom': v['av-gap-md'] });
-    await clearAndSet(await freshStyle('svsub-label-line'), 'svsub-label-line', { 'flex-grow': '1', 'height': '1px', 'background-color': v['av-dark-15'] });
 
     await applyCTAStyleProps(v);
   }
 
   // ═══════════════ BUILD ELEMENTS ═══════════════
 
-  // SECTION 1: HERO
-  log('Building Section 1: Hero...');
+  // SECTION 1: IMAGE HERO (dark, full-width image bg area)
+  log('Building Section 1: Image Hero...');
   const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
   hero.setTag('section');
   hero.setStyles([svHero]);
   hero.setAttribute('id', 'svsub-hero');
 
+  // Gradient overlay
+  const overlay = hero.append(webflow.elementPresets.DOM);
+  overlay.setTag('div');
+  overlay.setStyles([svHeroOverlay]);
+
+  // Content at bottom
   const heroC = hero.append(webflow.elementPresets.DOM);
   heroC.setTag('div');
   heroC.setStyles([svHeroContent]);
-
-  const heroLabel = heroC.append(webflow.elementPresets.DOM);
-  heroLabel.setTag('div');
-  heroLabel.setStyles([s.label]);
-  heroLabel.setAttribute('data-animate', 'fade-up');
-  const heroLabelTxt = heroLabel.append(webflow.elementPresets.DOM);
-  heroLabelTxt.setTag('div');
-  heroLabelTxt.setTextContent(`// ${SVC.name}`);
 
   const heroH = heroC.append(webflow.elementPresets.DOM);
   heroH.setTag('h1');
   heroH.setStyles([s.headingXL]);
   heroH.setTextContent(SVC.name);
-  heroH.setAttribute('data-animate', 'opacity-sweep');
+  heroH.setAttribute('data-animate', 'word-stagger-elastic');
 
   const heroSub = heroC.append(webflow.elementPresets.DOM);
   heroSub.setTag('p');
-  heroSub.setStyles([svHeroSub]);
+  heroSub.setStyles([s.body, s.bodyMuted]);
   heroSub.setTextContent(SVC.subtitle);
   heroSub.setAttribute('data-animate', 'fade-up');
 
+  // Inline cost + timeline metadata
+  const heroMeta = heroC.append(webflow.elementPresets.DOM);
+  heroMeta.setTag('div');
+  heroMeta.setStyles([svHeroMeta]);
+  heroMeta.setTextContent(`${SVC.cost} | ${SVC.timeline}`);
+  heroMeta.setAttribute('data-animate', 'fade-up');
+
   await safeCall('append:hero', () => body.append(hero));
+  logDetail('Section 1: Image Hero appended', 'ok');
 
-  // SECTION 2: OVERVIEW (warm, 2-col: image + text)
-  log('Building Section 2: Overview...');
-  const overSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  overSection.setTag('section');
-  overSection.setStyles([s.section, s.sectionWarm]);
-  overSection.setAttribute('id', 'svsub-overview');
+  // SECTION 2: SERVICE NARRATIVE (warm bg, 2 alternating rows)
+  log('Building Section 2: Service Narrative...');
+  const narrSection = webflow.elementBuilder(webflow.elementPresets.DOM);
+  narrSection.setTag('section');
+  narrSection.setStyles([s.section, s.sectionWarm]);
+  narrSection.setAttribute('id', 'svsub-narrative');
 
-  const overGrid = overSection.append(webflow.elementPresets.DOM);
-  overGrid.setTag('div');
-  overGrid.setStyles([s.grid2]);
+  // Row 1: image left, text right (overview)
+  const row1 = narrSection.append(webflow.elementPresets.DOM);
+  row1.setTag('div');
+  row1.setStyles([svNarrRow]);
+  row1.setAttribute('data-animate', 'fade-up');
 
-  const overImg = overGrid.append(webflow.elementPresets.DOM);
-  overImg.setTag('div');
-  overImg.setStyles([svImgPlaceholder]);
-  overImg.setAttribute('data-animate', 'parallax-depth');
+  const row1Img = row1.append(webflow.elementPresets.DOM);
+  row1Img.setTag('div');
+  row1Img.setStyles([s.imgLandscape]);
 
-  const overText = overGrid.append(webflow.elementPresets.DOM);
-  overText.setTag('div');
+  const row1Text = row1.append(webflow.elementPresets.DOM);
+  row1Text.setTag('div');
+  row1Text.setStyles([svNarrText]);
 
-  const overLabel = overText.append(webflow.elementPresets.DOM);
-  overLabel.setTag('div');
-  overLabel.setStyles([s.label, svMb32]);
-  overLabel.setAttribute('data-animate', 'fade-up');
-  const overLabelTxt = overLabel.append(webflow.elementPresets.DOM);
-  overLabelTxt.setTag('div');
-  overLabelTxt.setTextContent('Overview');
+  const row1H = row1Text.append(webflow.elementPresets.DOM);
+  row1H.setTag('h2');
+  row1H.setStyles([svNarrHeading]);
+  row1H.setTextContent('What we build');
 
-  const overH = overText.append(webflow.elementPresets.DOM);
-  overH.setTag('h2');
-  overH.setStyles([s.headingXL, svMb32]);
-  overH.setTextContent(SVC.name);
-  overH.setAttribute('data-animate', 'blur-focus');
+  const row1P = row1Text.append(webflow.elementPresets.DOM);
+  row1P.setTag('p');
+  row1P.setStyles([svNarrBody]);
+  row1P.setTextContent(SVC.desc);
 
-  const overP = overText.append(webflow.elementPresets.DOM);
-  overP.setTag('p');
-  overP.setStyles([s.body, s.bodyMuted]);
-  overP.setTextContent(SVC.desc);
-  overP.setAttribute('data-animate', 'fade-up');
+  // Divider
+  const div1 = narrSection.append(webflow.elementPresets.DOM);
+  div1.setTag('div');
+  div1.setStyles([s.divider]);
 
-  await safeCall('append:overview', () => body.append(overSection));
+  // Row 2: text left, image right (process)
+  const row2 = narrSection.append(webflow.elementPresets.DOM);
+  row2.setTag('div');
+  row2.setStyles([svNarrRow]);
+  row2.setAttribute('data-animate', 'fade-up');
 
-  // SECTION 3: PROCESS (cream, 3-step)
-  log('Building Section 3: Process...');
-  const procSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  procSection.setTag('section');
-  procSection.setStyles([s.section, s.sectionCream]);
-  procSection.setAttribute('id', 'svsub-process');
+  const row2Text = row2.append(webflow.elementPresets.DOM);
+  row2Text.setTag('div');
+  row2Text.setStyles([svNarrText]);
 
-  const procHeader = procSection.append(webflow.elementPresets.DOM);
-  procHeader.setTag('div');
-  procHeader.setStyles([svMb64]);
+  const row2H = row2Text.append(webflow.elementPresets.DOM);
+  row2H.setTag('h2');
+  row2H.setStyles([svNarrHeading]);
+  row2H.setTextContent('How we build it');
 
-  const procLabel = procHeader.append(webflow.elementPresets.DOM);
-  procLabel.setTag('div');
-  procLabel.setStyles([s.label, svMb32]);
-  procLabel.setAttribute('data-animate', 'fade-up');
-  const procLabelTxt = procLabel.append(webflow.elementPresets.DOM);
-  procLabelTxt.setTag('div');
-  procLabelTxt.setTextContent('Our Process');
-  const procLabelLine = procLabel.append(webflow.elementPresets.DOM);
-  procLabelLine.setTag('div');
-  procLabelLine.setStyles([svLabelLine]);
+  const row2P = row2Text.append(webflow.elementPresets.DOM);
+  row2P.setTag('p');
+  row2P.setStyles([svNarrBody]);
+  row2P.setTextContent(SVC.processDesc);
 
-  const stepGrid = procSection.append(webflow.elementPresets.DOM);
-  stepGrid.setTag('div');
-  stepGrid.setStyles([svStepGrid]);
-  stepGrid.setAttribute('data-animate', 'fade-up-stagger');
+  const row2Img = row2.append(webflow.elementPresets.DOM);
+  row2Img.setTag('div');
+  row2Img.setStyles([s.imgLandscape]);
 
-  PROCESS.forEach(step => {
-    const el = stepGrid.append(webflow.elementPresets.DOM);
-    el.setTag('div');
-    el.setStyles([svStep]);
-    el.setAttribute('data-animate', 'fade-up');
+  await safeCall('append:narrative', () => body.append(narrSection));
+  logDetail('Section 2: Narrative appended', 'ok');
 
-    const num = el.append(webflow.elementPresets.DOM);
-    num.setTag('div');
-    num.setStyles([svStepNum]);
-    num.setTextContent(step.number);
-
-    const title = el.append(webflow.elementPresets.DOM);
-    title.setTag('h3');
-    title.setStyles([svStepTitle]);
-    title.setTextContent(step.title);
-
-    const desc = el.append(webflow.elementPresets.DOM);
-    desc.setTag('p');
-    desc.setStyles([svStepDesc]);
-    desc.setTextContent(step.desc);
-  });
-
-  await safeCall('append:process', () => body.append(procSection));
-
-  // SECTION 4: COST & TIMELINE (dark, 2-col stats)
-  log('Building Section 4: Cost & Timeline...');
-  const costSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  costSection.setTag('section');
-  costSection.setStyles([s.section, s.sectionDark]);
-  costSection.setAttribute('id', 'svsub-cost');
-
-  const statsGrid = costSection.append(webflow.elementPresets.DOM);
-  statsGrid.setTag('div');
-  statsGrid.setStyles([svStatsGrid]);
-
-  const costItem = statsGrid.append(webflow.elementPresets.DOM);
-  costItem.setTag('div');
-  costItem.setStyles([svStatItem]);
-  costItem.setAttribute('data-animate', 'fade-up');
-  const costNum = costItem.append(webflow.elementPresets.DOM);
-  costNum.setTag('div');
-  costNum.setStyles([svStatNum]);
-  costNum.setTextContent(SVC.cost);
-  const costLabel = costItem.append(webflow.elementPresets.DOM);
-  costLabel.setTag('div');
-  costLabel.setStyles([svStatLabel]);
-  costLabel.setTextContent('Cost Range');
-
-  const timeItem = statsGrid.append(webflow.elementPresets.DOM);
-  timeItem.setTag('div');
-  timeItem.setStyles([svStatItem]);
-  timeItem.setAttribute('data-animate', 'fade-up');
-  const timeNum = timeItem.append(webflow.elementPresets.DOM);
-  timeNum.setTag('div');
-  timeNum.setStyles([svStatNum]);
-  timeNum.setTextContent(SVC.timeline);
-  const timeLabel = timeItem.append(webflow.elementPresets.DOM);
-  timeLabel.setTag('div');
-  timeLabel.setStyles([svStatLabel]);
-  timeLabel.setTextContent('Typical Timeline');
-
-  await safeCall('append:cost', () => body.append(costSection));
-
-  // SECTION 5: CTA
-  log('Building Section 5: CTA...');
+  // SECTION 3: CTA
+  log('Building Section 3: CTA...');
   await buildCTASection(
     body, v,
-    'Get a free estimate',
-    'Get a Free Estimate', '/free-estimate',
+    'Book a consultation',
+    'Schedule a Meeting', '/schedule-a-meeting',
     'Call Us', 'tel:7149003676',
   );
 

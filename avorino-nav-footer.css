@@ -1,0 +1,798 @@
+/* ═══════════════════════════════════════════════════════════════
+   Avorino — Navigation + Footer (CDN bundle for all pages)
+   Include via: <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@{hash}/avorino-nav-footer.css">
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Nav Spacer ── */
+.nav-spacer {
+  height: 96px;
+  background-color: #e8e4df;
+}
+
+/* ═══════════════════════════════════════════
+   NAVIGATION BAR
+   ═══════════════════════════════════════════ */
+.site-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 20px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-weight: 400;
+  font-size: 20px;
+  color: #111111;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+
+.nav-link {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #111111;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+}
+
+.nav-link:hover {
+  opacity: 1;
+}
+
+.nav-cta {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #f0ede8;
+  background-color: #111111;
+  padding: 10px 28px;
+  border-radius: 100px;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.nav-cta:hover {
+  background-color: #c8222a;
+}
+
+/* ── Nav defaults — dark text for beige bg ── */
+nav.site-nav .nav-logo,
+nav.site-nav .nav-link {
+  color: #111111;
+}
+nav.site-nav .nav-cta {
+  color: #f0ede8;
+  background-color: #111111;
+}
+nav.site-nav .nav-burger span {
+  background-color: #111111;
+}
+
+/* ── Nav Item (wrapper for link + dropdown) ── */
+.nav-item {
+  position: static;
+  display: flex;
+  align-items: center;
+}
+
+/* ── Dropdown Chevron ── */
+.nav-link--has-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.nav-link--has-dropdown::after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid currentColor;
+  opacity: 0.5;
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.nav-item:hover .nav-link--has-dropdown::after {
+  transform: rotate(180deg);
+}
+
+/* ── Shared Dropdown Base ── */
+.nav-dropdown {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  background-color: #111111;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-12px);
+  transition: opacity 0.35s cubic-bezier(0.23, 1, 0.32, 1),
+              transform 0.35s cubic-bezier(0.23, 1, 0.32, 1),
+              visibility 0.35s;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.nav-item:hover .nav-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* ── Dropdown Inner Container ── */
+.nav-dd-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 48px 64px;
+}
+
+/* ── Shared Dropdown Elements ── */
+.nav-dd-label {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #f0ede8;
+  opacity: 0.3;
+  margin-bottom: 20px;
+}
+
+.nav-dd-link {
+  display: block;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #f0ede8;
+  opacity: 0.5;
+  text-decoration: none;
+  padding: 6px 0;
+  transition: opacity 0.25s ease;
+}
+
+.nav-dd-link:hover {
+  opacity: 1;
+}
+
+.nav-dd-link--featured {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 18px;
+  opacity: 0.7;
+  padding: 8px 0;
+}
+
+.nav-dd-link--featured:hover {
+  opacity: 1;
+  color: #c8222a;
+}
+
+.nav-dd-divider {
+  height: 1px;
+  background-color: #f0ede8;
+  opacity: 0.06;
+  margin: 20px 0;
+}
+
+/* ── Services Dropdown — 6 cards ── */
+.nav-dd-services-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 2px;
+}
+
+.nav-dd-service-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 32px 24px;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  position: relative;
+}
+
+.nav-dd-service-card::after {
+  content: '';
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  width: 0;
+  height: 2px;
+  background-color: #c8222a;
+  transition: width 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.nav-dd-service-card:hover {
+  background-color: rgba(240, 237, 232, 0.04);
+}
+
+.nav-dd-service-card:hover::after {
+  width: 32px;
+}
+
+.nav-dd-service-title {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 17px;
+  font-weight: 400;
+  color: #f0ede8;
+  opacity: 0.85;
+  transition: opacity 0.3s ease;
+}
+
+.nav-dd-service-card:hover .nav-dd-service-title {
+  opacity: 1;
+}
+
+.nav-dd-service-desc {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: #f0ede8;
+  opacity: 0.3;
+  margin-bottom: 16px;
+}
+
+/* ── ADU Dropdown — left sidebar + city grid ── */
+.nav-dd-adu-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 0;
+}
+
+.nav-dd-adu-left {
+  padding-right: 48px;
+  border-right: 1px solid rgba(240, 237, 232, 0.06);
+}
+
+.nav-dd-adu-right {
+  padding-left: 48px;
+}
+
+.nav-dd-cities {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0 32px;
+}
+
+.nav-dd-city-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-dd-city {
+  display: block;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #f0ede8;
+  opacity: 0.4;
+  text-decoration: none;
+  padding: 5px 0;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.nav-dd-city:hover {
+  opacity: 1;
+  color: #c8222a;
+}
+
+/* ── Resources Dropdown — compact ── */
+.nav-dropdown--resources {
+  left: auto;
+  right: 160px;
+  width: 280px;
+  border-radius: 0 0 12px 12px;
+}
+
+.nav-dropdown--resources .nav-dd-container {
+  padding: 32px 36px;
+}
+
+/* ═══════════════════════════════════════════
+   BURGER MENU
+   ═══════════════════════════════════════════ */
+.nav-burger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  width: 24px;
+  height: 18px;
+  padding: 0;
+  z-index: 1002;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.nav-burger span {
+  display: block;
+  width: 100%;
+  height: 1.5px;
+  background-color: #111111;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.nav-burger.open span:nth-child(1) {
+  transform: translateY(6.5px) rotate(45deg);
+}
+.nav-burger.open span:nth-child(2) {
+  opacity: 0;
+}
+.nav-burger.open span:nth-child(3) {
+  transform: translateY(-6.5px) rotate(-45deg);
+}
+
+/* ═══════════════════════════════════════════
+   MOBILE OVERLAY
+   ═══════════════════════════════════════════ */
+.nav-mobile-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: #111111;
+  z-index: 999;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+  transition: opacity 0.4s ease;
+}
+
+.nav-mobile-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nav-mobile-scroll {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 96px 36px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.nav-mobile-group {
+  padding: 24px 0;
+  border-bottom: 1px solid rgba(240, 237, 232, 0.06);
+}
+
+.nav-mobile-group:last-child {
+  border-bottom: none;
+}
+
+.nav-mobile-label {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #f0ede8;
+  opacity: 0.25;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.nav-mobile-overlay .nav-mobile-group > a {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #f0ede8;
+  opacity: 0.6;
+  display: block;
+  padding: 8px 0;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.nav-mobile-overlay .nav-mobile-group > a:hover {
+  opacity: 1;
+}
+
+.nav-mobile-overlay a {
+  transition: opacity 0.3s ease;
+}
+
+/* ── Mobile Accordion (Cities) ── */
+.nav-mobile-accordion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0;
+  margin-bottom: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.nav-mobile-accordion .nav-mobile-label {
+  margin-bottom: 0;
+}
+
+.nav-mobile-accordion-icon {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 300;
+  color: #f0ede8;
+  opacity: 0.3;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  line-height: 1;
+}
+
+.nav-mobile-accordion.is-open .nav-mobile-accordion-icon {
+  transform: rotate(45deg);
+  opacity: 0.6;
+}
+
+.nav-mobile-accordion-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.nav-mobile-accordion.is-open + .nav-mobile-accordion-body {
+  max-height: 600px;
+}
+
+.nav-mobile-city-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 24px;
+  padding-top: 16px;
+}
+
+.nav-mobile-city-grid a {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  color: #f0ede8;
+  opacity: 0.4;
+  text-decoration: none;
+  padding: 6px 0;
+  display: block;
+  transition: opacity 0.2s ease;
+}
+
+.nav-mobile-city-grid a:hover {
+  opacity: 1;
+}
+
+/* ── Mobile CTA ── */
+.nav-mobile-group--cta {
+  padding-top: 32px;
+  border-bottom: none;
+}
+
+.nav-mobile-cta {
+  display: block;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #111111;
+  background-color: #f0ede8;
+  text-align: center;
+  padding: 16px 36px;
+  border-radius: 100px;
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-mobile-cta:hover {
+  background-color: #c8222a;
+  color: #f0ede8;
+}
+
+/* ═══════════════════════════════════════════
+   NAV COLOR STATES (dark sections)
+   ═══════════════════════════════════════════ */
+.site-nav .nav-logo,
+.site-nav .nav-link,
+.site-nav .nav-cta,
+.site-nav .nav-burger span {
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.site-nav.nav--dark .nav-logo,
+.site-nav.nav--dark .nav-link {
+  color: #f0ede8;
+}
+.site-nav.nav--dark .nav-cta {
+  color: #111;
+  background-color: #f0ede8;
+}
+.site-nav.nav--dark .nav-burger span {
+  background-color: #f0ede8;
+}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════ */
+.footer {
+  background-color: #111111;
+  color: #f0ede8;
+  padding: 96px 80px 48px;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr;
+  gap: 48px;
+  padding-bottom: 64px;
+  border-bottom: 1px solid rgba(240, 237, 232, 0.06);
+  margin-bottom: 48px;
+}
+
+.footer-brand-name {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-weight: 400;
+  font-size: 24px;
+  color: #f0ede8;
+  margin-bottom: 20px;
+  letter-spacing: 0.08em;
+}
+
+.footer-brand-desc {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #f0ede8;
+  opacity: 0.3;
+  max-width: 300px;
+  margin-bottom: 28px;
+}
+
+.footer-contact-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 24px;
+}
+
+.footer-contact-item {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #f0ede8;
+  opacity: 0.5;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.footer-contact-item:hover {
+  opacity: 1;
+}
+
+.footer-license {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  color: #f0ede8;
+  opacity: 0.15;
+}
+
+.footer-col-title {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #f0ede8;
+  opacity: 0.3;
+  margin-bottom: 20px;
+}
+
+.footer-col a {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  display: block;
+  font-size: 14px;
+  font-weight: 400;
+  color: #f0ede8;
+  opacity: 0.4;
+  padding: 5px 0;
+  text-decoration: none;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.footer-col a:hover {
+  opacity: 1;
+}
+
+/* ── City ADU Grid ── */
+.footer-cities {
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(240, 237, 232, 0.06);
+  margin-bottom: 32px;
+}
+
+.footer-cities-label {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #f0ede8;
+  opacity: 0.2;
+  margin-bottom: 16px;
+}
+
+.footer-cities-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 2px 32px;
+}
+
+.footer-cities-grid a {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #f0ede8;
+  opacity: 0.25;
+  text-decoration: none;
+  padding: 4px 0;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.footer-cities-grid a:hover {
+  opacity: 0.85;
+  color: #c8222a;
+}
+
+/* ── Also Serving ── */
+.footer-serving {
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(240, 237, 232, 0.06);
+  margin-bottom: 32px;
+}
+
+.footer-serving-list {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.9;
+  color: #f0ede8;
+  opacity: 0.15;
+}
+
+/* ── Bottom Bar ── */
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-copy {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  color: #f0ede8;
+  opacity: 0.15;
+}
+
+.footer-bottom-links {
+  display: flex;
+  gap: 32px;
+}
+
+.footer-bottom-links a {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #f0ede8;
+  opacity: 0.15;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.footer-bottom-links a:hover {
+  opacity: 0.5;
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE — Tablet (≤991px)
+   ═══════════════════════════════════════════ */
+@media (max-width: 991px) {
+  /* Nav */
+  .nav-links { display: none; }
+  .nav-burger { display: flex; }
+  .nav-mobile-overlay { display: flex; }
+  .nav-dropdown { display: none; }
+
+  /* Footer */
+  .footer { padding: 72px 48px 40px; }
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+  .footer-brand { grid-column: 1 / -1; }
+  .footer-cities-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px 24px;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE — Mobile Landscape (≤767px)
+   ═══════════════════════════════════════════ */
+@media (max-width: 767px) {
+  /* Nav */
+  .site-nav { padding: 16px 24px; }
+  .nav-mobile-scroll { padding: 80px 24px 36px; }
+  .nav-mobile-overlay .nav-mobile-group > a { font-size: 18px; }
+  .nav-mobile-city-grid a { font-size: 14px; padding: 5px 0; }
+
+  /* Footer */
+  .footer { padding: 56px 24px 32px; }
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .footer-cities-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px 16px;
+  }
+  .footer-cities-grid a { font-size: 12px; }
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE — Mobile Portrait (≤478px)
+   ═══════════════════════════════════════════ */
+@media (max-width: 478px) {
+  /* Nav */
+  .site-nav { padding: 14px 16px; }
+  .nav-mobile-scroll { padding: 72px 16px 32px; }
+  .nav-mobile-group { padding: 20px 0; }
+  .nav-mobile-overlay .nav-mobile-group > a { font-size: 17px; padding: 7px 0; }
+  .nav-mobile-city-grid { gap: 0 16px; }
+  .nav-mobile-city-grid a { font-size: 13px; }
+
+  /* Footer */
+  .footer { padding: 48px 16px 28px; }
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .footer-top .footer-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 16px;
+  }
+  .footer-top .footer-col .footer-col-title {
+    grid-column: 1 / -1;
+  }
+  .footer-cities-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2px 12px;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .footer-serving-list { font-size: 12px; }
+}

@@ -175,12 +175,31 @@ export async function createSharedStyles() {
   const sectionCream = await getOrCreateStyle('av-section-cream');
   const bodyMuted = await getOrCreateStyle('av-body-muted');
 
+  // v2 redesign: new shared styles
+  const split6040 = await getOrCreateStyle('av-split-60-40');
+  const split4060 = await getOrCreateStyle('av-split-40-60');
+  const imgHero = await getOrCreateStyle('av-img-hero');
+  const imgLandscape = await getOrCreateStyle('av-img-landscape');
+  const imgTall = await getOrCreateStyle('av-img-tall');
+  const divider = await getOrCreateStyle('av-divider');
+  const dividerLight = await getOrCreateStyle('av-divider-light');
+  const inputClean = await getOrCreateStyle('av-input-clean');
+  const textareaClean = await getOrCreateStyle('av-textarea-clean');
+  const selectClean = await getOrCreateStyle('av-select-clean');
+  const formLabel = await getOrCreateStyle('av-form-label');
+  const formGrid2 = await getOrCreateStyle('av-form-grid-2');
+  const submitBtn = await getOrCreateStyle('av-submit-btn');
+
   Object.assign(styles, {
     section, body, headingXL, headingLG, headingMD, label,
     grid2, grid3, cardDark, cardLight,
     btnPrimary, btnSecondary,
     flexCol, flexCenter, flexWrap,
     sectionWarm, sectionDark, sectionCream, bodyMuted,
+    split6040, split4060,
+    imgHero, imgLandscape, imgTall,
+    divider, dividerLight,
+    inputClean, textareaClean, selectClean, formLabel, formGrid2, submitBtn,
   });
 
   return styles;
@@ -299,6 +318,92 @@ export async function setSharedStyleProps(styles: Record<string, any>, v: Record
     'border-top-left-radius': v['av-radius-pill'], 'border-top-right-radius': v['av-radius-pill'],
     'border-bottom-left-radius': v['av-radius-pill'], 'border-bottom-right-radius': v['av-radius-pill'],
     'text-decoration': 'none',
+  });
+  await wait(500);
+
+  // Flex utility (used by form builder etc.)
+  await clearAndSet(await freshStyle('av-flex-col'), 'av-flex-col', {
+    'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '24px',
+  });
+  await wait(200);
+
+  // v2 redesign: asymmetric grid layouts
+  logDetail('Setting v2 layout props...', 'info');
+  await clearAndSet(await freshStyle('av-split-60-40'), 'av-split-60-40', {
+    'display': 'grid', 'grid-template-columns': '1.5fr 1fr',
+    'grid-column-gap': '96px', 'grid-row-gap': '64px', 'align-items': 'start',
+  });
+  await clearAndSet(await freshStyle('av-split-40-60'), 'av-split-40-60', {
+    'display': 'grid', 'grid-template-columns': '1fr 1.5fr',
+    'grid-column-gap': '96px', 'grid-row-gap': '64px', 'align-items': 'start',
+  });
+  await wait(500);
+
+  // v2: image placeholders
+  logDetail('Setting v2 image placeholder props...', 'info');
+  const imgBase: Record<string, any> = {
+    'background-color': '#1a1a1a',
+    'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
+    'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
+    'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
+  };
+  await clearAndSet(await freshStyle('av-img-hero'), 'av-img-hero', { ...imgBase, 'min-height': '60vh' });
+  await clearAndSet(await freshStyle('av-img-landscape'), 'av-img-landscape', { ...imgBase, 'min-height': '400px' });
+  await clearAndSet(await freshStyle('av-img-tall'), 'av-img-tall', { ...imgBase, 'min-height': '560px' });
+  await wait(500);
+
+  // v2: dividers
+  logDetail('Setting v2 divider props...', 'info');
+  await clearAndSet(await freshStyle('av-divider'), 'av-divider', {
+    'width': '100%', 'height': '1px', 'background-color': v['av-dark-10'],
+    'margin-top': '48px', 'margin-bottom': '48px',
+  });
+  await clearAndSet(await freshStyle('av-divider-light'), 'av-divider-light', {
+    'width': '100%', 'height': '1px', 'background-color': v['av-cream-06'],
+    'margin-top': '48px', 'margin-bottom': '48px',
+  });
+  await wait(500);
+
+  // v2: clean bordered form inputs (DMDC inquiry style)
+  logDetail('Setting v2 form input props...', 'info');
+  const inputBase: Record<string, any> = {
+    'font-family': 'DM Sans', 'font-size': v['av-text-body'],
+    'padding-top': '18px', 'padding-bottom': '18px',
+    'padding-left': '20px', 'padding-right': '20px',
+    'background-color': v['av-cream'], 'color': v['av-dark'],
+    'border-top-width': '1px', 'border-bottom-width': '1px',
+    'border-left-width': '1px', 'border-right-width': '1px',
+    'border-top-style': 'solid', 'border-bottom-style': 'solid',
+    'border-left-style': 'solid', 'border-right-style': 'solid',
+    'border-top-color': v['av-dark-10'], 'border-bottom-color': v['av-dark-10'],
+    'border-left-color': v['av-dark-10'], 'border-right-color': v['av-dark-10'],
+    'border-top-left-radius': '6px', 'border-top-right-radius': '6px',
+    'border-bottom-left-radius': '6px', 'border-bottom-right-radius': '6px',
+    'width': '100%',
+  };
+  await clearAndSet(await freshStyle('av-input-clean'), 'av-input-clean', inputBase);
+  await clearAndSet(await freshStyle('av-select-clean'), 'av-select-clean', inputBase);
+  await clearAndSet(await freshStyle('av-textarea-clean'), 'av-textarea-clean', { ...inputBase, 'min-height': '140px' });
+  await clearAndSet(await freshStyle('av-form-label'), 'av-form-label', {
+    'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
+    'font-weight': '500', 'margin-bottom': '8px', 'display': 'block',
+  });
+  await clearAndSet(await freshStyle('av-form-grid-2'), 'av-form-grid-2', {
+    'display': 'grid', 'grid-template-columns': '1fr 1fr',
+    'grid-column-gap': '16px', 'grid-row-gap': '16px',
+  });
+  await clearAndSet(await freshStyle('av-submit-btn'), 'av-submit-btn', {
+    'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
+    'font-weight': '500', 'letter-spacing': '0.04em',
+    'display': 'inline-flex', 'align-items': 'center', 'justify-content': 'center',
+    'color': v['av-cream'], 'background-color': v['av-dark'],
+    'padding-top': v['av-btn-pad-y'], 'padding-bottom': v['av-btn-pad-y'],
+    'padding-left': v['av-btn-pad-x'], 'padding-right': v['av-btn-pad-x'],
+    'border-top-left-radius': v['av-radius-pill'], 'border-top-right-radius': v['av-radius-pill'],
+    'border-bottom-left-radius': v['av-radius-pill'], 'border-bottom-right-radius': v['av-radius-pill'],
+    'border-top-width': '0px', 'border-bottom-width': '0px',
+    'border-left-width': '0px', 'border-right-width': '0px',
+    'cursor': 'pointer', 'width': '100%', 'margin-top': '16px',
   });
   await wait(500);
 
@@ -489,6 +594,143 @@ export async function applyCTAStyleProps(v: Record<string, any>) {
   });
 }
 
+// ── Calendly integration ──
+export const CALENDLY_URL = 'https://calendly.com/avorino/client-meetings';
+export const CALENDLY_CSS = '<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">';
+export const CALENDLY_JS = '<script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async><\/script>';
+
+// Inline Calendly embed section (cream bg, centered heading + widget)
+export async function buildCalendlySection(
+  body: any,
+  v: Record<string, any>,
+  heading: string = 'Book a Free Consultation',
+) {
+  const calSection = await getOrCreateStyle('av-cal-section');
+  const calHeading = await getOrCreateStyle('av-cal-heading');
+  const calWidget = await getOrCreateStyle('av-cal-widget');
+
+  const section = webflow.elementBuilder(webflow.elementPresets.DOM);
+  section.setTag('section');
+  section.setStyles([calSection]);
+  section.setAttribute('id', 'av-calendly');
+
+  const h2 = section.append(webflow.elementPresets.DOM);
+  h2.setTag('h2');
+  h2.setStyles([calHeading]);
+  h2.setTextContent(heading);
+  h2.setAttribute('data-animate', 'word-stagger-elastic');
+
+  const widget = section.append(webflow.elementPresets.DOM);
+  widget.setTag('div');
+  widget.setStyles([calWidget]);
+  widget.setAttribute('class', 'calendly-inline-widget');
+  widget.setAttribute('data-url', CALENDLY_URL + '?hide_gdpr_banner=1&background_color=f0ede8&text_color=111111&primary_color=111111');
+
+  await safeCall('append:calendly', () => body.append(section));
+  logDetail('Calendly section appended', 'ok');
+}
+
+export async function applyCalendlyStyleProps(v: Record<string, any>) {
+  await clearAndSet(await freshStyle('av-cal-section'), 'av-cal-section', {
+    'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
+    'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
+    'background-color': v['av-cream'], 'color': v['av-dark'],
+    'text-align': 'center',
+  });
+  await clearAndSet(await freshStyle('av-cal-heading'), 'av-cal-heading', {
+    'font-family': 'DM Serif Display', 'font-size': v['av-text-h2'],
+    'line-height': '1.08', 'letter-spacing': '-0.02em', 'font-weight': '400',
+    'margin-bottom': v['av-gap-md'], 'color': v['av-dark'],
+  });
+  await clearAndSet(await freshStyle('av-cal-widget'), 'av-cal-widget', {
+    'min-height': '700px', 'width': '100%',
+    'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
+    'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
+    'overflow-x': 'hidden', 'overflow-y': 'hidden',
+  });
+}
+
+// ── Shared form builder (DOM-based, only preset supported) ──
+export interface FormField {
+  name: string;
+  label: string;
+  type: 'text' | 'email' | 'tel' | 'select' | 'textarea';
+  placeholder?: string;
+  options?: string[];
+  halfWidth?: boolean; // pair with next field in 2-col row
+}
+
+export function buildCleanForm(
+  parent: any,
+  fields: FormField[],
+  s: Record<string, any>,
+  submitText: string = 'Send Message',
+) {
+  // Use <div> not <form> — Webflow auto-injects default form fields on <form> tags
+  const formWrap = parent.append(webflow.elementPresets.DOM);
+  formWrap.setTag('div');
+  formWrap.setStyles([s.flexCol]);
+  formWrap.setAttribute('data-animate', 'fade-up');
+
+  let i = 0;
+  while (i < fields.length) {
+    const field = fields[i];
+    const next = fields[i + 1];
+
+    if (field.halfWidth && next?.halfWidth) {
+      const row = formWrap.append(webflow.elementPresets.DOM);
+      row.setTag('div');
+      row.setStyles([s.formGrid2]);
+
+      _buildField(row, field, s);
+      _buildField(row, next, s);
+      i += 2;
+    } else {
+      _buildField(formWrap, field, s);
+      i += 1;
+    }
+  }
+
+  // Submit button
+  const submitBtn = formWrap.append(webflow.elementPresets.DOM);
+  submitBtn.setTag('button');
+  submitBtn.setStyles([s.submitBtn]);
+  submitBtn.setTextContent(submitText);
+  submitBtn.setAttribute('type', 'submit');
+
+  return formWrap;
+}
+
+function _buildField(parent: any, field: FormField, s: Record<string, any>) {
+  const wrap = parent.append(webflow.elementPresets.DOM);
+  wrap.setTag('div');
+
+  const label = wrap.append(webflow.elementPresets.DOM);
+  label.setTag('label');
+  label.setStyles([s.formLabel]);
+  label.setTextContent(field.label);
+
+  if (field.type === 'textarea') {
+    const el = wrap.append(webflow.elementPresets.DOM);
+    el.setTag('textarea');
+    el.setStyles([s.textareaClean]);
+    el.setAttribute('name', field.name);
+    if (field.placeholder) el.setAttribute('placeholder', field.placeholder);
+  } else if (field.type === 'select') {
+    const el = wrap.append(webflow.elementPresets.DOM);
+    el.setTag('select');
+    el.setStyles([s.selectClean]);
+    el.setAttribute('name', field.name);
+  } else {
+    const el = wrap.append(webflow.elementPresets.DOM);
+    el.setTag('input');
+    el.setStyles([s.inputClean]);
+    el.setAttribute('type', field.type);
+    el.setAttribute('name', field.name);
+    if (field.placeholder) el.setAttribute('placeholder', field.placeholder);
+  }
+}
+
 // ════════════════════════════════════════════════════════════════
 // City ADU Page — Shared Builder
 // Each index-city-*.ts passes unique CityData to this function.
@@ -545,36 +787,21 @@ export async function buildCityPage(data: CityData) {
   log('Creating shared styles...');
   const s = await createSharedStyles();
 
-  // ── City page styles (shared across all city pages, prefix: cy-) ──
+  // ── City page styles (v2: reduced from ~25 to ~15 styles) ──
   log('Creating city page styles...');
   const cyHero = await getOrCreateStyle('cy-hero');
   const cyHeroContent = await getOrCreateStyle('cy-hero-content');
-  const cyHeroSub = await getOrCreateStyle('cy-hero-subtitle');
-  const cyOverviewText = await getOrCreateStyle('cy-overview-text');
-  const cyRegsGrid = await getOrCreateStyle('cy-regs-grid');
-  const cyRegCard = await getOrCreateStyle('cy-reg-card');
+  const cyOverview = await getOrCreateStyle('cy-overview');
+  const cyRegRow = await getOrCreateStyle('cy-reg-row');
   const cyRegLabel = await getOrCreateStyle('cy-reg-label');
   const cyRegValue = await getOrCreateStyle('cy-reg-value');
-  const cyGuideGrid = await getOrCreateStyle('cy-guide-grid');
-  const cyGuideStep = await getOrCreateStyle('cy-guide-step');
-  const cyGuideStepNum = await getOrCreateStyle('cy-guide-step-num');
-  const cyGuideStepTitle = await getOrCreateStyle('cy-guide-step-title');
-  const cyGuideStepDesc = await getOrCreateStyle('cy-guide-step-desc');
-  const cyInfoGrid = await getOrCreateStyle('cy-info-grid');
-  const cyInfoCard = await getOrCreateStyle('cy-info-card');
-  const cyInfoLabel = await getOrCreateStyle('cy-info-label');
-  const cyInfoValue = await getOrCreateStyle('cy-info-value');
-  const cyStatsGrid = await getOrCreateStyle('cy-stats-grid');
-  const cyStatItem = await getOrCreateStyle('cy-stat-item');
-  const cyStatNum = await getOrCreateStyle('cy-stat-num');
-  const cyStatLabel = await getOrCreateStyle('cy-stat-label');
-  const cyPermitCard = await getOrCreateStyle('cy-permit-card');
-  const cyPermitRow = await getOrCreateStyle('cy-permit-row');
-  const cyMb16 = await getOrCreateStyle('cy-mb-16');
-  const cyMb32 = await getOrCreateStyle('cy-mb-32');
-  const cyMb64 = await getOrCreateStyle('cy-mb-64');
-  const cyLabelLine = await getOrCreateStyle('cy-label-line');
-  const cyMaxW = await getOrCreateStyle('cy-max-w');
+  const cyStepRow = await getOrCreateStyle('cy-step-row');
+  const cyStepNumCol = await getOrCreateStyle('cy-step-num-col');
+  const cyStepNum = await getOrCreateStyle('cy-step-num');
+  const cyStepContent = await getOrCreateStyle('cy-step-content');
+  const cyStepTitle = await getOrCreateStyle('cy-step-title');
+  const cyStepDesc = await getOrCreateStyle('cy-step-desc');
+  const cyPermitMeta = await getOrCreateStyle('cy-permit-meta');
 
   // ── Create page ──
   const { body } = await createPageWithSlug(
@@ -589,154 +816,89 @@ export async function buildCityPage(data: CityData) {
 
     log('Setting city page style properties...');
 
-    // Hero
+    // Hero: split layout (text left, image right)
     await clearAndSet(await freshStyle('cy-hero'), 'cy-hero', {
-      'min-height': '55vh', 'display': 'flex', 'align-items': 'flex-end',
+      'display': 'grid', 'grid-template-columns': '1.5fr 1fr',
+      'grid-column-gap': '96px', 'grid-row-gap': '64px', 'align-items': 'center',
+      'min-height': '70vh',
       'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
       'background-color': v['av-dark'], 'color': v['av-cream'],
-      'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
     await clearAndSet(await freshStyle('cy-hero-content'), 'cy-hero-content', {
-      'position': 'relative', 'z-index': '2', 'max-width': '800px',
-    });
-    await clearAndSet(await freshStyle('cy-hero-subtitle'), 'cy-hero-subtitle', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'line-height': '1.9', 'opacity': '0.6', 'margin-top': '24px', 'color': v['av-cream'],
+      'max-width': '640px',
     });
     await wait(500);
 
-    // Overview text
-    await clearAndSet(await freshStyle('cy-overview-text'), 'cy-overview-text', {
-      'max-width': '720px',
+    // Overview paragraph (centered, max-width)
+    await clearAndSet(await freshStyle('cy-overview'), 'cy-overview', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
+      'line-height': '1.9', 'opacity': '0.6', 'max-width': '800px',
+      'margin-bottom': '64px',
     });
-    await wait(200);
 
-    // Regulations grid (3-col cards)
-    await clearAndSet(await freshStyle('cy-regs-grid'), 'cy-regs-grid', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr 1fr',
-      'grid-column-gap': '24px', 'grid-row-gap': '24px',
-    });
-    await clearAndSet(await freshStyle('cy-reg-card'), 'cy-reg-card', {
-      'background-color': v['av-dark'], 'color': v['av-cream'],
-      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
-      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
-      'padding-top': '40px', 'padding-bottom': '40px',
-      'padding-left': '36px', 'padding-right': '36px',
+    // Regulation definition rows (label left, value right)
+    await clearAndSet(await freshStyle('cy-reg-row'), 'cy-reg-row', {
+      'display': 'grid', 'grid-template-columns': '200px 1fr',
+      'grid-column-gap': '48px', 'align-items': 'baseline',
+      'padding-top': '24px', 'padding-bottom': '24px',
     });
     await clearAndSet(await freshStyle('cy-reg-label'), 'cy-reg-label', {
       'font-family': 'DM Sans', 'font-size': v['av-text-label'],
       'letter-spacing': '0.3em', 'text-transform': 'uppercase',
-      'opacity': '0.4', 'margin-bottom': '12px',
+      'opacity': '0.3',
     });
     await clearAndSet(await freshStyle('cy-reg-value'), 'cy-reg-value', {
       'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'line-height': '1.7', 'color': v['av-cream'],
+      'line-height': '1.7',
     });
     await wait(500);
 
-    // Guide steps
-    await clearAndSet(await freshStyle('cy-guide-grid'), 'cy-guide-grid', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr 1fr',
-      'grid-column-gap': '32px', 'grid-row-gap': '32px',
+    // Permitting steps (vertical numbered list)
+    await clearAndSet(await freshStyle('cy-step-row'), 'cy-step-row', {
+      'display': 'grid', 'grid-template-columns': '80px 1fr',
+      'grid-column-gap': '24px',
+      'padding-top': '32px', 'padding-bottom': '32px',
     });
-    await clearAndSet(await freshStyle('cy-guide-step'), 'cy-guide-step', {
+    await clearAndSet(await freshStyle('cy-step-num-col'), 'cy-step-num-col', {
+      'display': 'flex', 'align-items': 'flex-start', 'justify-content': 'center',
+    });
+    await clearAndSet(await freshStyle('cy-step-num'), 'cy-step-num', {
+      'font-family': 'DM Serif Display',
+      'font-size': 'clamp(40px, 4vw, 56px)',
+      'line-height': '1', 'font-weight': '400', 'opacity': '0.15',
+    });
+    await clearAndSet(await freshStyle('cy-step-content'), 'cy-step-content', {
       'display': 'flex', 'flex-direction': 'column',
     });
-    await clearAndSet(await freshStyle('cy-guide-step-num'), 'cy-guide-step-num', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-label'],
-      'letter-spacing': '0.3em', 'text-transform': 'uppercase',
-      'opacity': '0.3', 'margin-bottom': '24px',
-    });
-    await clearAndSet(await freshStyle('cy-guide-step-title'), 'cy-guide-step-title', {
+    await clearAndSet(await freshStyle('cy-step-title'), 'cy-step-title', {
       'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
-      'line-height': '1.12', 'font-weight': '400', 'margin-bottom': '16px',
+      'line-height': '1.12', 'font-weight': '400', 'margin-bottom': '12px',
     });
-    await clearAndSet(await freshStyle('cy-guide-step-desc'), 'cy-guide-step-desc', {
+    await clearAndSet(await freshStyle('cy-step-desc'), 'cy-step-desc', {
       'font-family': 'DM Sans', 'font-size': v['av-text-body'],
       'line-height': '1.9', 'opacity': '0.6',
     });
-    await wait(500);
-
-    // Info grid (2-col: permit details + costs)
-    await clearAndSet(await freshStyle('cy-info-grid'), 'cy-info-grid', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr',
-      'grid-column-gap': '24px', 'grid-row-gap': '24px',
-    });
-    await clearAndSet(await freshStyle('cy-info-card'), 'cy-info-card', {
-      'background-color': v['av-dark'], 'color': v['av-cream'],
-      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
-      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
-      'padding-top': v['av-gap-md'], 'padding-bottom': v['av-gap-md'],
-      'padding-left': '48px', 'padding-right': '48px',
-      'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '32px',
-    });
-    await clearAndSet(await freshStyle('cy-info-label'), 'cy-info-label', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-label'],
-      'letter-spacing': '0.3em', 'text-transform': 'uppercase', 'opacity': '0.4',
-      'margin-bottom': '8px',
-    });
-    await clearAndSet(await freshStyle('cy-info-value'), 'cy-info-value', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'line-height': '1.7', 'color': v['av-cream'],
-    });
-    await wait(500);
-
-    // Stats row (3-col: cost, rental, size)
-    await clearAndSet(await freshStyle('cy-stats-grid'), 'cy-stats-grid', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr 1fr',
-      'grid-column-gap': '64px', 'grid-row-gap': '64px', 'text-align': 'center',
-    });
-    await clearAndSet(await freshStyle('cy-stat-item'), 'cy-stat-item', {
-      'display': 'flex', 'flex-direction': 'column', 'align-items': 'center', 'grid-row-gap': '24px',
-    });
-    await clearAndSet(await freshStyle('cy-stat-num'), 'cy-stat-num', {
-      'font-family': 'DM Serif Display',
-      'font-size': 'clamp(32px, 4vw, 56px)',
-      'line-height': '1', 'letter-spacing': '-0.03em', 'font-weight': '400',
-      'color': v['av-cream'],
-    });
-    await clearAndSet(await freshStyle('cy-stat-label'), 'cy-stat-label', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-label'],
-      'letter-spacing': '0.25em', 'text-transform': 'uppercase',
-      'opacity': '0.4', 'color': v['av-cream'],
-    });
-    await wait(500);
-
-    // Permit card
-    await clearAndSet(await freshStyle('cy-permit-card'), 'cy-permit-card', {
-      'background-color': v['av-cream'], 'color': v['av-dark'],
-      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
-      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
-      'padding-top': '40px', 'padding-bottom': '40px',
-      'padding-left': '48px', 'padding-right': '48px',
-      'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '16px',
-    });
-    await clearAndSet(await freshStyle('cy-permit-row'), 'cy-permit-row', {
+    // Permit metadata (inline, muted)
+    await clearAndSet(await freshStyle('cy-permit-meta'), 'cy-permit-meta', {
       'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
-      'line-height': '1.7', 'opacity': '0.7',
+      'opacity': '0.4', 'text-align': 'center', 'margin-top': '24px',
     });
     await wait(500);
-
-    // Utility
-    await clearAndSet(await freshStyle('cy-mb-16'), 'cy-mb-16', { 'margin-bottom': '16px' });
-    await clearAndSet(await freshStyle('cy-mb-32'), 'cy-mb-32', { 'margin-bottom': v['av-gap-sm'] });
-    await clearAndSet(await freshStyle('cy-mb-64'), 'cy-mb-64', { 'margin-bottom': v['av-gap-md'] });
-    await clearAndSet(await freshStyle('cy-label-line'), 'cy-label-line', { 'flex-grow': '1', 'height': '1px', 'background-color': v['av-dark-15'] });
-    await clearAndSet(await freshStyle('cy-max-w'), 'cy-max-w', { 'max-width': '720px' });
 
     await applyCTAStyleProps(v);
   }
 
   // ═══════════════ BUILD ELEMENTS ═══════════════
 
-  // SECTION 1: HERO
+  // SECTION 1: HERO (dark, split: text left + image right)
   log('Building Section 1: Hero...');
   const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
   hero.setTag('section');
   hero.setStyles([cyHero]);
   hero.setAttribute('id', 'cy-hero');
 
+  // Left: text
   const heroC = hero.append(webflow.elementPresets.DOM);
   heroC.setTag('div');
   heroC.setStyles([cyHeroContent]);
@@ -753,332 +915,154 @@ export async function buildCityPage(data: CityData) {
   heroH.setTag('h1');
   heroH.setStyles([s.headingXL]);
   heroH.setTextContent(`ADU Construction in ${data.city}`);
-  heroH.setAttribute('data-animate', 'opacity-sweep');
+  heroH.setAttribute('data-animate', 'word-stagger-elastic');
 
   const heroSub = heroC.append(webflow.elementPresets.DOM);
   heroSub.setTag('p');
-  heroSub.setStyles([cyHeroSub]);
+  heroSub.setStyles([s.body, s.bodyMuted]);
   heroSub.setTextContent(data.whyBuild);
   heroSub.setAttribute('data-animate', 'fade-up');
 
+  // Right: tall image placeholder
+  const heroImg = hero.append(webflow.elementPresets.DOM);
+  heroImg.setTag('div');
+  heroImg.setStyles([s.imgTall]);
+  heroImg.setAttribute('data-animate', 'parallax-depth');
+
   await safeCall('append:hero', () => body.append(hero));
+  logDetail('Section 1: Hero appended', 'ok');
 
-  // SECTION 2: CITY OVERVIEW (warm bg)
-  log('Building Section 2: Overview...');
-  const overSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  overSection.setTag('section');
-  overSection.setStyles([s.section, s.sectionWarm]);
-  overSection.setAttribute('id', 'cy-overview');
-
-  const overHeader = overSection.append(webflow.elementPresets.DOM);
-  overHeader.setTag('div');
-  overHeader.setStyles([cyMb64]);
-  const overLabel = overHeader.append(webflow.elementPresets.DOM);
-  overLabel.setTag('div');
-  overLabel.setStyles([s.label, cyMb32]);
-  overLabel.setAttribute('data-animate', 'fade-up');
-  const overLabelTxt = overLabel.append(webflow.elementPresets.DOM);
-  overLabelTxt.setTag('div');
-  overLabelTxt.setTextContent(`${data.city} Overview`);
-  const overLabelLine = overLabel.append(webflow.elementPresets.DOM);
-  overLabelLine.setTag('div');
-  overLabelLine.setStyles([cyLabelLine]);
-
-  const overP = overSection.append(webflow.elementPresets.DOM);
-  overP.setTag('p');
-  overP.setStyles([s.body, s.bodyMuted, cyOverviewText]);
-  overP.setTextContent(data.overview);
-  overP.setAttribute('data-animate', 'fade-up');
-
-  await safeCall('append:overview', () => body.append(overSection));
-
-  // SECTION 3: ADU REGULATIONS (cream bg, card grid)
-  log('Building Section 3: Regulations...');
+  // SECTION 2: OVERVIEW + REGULATIONS (cream bg, definition-list rows)
+  log('Building Section 2: Overview + Regulations...');
   const regsSection = webflow.elementBuilder(webflow.elementPresets.DOM);
   regsSection.setTag('section');
   regsSection.setStyles([s.section, s.sectionCream]);
   regsSection.setAttribute('id', 'cy-regulations');
 
-  const regsHeader = regsSection.append(webflow.elementPresets.DOM);
-  regsHeader.setTag('div');
-  regsHeader.setStyles([cyMb64]);
-  const regsLabel = regsHeader.append(webflow.elementPresets.DOM);
-  regsLabel.setTag('div');
-  regsLabel.setStyles([s.label, cyMb32]);
-  regsLabel.setAttribute('data-animate', 'fade-up');
-  const regsLabelTxt = regsLabel.append(webflow.elementPresets.DOM);
-  regsLabelTxt.setTag('div');
-  regsLabelTxt.setTextContent(`${data.city} ADU Regulations`);
-  const regsLabelLine = regsLabel.append(webflow.elementPresets.DOM);
-  regsLabelLine.setTag('div');
-  regsLabelLine.setStyles([cyLabelLine]);
+  // Overview paragraph
+  const overP = regsSection.append(webflow.elementPresets.DOM);
+  overP.setTag('p');
+  overP.setStyles([cyOverview]);
+  overP.setTextContent(data.overview);
+  overP.setAttribute('data-animate', 'fade-up');
 
-  const regsH = regsHeader.append(webflow.elementPresets.DOM);
+  // Section heading
+  const regsH = regsSection.append(webflow.elementPresets.DOM);
   regsH.setTag('h2');
-  regsH.setStyles([s.headingXL]);
+  regsH.setStyles([s.headingLG]);
   regsH.setTextContent('Zoning & requirements');
-  regsH.setAttribute('data-animate', 'blur-focus');
+  regsH.setAttribute('data-animate', 'fade-up');
 
-  const regsGrid = regsSection.append(webflow.elementPresets.DOM);
-  regsGrid.setTag('div');
-  regsGrid.setStyles([cyRegsGrid]);
-  regsGrid.setAttribute('data-animate', 'fade-up-stagger');
-
+  // Regulation definition rows with dividers
   const regItems = [
     { label: 'Setbacks', value: data.regulations.setbacks },
-    { label: 'Height Limits', value: data.regulations.height },
+    { label: 'Height', value: data.regulations.height },
     { label: 'Parking', value: data.regulations.parking },
-    { label: 'Lot Size Range', value: data.regulations.lotSize },
+    { label: 'Lot Size', value: data.regulations.lotSize },
     { label: 'Owner Occupancy', value: data.regulations.ownerOccupancy },
   ];
   if (data.regulations.additionalNotes) {
     regItems.push({ label: 'Additional Notes', value: data.regulations.additionalNotes });
   }
 
-  regItems.forEach(reg => {
-    const card = regsGrid.append(webflow.elementPresets.DOM);
-    card.setTag('div');
-    card.setStyles([cyRegCard]);
-    card.setAttribute('data-animate', 'fade-up');
+  regItems.forEach((reg, i) => {
+    // Divider between rows
+    if (i > 0) {
+      const div = regsSection.append(webflow.elementPresets.DOM);
+      div.setTag('div');
+      div.setStyles([s.divider]);
+    }
 
-    const lbl = card.append(webflow.elementPresets.DOM);
+    const row = regsSection.append(webflow.elementPresets.DOM);
+    row.setTag('div');
+    row.setStyles([cyRegRow]);
+    row.setAttribute('data-animate', 'fade-up');
+
+    const lbl = row.append(webflow.elementPresets.DOM);
     lbl.setTag('div');
     lbl.setStyles([cyRegLabel]);
     lbl.setTextContent(reg.label);
 
-    const val = card.append(webflow.elementPresets.DOM);
+    const val = row.append(webflow.elementPresets.DOM);
     val.setTag('div');
     val.setStyles([cyRegValue]);
     val.setTextContent(reg.value);
   });
 
   await safeCall('append:regulations', () => body.append(regsSection));
+  logDetail('Section 2: Overview + Regulations appended', 'ok');
 
-  // SECTION 4: PERMITTING GUIDE (warm bg, steps + permit details)
-  log('Building Section 4: Permitting Guide...');
+  // SECTION 3: PERMITTING (warm bg, vertical numbered list)
+  log('Building Section 3: Permitting...');
   const permitSection = webflow.elementBuilder(webflow.elementPresets.DOM);
   permitSection.setTag('section');
   permitSection.setStyles([s.section, s.sectionWarm]);
   permitSection.setAttribute('id', 'cy-permitting');
 
-  const permitHeader = permitSection.append(webflow.elementPresets.DOM);
-  permitHeader.setTag('div');
-  permitHeader.setStyles([cyMb64]);
-  const permitLabel = permitHeader.append(webflow.elementPresets.DOM);
-  permitLabel.setTag('div');
-  permitLabel.setStyles([s.label, cyMb32]);
-  permitLabel.setAttribute('data-animate', 'fade-up');
-  const permitLabelTxt = permitLabel.append(webflow.elementPresets.DOM);
-  permitLabelTxt.setTag('div');
-  permitLabelTxt.setTextContent('Permitting Guide');
-  const permitLabelLine = permitLabel.append(webflow.elementPresets.DOM);
-  permitLabelLine.setTag('div');
-  permitLabelLine.setStyles([cyLabelLine]);
-
-  const permitH = permitHeader.append(webflow.elementPresets.DOM);
+  const permitH = permitSection.append(webflow.elementPresets.DOM);
   permitH.setTag('h2');
-  permitH.setStyles([s.headingXL]);
+  permitH.setStyles([s.headingLG]);
   permitH.setTextContent(`How to permit your ADU in ${data.city}`);
-  permitH.setAttribute('data-animate', 'blur-focus');
+  permitH.setAttribute('data-animate', 'fade-up');
 
-  // Steps
-  const guideGrid = permitSection.append(webflow.elementPresets.DOM);
-  guideGrid.setTag('div');
-  guideGrid.setStyles([cyGuideGrid, cyMb64]);
-  guideGrid.setAttribute('data-animate', 'fade-up-stagger');
-
+  // Steps as vertical numbered list (large number left, content right)
   data.permitting.steps.forEach((step, i) => {
-    const el = guideGrid.append(webflow.elementPresets.DOM);
-    el.setTag('div');
-    el.setStyles([cyGuideStep]);
-    el.setAttribute('data-animate', 'fade-up');
+    if (i > 0) {
+      const div = permitSection.append(webflow.elementPresets.DOM);
+      div.setTag('div');
+      div.setStyles([s.divider]);
+    }
 
-    const num = el.append(webflow.elementPresets.DOM);
+    const row = permitSection.append(webflow.elementPresets.DOM);
+    row.setTag('div');
+    row.setStyles([cyStepRow]);
+    row.setAttribute('data-animate', 'fade-up');
+
+    const numCol = row.append(webflow.elementPresets.DOM);
+    numCol.setTag('div');
+    numCol.setStyles([cyStepNumCol]);
+    const num = numCol.append(webflow.elementPresets.DOM);
     num.setTag('div');
-    num.setStyles([cyGuideStepNum]);
+    num.setStyles([cyStepNum]);
     num.setTextContent(String(i + 1).padStart(2, '0'));
 
-    const title = el.append(webflow.elementPresets.DOM);
+    const content = row.append(webflow.elementPresets.DOM);
+    content.setTag('div');
+    content.setStyles([cyStepContent]);
+
+    const title = content.append(webflow.elementPresets.DOM);
     title.setTag('h3');
-    title.setStyles([cyGuideStepTitle]);
+    title.setStyles([cyStepTitle]);
     title.setTextContent(step.title);
 
-    const desc = el.append(webflow.elementPresets.DOM);
+    const desc = content.append(webflow.elementPresets.DOM);
     desc.setTag('p');
-    desc.setStyles([cyGuideStepDesc]);
+    desc.setStyles([cyStepDesc]);
     desc.setTextContent(step.desc);
   });
 
-  // Permit details card
-  const permitInfo = permitSection.append(webflow.elementPresets.DOM);
-  permitInfo.setTag('div');
-  permitInfo.setStyles([cyPermitCard]);
-  permitInfo.setAttribute('data-animate', 'fade-up');
-
-  const detailRows = [
-    `Department: ${data.permitting.department}`,
-    `Typical fees: ${data.permitting.fees}`,
-    `Processing time: ${data.permitting.timeline}`,
+  // Permit details as inline metadata
+  const metaParts = [
+    data.permitting.department,
+    `Fees: ${data.permitting.fees}`,
+    `Timeline: ${data.permitting.timeline}`,
   ];
-  if (data.permitting.contact) detailRows.push(`Contact: ${data.permitting.contact}`);
-  if (data.permitting.website) detailRows.push(`Website: ${data.permitting.website}`);
-
-  detailRows.forEach(row => {
-    const r = permitInfo.append(webflow.elementPresets.DOM);
-    r.setTag('p');
-    r.setStyles([cyPermitRow]);
-    r.setTextContent(row);
-  });
+  const permitMeta = permitSection.append(webflow.elementPresets.DOM);
+  permitMeta.setTag('p');
+  permitMeta.setStyles([cyPermitMeta]);
+  permitMeta.setTextContent(metaParts.join(' \u2022 '));
+  permitMeta.setAttribute('data-animate', 'fade-up');
 
   await safeCall('append:permitting', () => body.append(permitSection));
+  logDetail('Section 3: Permitting appended', 'ok');
 
-  // SECTION 5: COSTS & RENTAL (dark bg, stats + 2-col info)
-  log('Building Section 5: Costs & Market...');
-  const costSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  costSection.setTag('section');
-  costSection.setStyles([s.section, s.sectionDark]);
-  costSection.setAttribute('id', 'cy-costs');
-
-  // Stats row
-  const statsG = costSection.append(webflow.elementPresets.DOM);
-  statsG.setTag('div');
-  statsG.setStyles([cyStatsGrid, cyMb64]);
-
-  const stats = [
-    { number: data.costs.constructionRange, label: 'Construction Cost' },
-    { number: data.rental.monthlyRange, label: 'Monthly Rental' },
-    { number: data.costs.typicalSize, label: 'Typical ADU Size' },
-  ];
-
-  stats.forEach(stat => {
-    const item = statsG.append(webflow.elementPresets.DOM);
-    item.setTag('div');
-    item.setStyles([cyStatItem]);
-    item.setAttribute('data-animate', 'fade-up');
-
-    const num = item.append(webflow.elementPresets.DOM);
-    num.setTag('div');
-    num.setStyles([cyStatNum]);
-    num.setTextContent(stat.number);
-
-    const lbl = item.append(webflow.elementPresets.DOM);
-    lbl.setTag('div');
-    lbl.setStyles([cyStatLabel]);
-    lbl.setTextContent(stat.label);
-  });
-
-  // 2-col info cards
-  const infoG = costSection.append(webflow.elementPresets.DOM);
-  infoG.setTag('div');
-  infoG.setStyles([cyInfoGrid]);
-
-  // Cost details card
-  const costCard = infoG.append(webflow.elementPresets.DOM);
-  costCard.setTag('div');
-  costCard.setStyles([cyInfoCard]);
-  costCard.setAttribute('data-animate', 'fade-up');
-
-  const costItems = [
-    { label: 'Permit Fees', value: data.costs.permitFees },
-    { label: 'Impact Fees', value: data.costs.impactFees },
-  ];
-  costItems.forEach(info => {
-    const wrap = costCard.append(webflow.elementPresets.DOM);
-    wrap.setTag('div');
-    const lbl = wrap.append(webflow.elementPresets.DOM);
-    lbl.setTag('div');
-    lbl.setStyles([cyInfoLabel]);
-    lbl.setTextContent(info.label);
-    const val = wrap.append(webflow.elementPresets.DOM);
-    val.setTag('div');
-    val.setStyles([cyInfoValue]);
-    val.setTextContent(info.value);
-  });
-
-  // Rental market card
-  const rentalCard = infoG.append(webflow.elementPresets.DOM);
-  rentalCard.setTag('div');
-  rentalCard.setStyles([cyInfoCard]);
-  rentalCard.setAttribute('data-animate', 'fade-up');
-
-  const rentalWrap = rentalCard.append(webflow.elementPresets.DOM);
-  rentalWrap.setTag('div');
-  const rentalLbl = rentalWrap.append(webflow.elementPresets.DOM);
-  rentalLbl.setTag('div');
-  rentalLbl.setStyles([cyInfoLabel]);
-  rentalLbl.setTextContent('Rental Market');
-  const rentalVal = rentalWrap.append(webflow.elementPresets.DOM);
-  rentalVal.setTag('div');
-  rentalVal.setStyles([cyInfoValue]);
-  rentalVal.setTextContent(data.rental.demandDrivers);
-
-  await safeCall('append:costs', () => body.append(costSection));
-
-  // SECTION 6: HOW-TO GUIDE (cream bg, steps)
-  if (data.guide.length > 0) {
-    log('Building Section 6: Guide...');
-    const guideSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-    guideSection.setTag('section');
-    guideSection.setStyles([s.section, s.sectionCream]);
-    guideSection.setAttribute('id', 'cy-guide');
-
-    const guideHeader = guideSection.append(webflow.elementPresets.DOM);
-    guideHeader.setTag('div');
-    guideHeader.setStyles([cyMb64]);
-    const guideLbl = guideHeader.append(webflow.elementPresets.DOM);
-    guideLbl.setTag('div');
-    guideLbl.setStyles([s.label, cyMb32]);
-    guideLbl.setAttribute('data-animate', 'fade-up');
-    const guideLblTxt = guideLbl.append(webflow.elementPresets.DOM);
-    guideLblTxt.setTag('div');
-    guideLblTxt.setTextContent('Your ADU Guide');
-    const guideLblLine = guideLbl.append(webflow.elementPresets.DOM);
-    guideLblLine.setTag('div');
-    guideLblLine.setStyles([cyLabelLine]);
-
-    const guideHdr = guideHeader.append(webflow.elementPresets.DOM);
-    guideHdr.setTag('h2');
-    guideHdr.setStyles([s.headingXL]);
-    guideHdr.setTextContent(`How to build an ADU in ${data.city}`);
-    guideHdr.setAttribute('data-animate', 'blur-focus');
-
-    const gg = guideSection.append(webflow.elementPresets.DOM);
-    gg.setTag('div');
-    gg.setStyles([cyGuideGrid]);
-    gg.setAttribute('data-animate', 'fade-up-stagger');
-
-    data.guide.forEach((step, i) => {
-      const el = gg.append(webflow.elementPresets.DOM);
-      el.setTag('div');
-      el.setStyles([cyGuideStep]);
-      el.setAttribute('data-animate', 'fade-up');
-
-      const num = el.append(webflow.elementPresets.DOM);
-      num.setTag('div');
-      num.setStyles([cyGuideStepNum]);
-      num.setTextContent(String(i + 1).padStart(2, '0'));
-
-      const title = el.append(webflow.elementPresets.DOM);
-      title.setTag('h3');
-      title.setStyles([cyGuideStepTitle]);
-      title.setTextContent(step.title);
-
-      const desc = el.append(webflow.elementPresets.DOM);
-      desc.setTag('p');
-      desc.setStyles([cyGuideStepDesc]);
-      desc.setTextContent(step.desc);
-    });
-
-    await safeCall('append:guide', () => body.append(guideSection));
-  }
-
-  // SECTION 7: CTA
-  log('Building Section 7: CTA...');
+  // SECTION 4: CTA
+  log('Building Section 4: CTA...');
   await buildCTASection(
     body, v,
     `Get your ${data.city} ADU estimate`,
     'ADU Cost Calculator', '/adu-cost-estimator',
-    'Get a Free Estimate', '/free-estimate',
+    'Schedule a Meeting', '/schedule-a-meeting',
   );
 
   // ═══════════════ APPLY STYLES ═══════════════

@@ -8,8 +8,8 @@
 
   <div class="divider"></div>
 
-  <div class="section-label">Page Builders</div>
-  <button id="build-about" class="btn-secondary">Build About Page</button>
+  <div class="section-label">Page Builder</div>
+  <button id="build-page" class="btn-secondary">Build <span id="page-name">Page</span></button>
 
   <div id="status"></div>
   <div id="error-log"></div>
@@ -22,16 +22,13 @@
 
     <div class="code-step">
       <strong>1. Page Settings → Custom Code → Head Code</strong>
-      <pre><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@COMMIT/avorino-about-head.css"&gt;</code></pre>
+      <pre><code id="head-code"><!-- Head code will be shown here after build --></code></pre>
       <button class="copy-btn" data-copy="head">Copy</button>
     </div>
 
     <div class="code-step">
       <strong>2. Page Settings → Custom Code → Footer Code</strong>
-      <pre><code>&lt;script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"&gt;&lt;/script&gt;
-&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"&gt;&lt;/script&gt;
-&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"&gt;&lt;/script&gt;
-&lt;script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@COMMIT/avorino-about-footer.js"&gt;&lt;/script&gt;</code></pre>
+      <pre><code id="footer-code"><!-- Footer code will be shown here after build --></code></pre>
       <button class="copy-btn" data-copy="footer">Copy</button>
     </div>
 

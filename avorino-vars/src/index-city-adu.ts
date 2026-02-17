@@ -18,6 +18,7 @@ import {
   clearAndSet, createSharedStyles, setSharedStyleProps,
   createAllVariables, createPageWithSlug,
   buildCTASection, applyCTAStyleProps,
+  CALENDLY_CSS, CALENDLY_JS,
 } from './shared.js';
 
 // ═══ CHANGE THIS INDEX TO BUILD A DIFFERENT CITY PAGE ═══
@@ -55,11 +56,17 @@ const CITIES = [
 
 const CITY = CITIES[CITY_INDEX];
 
-const HEAD_CODE = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@COMMIT/pages/shared/shared-page-css.css">';
+const HEAD_CODE = [
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-responsive.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-nav-footer.css">',
+  CALENDLY_CSS,
+].join('\n');
 const FOOTER_CODE = [
   '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-animations.js"><\/script>',
+  CALENDLY_JS,
 ].join('\n');
 
 // ── Update panel UI ──
@@ -282,7 +289,7 @@ async function buildCityADUPage() {
     body, v,
     `Get your ${CITY.city} ADU estimate`,
     'ADU Cost Calculator', '/adu-cost-estimator',
-    'Get a Free Estimate', '/free-estimate',
+    'Schedule a Meeting', '/schedule-a-meeting',
   );
 
   await applyStyleProperties();

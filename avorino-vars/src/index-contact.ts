@@ -1,6 +1,7 @@
 // ════════════════════════════════════════════════════════════════
-// Avorino Builder — CONTACT PAGE
-// Rename this to index.ts to build the Contact page.
+// Avorino Builder — CONTACT PAGE (v3 redesign)
+// Cream hero, warm 2-col (info left + form right), CTA
+// Form uses proper Webflow Form API presets
 // ════════════════════════════════════════════════════════════════
 
 import {
@@ -9,6 +10,9 @@ import {
   clearAndSet, createSharedStyles, setSharedStyleProps,
   createAllVariables, createPageWithSlug,
   buildCTASection, applyCTAStyleProps,
+  buildCleanForm, FormField,
+  CALENDLY_CSS, CALENDLY_JS,
+  buildCalendlySection, applyCalendlyStyleProps,
 } from './shared.js';
 
 // ── Page config ──
@@ -16,11 +20,17 @@ const PAGE_NAME = 'Contact';
 const PAGE_SLUG = 'contact';
 const PAGE_TITLE = 'Contact Avorino — Orange County Construction';
 const PAGE_DESC = 'Get in touch with Avorino Construction. Call (714) 900-3676 or fill out our contact form.';
-const HEAD_CODE = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@COMMIT/pages/shared/shared-page-css.css">';
+const HEAD_CODE = [
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-responsive.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-nav-footer.css">',
+  CALENDLY_CSS,
+].join('\n');
 const FOOTER_CODE = [
   '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-animations.js"><\/script>',
+  CALENDLY_JS,
 ].join('\n');
 
 // ── Update panel UI ──
@@ -31,28 +41,28 @@ if (headCodeEl) headCodeEl.textContent = HEAD_CODE;
 if (footerCodeEl) footerCodeEl.textContent = FOOTER_CODE;
 
 // ── Form fields ──
-const FORM_FIELDS = [
-  { name: 'first-name', label: 'First Name', type: 'text', tag: 'input' },
-  { name: 'last-name', label: 'Last Name', type: 'text', tag: 'input' },
-  { name: 'email', label: 'Email', type: 'email', tag: 'input' },
-  { name: 'phone', label: 'Phone', type: 'tel', tag: 'input' },
-  { name: 'address', label: 'Property Address', type: 'text', tag: 'input' },
-  { name: 'service', label: 'Service Type', type: 'select', tag: 'select',
-    options: ['ADU', 'Custom Home', 'Renovation', 'Addition', 'Garage Conversion', 'Commercial', 'Other'] },
-  { name: 'message', label: 'Message', type: 'textarea', tag: 'textarea' },
+const FORM_FIELDS: FormField[] = [
+  { name: 'name', label: 'Full Name', type: 'text', placeholder: 'Your full name' },
+  { name: 'email', label: 'Email', type: 'email', placeholder: 'you@email.com', halfWidth: true },
+  { name: 'phone', label: 'Phone', type: 'tel', placeholder: '(000) 000-0000', halfWidth: true },
+  { name: 'address', label: 'Property Address', type: 'text', placeholder: 'Street address, City, CA' },
+  { name: 'service', label: 'Service Type', type: 'select', options: ['ADU', 'Custom Home', 'Renovation', 'Addition', 'Garage Conversion', 'Commercial', 'Other'] },
+  { name: 'message', label: 'Message', type: 'textarea', placeholder: 'Tell us about your project' },
 ];
 
-const CONTACT_INFO = [
+const CONTACT_DETAILS = [
   { label: 'Phone', value: '(714) 900-3676' },
   { label: 'Email', value: 'construction@avorino.com' },
-  { label: 'Location', value: 'Orange County, CA' },
+];
+const CONTACT_DETAILS_2 = [
+  { label: 'Location', value: 'Orange County, California' },
   { label: 'License', value: 'General-B #1107538' },
 ];
 
 // ── Build function ──
 async function buildContactPage() {
   clearErrorLog();
-  logDetail('Starting Contact page build...', 'info');
+  logDetail('Starting Contact page build (v3)...', 'info');
   const v = await getAvorinVars();
   logDetail('Loaded Avorino variable collection', 'ok');
 
@@ -60,23 +70,16 @@ async function buildContactPage() {
   const s = await createSharedStyles();
 
   // ── Page-specific styles ──
-  log('Creating page-specific styles...');
+  log('Creating contact-specific styles...');
   const ctHero = await getOrCreateStyle('ct-hero');
   const ctHeroContent = await getOrCreateStyle('ct-hero-content');
-  const ctGrid = await getOrCreateStyle('ct-grid');
-  const ctFormWrap = await getOrCreateStyle('ct-form-wrap');
-  const ctFormGrid = await getOrCreateStyle('ct-form-grid');
-  const ctInput = await getOrCreateStyle('ct-input');
-  const ctTextarea = await getOrCreateStyle('ct-textarea');
-  const ctSelect = await getOrCreateStyle('ct-select');
-  const ctFormLabel = await getOrCreateStyle('ct-form-label');
-  const ctSubmitBtn = await getOrCreateStyle('ct-submit-btn');
-  const ctInfoCard = await getOrCreateStyle('ct-info-card');
-  const ctInfoItem = await getOrCreateStyle('ct-info-item');
+  const ctInfoCol = await getOrCreateStyle('ct-info-col');
+  const ctInfoHeading = await getOrCreateStyle('ct-info-heading');
+  const ctInfoBody = await getOrCreateStyle('ct-info-body');
+  const ctInfoPhone = await getOrCreateStyle('ct-info-phone');
+  const ctInfoDetail = await getOrCreateStyle('ct-info-detail');
   const ctInfoLabel = await getOrCreateStyle('ct-info-label');
-  const ctInfoValue = await getOrCreateStyle('ct-info-value');
-  const ctMb32 = await getOrCreateStyle('ct-mb-32');
-  const ctMb64 = await getOrCreateStyle('ct-mb-64');
+  const ctFormCol = await getOrCreateStyle('ct-form-col');
 
   // ── Create page ──
   const { body } = await createPageWithSlug(PAGE_NAME, PAGE_SLUG, PAGE_TITLE, PAGE_DESC);
@@ -87,109 +90,57 @@ async function buildContactPage() {
     await setSharedStyleProps(s, v);
     await wait(1000);
 
-    log('Setting page-specific style properties...');
+    log('Setting contact-specific style properties...');
 
-    // Hero (minimal, dark)
+    // Hero: cream bg, left-aligned, NOT dark — breaks the dark-hero-everywhere pattern
     await clearAndSet(await freshStyle('ct-hero'), 'ct-hero', {
       'min-height': '40vh', 'display': 'flex', 'align-items': 'flex-end',
-      'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
+      'padding-top': '180px', 'padding-bottom': '64px',
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
-      'background-color': v['av-dark'], 'color': v['av-cream'],
-      'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
+      'background-color': v['av-cream'], 'color': v['av-dark'],
     });
     await clearAndSet(await freshStyle('ct-hero-content'), 'ct-hero-content', {
-      'position': 'relative', 'z-index': '2', 'max-width': '600px',
+      'max-width': '900px',
     });
     await wait(500);
 
-    // Contact grid (2-col: form left, info right)
-    await clearAndSet(await freshStyle('ct-grid'), 'ct-grid', {
-      'display': 'grid', 'grid-template-columns': '1.4fr 1fr',
-      'grid-column-gap': '96px', 'grid-row-gap': '64px', 'align-items': 'start',
+    // Info column (left side — sticky)
+    await clearAndSet(await freshStyle('ct-info-col'), 'ct-info-col', {
+      'display': 'flex', 'flex-direction': 'column', 'position': 'sticky', 'top': '160px',
     });
-    await wait(500);
-
-    // Form
-    await clearAndSet(await freshStyle('ct-form-wrap'), 'ct-form-wrap', {
-      'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '24px',
+    await clearAndSet(await freshStyle('ct-info-heading'), 'ct-info-heading', {
+      'font-family': 'DM Serif Display', 'font-size': v['av-text-h2'],
+      'line-height': '1.08', 'letter-spacing': '-0.02em', 'font-weight': '400',
+      'margin-bottom': '16px',
     });
-    await clearAndSet(await freshStyle('ct-form-grid'), 'ct-form-grid', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr',
-      'grid-column-gap': '16px', 'grid-row-gap': '16px',
-    });
-    await clearAndSet(await freshStyle('ct-form-label'), 'ct-form-label', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
-      'font-weight': '500', 'margin-bottom': '8px', 'display': 'block',
-    });
-
-    const inputProps: Record<string, any> = {
+    await clearAndSet(await freshStyle('ct-info-body'), 'ct-info-body', {
       'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'padding-top': '16px', 'padding-bottom': '16px',
-      'padding-left': '20px', 'padding-right': '20px',
-      'background-color': v['av-cream'], 'color': v['av-dark'],
-      'border-top-width': '1px', 'border-bottom-width': '1px',
-      'border-left-width': '1px', 'border-right-width': '1px',
-      'border-top-style': 'solid', 'border-bottom-style': 'solid',
-      'border-left-style': 'solid', 'border-right-style': 'solid',
-      'border-top-color': v['av-dark-10'], 'border-bottom-color': v['av-dark-10'],
-      'border-left-color': v['av-dark-10'], 'border-right-color': v['av-dark-10'],
-      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
-      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
-      'width': '100%',
-    };
-    await clearAndSet(await freshStyle('ct-input'), 'ct-input', inputProps);
-    await clearAndSet(await freshStyle('ct-select'), 'ct-select', inputProps);
-    await clearAndSet(await freshStyle('ct-textarea'), 'ct-textarea', { ...inputProps, 'min-height': '140px' });
-    await wait(500);
-
-    // Submit button
-    await clearAndSet(await freshStyle('ct-submit-btn'), 'ct-submit-btn', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
-      'font-weight': '500', 'letter-spacing': '0.04em',
-      'display': 'inline-flex', 'align-items': 'center', 'justify-content': 'center',
-      'color': v['av-cream'], 'background-color': v['av-red'],
-      'padding-top': v['av-btn-pad-y'], 'padding-bottom': v['av-btn-pad-y'],
-      'padding-left': v['av-btn-pad-x'], 'padding-right': v['av-btn-pad-x'],
-      'border-top-left-radius': v['av-radius-pill'], 'border-top-right-radius': v['av-radius-pill'],
-      'border-bottom-left-radius': v['av-radius-pill'], 'border-bottom-right-radius': v['av-radius-pill'],
-      'border-top-width': '0px', 'border-bottom-width': '0px',
-      'border-left-width': '0px', 'border-right-width': '0px',
-      'cursor': 'pointer', 'width': '100%',
+      'line-height': '1.9', 'opacity': '0.6',
     });
-    await wait(500);
-
-    // Info card
-    await clearAndSet(await freshStyle('ct-info-card'), 'ct-info-card', {
-      'background-color': v['av-dark'], 'color': v['av-cream'],
-      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
-      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
-      'padding-top': v['av-gap-md'], 'padding-bottom': v['av-gap-md'],
-      'padding-left': '48px', 'padding-right': '48px',
-      'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '40px',
-    });
-    await clearAndSet(await freshStyle('ct-info-item'), 'ct-info-item', {
-      'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '8px',
-    });
-    await clearAndSet(await freshStyle('ct-info-label'), 'ct-info-label', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-label'],
-      'letter-spacing': '0.3em', 'text-transform': 'uppercase', 'opacity': '0.4',
-    });
-    await clearAndSet(await freshStyle('ct-info-value'), 'ct-info-value', {
+    await clearAndSet(await freshStyle('ct-info-phone'), 'ct-info-phone', {
       'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
       'line-height': '1.2', 'font-weight': '400',
     });
+    await clearAndSet(await freshStyle('ct-info-detail'), 'ct-info-detail', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
+      'line-height': '1.7',
+    });
+    await clearAndSet(await freshStyle('ct-info-label'), 'ct-info-label', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-label'],
+      'letter-spacing': '0.3em', 'text-transform': 'uppercase', 'opacity': '0.3',
+      'margin-bottom': '8px',
+    });
+    await clearAndSet(await freshStyle('ct-form-col'), 'ct-form-col', {
+      'display': 'flex', 'flex-direction': 'column',
+    });
     await wait(500);
-
-    // Utility
-    await clearAndSet(await freshStyle('ct-mb-32'), 'ct-mb-32', { 'margin-bottom': v['av-gap-sm'] });
-    await clearAndSet(await freshStyle('ct-mb-64'), 'ct-mb-64', { 'margin-bottom': v['av-gap-md'] });
 
     await applyCTAStyleProps(v);
   }
 
   // ═══════════════ BUILD ELEMENTS ═══════════════
 
-  // SECTION 1: HERO (minimal dark)
+  // SECTION 1: HERO — cream bg, left-aligned, large heading
   log('Building Section 1: Hero...');
   const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
   hero.setTag('section');
@@ -211,169 +162,108 @@ async function buildContactPage() {
   const heroH = heroC.append(webflow.elementPresets.DOM);
   heroH.setTag('h1');
   heroH.setStyles([s.headingXL]);
-  heroH.setTextContent('Get in Touch');
-  heroH.setAttribute('data-animate', 'opacity-sweep');
+  heroH.setTextContent("Let's build together");
+  heroH.setAttribute('data-animate', 'word-stagger-elastic');
+
+  const heroSub = heroC.append(webflow.elementPresets.DOM);
+  heroSub.setTag('p');
+  heroSub.setStyles([s.body, s.bodyMuted]);
+  heroSub.setTextContent("Your vision, our expertise. Orange County's trusted builder.");
+  heroSub.setAttribute('data-animate', 'fade-up');
 
   await safeCall('append:hero', () => body.append(hero));
   logDetail('Section 1: Hero appended', 'ok');
 
-  // SECTION 2: CONTACT GRID (warm, form + info card)
-  log('Building Section 2: Contact Grid...');
-  const contactSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  contactSection.setTag('section');
-  contactSection.setStyles([s.section, s.sectionWarm]);
-  contactSection.setAttribute('id', 'ct-main');
+  // SECTION 2: CONTACT MAIN (warm bg, 2-col: info left + form right)
+  // Section appended to body FIRST, then form built inside (Webflow Form API requirement)
+  log('Building Section 2: Contact Main...');
+  const mainSection = webflow.elementBuilder(webflow.elementPresets.DOM);
+  mainSection.setTag('section');
+  mainSection.setStyles([s.section, s.sectionWarm]);
+  mainSection.setAttribute('id', 'ct-main');
 
-  const grid = contactSection.append(webflow.elementPresets.DOM);
+  const grid = mainSection.append(webflow.elementPresets.DOM);
   grid.setTag('div');
-  grid.setStyles([ctGrid]);
+  grid.setStyles([s.split4060]);
 
-  // LEFT: Form
-  const formWrap = grid.append(webflow.elementPresets.DOM);
-  formWrap.setTag('form');
-  formWrap.setStyles([ctFormWrap]);
-  formWrap.setAttribute('data-animate', 'fade-up');
+  // LEFT: Info column
+  const infoCol = grid.append(webflow.elementPresets.DOM);
+  infoCol.setTag('div');
+  infoCol.setStyles([ctInfoCol]);
+  infoCol.setAttribute('data-animate', 'fade-up');
 
-  // Name row (2-col)
-  const nameRow = formWrap.append(webflow.elementPresets.DOM);
-  nameRow.setTag('div');
-  nameRow.setStyles([ctFormGrid]);
+  const infoH = infoCol.append(webflow.elementPresets.DOM);
+  infoH.setTag('h2');
+  infoH.setStyles([ctInfoHeading]);
+  infoH.setTextContent('Get in Touch');
 
-  // First Name
-  const fn = nameRow.append(webflow.elementPresets.DOM);
-  fn.setTag('div');
-  const fnLabel = fn.append(webflow.elementPresets.DOM);
-  fnLabel.setTag('label');
-  fnLabel.setStyles([ctFormLabel]);
-  fnLabel.setTextContent('First Name');
-  const fnInput = fn.append(webflow.elementPresets.DOM);
-  fnInput.setTag('input');
-  fnInput.setStyles([ctInput]);
-  fnInput.setAttribute('type', 'text');
-  fnInput.setAttribute('name', 'first-name');
-  fnInput.setAttribute('placeholder', 'First name');
+  const infoP = infoCol.append(webflow.elementPresets.DOM);
+  infoP.setTag('p');
+  infoP.setStyles([ctInfoBody]);
+  infoP.setTextContent('Call, email, or fill out the form. We respond within 24 hours.');
 
-  // Last Name
-  const ln = nameRow.append(webflow.elementPresets.DOM);
-  ln.setTag('div');
-  const lnLabel = ln.append(webflow.elementPresets.DOM);
-  lnLabel.setTag('label');
-  lnLabel.setStyles([ctFormLabel]);
-  lnLabel.setTextContent('Last Name');
-  const lnInput = ln.append(webflow.elementPresets.DOM);
-  lnInput.setTag('input');
-  lnInput.setStyles([ctInput]);
-  lnInput.setAttribute('type', 'text');
-  lnInput.setAttribute('name', 'last-name');
-  lnInput.setAttribute('placeholder', 'Last name');
+  // Divider
+  const div1 = infoCol.append(webflow.elementPresets.DOM);
+  div1.setTag('div');
+  div1.setStyles([s.divider]);
 
-  // Email + Phone (2-col)
-  const epRow = formWrap.append(webflow.elementPresets.DOM);
-  epRow.setTag('div');
-  epRow.setStyles([ctFormGrid]);
-
-  const emailF = epRow.append(webflow.elementPresets.DOM);
-  emailF.setTag('div');
-  const emailLabel = emailF.append(webflow.elementPresets.DOM);
-  emailLabel.setTag('label');
-  emailLabel.setStyles([ctFormLabel]);
-  emailLabel.setTextContent('Email');
-  const emailInput = emailF.append(webflow.elementPresets.DOM);
-  emailInput.setTag('input');
-  emailInput.setStyles([ctInput]);
-  emailInput.setAttribute('type', 'email');
-  emailInput.setAttribute('name', 'email');
-  emailInput.setAttribute('placeholder', 'you@email.com');
-
-  const phoneF = epRow.append(webflow.elementPresets.DOM);
-  phoneF.setTag('div');
-  const phoneLabel = phoneF.append(webflow.elementPresets.DOM);
-  phoneLabel.setTag('label');
-  phoneLabel.setStyles([ctFormLabel]);
-  phoneLabel.setTextContent('Phone');
-  const phoneInput = phoneF.append(webflow.elementPresets.DOM);
-  phoneInput.setTag('input');
-  phoneInput.setStyles([ctInput]);
-  phoneInput.setAttribute('type', 'tel');
-  phoneInput.setAttribute('name', 'phone');
-  phoneInput.setAttribute('placeholder', '(000) 000-0000');
-
-  // Address (full width)
-  const addrLabel = formWrap.append(webflow.elementPresets.DOM);
-  addrLabel.setTag('label');
-  addrLabel.setStyles([ctFormLabel]);
-  addrLabel.setTextContent('Property Address');
-  const addrInput = formWrap.append(webflow.elementPresets.DOM);
-  addrInput.setTag('input');
-  addrInput.setStyles([ctInput]);
-  addrInput.setAttribute('type', 'text');
-  addrInput.setAttribute('name', 'address');
-  addrInput.setAttribute('placeholder', 'Street address, City, CA');
-
-  // Service type (select)
-  const svcLabel = formWrap.append(webflow.elementPresets.DOM);
-  svcLabel.setTag('label');
-  svcLabel.setStyles([ctFormLabel]);
-  svcLabel.setTextContent('Service Type');
-  const svcSelect = formWrap.append(webflow.elementPresets.DOM);
-  svcSelect.setTag('select');
-  svcSelect.setStyles([ctSelect]);
-  svcSelect.setAttribute('name', 'service');
-
-  // Message (textarea)
-  const msgLabel = formWrap.append(webflow.elementPresets.DOM);
-  msgLabel.setTag('label');
-  msgLabel.setStyles([ctFormLabel]);
-  msgLabel.setTextContent('Message');
-  const msgInput = formWrap.append(webflow.elementPresets.DOM);
-  msgInput.setTag('textarea');
-  msgInput.setStyles([ctTextarea]);
-  msgInput.setAttribute('name', 'message');
-  msgInput.setAttribute('placeholder', 'Tell us about your project');
-
-  // Submit
-  const submitBtn = formWrap.append(webflow.elementPresets.DOM);
-  submitBtn.setTag('button');
-  submitBtn.setStyles([ctSubmitBtn]);
-  submitBtn.setTextContent('Send Message');
-  submitBtn.setAttribute('type', 'submit');
-
-  // RIGHT: Contact info card
-  const infoCard = grid.append(webflow.elementPresets.DOM);
-  infoCard.setTag('div');
-  infoCard.setStyles([ctInfoCard]);
-  infoCard.setAttribute('data-animate', 'fade-up');
-
-  CONTACT_INFO.forEach(info => {
-    const item = infoCard.append(webflow.elementPresets.DOM);
-    item.setTag('div');
-    item.setStyles([ctInfoItem]);
-
-    const lbl = item.append(webflow.elementPresets.DOM);
+  // Phone + Email details
+  CONTACT_DETAILS.forEach(detail => {
+    const lbl = infoCol.append(webflow.elementPresets.DOM);
     lbl.setTag('div');
     lbl.setStyles([ctInfoLabel]);
-    lbl.setTextContent(info.label);
+    lbl.setTextContent(detail.label);
 
-    const val = item.append(webflow.elementPresets.DOM);
+    const val = infoCol.append(webflow.elementPresets.DOM);
     val.setTag('div');
-    val.setStyles([ctInfoValue]);
-    val.setTextContent(info.value);
+    val.setStyles([detail.label === 'Phone' ? ctInfoPhone : ctInfoDetail]);
+    val.setTextContent(detail.value);
   });
 
-  await safeCall('append:contact', () => body.append(contactSection));
-  logDetail('Section 2: Contact Grid appended', 'ok');
+  // Divider
+  const div2 = infoCol.append(webflow.elementPresets.DOM);
+  div2.setTag('div');
+  div2.setStyles([s.divider]);
 
-  // SECTION 3: CTA
-  log('Building Section 3: CTA...');
+  // Location + License details
+  CONTACT_DETAILS_2.forEach(detail => {
+    const lbl = infoCol.append(webflow.elementPresets.DOM);
+    lbl.setTag('div');
+    lbl.setStyles([ctInfoLabel]);
+    lbl.setTextContent(detail.label);
+
+    const val = infoCol.append(webflow.elementPresets.DOM);
+    val.setTag('div');
+    val.setStyles([ctInfoDetail]);
+    val.setTextContent(detail.value);
+  });
+
+  // RIGHT: Form column
+  const formCol = grid.append(webflow.elementPresets.DOM);
+  formCol.setTag('div');
+  formCol.setStyles([ctFormCol]);
+
+  buildCleanForm(formCol, FORM_FIELDS, s, 'Send Message');
+
+  await safeCall('append:contact', () => body.append(mainSection));
+  logDetail('Section 2: Contact Main appended', 'ok');
+
+  // SECTION 3: CALENDLY
+  log('Building Section 3: Calendly...');
+  await buildCalendlySection(body, v, 'Book a Free Consultation');
+
+  // SECTION 4: CTA
+  log('Building Section 4: CTA...');
   await buildCTASection(
     body, v,
     'Schedule a free consultation',
     'Call (714) 900-3676', 'tel:7149003676',
-    'Get a Free Estimate', '/free-estimate',
+    'Schedule a Meeting', '/schedule-a-meeting',
   );
 
   // ═══════════════ APPLY STYLES ═══════════════
   await applyStyleProperties();
+  await applyCalendlyStyleProps(v);
 
   log('Contact page built!', 'success');
   await webflow.notify({ type: 'Success', message: 'Contact page created!' });

@@ -1,6 +1,6 @@
 // ════════════════════════════════════════════════════════════════
-// Avorino Builder — FREE ESTIMATE PAGE
-// Rename this to index.ts to build the Free Estimate page.
+// Avorino Builder — FREE ESTIMATE PAGE (v2 redesign)
+// 2-col: "what happens next" left + extended form right
 // ════════════════════════════════════════════════════════════════
 
 import {
@@ -9,6 +9,9 @@ import {
   clearAndSet, createSharedStyles, setSharedStyleProps,
   createAllVariables, createPageWithSlug,
   buildCTASection, applyCTAStyleProps,
+  buildCleanForm, FormField,
+  CALENDLY_CSS, CALENDLY_JS,
+  buildCalendlySection, applyCalendlyStyleProps,
 } from './shared.js';
 
 // ── Page config ──
@@ -16,11 +19,17 @@ const PAGE_NAME = 'Free Estimate';
 const PAGE_SLUG = 'free-estimate';
 const PAGE_TITLE = 'Get Your Free Estimate — Avorino Construction';
 const PAGE_DESC = 'No obligations. Real numbers for your construction project in Orange County.';
-const HEAD_CODE = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@COMMIT/pages/shared/shared-page-css.css">';
+const HEAD_CODE = [
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-responsive.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-nav-footer.css">',
+  CALENDLY_CSS,
+].join('\n');
 const FOOTER_CODE = [
   '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-animations.js"><\/script>',
+  CALENDLY_JS,
 ].join('\n');
 
 // ── Update panel UI ──
@@ -30,42 +39,46 @@ const footerCodeEl = document.getElementById('footer-code');
 if (headCodeEl) headCodeEl.textContent = HEAD_CODE;
 if (footerCodeEl) footerCodeEl.textContent = FOOTER_CODE;
 
-// ── Next steps ──
+// ── Form fields ──
+const FORM_FIELDS: FormField[] = [
+  { name: 'name', label: 'Full Name', type: 'text', placeholder: 'Your full name' },
+  { name: 'email', label: 'Email', type: 'email', placeholder: 'you@email.com', halfWidth: true },
+  { name: 'phone', label: 'Phone', type: 'tel', placeholder: '(000) 000-0000', halfWidth: true },
+  { name: 'address', label: 'Property Address', type: 'text', placeholder: 'Street address, City, CA' },
+  { name: 'service', label: 'Service Type', type: 'select', options: ['ADU', 'Custom Home', 'Renovation', 'Addition', 'Garage Conversion', 'Commercial', 'Other'], halfWidth: true },
+  { name: 'budget', label: 'Budget Range', type: 'select', options: ['Under $100K', '$100K–$250K', '$250K–$500K', '$500K–$1M', '$1M+', 'Not sure yet'], halfWidth: true },
+  { name: 'timeline', label: 'Timeline', type: 'select', options: ['Ready now', '1–3 months', '3–6 months', '6–12 months', 'Just exploring'] },
+  { name: 'details', label: 'Project Details', type: 'textarea', placeholder: 'Describe your project — size, goals, anything relevant.' },
+];
+
+// ── "What happens next" items ──
 const NEXT_STEPS = [
-  { number: '01', title: 'We review your details', desc: 'Our team evaluates your project within 24 hours.' },
-  { number: '02', title: 'Free site visit', desc: 'We visit your property to assess scope and feasibility.' },
-  { number: '03', title: 'Detailed proposal', desc: 'You receive a full proposal within 5 business days.' },
+  { title: 'We review your details', note: 'within 24 hours' },
+  { title: 'Free site visit', note: 'at your property' },
+  { title: 'Detailed proposal', note: 'in 5 business days' },
 ];
 
 // ── Build function ──
 async function buildEstimatePage() {
   clearErrorLog();
-  logDetail('Starting Free Estimate page build...', 'info');
+  logDetail('Starting Free Estimate page build (v2)...', 'info');
   const v = await getAvorinVars();
 
   log('Creating shared styles...');
   const s = await createSharedStyles();
 
   // ── Page-specific styles ──
-  log('Creating page-specific styles...');
+  log('Creating estimate-specific styles...');
   const estHero = await getOrCreateStyle('est-hero');
   const estHeroContent = await getOrCreateStyle('est-hero-content');
-  const estHeroSub = await getOrCreateStyle('est-hero-subtitle');
-  const estFormWrap = await getOrCreateStyle('est-form-wrap');
-  const estFormGrid = await getOrCreateStyle('est-form-grid');
-  const estInput = await getOrCreateStyle('est-input');
-  const estTextarea = await getOrCreateStyle('est-textarea');
-  const estSelect = await getOrCreateStyle('est-select');
-  const estFormLabel = await getOrCreateStyle('est-form-label');
-  const estSubmitBtn = await getOrCreateStyle('est-submit-btn');
-  const estStepsGrid = await getOrCreateStyle('est-steps-grid');
-  const estStep = await getOrCreateStyle('est-step');
-  const estStepNum = await getOrCreateStyle('est-step-num');
+  const estInfoCol = await getOrCreateStyle('est-info-col');
+  const estInfoHeading = await getOrCreateStyle('est-info-heading');
+  const estInfoBody = await getOrCreateStyle('est-info-body');
+  const estStepItem = await getOrCreateStyle('est-step-item');
   const estStepTitle = await getOrCreateStyle('est-step-title');
-  const estStepDesc = await getOrCreateStyle('est-step-desc');
-  const estMb32 = await getOrCreateStyle('est-mb-32');
-  const estMb64 = await getOrCreateStyle('est-mb-64');
-  const estLabelLine = await getOrCreateStyle('est-label-line');
+  const estStepNote = await getOrCreateStyle('est-step-note');
+  const estStepNum = await getOrCreateStyle('est-step-num');
+  const estFormCol = await getOrCreateStyle('est-form-col');
 
   const { body } = await createPageWithSlug(PAGE_NAME, PAGE_SLUG, PAGE_TITLE, PAGE_DESC);
 
@@ -74,105 +87,63 @@ async function buildEstimatePage() {
     await setSharedStyleProps(s, v);
     await wait(1000);
 
-    log('Setting page-specific style properties...');
+    log('Setting estimate-specific style properties...');
 
-    // Hero
+    // Hero: centered, dark, minimal
     await clearAndSet(await freshStyle('est-hero'), 'est-hero', {
-      'min-height': '50vh', 'display': 'flex', 'align-items': 'flex-end',
+      'min-height': '50vh', 'display': 'flex', 'align-items': 'center', 'justify-content': 'center',
       'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
       'background-color': v['av-dark'], 'color': v['av-cream'],
-      'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
+      'text-align': 'center',
     });
     await clearAndSet(await freshStyle('est-hero-content'), 'est-hero-content', {
-      'position': 'relative', 'z-index': '2', 'max-width': '700px',
-    });
-    await clearAndSet(await freshStyle('est-hero-subtitle'), 'est-hero-subtitle', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'line-height': '1.9', 'opacity': '0.6', 'margin-top': '24px', 'color': v['av-cream'],
+      'max-width': '700px',
     });
     await wait(500);
 
-    // Form
-    await clearAndSet(await freshStyle('est-form-wrap'), 'est-form-wrap', {
-      'max-width': '720px', 'margin-left': 'auto', 'margin-right': 'auto',
-      'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '24px',
+    // Info column (left side)
+    await clearAndSet(await freshStyle('est-info-col'), 'est-info-col', {
+      'display': 'flex', 'flex-direction': 'column', 'position': 'sticky', 'top': '160px',
     });
-    await clearAndSet(await freshStyle('est-form-grid'), 'est-form-grid', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr',
-      'grid-column-gap': '16px', 'grid-row-gap': '16px',
+    await clearAndSet(await freshStyle('est-info-heading'), 'est-info-heading', {
+      'font-family': 'DM Serif Display', 'font-size': v['av-text-h2'],
+      'line-height': '1.08', 'letter-spacing': '-0.02em', 'font-weight': '400',
+      'margin-bottom': '16px',
     });
-    await clearAndSet(await freshStyle('est-form-label'), 'est-form-label', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
-      'font-weight': '500', 'margin-bottom': '8px', 'display': 'block',
-    });
-    const inputProps: Record<string, any> = {
-      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'padding-top': '16px', 'padding-bottom': '16px',
-      'padding-left': '20px', 'padding-right': '20px',
-      'background-color': v['av-cream'], 'color': v['av-dark'],
-      'border-top-width': '1px', 'border-bottom-width': '1px',
-      'border-left-width': '1px', 'border-right-width': '1px',
-      'border-top-style': 'solid', 'border-bottom-style': 'solid',
-      'border-left-style': 'solid', 'border-right-style': 'solid',
-      'border-top-color': v['av-dark-10'], 'border-bottom-color': v['av-dark-10'],
-      'border-left-color': v['av-dark-10'], 'border-right-color': v['av-dark-10'],
-      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
-      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
-      'width': '100%',
-    };
-    await clearAndSet(await freshStyle('est-input'), 'est-input', inputProps);
-    await clearAndSet(await freshStyle('est-select'), 'est-select', inputProps);
-    await clearAndSet(await freshStyle('est-textarea'), 'est-textarea', { ...inputProps, 'min-height': '140px' });
-    await clearAndSet(await freshStyle('est-submit-btn'), 'est-submit-btn', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
-      'font-weight': '500', 'letter-spacing': '0.04em',
-      'display': 'inline-flex', 'align-items': 'center', 'justify-content': 'center',
-      'color': v['av-cream'], 'background-color': v['av-red'],
-      'padding-top': v['av-btn-pad-y'], 'padding-bottom': v['av-btn-pad-y'],
-      'padding-left': v['av-btn-pad-x'], 'padding-right': v['av-btn-pad-x'],
-      'border-top-left-radius': v['av-radius-pill'], 'border-top-right-radius': v['av-radius-pill'],
-      'border-bottom-left-radius': v['av-radius-pill'], 'border-bottom-right-radius': v['av-radius-pill'],
-      'border-top-width': '0px', 'border-bottom-width': '0px',
-      'border-left-width': '0px', 'border-right-width': '0px',
-      'cursor': 'pointer', 'width': '100%',
-    });
-    await wait(500);
-
-    // Steps
-    await clearAndSet(await freshStyle('est-steps-grid'), 'est-steps-grid', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr 1fr',
-      'grid-column-gap': '32px', 'grid-row-gap': '32px',
-    });
-    await clearAndSet(await freshStyle('est-step'), 'est-step', {
-      'display': 'flex', 'flex-direction': 'column',
-    });
-    await clearAndSet(await freshStyle('est-step-num'), 'est-step-num', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-label'],
-      'letter-spacing': '0.3em', 'text-transform': 'uppercase',
-      'opacity': '0.3', 'margin-bottom': '24px',
-    });
-    await clearAndSet(await freshStyle('est-step-title'), 'est-step-title', {
-      'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
-      'line-height': '1.12', 'font-weight': '400', 'margin-bottom': '16px',
-    });
-    await clearAndSet(await freshStyle('est-step-desc'), 'est-step-desc', {
+    await clearAndSet(await freshStyle('est-info-body'), 'est-info-body', {
       'font-family': 'DM Sans', 'font-size': v['av-text-body'],
       'line-height': '1.9', 'opacity': '0.6',
     });
+    // Step items (stacked in left column)
+    await clearAndSet(await freshStyle('est-step-item'), 'est-step-item', {
+      'display': 'flex', 'align-items': 'baseline', 'grid-column-gap': '16px',
+      'padding-top': '16px', 'padding-bottom': '16px',
+    });
+    await clearAndSet(await freshStyle('est-step-num'), 'est-step-num', {
+      'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
+      'line-height': '1', 'font-weight': '400', 'opacity': '0.15',
+      'min-width': '32px',
+    });
+    await clearAndSet(await freshStyle('est-step-title'), 'est-step-title', {
+      'font-family': 'DM Serif Display', 'font-size': v['av-text-body'],
+      'line-height': '1.4', 'font-weight': '400',
+    });
+    await clearAndSet(await freshStyle('est-step-note'), 'est-step-note', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
+      'opacity': '0.4', 'margin-left': 'auto',
+    });
+    await clearAndSet(await freshStyle('est-form-col'), 'est-form-col', {
+      'display': 'flex', 'flex-direction': 'column',
+    });
     await wait(500);
-
-    // Utility
-    await clearAndSet(await freshStyle('est-mb-32'), 'est-mb-32', { 'margin-bottom': v['av-gap-sm'] });
-    await clearAndSet(await freshStyle('est-mb-64'), 'est-mb-64', { 'margin-bottom': v['av-gap-md'] });
-    await clearAndSet(await freshStyle('est-label-line'), 'est-label-line', { 'flex-grow': '1', 'height': '1px', 'background-color': v['av-dark-15'] });
 
     await applyCTAStyleProps(v);
   }
 
   // ═══════════════ BUILD ELEMENTS ═══════════════
 
-  // SECTION 1: HERO
+  // SECTION 1: HERO (dark, centered)
   log('Building Section 1: Hero...');
   const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
   hero.setTag('section');
@@ -183,211 +154,96 @@ async function buildEstimatePage() {
   heroC.setTag('div');
   heroC.setStyles([estHeroContent]);
 
-  const heroLabel = heroC.append(webflow.elementPresets.DOM);
-  heroLabel.setTag('div');
-  heroLabel.setStyles([s.label]);
-  heroLabel.setAttribute('data-animate', 'fade-up');
-  const heroLabelTxt = heroLabel.append(webflow.elementPresets.DOM);
-  heroLabelTxt.setTag('div');
-  heroLabelTxt.setTextContent('// Free Estimate');
-
   const heroH = heroC.append(webflow.elementPresets.DOM);
   heroH.setTag('h1');
   heroH.setStyles([s.headingXL]);
   heroH.setTextContent('Get Your Free Estimate');
-  heroH.setAttribute('data-animate', 'opacity-sweep');
+  heroH.setAttribute('data-animate', 'word-stagger-elastic');
 
   const heroSub = heroC.append(webflow.elementPresets.DOM);
   heroSub.setTag('p');
-  heroSub.setStyles([estHeroSub]);
+  heroSub.setStyles([s.body, s.bodyMuted]);
   heroSub.setTextContent('No obligations. Real numbers for your project.');
   heroSub.setAttribute('data-animate', 'fade-up');
 
   await safeCall('append:hero', () => body.append(hero));
+  logDetail('Section 1: Hero appended', 'ok');
 
-  // SECTION 2: FORM (warm bg, centered)
+  // SECTION 2: ESTIMATE FORM (warm bg, 2-col: info left + form right)
   log('Building Section 2: Form...');
   const formSection = webflow.elementBuilder(webflow.elementPresets.DOM);
   formSection.setTag('section');
   formSection.setStyles([s.section, s.sectionWarm]);
   formSection.setAttribute('id', 'est-form');
 
-  const formWrap = formSection.append(webflow.elementPresets.DOM);
-  formWrap.setTag('form');
-  formWrap.setStyles([estFormWrap]);
-  formWrap.setAttribute('data-animate', 'fade-up');
+  const grid = formSection.append(webflow.elementPresets.DOM);
+  grid.setTag('div');
+  grid.setStyles([s.split4060]);
 
-  // Name + Email row
-  const row1 = formWrap.append(webflow.elementPresets.DOM);
-  row1.setTag('div');
-  row1.setStyles([estFormGrid]);
+  // LEFT: Info + "what happens next"
+  const infoCol = grid.append(webflow.elementPresets.DOM);
+  infoCol.setTag('div');
+  infoCol.setStyles([estInfoCol]);
+  infoCol.setAttribute('data-animate', 'fade-up');
 
-  // Name field
-  const nameF = row1.append(webflow.elementPresets.DOM);
-  nameF.setTag('div');
-  const nameLabel = nameF.append(webflow.elementPresets.DOM);
-  nameLabel.setTag('label');
-  nameLabel.setStyles([estFormLabel]);
-  nameLabel.setTextContent('Full Name');
-  const nameInput = nameF.append(webflow.elementPresets.DOM);
-  nameInput.setTag('input');
-  nameInput.setStyles([estInput]);
-  nameInput.setAttribute('type', 'text');
-  nameInput.setAttribute('name', 'name');
-  nameInput.setAttribute('placeholder', 'Your name');
+  const infoH = infoCol.append(webflow.elementPresets.DOM);
+  infoH.setTag('h2');
+  infoH.setStyles([estInfoHeading]);
+  infoH.setTextContent('Tell us about your project');
 
-  // Email field
-  const emailF = row1.append(webflow.elementPresets.DOM);
-  emailF.setTag('div');
-  const emailLabel = emailF.append(webflow.elementPresets.DOM);
-  emailLabel.setTag('label');
-  emailLabel.setStyles([estFormLabel]);
-  emailLabel.setTextContent('Email');
-  const emailInput = emailF.append(webflow.elementPresets.DOM);
-  emailInput.setTag('input');
-  emailInput.setStyles([estInput]);
-  emailInput.setAttribute('type', 'email');
-  emailInput.setAttribute('name', 'email');
-  emailInput.setAttribute('placeholder', 'you@email.com');
+  const infoP = infoCol.append(webflow.elementPresets.DOM);
+  infoP.setTag('p');
+  infoP.setStyles([estInfoBody]);
+  infoP.setTextContent('Fill out the form and we\u2019ll get back to you within 24 hours with a detailed estimate.');
 
-  // Phone + Address row
-  const row2 = formWrap.append(webflow.elementPresets.DOM);
-  row2.setTag('div');
-  row2.setStyles([estFormGrid]);
+  // Divider
+  const div1 = infoCol.append(webflow.elementPresets.DOM);
+  div1.setTag('div');
+  div1.setStyles([s.divider]);
 
-  const phoneF = row2.append(webflow.elementPresets.DOM);
-  phoneF.setTag('div');
-  const phoneLabel = phoneF.append(webflow.elementPresets.DOM);
-  phoneLabel.setTag('label');
-  phoneLabel.setStyles([estFormLabel]);
-  phoneLabel.setTextContent('Phone');
-  const phoneInput = phoneF.append(webflow.elementPresets.DOM);
-  phoneInput.setTag('input');
-  phoneInput.setStyles([estInput]);
-  phoneInput.setAttribute('type', 'tel');
-  phoneInput.setAttribute('name', 'phone');
-  phoneInput.setAttribute('placeholder', '(000) 000-0000');
-
-  const addrF = row2.append(webflow.elementPresets.DOM);
-  addrF.setTag('div');
-  const addrLabel = addrF.append(webflow.elementPresets.DOM);
-  addrLabel.setTag('label');
-  addrLabel.setStyles([estFormLabel]);
-  addrLabel.setTextContent('Property Address');
-  const addrInput = addrF.append(webflow.elementPresets.DOM);
-  addrInput.setTag('input');
-  addrInput.setStyles([estInput]);
-  addrInput.setAttribute('type', 'text');
-  addrInput.setAttribute('name', 'address');
-  addrInput.setAttribute('placeholder', 'Street, City, CA');
-
-  // Service + Budget row
-  const row3 = formWrap.append(webflow.elementPresets.DOM);
-  row3.setTag('div');
-  row3.setStyles([estFormGrid]);
-
-  const svcF = row3.append(webflow.elementPresets.DOM);
-  svcF.setTag('div');
-  const svcLabel = svcF.append(webflow.elementPresets.DOM);
-  svcLabel.setTag('label');
-  svcLabel.setStyles([estFormLabel]);
-  svcLabel.setTextContent('Service Type');
-  const svcSelect = svcF.append(webflow.elementPresets.DOM);
-  svcSelect.setTag('select');
-  svcSelect.setStyles([estSelect]);
-  svcSelect.setAttribute('name', 'service');
-
-  const budgetF = row3.append(webflow.elementPresets.DOM);
-  budgetF.setTag('div');
-  const budgetLabel = budgetF.append(webflow.elementPresets.DOM);
-  budgetLabel.setTag('label');
-  budgetLabel.setStyles([estFormLabel]);
-  budgetLabel.setTextContent('Budget Range');
-  const budgetSelect = budgetF.append(webflow.elementPresets.DOM);
-  budgetSelect.setTag('select');
-  budgetSelect.setStyles([estSelect]);
-  budgetSelect.setAttribute('name', 'budget');
-
-  // Timeline (full width select)
-  const timeLabel = formWrap.append(webflow.elementPresets.DOM);
-  timeLabel.setTag('label');
-  timeLabel.setStyles([estFormLabel]);
-  timeLabel.setTextContent('Timeline');
-  const timeSelect = formWrap.append(webflow.elementPresets.DOM);
-  timeSelect.setTag('select');
-  timeSelect.setStyles([estSelect]);
-  timeSelect.setAttribute('name', 'timeline');
-
-  // Project details (textarea)
-  const detailLabel = formWrap.append(webflow.elementPresets.DOM);
-  detailLabel.setTag('label');
-  detailLabel.setStyles([estFormLabel]);
-  detailLabel.setTextContent('Project Details');
-  const detailInput = formWrap.append(webflow.elementPresets.DOM);
-  detailInput.setTag('textarea');
-  detailInput.setStyles([estTextarea]);
-  detailInput.setAttribute('name', 'details');
-  detailInput.setAttribute('placeholder', 'Describe your project — size, goals, anything relevant.');
-
-  // Submit
-  const submitBtn = formWrap.append(webflow.elementPresets.DOM);
-  submitBtn.setTag('button');
-  submitBtn.setStyles([estSubmitBtn]);
-  submitBtn.setTextContent('Get My Free Estimate');
-  submitBtn.setAttribute('type', 'submit');
-
-  await safeCall('append:form', () => body.append(formSection));
-
-  // SECTION 3: WHAT HAPPENS NEXT (cream bg, 3-step)
-  log('Building Section 3: What Happens Next...');
-  const nextSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  nextSection.setTag('section');
-  nextSection.setStyles([s.section, s.sectionCream]);
-  nextSection.setAttribute('id', 'est-next');
-
-  const nextHeader = nextSection.append(webflow.elementPresets.DOM);
-  nextHeader.setTag('div');
-  nextHeader.setStyles([estMb64]);
-
-  const nextLabel = nextHeader.append(webflow.elementPresets.DOM);
+  // "What Happens Next" label
+  const nextLabel = infoCol.append(webflow.elementPresets.DOM);
   nextLabel.setTag('div');
-  nextLabel.setStyles([s.label, estMb32]);
-  nextLabel.setAttribute('data-animate', 'fade-up');
+  nextLabel.setStyles([s.label]);
   const nextLabelTxt = nextLabel.append(webflow.elementPresets.DOM);
   nextLabelTxt.setTag('div');
   nextLabelTxt.setTextContent('What Happens Next');
-  const nextLabelLine = nextLabel.append(webflow.elementPresets.DOM);
-  nextLabelLine.setTag('div');
-  nextLabelLine.setStyles([estLabelLine]);
 
-  const stepsGrid = nextSection.append(webflow.elementPresets.DOM);
-  stepsGrid.setTag('div');
-  stepsGrid.setStyles([estStepsGrid]);
-  stepsGrid.setAttribute('data-animate', 'fade-up-stagger');
+  // Step items
+  NEXT_STEPS.forEach((step, i) => {
+    const item = infoCol.append(webflow.elementPresets.DOM);
+    item.setTag('div');
+    item.setStyles([estStepItem]);
 
-  NEXT_STEPS.forEach(step => {
-    const el = stepsGrid.append(webflow.elementPresets.DOM);
-    el.setTag('div');
-    el.setStyles([estStep]);
-    el.setAttribute('data-animate', 'fade-up');
-
-    const num = el.append(webflow.elementPresets.DOM);
+    const num = item.append(webflow.elementPresets.DOM);
     num.setTag('div');
     num.setStyles([estStepNum]);
-    num.setTextContent(step.number);
+    num.setTextContent(String(i + 1));
 
-    const title = el.append(webflow.elementPresets.DOM);
-    title.setTag('h3');
+    const title = item.append(webflow.elementPresets.DOM);
+    title.setTag('div');
     title.setStyles([estStepTitle]);
     title.setTextContent(step.title);
 
-    const desc = el.append(webflow.elementPresets.DOM);
-    desc.setTag('p');
-    desc.setStyles([estStepDesc]);
-    desc.setTextContent(step.desc);
+    const note = item.append(webflow.elementPresets.DOM);
+    note.setTag('div');
+    note.setStyles([estStepNote]);
+    note.setTextContent(step.note);
   });
 
-  await safeCall('append:next', () => body.append(nextSection));
+  // RIGHT: Form
+  const formCol = grid.append(webflow.elementPresets.DOM);
+  formCol.setTag('div');
+  formCol.setStyles([estFormCol]);
+
+  buildCleanForm(formCol, FORM_FIELDS, s, 'Request Estimate');
+
+  await safeCall('append:form', () => body.append(formSection));
+  logDetail('Section 2: Form appended', 'ok');
+
+  // SECTION 3: CALENDLY
+  log('Building Section 3: Calendly...');
+  await buildCalendlySection(body, v, 'Or Book a Consultation');
 
   // SECTION 4: CTA
   log('Building Section 4: CTA...');
@@ -398,6 +254,7 @@ async function buildEstimatePage() {
   );
 
   await applyStyleProperties();
+  await applyCalendlyStyleProps(v);
 
   log('Free Estimate page built!', 'success');
   await webflow.notify({ type: 'Success', message: 'Free Estimate page created!' });

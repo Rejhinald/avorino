@@ -1,6 +1,6 @@
 // ════════════════════════════════════════════════════════════════
-// Avorino Builder — FINANCING PAGE
-// Rename this to index.ts to build the Financing page.
+// Avorino Builder — FINANCING PAGE (v2 redesign)
+// Split hero with image + stacked text blocks with dividers
 // ════════════════════════════════════════════════════════════════
 
 import {
@@ -9,6 +9,7 @@ import {
   clearAndSet, createSharedStyles, setSharedStyleProps,
   createAllVariables, createPageWithSlug,
   buildCTASection, applyCTAStyleProps,
+  CALENDLY_CSS, CALENDLY_JS,
 } from './shared.js';
 
 // ── Page config ──
@@ -16,11 +17,17 @@ const PAGE_NAME = 'Financing';
 const PAGE_SLUG = 'financing';
 const PAGE_TITLE = '100% Financing Available — Avorino Construction';
 const PAGE_DESC = 'Build now, pay over time. ADU and construction financing options in Orange County.';
-const HEAD_CODE = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@COMMIT/pages/shared/shared-page-css.css">';
+const HEAD_CODE = [
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-responsive.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-nav-footer.css">',
+  CALENDLY_CSS,
+].join('\n');
 const FOOTER_CODE = [
   '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-animations.js"><\/script>',
+  CALENDLY_JS,
 ].join('\n');
 
 // ── Update panel UI ──
@@ -32,42 +39,27 @@ if (footerCodeEl) footerCodeEl.textContent = FOOTER_CODE;
 
 // ── Content data ──
 const BENEFITS = [
-  { title: 'Up to 100% financing', desc: 'Cover your entire project cost without a large down payment.' },
-  { title: 'Property equity leverage', desc: 'Use your home equity plus credit to qualify for favorable terms.' },
-  { title: 'Positive cash flow', desc: 'ADU rental income can exceed your monthly loan payment from day one.' },
-];
-
-const STEPS = [
-  { number: '01', title: 'Apply', desc: 'Submit your application through our lending partners. Takes 15 minutes.' },
-  { number: '02', title: 'Get approved', desc: 'Approval based on property equity and credit. Most homeowners qualify.' },
-  { number: '03', title: 'Build', desc: 'Construction begins. Funds are released in stages as your project progresses.' },
+  { title: 'Up to 100% project financing', desc: 'Cover your entire project cost without a large down payment. Our lending partners offer competitive rates for ADU construction, custom homes, and major renovations.' },
+  { title: 'Leverage your property equity', desc: 'Use your home equity plus credit to qualify for favorable terms. Most Orange County homeowners already have the equity needed to build.' },
+  { title: 'Positive monthly cash flow', desc: 'ADU rental income in Orange County ranges $2K–$4.5K/month — often exceeding your monthly loan payment from day one.' },
 ];
 
 // ── Build function ──
 async function buildFinancingPage() {
   clearErrorLog();
-  logDetail('Starting Financing page build...', 'info');
+  logDetail('Starting Financing page build (v2)...', 'info');
   const v = await getAvorinVars();
 
   log('Creating shared styles...');
   const s = await createSharedStyles();
 
   // ── Page-specific styles ──
-  log('Creating page-specific styles...');
+  log('Creating financing-specific styles...');
   const finHero = await getOrCreateStyle('fin-hero');
   const finHeroContent = await getOrCreateStyle('fin-hero-content');
-  const finHeroSub = await getOrCreateStyle('fin-hero-subtitle');
-  const finGrid3 = await getOrCreateStyle('fin-grid-3');
-  const finBenefitCard = await getOrCreateStyle('fin-benefit-card');
   const finBenefitTitle = await getOrCreateStyle('fin-benefit-title');
   const finBenefitDesc = await getOrCreateStyle('fin-benefit-desc');
-  const finStep = await getOrCreateStyle('fin-step');
-  const finStepNum = await getOrCreateStyle('fin-step-num');
-  const finStepTitle = await getOrCreateStyle('fin-step-title');
-  const finStepDesc = await getOrCreateStyle('fin-step-desc');
-  const finMb32 = await getOrCreateStyle('fin-mb-32');
-  const finMb64 = await getOrCreateStyle('fin-mb-64');
-  const finLabelLine = await getOrCreateStyle('fin-label-line');
+  const finProcessInline = await getOrCreateStyle('fin-process-inline');
 
   const { body } = await createPageWithSlug(PAGE_NAME, PAGE_SLUG, PAGE_TITLE, PAGE_DESC);
 
@@ -76,83 +68,51 @@ async function buildFinancingPage() {
     await setSharedStyleProps(s, v);
     await wait(1000);
 
-    log('Setting page-specific style properties...');
+    log('Setting financing-specific style properties...');
 
+    // Hero: dark, split layout (text left, image right)
     await clearAndSet(await freshStyle('fin-hero'), 'fin-hero', {
-      'min-height': '50vh', 'display': 'flex', 'align-items': 'flex-end',
+      'display': 'grid', 'grid-template-columns': '1.5fr 1fr',
+      'grid-column-gap': '96px', 'grid-row-gap': '64px', 'align-items': 'center',
+      'min-height': '70vh',
       'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
       'background-color': v['av-dark'], 'color': v['av-cream'],
-      'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
     await clearAndSet(await freshStyle('fin-hero-content'), 'fin-hero-content', {
-      'position': 'relative', 'z-index': '2', 'max-width': '700px',
-    });
-    await clearAndSet(await freshStyle('fin-hero-subtitle'), 'fin-hero-subtitle', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'line-height': '1.9', 'opacity': '0.6', 'margin-top': '24px', 'color': v['av-cream'],
+      'max-width': '640px',
     });
     await wait(500);
 
-    // Benefits (3-col cards)
-    await clearAndSet(await freshStyle('fin-grid-3'), 'fin-grid-3', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr 1fr',
-      'grid-column-gap': '24px', 'grid-row-gap': '24px',
-    });
-    await clearAndSet(await freshStyle('fin-benefit-card'), 'fin-benefit-card', {
-      'background-color': v['av-dark'], 'color': v['av-cream'],
-      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
-      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
-      'padding-top': v['av-gap-md'], 'padding-bottom': v['av-gap-md'],
-      'padding-left': '40px', 'padding-right': '40px',
-    });
+    // Benefit text blocks
     await clearAndSet(await freshStyle('fin-benefit-title'), 'fin-benefit-title', {
-      'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
-      'line-height': '1.12', 'font-weight': '400',
-      'margin-bottom': '16px', 'color': v['av-cream'],
-    });
-    await clearAndSet(await freshStyle('fin-benefit-desc'), 'fin-benefit-desc', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
-      'line-height': '1.7', 'opacity': '0.6', 'color': v['av-cream'],
-    });
-    await wait(500);
-
-    // Steps (3-col)
-    await clearAndSet(await freshStyle('fin-step'), 'fin-step', {
-      'display': 'flex', 'flex-direction': 'column',
-    });
-    await clearAndSet(await freshStyle('fin-step-num'), 'fin-step-num', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-label'],
-      'letter-spacing': '0.3em', 'text-transform': 'uppercase',
-      'opacity': '0.3', 'margin-bottom': '24px',
-    });
-    await clearAndSet(await freshStyle('fin-step-title'), 'fin-step-title', {
       'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
       'line-height': '1.12', 'font-weight': '400', 'margin-bottom': '16px',
     });
-    await clearAndSet(await freshStyle('fin-step-desc'), 'fin-step-desc', {
+    await clearAndSet(await freshStyle('fin-benefit-desc'), 'fin-benefit-desc', {
       'font-family': 'DM Sans', 'font-size': v['av-text-body'],
       'line-height': '1.9', 'opacity': '0.6',
     });
+    // Inline process summary
+    await clearAndSet(await freshStyle('fin-process-inline'), 'fin-process-inline', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
+      'opacity': '0.4', 'text-align': 'center', 'margin-top': '24px',
+    });
     await wait(500);
-
-    // Utility
-    await clearAndSet(await freshStyle('fin-mb-32'), 'fin-mb-32', { 'margin-bottom': v['av-gap-sm'] });
-    await clearAndSet(await freshStyle('fin-mb-64'), 'fin-mb-64', { 'margin-bottom': v['av-gap-md'] });
-    await clearAndSet(await freshStyle('fin-label-line'), 'fin-label-line', { 'flex-grow': '1', 'height': '1px', 'background-color': v['av-dark-15'] });
 
     await applyCTAStyleProps(v);
   }
 
   // ═══════════════ BUILD ELEMENTS ═══════════════
 
-  // SECTION 1: HERO
-  log('Building Section 1: Hero...');
+  // SECTION 1: SPLIT HERO (dark, text left + image right)
+  log('Building Section 1: Split Hero...');
   const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
   hero.setTag('section');
   hero.setStyles([finHero]);
   hero.setAttribute('id', 'fin-hero');
 
+  // Left: text
   const heroC = hero.append(webflow.elementPresets.DOM);
   heroC.setTag('div');
   heroC.setStyles([finHeroContent]);
@@ -168,105 +128,70 @@ async function buildFinancingPage() {
   const heroH = heroC.append(webflow.elementPresets.DOM);
   heroH.setTag('h1');
   heroH.setStyles([s.headingXL]);
-  heroH.setTextContent('100% Financing Available');
-  heroH.setAttribute('data-animate', 'opacity-sweep');
+  heroH.setTextContent('Build now, pay over time');
+  heroH.setAttribute('data-animate', 'word-stagger-elastic');
 
   const heroSub = heroC.append(webflow.elementPresets.DOM);
   heroSub.setTag('p');
-  heroSub.setStyles([finHeroSub]);
-  heroSub.setTextContent('Build now, pay over time.');
+  heroSub.setStyles([s.body, s.bodyMuted]);
+  heroSub.setTextContent('Up to 100% financing for your ADU or construction project. Leverage your property equity to build without a large upfront cost.');
   heroSub.setAttribute('data-animate', 'fade-up');
 
-  await safeCall('append:hero', () => body.append(hero));
+  // Right: tall image placeholder
+  const heroImg = hero.append(webflow.elementPresets.DOM);
+  heroImg.setTag('div');
+  heroImg.setStyles([s.imgTall]);
+  heroImg.setAttribute('data-animate', 'parallax-depth');
 
-  // SECTION 2: BENEFITS (warm bg, 3 cards)
+  await safeCall('append:hero', () => body.append(hero));
+  logDetail('Section 1: Split Hero appended', 'ok');
+
+  // SECTION 2: BENEFITS + PROCESS (cream bg, stacked text blocks with dividers)
   log('Building Section 2: Benefits...');
   const benefitsSection = webflow.elementBuilder(webflow.elementPresets.DOM);
   benefitsSection.setTag('section');
-  benefitsSection.setStyles([s.section, s.sectionWarm]);
+  benefitsSection.setStyles([s.section, s.sectionCream]);
   benefitsSection.setAttribute('id', 'fin-benefits');
 
-  const grid = benefitsSection.append(webflow.elementPresets.DOM);
-  grid.setTag('div');
-  grid.setStyles([finGrid3]);
-  grid.setAttribute('data-animate', 'fade-up-stagger');
+  // Benefits as stacked text blocks
+  BENEFITS.forEach((b, i) => {
+    if (i > 0) {
+      const div = benefitsSection.append(webflow.elementPresets.DOM);
+      div.setTag('div');
+      div.setStyles([s.divider]);
+    }
 
-  BENEFITS.forEach(b => {
-    const card = grid.append(webflow.elementPresets.DOM);
-    card.setTag('div');
-    card.setStyles([finBenefitCard]);
-    card.setAttribute('data-animate', 'fade-up');
+    const block = benefitsSection.append(webflow.elementPresets.DOM);
+    block.setTag('div');
+    block.setAttribute('data-animate', 'fade-up');
 
-    const title = card.append(webflow.elementPresets.DOM);
+    const title = block.append(webflow.elementPresets.DOM);
     title.setTag('h3');
     title.setStyles([finBenefitTitle]);
     title.setTextContent(b.title);
 
-    const desc = card.append(webflow.elementPresets.DOM);
+    const desc = block.append(webflow.elementPresets.DOM);
     desc.setTag('p');
     desc.setStyles([finBenefitDesc]);
     desc.setTextContent(b.desc);
   });
 
+  // Inline process note
+  const processNote = benefitsSection.append(webflow.elementPresets.DOM);
+  processNote.setTag('p');
+  processNote.setStyles([finProcessInline]);
+  processNote.setTextContent('Apply \u2192 Get approved \u2192 Construction begins');
+  processNote.setAttribute('data-animate', 'fade-up');
+
   await safeCall('append:benefits', () => body.append(benefitsSection));
+  logDetail('Section 2: Benefits appended', 'ok');
 
-  // SECTION 3: HOW IT WORKS (cream bg, 3 steps)
-  log('Building Section 3: How It Works...');
-  const stepsSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  stepsSection.setTag('section');
-  stepsSection.setStyles([s.section, s.sectionCream]);
-  stepsSection.setAttribute('id', 'fin-steps');
-
-  const stepsHeader = stepsSection.append(webflow.elementPresets.DOM);
-  stepsHeader.setTag('div');
-  stepsHeader.setStyles([finMb64]);
-
-  const stepsLabel = stepsHeader.append(webflow.elementPresets.DOM);
-  stepsLabel.setTag('div');
-  stepsLabel.setStyles([s.label, finMb32]);
-  stepsLabel.setAttribute('data-animate', 'fade-up');
-  const stepsLabelTxt = stepsLabel.append(webflow.elementPresets.DOM);
-  stepsLabelTxt.setTag('div');
-  stepsLabelTxt.setTextContent('How It Works');
-  const stepsLabelLine = stepsLabel.append(webflow.elementPresets.DOM);
-  stepsLabelLine.setTag('div');
-  stepsLabelLine.setStyles([finLabelLine]);
-
-  const stepsGrid = stepsSection.append(webflow.elementPresets.DOM);
-  stepsGrid.setTag('div');
-  stepsGrid.setStyles([finGrid3]);
-  stepsGrid.setAttribute('data-animate', 'fade-up-stagger');
-
-  STEPS.forEach(step => {
-    const el = stepsGrid.append(webflow.elementPresets.DOM);
-    el.setTag('div');
-    el.setStyles([finStep]);
-    el.setAttribute('data-animate', 'fade-up');
-
-    const num = el.append(webflow.elementPresets.DOM);
-    num.setTag('div');
-    num.setStyles([finStepNum]);
-    num.setTextContent(step.number);
-
-    const title = el.append(webflow.elementPresets.DOM);
-    title.setTag('h3');
-    title.setStyles([finStepTitle]);
-    title.setTextContent(step.title);
-
-    const desc = el.append(webflow.elementPresets.DOM);
-    desc.setTag('p');
-    desc.setStyles([finStepDesc]);
-    desc.setTextContent(step.desc);
-  });
-
-  await safeCall('append:steps', () => body.append(stepsSection));
-
-  // SECTION 4: CTA
-  log('Building Section 4: CTA...');
+  // SECTION 3: CTA
+  log('Building Section 3: CTA...');
   await buildCTASection(
     body, v,
     'Get pre-qualified',
-    'Apply Now', '/free-estimate',
+    'Apply Now', '/schedule-a-meeting',
     'Call Us', 'tel:7149003676',
   );
 

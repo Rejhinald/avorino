@@ -1,452 +1,90 @@
 // ════════════════════════════════════════════════════════════════
-// Avorino Builder — SERVICES PAGE
-// Rename this to index.ts to build the Services page.
+// Avorino Builder — YORBA LINDA ADU PAGE
+// Rename this to index.ts to build the Yorba Linda ADU page.
 // ════════════════════════════════════════════════════════════════
 
 import {
-  webflow, log, logDetail, clearErrorLog, wait,
-  safeCall, getAvorinVars, getOrCreateStyle, freshStyle,
-  clearAndSet, createSharedStyles, setSharedStyleProps,
-  createAllVariables, createPageWithSlug,
-  buildCTASection, applyCTAStyleProps,
+  webflow, log, logDetail, clearErrorLog,
+  createAllVariables, buildCityPage, CityData,
+  CALENDLY_CSS, CALENDLY_JS,
 } from './shared.js';
 
-// ── Page config ──
-const PAGE_NAME = 'Services';
-const PAGE_SLUG = 'services';
-const PAGE_TITLE = 'Our Services — Avorino Construction in Orange County';
-const PAGE_DESC = 'ADU construction, custom homes, new builds, additions, garage conversions, and commercial projects in Orange County. Licensed, insured, and fully permitted.';
-const HEAD_CODE = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@COMMIT/pages/shared/shared-page-css.css">\n<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@COMMIT/pages/services/services-css.css">';
+const HEAD_CODE = [
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-responsive.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-nav-footer.css">',
+  CALENDLY_CSS,
+].join('\n');
 const FOOTER_CODE = [
   '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
-  '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
-  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@COMMIT/avorino-about-process3d.js"><\/script>',
-  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@COMMIT/avorino-animations.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@8ae532e/avorino-animations.js"><\/script>',
+  CALENDLY_JS,
 ].join('\n');
 
-// ── Update panel UI ──
-document.getElementById('page-name')!.textContent = PAGE_NAME;
+const CITY_DATA: CityData = {
+  slug: 'adu-yorba-linda',
+  city: 'Yorba Linda',
+  title: 'ADU Construction in Yorba Linda — Avorino',
+  seoDesc: 'Build a permitted ADU in Yorba Linda, CA. Premium lots from 7,000 to 15,000+ sqft in the "Land of Gracious Living." Licensed Orange County contractor.',
+
+  overview: 'Yorba Linda — known as the "Land of Gracious Living" — is an upscale residential city of approximately 68,000 residents in northeast Orange County. The city is the birthplace of President Richard Nixon, and the Richard Nixon Presidential Library and Museum remains a prominent cultural landmark. Yorba Linda is distinguished by exceptionally generous lot sizes, particularly in the hills and equestrian areas where parcels regularly exceed 15,000 sqft and some reach half an acre or more. The city is served by the highly rated Placentia-Yorba Linda Unified School District, consistently ranked among the top districts in Orange County. Rolling hills, horse trails, and the proximity to Chino Hills State Park give Yorba Linda a semi-rural character rare in suburban OC. Properties in hillside overlay zones may be subject to additional grading and geological review requirements.',
+
+  whyBuild: 'Among the largest residential lot sizes in Orange County — ideal for spacious detached ADUs — top-rated Placentia-Yorba Linda Unified schools driving family rental demand, an affluent homeowner base with significant equity for ADU investment, and premium rental rates reflecting the city\'s upscale character.',
+
+  regulations: {
+    setbacks: '4-foot minimum from rear and side property lines for new detached ADUs. Conversions of existing structures are exempt from setback requirements.',
+    height: 'Up to 16 feet for single-story detached ADUs. Up to 25 feet for two-story ADUs per state law (AB 1332) in qualifying residential zones.',
+    parking: 'One parking space per ADU may be required. Exempt if within 0.5 miles of public transit, within one block of a car-share vehicle, or if the ADU is a conversion of existing space.',
+    lotSize: '7,000–15,000+ sqft typical residential lots. Hillside and equestrian-zoned properties often exceed 20,000 sqft. No minimum lot size required by state law to build an ADU.',
+    ownerOccupancy: 'No owner-occupancy requirement for ADUs (made permanent by AB 976 in 2025).',
+    additionalNotes: 'Properties in hillside overlay zones may require geotechnical reports, grading permits, and slope stability analysis before ADU construction. Equestrian-zoned properties have additional setback and access considerations. ADUs under 750 sqft are exempt from impact fees.',
+  },
+
+  permitting: {
+    department: 'City of Yorba Linda Community Development Department',
+    steps: [
+      { title: 'Verify zoning & overlay districts', desc: 'Check your property on the city\'s zoning map. Identify whether your parcel falls within a hillside overlay zone or equestrian district, as these designations add review requirements. Confirm ADU eligibility and any site-specific constraints.' },
+      { title: 'Assess hillside & grading needs', desc: 'For properties with significant slope, commission a geotechnical soils report and preliminary grading plan. Hillside overlay zones require slope stability analysis and may mandate specific foundation types (caissons, grade beams) that affect design and budget.' },
+      { title: 'Design your ADU', desc: 'Create architectural plans including site plan, floor plan, elevations, structural, mechanical, electrical, and plumbing. Yorba Linda\'s large lots allow generous ADU footprints up to 1,200 sqft. Design to complement the neighborhood — ranch, Mediterranean, and custom estate styles are prevalent.' },
+      { title: 'Submit to Community Development', desc: 'Submit your complete plan set to the Community Development Department. Include Title 24 energy compliance, geotechnical report (if in hillside overlay), and grading plans if required. Pay plan check fees at submission.' },
+      { title: 'Plan check & approval', desc: 'The city reviews plans for compliance with building codes, ADU regulations, and any applicable overlay zone standards. State law mandates a 60-day maximum review period for compliant ADU applications.' },
+      { title: 'Build, inspect & occupy', desc: 'Once permitted, begin construction with your licensed contractor. Hillside projects may require additional inspections for grading, retaining walls, and drainage. Schedule standard inspections at each milestone through final. Certificate of Occupancy issued upon passing final inspection.' },
+    ],
+    fees: '$6,000–$14,000 total (plan check, building permit, school fees). Impact fees waived for ADUs under 750 sqft. Geotechnical and grading fees additional for hillside lots.',
+    timeline: '4–8 weeks for plan check. 60-day maximum review required by state law. Hillside overlay review may extend the timeline.',
+    contact: '(714) 961-7120 — City of Yorba Linda Community Development',
+    website: 'yorbalindaca.gov/305/Community-Development',
+  },
+
+  costs: {
+    constructionRange: '$275K–$425K',
+    permitFees: '$6K–$14K',
+    impactFees: 'Waived under 750 sqft',
+    typicalSize: '600–1,200 sqft',
+  },
+
+  rental: {
+    monthlyRange: '$2,500–$4,200/mo',
+    demandDrivers: 'Families relocating for top-rated Placentia-Yorba Linda Unified schools, professionals working in Anaheim, Brea, and Fullerton employment centers, equestrian community residents seeking guest quarters or caretaker housing, visitors to the Richard Nixon Presidential Library, and the premium that Yorba Linda\'s semi-rural upscale character commands in the rental market.',
+  },
+
+  guide: [
+    { title: 'Evaluate your lot\'s premium potential', desc: 'Yorba Linda\'s lot sizes are among the largest in Orange County. Properties in the hills often exceed 15,000–20,000 sqft, allowing for substantial detached ADUs up to the full 1,200 sqft maximum. Even standard lots at 7,000–10,000 sqft provide ample space. Walk your property to identify the optimal ADU placement.' },
+    { title: 'Check hillside overlay requirements', desc: 'If your property has slope or is within the city\'s hillside overlay zone, you will need a geotechnical soils report and potentially a grading permit before ADU construction can begin. Budget an additional $5,000–$15,000 for geotechnical work and specialized foundations on steep lots.' },
+    { title: 'Design a premium ADU', desc: 'Yorba Linda\'s upscale market supports higher-end ADU finishes that command top rental rates. Consider vaulted ceilings, premium flooring, quartz countertops, and indoor-outdoor living features. Match the architectural style — ranch, Mediterranean, or custom estate — to your primary home and neighborhood.' },
+    { title: 'Leverage equestrian zoning', desc: 'Properties in Yorba Linda\'s equestrian zones offer unique ADU opportunities — guest quarters for visiting riders, caretaker housing, or rental units that appeal to the equestrian community. Ensure your ADU design respects equestrian setbacks and access requirements specific to these zones.' },
+    { title: 'Build with a licensed contractor', desc: 'Work with a California-licensed contractor (General-B) experienced with hillside construction. Avorino handles design, engineering, geotechnical coordination, permitting, and construction as a single point of contact — particularly valuable on complex hillside sites.' },
+    { title: 'Command premium rents', desc: 'Yorba Linda ADUs command some of the highest rental rates in north Orange County at $2,500–$4,200/mo. Market to families seeking Placentia-Yorba Linda Unified schools, professionals who want a quiet upscale community, and equestrian enthusiasts. Your ADU investment benefits from the city\'s consistently strong property values.' },
+  ],
+};
+
+// ── Panel UI ──
+document.getElementById('page-name')!.textContent = `${CITY_DATA.city} ADU`;
 const headCodeEl = document.getElementById('head-code');
 const footerCodeEl = document.getElementById('footer-code');
 if (headCodeEl) headCodeEl.textContent = HEAD_CODE;
 if (footerCodeEl) footerCodeEl.textContent = FOOTER_CODE;
-
-// ── Service data (inspired by v7-sections landing page) ──
-const SERVICES = [
-  {
-    number: '01 / 06',
-    title: 'ADU Construction',
-    desc: 'Detached, attached, and garage conversion ADUs. Fully permitted, built to maximize property value.',
-    href: '/adu',
-  },
-  {
-    number: '02 / 06',
-    title: 'Garage Conversion',
-    desc: 'Transform your garage into a functional living space. Most affordable ADU option at $75K–$150K.',
-    href: '/garageconversion',
-  },
-  {
-    number: '03 / 06',
-    title: 'Custom Homes',
-    desc: 'Ground-up custom residences tailored to your vision. Full design-to-build service.',
-    href: '/buildcustomhome',
-  },
-  {
-    number: '04 / 06',
-    title: 'New Construction',
-    desc: 'New builds for landowners. Engineering, permits, and construction managed end-to-end.',
-    href: '/newconstruction',
-  },
-  {
-    number: '05 / 06',
-    title: 'Additions',
-    desc: 'Expand your living space with room additions, second stories, and extensions.',
-    href: '/addition',
-  },
-  {
-    number: '06 / 06',
-    title: 'Commercial',
-    desc: 'Tenant improvements and commercial renovations in Orange County.',
-    href: '/commercial',
-  },
-];
-
-const STATS = [
-  { number: '15+', label: 'Years Experience' },
-  { number: '200+', label: 'Projects Completed' },
-  { number: '4.9', label: 'Google Rating' },
-  { number: '100%', label: 'Licensed & Insured' },
-];
-
-// ── Build function ──
-async function buildServicesPage() {
-  clearErrorLog();
-  logDetail('Starting Services page build...', 'info');
-  const v = await getAvorinVars();
-  logDetail('Loaded Avorino variable collection', 'ok');
-
-  log('Creating shared styles...');
-  const s = await createSharedStyles();
-  logDetail('Shared styles done', 'ok');
-
-  // ── Page-specific styles ──
-  log('Creating page-specific styles...');
-  // Hero
-  const svHero = await getOrCreateStyle('sv-hero');
-  const svHeroContent = await getOrCreateStyle('sv-hero-content');
-  const svHeroSubtitle = await getOrCreateStyle('sv-hero-subtitle');
-  // Service grid
-  const svGrid = await getOrCreateStyle('sv-grid');
-  const svCard = await getOrCreateStyle('sv-card');
-  const svCardImg = await getOrCreateStyle('sv-card-img');
-  const svCardContent = await getOrCreateStyle('sv-card-content');
-  const svCardNumber = await getOrCreateStyle('sv-card-number');
-  const svCardTitle = await getOrCreateStyle('sv-card-title');
-  const svCardDesc = await getOrCreateStyle('sv-card-desc');
-  const svCardCta = await getOrCreateStyle('sv-card-cta');
-  // Stats
-  const svStatsGrid = await getOrCreateStyle('sv-stats-grid');
-  const svStatItem = await getOrCreateStyle('sv-stat-item');
-  const svStatNumber = await getOrCreateStyle('sv-stat-number');
-  const svStatLabel = await getOrCreateStyle('sv-stat-label');
-  // Process (Three.js 3D section — moved from About page)
-  const processPinned = await getOrCreateStyle('about-process-pinned');
-  const processVisual = await getOrCreateStyle('about-process-visual');
-  const processFx = await getOrCreateStyle('about-process-fx');
-  const processCards = await getOrCreateStyle('about-process-cards');
-  const processCard = await getOrCreateStyle('about-process-card');
-  const processNav = await getOrCreateStyle('about-process-nav');
-  const processCardNum = await getOrCreateStyle('about-process-card-num');
-  const processCardTitle = await getOrCreateStyle('about-process-card-title');
-  const processCardDesc = await getOrCreateStyle('about-process-card-desc');
-  // Utility
-  const svMb64 = await getOrCreateStyle('sv-mb-64');
-  const svMb96 = await getOrCreateStyle('sv-mb-96');
-  const svLabelLine = await getOrCreateStyle('sv-label-line');
-
-  // ── Create page ──
-  const { body } = await createPageWithSlug(PAGE_NAME, PAGE_SLUG, PAGE_TITLE, PAGE_DESC);
-
-  // ── Style property setter (applied after all elements) ──
-  async function applyStyleProperties() {
-    log('Setting shared style properties...');
-    await setSharedStyleProps(s, v);
-    logDetail('Shared style properties set', 'ok');
-    await wait(1000);
-
-    log('Setting page-specific style properties...');
-
-    // Hero — v7-sections style: dark bg, content at bottom, image-ready
-    logDetail('Setting hero props...', 'info');
-    await clearAndSet(await freshStyle('sv-hero'), 'sv-hero', {
-      'min-height': '60vh', 'display': 'flex', 'align-items': 'flex-end',
-      'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
-      'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
-      'background-color': v['av-dark'], 'color': v['av-cream'],
-      'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
-    });
-    await clearAndSet(await freshStyle('sv-hero-content'), 'sv-hero-content', {
-      'position': 'relative', 'z-index': '2', 'max-width': '800px',
-    });
-    await clearAndSet(await freshStyle('sv-hero-subtitle'), 'sv-hero-subtitle', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'line-height': '1.9', 'opacity': '0.6', 'margin-top': '24px', 'color': v['av-cream'],
-    });
-    await wait(500);
-
-    // Service cards — inspired by v7-sections service-card: tall, image bg, overlaid content
-    logDetail('Setting service card props...', 'info');
-    await clearAndSet(await freshStyle('sv-grid'), 'sv-grid', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr 1fr',
-      'grid-column-gap': '32px', 'grid-row-gap': '32px',
-    });
-    await clearAndSet(await freshStyle('sv-card'), 'sv-card', {
-      'position': 'relative',
-      'min-height': '420px',
-      'border-top-left-radius': '12px', 'border-top-right-radius': '12px',
-      'border-bottom-left-radius': '12px', 'border-bottom-right-radius': '12px',
-      'overflow-x': 'hidden', 'overflow-y': 'hidden',
-      'display': 'flex', 'flex-direction': 'column', 'justify-content': 'flex-end',
-      'background-color': v['av-dark'],
-    });
-    await clearAndSet(await freshStyle('sv-card-img'), 'sv-card-img', {
-      'position': 'absolute', 'top': '0px', 'left': '0px', 'right': '0px', 'bottom': '0px',
-      'background-color': 'rgba(240,237,232,0.04)',
-    });
-    await clearAndSet(await freshStyle('sv-card-content'), 'sv-card-content', {
-      'position': 'relative', 'z-index': '2',
-      'padding-top': '48px', 'padding-bottom': '48px',
-      'padding-left': '40px', 'padding-right': '40px',
-      'color': v['av-cream'],
-      'display': 'flex', 'flex-direction': 'column',
-    });
-    await clearAndSet(await freshStyle('sv-card-number'), 'sv-card-number', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
-      'letter-spacing': '0.3em', 'text-transform': 'uppercase',
-      'opacity': '0.5', 'margin-bottom': '24px',
-    });
-    await clearAndSet(await freshStyle('sv-card-title'), 'sv-card-title', {
-      'font-family': 'DM Serif Display', 'font-size': '28px',
-      'line-height': '1.15', 'letter-spacing': '-0.01em', 'font-weight': '400',
-      'color': v['av-cream'], 'margin-bottom': '16px',
-    });
-    await clearAndSet(await freshStyle('sv-card-desc'), 'sv-card-desc', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
-      'line-height': '1.7', 'opacity': '0.6', 'color': v['av-cream'],
-    });
-    await clearAndSet(await freshStyle('sv-card-cta'), 'sv-card-cta', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
-      'font-weight': '400', 'letter-spacing': '0.08em',
-      'display': 'inline-flex', 'align-items': 'center', 'grid-column-gap': '8px',
-      'color': v['av-cream'], 'margin-top': '24px',
-      'text-decoration': 'none',
-    });
-    await wait(500);
-
-    // Stats — inspired by v7-sections flip-clock stats
-    logDetail('Setting stats props...', 'info');
-    await clearAndSet(await freshStyle('sv-stats-grid'), 'sv-stats-grid', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr 1fr 1fr',
-      'grid-column-gap': '64px', 'grid-row-gap': '64px',
-      'text-align': 'center',
-    });
-    await clearAndSet(await freshStyle('sv-stat-item'), 'sv-stat-item', {
-      'display': 'flex', 'flex-direction': 'column', 'align-items': 'center',
-      'grid-row-gap': '24px',
-    });
-    await clearAndSet(await freshStyle('sv-stat-number'), 'sv-stat-number', {
-      'font-family': 'DM Serif Display',
-      'font-size': 'clamp(48px, 6vw, 80px)',
-      'line-height': '1', 'letter-spacing': '-0.03em', 'font-weight': '400',
-      'color': v['av-cream'],
-    });
-    await clearAndSet(await freshStyle('sv-stat-label'), 'sv-stat-label', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-label'],
-      'letter-spacing': '0.25em', 'text-transform': 'uppercase',
-      'opacity': '0.4', 'color': v['av-cream'],
-    });
-    await wait(500);
-
-    // Process section styles (Three.js 3D — uses about-process-* names for process3d.js compatibility)
-    logDetail('Setting process props...', 'info');
-    await clearAndSet(await freshStyle('about-process-pinned'), 'about-process-pinned', {
-      'height': '100vh', 'display': 'flex', 'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
-    });
-    await clearAndSet(await freshStyle('about-process-visual'), 'about-process-visual', { 'width': '100%', 'height': '100%', 'position': 'relative' });
-    await clearAndSet(await freshStyle('about-process-fx'), 'about-process-fx', { 'position': 'absolute', 'top': '0px', 'left': '0px', 'width': '100%', 'height': '100%' });
-    await clearAndSet(await freshStyle('about-process-cards'), 'about-process-cards', { 'position': 'absolute', 'top': '0px', 'left': '0px', 'width': '100%', 'height': '100%', 'z-index': '2' });
-    await clearAndSet(await freshStyle('about-process-card'), 'about-process-card', {
-      'position': 'absolute', 'background-color': v['av-dark'], 'color': v['av-cream'],
-      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
-      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
-      'padding-top': '56px', 'padding-bottom': '56px', 'padding-left': '48px', 'padding-right': '48px',
-      'max-width': '500px', 'width': '100%', 'top': '50%', 'left': '50%',
-    });
-    await clearAndSet(await freshStyle('about-process-nav'), 'about-process-nav', { 'position': 'absolute', 'bottom': '32px', 'left': '0px', 'width': '100%', 'text-align': 'center' });
-    await clearAndSet(await freshStyle('about-process-card-num'), 'about-process-card-num', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-xs'], 'letter-spacing': '0.2em', 'text-transform': 'uppercase', 'opacity': '0.4', 'margin-bottom': '16px', 'color': v['av-cream'],
-    });
-    await clearAndSet(await freshStyle('about-process-card-title'), 'about-process-card-title', {
-      'font-family': 'DM Serif Display', 'font-size': '28px', 'line-height': '1.2', 'font-weight': '400', 'margin-bottom': '14px', 'color': v['av-cream'],
-    });
-    await clearAndSet(await freshStyle('about-process-card-desc'), 'about-process-card-desc', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-sm'], 'line-height': '1.7', 'opacity': '0.5', 'color': v['av-cream'],
-    });
-    await wait(500);
-
-    // Utility
-    await clearAndSet(await freshStyle('sv-mb-64'), 'sv-mb-64', { 'margin-bottom': v['av-gap-md'] });
-    await clearAndSet(await freshStyle('sv-mb-96'), 'sv-mb-96', { 'margin-bottom': v['av-gap-lg'] });
-    await clearAndSet(await freshStyle('sv-label-line'), 'sv-label-line', { 'flex-grow': '1', 'height': '1px', 'background-color': v['av-dark-15'] });
-
-    // CTA
-    await applyCTAStyleProps(v);
-  }
-
-  // ═══════════════ BUILD ELEMENTS ═══════════════
-
-  // SECTION 1: HERO (dark, like v7 hero — title at bottom)
-  log('Building Section 1: Hero...');
-  const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
-  hero.setTag('section');
-  hero.setStyles([svHero]);
-  hero.setAttribute('id', 'sv-hero');
-
-  const heroC = hero.append(webflow.elementPresets.DOM);
-  heroC.setTag('div');
-  heroC.setStyles([svHeroContent]);
-
-  const heroLabel = heroC.append(webflow.elementPresets.DOM);
-  heroLabel.setTag('div');
-  heroLabel.setStyles([s.label]);
-  heroLabel.setAttribute('data-animate', 'fade-up');
-  const heroLabelTxt = heroLabel.append(webflow.elementPresets.DOM);
-  heroLabelTxt.setTag('div');
-  heroLabelTxt.setTextContent('// Our Services');
-
-  const heroH = heroC.append(webflow.elementPresets.DOM);
-  heroH.setTag('h1');
-  heroH.setStyles([s.headingXL]);
-  heroH.setTextContent('Our Services');
-  heroH.setAttribute('data-animate', 'opacity-sweep');
-
-  const heroSub = heroC.append(webflow.elementPresets.DOM);
-  heroSub.setTag('p');
-  heroSub.setStyles([svHeroSubtitle]);
-  heroSub.setTextContent('Design, permits, and construction in Orange County.');
-  heroSub.setAttribute('data-animate', 'fade-up');
-
-  await safeCall('append:hero', () => body.append(hero));
-  logDetail('Section 1: Hero appended', 'ok');
-
-  // SECTION 2: SERVICE GRID (warm bg, 3×2 cards like v7 service-card)
-  log('Building Section 2: Service Grid...');
-  const svcSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  svcSection.setTag('section');
-  svcSection.setStyles([s.section, s.sectionWarm]);
-  svcSection.setAttribute('id', 'sv-services');
-
-  const svcLabel = svcSection.append(webflow.elementPresets.DOM);
-  svcLabel.setTag('div');
-  svcLabel.setStyles([s.label, svMb64]);
-  svcLabel.setAttribute('data-animate', 'fade-up');
-  const svcLabelTxt = svcLabel.append(webflow.elementPresets.DOM);
-  svcLabelTxt.setTag('div');
-  svcLabelTxt.setTextContent('What We Do');
-  const svcLabelLine = svcLabel.append(webflow.elementPresets.DOM);
-  svcLabelLine.setTag('div');
-  svcLabelLine.setStyles([svLabelLine]);
-
-  const grid = svcSection.append(webflow.elementPresets.DOM);
-  grid.setTag('div');
-  grid.setStyles([svGrid]);
-  grid.setAttribute('data-animate', 'fade-up-stagger');
-
-  SERVICES.forEach(svc => {
-    const card = grid.append(webflow.elementPresets.DOM);
-    card.setTag('a');
-    card.setStyles([svCard]);
-    card.setAttribute('href', svc.href);
-    card.setAttribute('data-animate', 'fade-up');
-
-    // Image placeholder (absolute positioned, for future bg image)
-    const img = card.append(webflow.elementPresets.DOM);
-    img.setTag('div');
-    img.setStyles([svCardImg]);
-
-    // Card content (overlaid at bottom)
-    const content = card.append(webflow.elementPresets.DOM);
-    content.setTag('div');
-    content.setStyles([svCardContent]);
-
-    const num = content.append(webflow.elementPresets.DOM);
-    num.setTag('div');
-    num.setStyles([svCardNumber]);
-    num.setTextContent(svc.number);
-
-    const title = content.append(webflow.elementPresets.DOM);
-    title.setTag('h3');
-    title.setStyles([svCardTitle]);
-    title.setTextContent(svc.title);
-
-    const desc = content.append(webflow.elementPresets.DOM);
-    desc.setTag('p');
-    desc.setStyles([svCardDesc]);
-    desc.setTextContent(svc.desc);
-
-    const cta = content.append(webflow.elementPresets.DOM);
-    cta.setTag('span');
-    cta.setStyles([svCardCta]);
-    cta.setTextContent('Learn more \u2192');
-  });
-
-  await safeCall('append:services', () => body.append(svcSection));
-  logDetail('Section 2: Service Grid appended', 'ok');
-
-  // SECTION 3: STATS (dark bg, 4-col, like v7 stats section)
-  log('Building Section 3: Stats...');
-  const statsSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  statsSection.setTag('section');
-  statsSection.setStyles([s.section, s.sectionDark]);
-  statsSection.setAttribute('id', 'sv-stats');
-
-  const statsG = statsSection.append(webflow.elementPresets.DOM);
-  statsG.setTag('div');
-  statsG.setStyles([svStatsGrid]);
-
-  STATS.forEach(stat => {
-    const item = statsG.append(webflow.elementPresets.DOM);
-    item.setTag('div');
-    item.setStyles([svStatItem]);
-    item.setAttribute('data-animate', 'fade-up');
-
-    const num = item.append(webflow.elementPresets.DOM);
-    num.setTag('div');
-    num.setStyles([svStatNumber]);
-    num.setTextContent(stat.number);
-
-    const lbl = item.append(webflow.elementPresets.DOM);
-    lbl.setTag('div');
-    lbl.setStyles([svStatLabel]);
-    lbl.setTextContent(stat.label);
-  });
-
-  await safeCall('append:stats', () => body.append(statsSection));
-  logDetail('Section 3: Stats appended', 'ok');
-
-  // SECTION 4: PROCESS (Three.js 3D — pinned scroll section)
-  log('Building Section 4: Process...');
-  const proc = webflow.elementBuilder(webflow.elementPresets.DOM);
-  proc.setTag('section'); proc.setStyles([s.section, s.sectionWarm]); proc.setAttribute('id', 'about-process');
-
-  const procLbl = proc.append(webflow.elementPresets.DOM); procLbl.setTag('div'); procLbl.setStyles([s.label, svMb64]); procLbl.setAttribute('data-animate', 'fade-up');
-  const procLblTxt = procLbl.append(webflow.elementPresets.DOM); procLblTxt.setTag('div'); procLblTxt.setTextContent('How We Work');
-  const procLblLine = procLbl.append(webflow.elementPresets.DOM); procLblLine.setTag('div'); procLblLine.setStyles([svLabelLine]);
-
-  const procH = proc.append(webflow.elementPresets.DOM); procH.setTag('h2'); procH.setStyles([s.headingLG, svMb96]);
-  procH.setTextContent("Avorino's Process"); procH.setAttribute('data-animate', 'line-wipe');
-
-  const pinned = proc.append(webflow.elementPresets.DOM); pinned.setTag('div'); pinned.setStyles([processPinned]); pinned.setAttribute('data-process-pinned', '');
-  const visual = pinned.append(webflow.elementPresets.DOM); visual.setTag('div'); visual.setStyles([processVisual]); visual.setAttribute('data-process-visual', '');
-  const fx = visual.append(webflow.elementPresets.DOM); fx.setTag('div'); fx.setStyles([processFx]); fx.setAttribute('data-process-fx', '');
-  const cards = pinned.append(webflow.elementPresets.DOM); cards.setTag('div'); cards.setStyles([processCards]); cards.setAttribute('data-process-cards', '');
-
-  [
-    { step: 'Step 01', title: 'Pre-construction Consultation', desc: 'It is essential to plan ahead and setting project goals, identifying future challenges, and creating a solid foundation for a successful construction project.' },
-    { step: 'Step 02', title: 'Architectural & Structural Design', desc: 'Our engineers and architects will work with you to understand your vision and will design a unique project based on your needs and preferences.' },
-    { step: 'Step 03', title: 'Financing', desc: 'Our financing partners offer up to 100% financing of your project with up to 30-year terms with the option to re-finance.' },
-    { step: 'Step 04', title: 'Permitting', desc: 'Permits are crucial for almost all construction projects, ensuring compliance, safety, and legal authorization for the work to proceed successfully.' },
-    { step: 'Step 05', title: 'Construction', desc: 'The construction phase is the heart of any project. It brings plans to life, involving skilled professionals executing with quality, coordination, and adherence to timelines.' },
-    { step: 'Step 06', title: 'Post-construction Relationship', desc: 'At Avorino, we value long-lasting client relationships over one-time transactions. We are committed to nurturing and maintaining these connections.' },
-  ].forEach((item, idx) => {
-    const card = cards.append(webflow.elementPresets.DOM); card.setTag('div'); card.setStyles([processCard]); card.setAttribute('data-process-card', String(idx));
-    const n = card.append(webflow.elementPresets.DOM); n.setTag('div'); n.setStyles([processCardNum]); n.setTextContent(item.step);
-    const t = card.append(webflow.elementPresets.DOM); t.setTag('h3'); t.setStyles([processCardTitle]); t.setTextContent(item.title);
-    const d = card.append(webflow.elementPresets.DOM); d.setTag('p'); d.setStyles([processCardDesc]); d.setTextContent(item.desc);
-  });
-
-  const nav = pinned.append(webflow.elementPresets.DOM); nav.setTag('div'); nav.setStyles([processNav]); nav.setAttribute('data-process-nav', '');
-
-  await safeCall('append:process', () => body.append(proc));
-  logDetail('Section 4: Process appended', 'ok');
-
-  // SECTION 5: CTA (v7 rounded container style)
-  log('Building Section 5: CTA...');
-  await buildCTASection(
-    body, v,
-    "Let's talk about your next project",
-    'Get a Free Estimate', '/free-estimate',
-    'Schedule a Call', '/schedule-a-meeting',
-  );
-
-  // ═══════════════ APPLY STYLES ═══════════════
-  await applyStyleProperties();
-
-  log('Services page built! Add custom code manually (see instructions below).', 'success');
-  await webflow.notify({ type: 'Success', message: 'Services page created! Now add custom code manually.' });
-}
 
 // ── Event listeners ──
 document.getElementById('inject-btn')?.addEventListener('click', async () => {
@@ -469,7 +107,9 @@ document.querySelectorAll('.copy-btn').forEach(btn => {
 document.getElementById('build-page')?.addEventListener('click', async () => {
   const btn = document.getElementById('build-page') as HTMLButtonElement;
   btn.disabled = true;
-  try { await buildServicesPage(); } catch (err: any) {
+  clearErrorLog();
+  logDetail('Starting Yorba Linda ADU page build...', 'info');
+  try { await buildCityPage(CITY_DATA); } catch (err: any) {
     log(`Error: ${err.message || err}`, 'error');
     await webflow.notify({ type: 'Error', message: `Failed: ${err.message || err}` });
   } finally { btn.disabled = false; }
