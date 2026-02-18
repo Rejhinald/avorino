@@ -119,16 +119,13 @@
     const heroImage = document.querySelector('.hero-image');
     const heroTitle = document.querySelector('.hero-title');
     const heroSubtitle = document.querySelector('.hero-subtitle');
-    const nav = document.querySelector('.site-nav') || document.querySelector('.nav');
-
-    if (nav) gsap.set(nav, { opacity: 0 });
     if (heroImage) gsap.set(heroImage, { clipPath: 'inset(6%)', scale: 1.25 });
     gsap.set('.preloader-char', { opacity: 0, y: 60, rotateX: -90, filter: 'blur(4px)' });
     if (preloader) gsap.set(preloader, { display: 'flex' });
 
     if (!preloader) {
       initScrollAnimations();
-      initHeroEntrance(heroImage, heroTitle, heroSubtitle, nav);
+      initHeroEntrance(heroImage, heroTitle, heroSubtitle);
       return;
     }
 
@@ -150,11 +147,10 @@
       tl.to(vc, { opacity: 1, y: 0, rotateX: 0, filter: 'blur(0px)', duration: 1.2, stagger: 0.025, ease: 'power4.out' }, '-=1.2');
     }
     if (heroSubtitle) tl.from(heroSubtitle, { opacity: 0, y: 20, duration: 0.8, ease: 'power3.out' }, '-=0.6');
-    if (nav) tl.to(nav, { opacity: 1, duration: 0.6, ease: 'power3.out' }, '-=0.4');
   }
 
   // HERO ENTRANCE (no-preloader)
-  function initHeroEntrance(heroImage, heroTitle, heroSubtitle, nav) {
+  function initHeroEntrance(heroImage, heroTitle, heroSubtitle) {
     const tl = gsap.timeline({ delay: 0.3 });
     if (heroImage) tl.to(heroImage, { clipPath: 'inset(0%)', scale: 1, duration: 1.8, ease: 'power4.inOut' }, 0);
     if (heroTitle) {
@@ -162,7 +158,6 @@
       tl.to(tc, { opacity: 1, y: 0, rotateX: 0, filter: 'blur(0px)', duration: 1.2, stagger: 0.025, ease: 'power4.out' }, 0.6);
     }
     if (heroSubtitle) tl.from(heroSubtitle, { opacity: 0, y: 20, duration: 0.8, ease: 'power3.out' }, '-=0.6');
-    if (nav) tl.to(nav, { opacity: 1, duration: 0.6, ease: 'power3.out' }, '-=0.4');
   }
 
   // SCROLL ANIMATIONS
@@ -512,45 +507,9 @@
     });
   }
 
-  // MOBILE NAV
-  function initMobileNav() {
-    const burger = document.querySelector('.nav-burger');
-    const overlay = document.querySelector('.nav-mobile-overlay');
-    if (!burger || !overlay) return;
-    burger.addEventListener('click', () => {
-      burger.classList.toggle('open'); overlay.classList.toggle('open');
-      if (overlay.classList.contains('open')) lenis.stop(); else lenis.start();
-    });
-    overlay.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => { burger.classList.remove('open'); overlay.classList.remove('open'); lenis.start(); });
-    });
-  }
-
-  // NAV SCROLL THEME — check if nav midpoint is inside a dark section
-  function initNavTheme() {
-    var nav = document.querySelector('.site-nav');
-    if (!nav) return;
-    var darkEls = document.querySelectorAll('.hero-container,.cta-container,.stats');
-    if (!darkEls.length) return;
-    function update() {
-      var rect = nav.getBoundingClientRect();
-      var navMid = rect.top + rect.height / 2;
-      var onDark = false;
-      darkEls.forEach(function(el) {
-        var r = el.getBoundingClientRect();
-        if (r.top <= navMid && r.bottom >= navMid) onDark = true;
-      });
-      nav.classList.toggle('nav--dark', onDark);
-    }
-    window.addEventListener('scroll', update, { passive: true });
-    update();
-  }
-
   // INIT
   window.addEventListener('DOMContentLoaded', () => {
-    initNavTheme();
     initTestimonials();
-    initMobileNav();
     initPreloader();
   });
 })();
