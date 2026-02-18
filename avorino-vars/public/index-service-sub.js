@@ -81,15 +81,15 @@ const SERVICES = [
 ];
 const SVC = SERVICES[SERVICE_INDEX];
 const HEAD_CODE = [
-    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@1513493/avorino-responsive.css">',
-    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@1513493/avorino-nav-footer.css">',
+    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@42ef7d5/avorino-responsive.css">',
+    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@42ef7d5/avorino-nav-footer.css">',
     CALENDLY_CSS,
 ].join('\n');
 const FOOTER_CODE = [
     '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
-    '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@1513493/avorino-animations.js"><\/script>',
+    '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@42ef7d5/avorino-animations.js"><\/script>',
     CALENDLY_JS,
 ].join('\n');
 // ── Update panel UI ──
