@@ -22,6 +22,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  transition: background-color 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease, padding 0.3s ease;
+}
+
+.site-nav.nav--scrolled {
+  padding-top: 14px;
+  padding-bottom: 14px;
 }
 
 .nav-logo {
@@ -110,6 +116,7 @@ nav.site-nav .nav-burger span {
   transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
+.nav-item.is-open .nav-link--has-dropdown::after,
 .nav-item:hover .nav-link--has-dropdown::after {
   transform: rotate(180deg);
 }
@@ -131,11 +138,47 @@ nav.site-nav .nav-burger span {
   pointer-events: none;
 }
 
+.nav-item.is-open .nav-dropdown,
 .nav-item:hover .nav-dropdown {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
   pointer-events: auto;
+}
+
+/* ── Stagger Reveal Animation ── */
+@keyframes navItemFadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.nav-item.is-open .nav-dd-service-card,
+.nav-item.is-open .nav-dd-link,
+.nav-item.is-open .nav-dd-link--featured,
+.nav-item.is-open .nav-dd-city-col,
+.nav-item.is-open .nav-dd-label,
+.nav-item.is-open .nav-dd-divider {
+  opacity: 0;
+  animation: navItemFadeUp 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  /* animation-delay set by JS via inline style */
+}
+
+/* ── Scroll State — frosted glass ── */
+.nav--scrolled {
+  background-color: rgba(232, 228, 223, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+  transition: background-color 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease;
+}
+
+.nav--scrolled.nav--dark {
+  background-color: rgba(17, 17, 17, 0.85);
+}
+
+/* ── Dropdown Open — nav stays dark text while panel is open ── */
+.nav--dropdown-open .nav-link--has-dropdown {
+  opacity: 1;
 }
 
 /* ── Dropdown Inner Container ── */
@@ -235,11 +278,12 @@ nav.site-nav .nav-burger span {
   font-weight: 400;
   color: #f0ede8;
   opacity: 0.85;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, color 0.3s ease;
 }
 
 .nav-dd-service-card:hover .nav-dd-service-title {
   opacity: 1;
+  color: #ffffff;
 }
 
 .nav-dd-service-desc {
