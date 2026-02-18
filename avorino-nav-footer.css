@@ -17,6 +17,7 @@
   align-items: center;
   justify-content: space-between;
   background-color: transparent;
+  mix-blend-mode: difference;
   transition: background-color 0.4s ease, backdrop-filter 0.4s ease,
               -webkit-backdrop-filter 0.4s ease, box-shadow 0.4s ease, padding 0.3s ease;
 }
@@ -33,7 +34,7 @@ nav.site-nav .nav-logo {
   font-family: 'DM Serif Display', Georgia, serif;
   font-weight: 400;
   font-size: 20px;
-  color: #f0ede8 !important;
+  color: #ffffff !important;
   letter-spacing: 0.12em;
   text-decoration: none;
   transition: color 0.4s ease;
@@ -49,7 +50,7 @@ nav.site-nav .nav-link {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-size: 14px;
   font-weight: 400;
-  color: #f0ede8 !important;
+  color: #ffffff !important;
   letter-spacing: 0.04em;
   opacity: 0.75;
   text-decoration: none;
@@ -64,8 +65,8 @@ nav.site-nav .nav-cta {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #111111 !important;
-  background-color: #f0ede8 !important;
+  color: #000000 !important;
+  background-color: #ffffff !important;
   padding: 10px 28px;
   border-radius: 100px;
   letter-spacing: 0.04em;
@@ -75,18 +76,19 @@ nav.site-nav .nav-cta {
 
 nav.site-nav .nav-cta:hover {
   background-color: #c8222a !important;
-  color: #f0ede8 !important;
+  color: #ffffff !important;
 }
 
 nav.site-nav .nav-burger span {
-  background-color: #f0ede8 !important;
+  background-color: #ffffff !important;
 }
 
 /* ── Scrolled State: always transparent (no frosted glass) ── */
 /* .nav--scrolled class is toggled by JS but nav stays transparent */
 
-/* ── Dropdown Open State: frosted glass + dark text ── */
+/* ── Dropdown Open State: disable blend mode, frosted glass + dark text ── */
 nav.site-nav.nav--dropdown-open {
+  mix-blend-mode: normal;
   background-color: rgba(232, 228, 223, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
