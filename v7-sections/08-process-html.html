@@ -12,54 +12,64 @@
       <p class="process-intro" data-animate="opacity-sweep">A clear, proven process that takes the stress out of construction. From concept to keys, we handle everything.</p>
     </div>
   </div>
-  <div class="process-timeline" data-el="process-timeline">
-    <div class="process-line" data-el="process-line"><div class="process-line-fill" data-el="process-line-fill"></div></div>
-    <div class="process-step-number" data-el="process-step-number">01</div>
-    <div class="process-step" data-el="process-step">
-      <div class="process-step-dot" data-el="process-step-dot"></div>
-      <h3 class="process-step-title" data-el="process-step-title">Design your vision</h3>
-      <p class="process-step-body" data-el="process-step-body">Collaborate with our team to shape every detail — from floor plans to finishes. We listen first, then design around your life.</p>
+  <div class="process-stage" data-el="process-stage">
+    <!-- Step number -->
+    <div class="process-num" data-el="process-num">01</div>
+    <!-- Stacked slides -->
+    <div class="process-slides">
+      <div class="process-slide is-active" data-el="process-slide">
+        <h3 class="process-slide-title">Design your vision</h3>
+        <p class="process-slide-body">Collaborate with our team to shape every detail — from floor plans to finishes. We listen first, then design around your life.</p>
+      </div>
+      <div class="process-slide" data-el="process-slide">
+        <h3 class="process-slide-title">Get building permits</h3>
+        <p class="process-slide-body">We handle the city, the paperwork, and the engineering. You focus on the exciting parts while we clear the path to break ground.</p>
+      </div>
+      <div class="process-slide" data-el="process-slide">
+        <h3 class="process-slide-title">Relax while we build</h3>
+        <p class="process-slide-body">Licensed crews, weekly photo updates, shared project tracking. Sit back and watch your home come to life — on time and on budget.</p>
+      </div>
     </div>
-    <!-- Illustration: Blueprint → Stamp of Approval -->
-    <div class="process-illus" data-el="process-illus" data-illus="stamp">
-      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="process-illus-svg">
-        <!-- Blueprint/document -->
-        <rect class="illus-blueprint" x="16" y="12" width="48" height="56" rx="3" stroke="#111" stroke-width="1.5" fill="none" opacity="0.15"/>
-        <line class="illus-blueprint-line" x1="26" y1="26" x2="54" y2="26" stroke="#111" stroke-width="1" opacity="0.1"/>
-        <line class="illus-blueprint-line" x1="26" y1="34" x2="54" y2="34" stroke="#111" stroke-width="1" opacity="0.1"/>
-        <line class="illus-blueprint-line" x1="26" y1="42" x2="44" y2="42" stroke="#111" stroke-width="1" opacity="0.1"/>
-        <!-- Stamp circle (animated) -->
-        <circle class="illus-stamp" cx="52" cy="52" r="16" stroke="#c8222a" stroke-width="2" fill="none" opacity="0"/>
-        <path class="illus-check" d="M44 52 L50 58 L60 46" stroke="#c8222a" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0"/>
-      </svg>
+    <!-- Illustrations -->
+    <div class="process-vis" data-el="process-vis">
+      <div class="process-vis-illus is-active" data-illus="stamp" data-el="process-vis-illus">
+        <svg viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" class="process-vis-svg">
+          <rect class="illus-blueprint" x="40" y="30" width="160" height="180" rx="6" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.12"/>
+          <line class="illus-blueprint-line" x1="65" y1="70" x2="175" y2="70" stroke="currentColor" stroke-width="1" opacity="0.08"/>
+          <line class="illus-blueprint-line" x1="65" y1="95" x2="175" y2="95" stroke="currentColor" stroke-width="1" opacity="0.08"/>
+          <line class="illus-blueprint-line" x1="65" y1="120" x2="140" y2="120" stroke="currentColor" stroke-width="1" opacity="0.08"/>
+          <circle class="illus-stamp" cx="155" cy="160" r="44" stroke="#c8222a" stroke-width="2.5" fill="none" opacity="0"/>
+          <path class="illus-check" d="M133 160 L150 177 L177 140" stroke="#c8222a" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0"/>
+        </svg>
+      </div>
+      <div class="process-vis-illus" data-illus="house" data-el="process-vis-illus">
+        <svg viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" class="process-vis-svg">
+          <line class="illus-foundation" x1="20" y1="200" x2="220" y2="200" stroke="currentColor" stroke-width="2" opacity="0"/>
+          <rect class="illus-walls" x="45" y="105" width="150" height="95" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0"/>
+          <path class="illus-roof" d="M25 110 L120 30 L215 110" stroke="#c8222a" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0"/>
+          <rect class="illus-door" x="100" y="148" width="40" height="52" rx="3" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0"/>
+          <rect class="illus-window" x="60" y="130" width="28" height="28" rx="2" stroke="currentColor" stroke-width="1" fill="none" opacity="0"/>
+          <rect class="illus-window" x="152" y="130" width="28" height="28" rx="2" stroke="currentColor" stroke-width="1" fill="none" opacity="0"/>
+        </svg>
+      </div>
+      <div class="process-vis-illus" data-illus="keys" data-el="process-vis-illus">
+        <svg viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" class="process-vis-svg">
+          <circle class="illus-keyring" cx="120" cy="80" r="36" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0"/>
+          <line class="illus-keyshaft" x1="120" y1="116" x2="120" y2="195" stroke="currentColor" stroke-width="2.5" opacity="0"/>
+          <path class="illus-teeth" d="M120 165 L140 165 L140 175 L120 175 M120 182 L136 182 L136 192 L120 192" stroke="#c8222a" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0"/>
+          <path class="illus-sparkle" d="M68 55 L68 42 M61 48.5 L75 48.5" stroke="#c8222a" stroke-width="2" stroke-linecap="round" opacity="0"/>
+          <path class="illus-sparkle" d="M175 100 L175 87 M168 93.5 L182 93.5" stroke="#c8222a" stroke-width="2" stroke-linecap="round" opacity="0"/>
+          <path class="illus-sparkle" d="M65 130 L65 117 M58 123.5 L72 123.5" stroke="#c8222a" stroke-width="2" stroke-linecap="round" opacity="0"/>
+        </svg>
+      </div>
     </div>
-    <div class="process-step-number" data-el="process-step-number">02</div>
-    <div class="process-step" data-el="process-step">
-      <div class="process-step-dot" data-el="process-step-dot"></div>
-      <h3 class="process-step-title" data-el="process-step-title">Get building permits</h3>
-      <p class="process-step-body" data-el="process-step-body">We handle the city, the paperwork, and the engineering. You focus on the exciting parts while we clear the path to break ground.</p>
-    </div>
-    <!-- Illustration: House Being Built -->
-    <div class="process-illus" data-el="process-illus" data-illus="house">
-      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="process-illus-svg">
-        <!-- Foundation -->
-        <line class="illus-foundation" x1="12" y1="68" x2="68" y2="68" stroke="#111" stroke-width="2" opacity="0"/>
-        <!-- Walls -->
-        <rect class="illus-walls" x="18" y="36" width="44" height="32" stroke="#111" stroke-width="1.5" fill="none" opacity="0"/>
-        <!-- Roof -->
-        <path class="illus-roof" d="M12 38 L40 14 L68 38" stroke="#c8222a" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0"/>
-        <!-- Door -->
-        <rect class="illus-door" x="34" y="50" width="12" height="18" rx="1" stroke="#111" stroke-width="1" fill="none" opacity="0"/>
-        <!-- Windows -->
-        <rect class="illus-window" x="24" y="44" width="8" height="8" rx="1" stroke="#111" stroke-width="1" fill="none" opacity="0"/>
-        <rect class="illus-window" x="48" y="44" width="8" height="8" rx="1" stroke="#111" stroke-width="1" fill="none" opacity="0"/>
-      </svg>
-    </div>
-    <div class="process-step-number" data-el="process-step-number">03</div>
-    <div class="process-step" data-el="process-step">
-      <div class="process-step-dot" data-el="process-step-dot"></div>
-      <h3 class="process-step-title" data-el="process-step-title">Relax while we build</h3>
-      <p class="process-step-body" data-el="process-step-body">Licensed crews, weekly photo updates, shared project tracking. Sit back and watch your home come to life — on time and on budget.</p>
+    <!-- Horizontal progress -->
+    <div class="process-bar">
+      <div class="process-bar-track"></div>
+      <div class="process-bar-fill" data-el="process-bar-fill"></div>
+      <div class="process-bar-dot is-active" data-el="process-bar-dot"><span>01</span></div>
+      <div class="process-bar-dot" data-el="process-bar-dot"><span>02</span></div>
+      <div class="process-bar-dot" data-el="process-bar-dot"><span>03</span></div>
     </div>
   </div>
 </section>

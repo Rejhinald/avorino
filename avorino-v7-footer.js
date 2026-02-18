@@ -415,110 +415,170 @@
     }
   }
 
-  // PROCESS TIMELINE
+  // PROCESS SCROLL-LOCK
   function initProcessTimeline() {
-    const timeline = document.querySelector('.process-timeline');
-    const lineEl = document.querySelector('.process-line');
-    const lineFill = document.querySelector('.process-line-fill');
-    const steps = document.querySelectorAll('.process-step');
-    const dots = document.querySelectorAll('.process-step-dot');
-    if (!timeline || !lineFill || dots.length < 2) return;
-    function alignLine() {
-      const tR = timeline.getBoundingClientRect();
-      const fD = dots[0].getBoundingClientRect();
-      const lD = dots[dots.length - 1].getBoundingClientRect();
-      const top = fD.top + fD.height / 2 - tR.top;
-      const bot = lD.top + lD.height / 2 - tR.top;
-      lineEl.style.setProperty('--line-top', top + 'px');
-      lineEl.style.setProperty('--line-h', (bot - top) + 'px');
-      return bot - top;
-    }
-    const lineH = alignLine();
-    window.addEventListener('resize', alignLine);
-    gsap.to(lineFill, { height: lineH, ease: 'none', scrollTrigger: { trigger: timeline, start: 'top 60%', end: 'bottom 40%', scrub: 1, invalidateOnRefresh: true } });
-    const numbers = document.querySelectorAll('.process-step-number');
-    steps.forEach((step, i) => {
-      const title = step.querySelector('.process-step-title');
-      const body = step.querySelector('.process-step-body');
-      if (title) gsap.from(title, { y: 30, opacity: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: step, start: 'top 75%' } });
-      if (body) gsap.from(body, { y: 20, opacity: 0, duration: 1, delay: 0.15, ease: 'power3.out', scrollTrigger: { trigger: step, start: 'top 75%' } });
-      if (numbers[i]) gsap.from(numbers[i], { opacity: 0, scale: 0.8, duration: 1.2, ease: 'power3.out', scrollTrigger: { trigger: step, start: 'top 75%' } });
-      if (dots[i]) ScrollTrigger.create({ trigger: step, start: 'top 60%', onEnter: () => dots[i].classList.add('active'), onLeaveBack: () => dots[i].classList.remove('active') });
-    });
+    var section = document.querySelector('.process');
+    var stage = document.querySelector('[data-el="process-stage"]');
+    if (!section || !stage) return;
 
-    // Process illustrations
-    initProcessIllustrations();
+    var slides = document.querySelectorAll('[data-el="process-slide"]');
+    var illusEls = document.querySelectorAll('[data-el="process-vis-illus"]');
+    var numEl = document.querySelector('[data-el="process-num"]');
+    var barFill = document.querySelector('[data-el="process-bar-fill"]');
+    var barDots = document.querySelectorAll('[data-el="process-bar-dot"]');
+    var totalSteps = slides.length;
+    if (!totalSteps) return;
+
+    var nums = ['01', '02', '03'];
+    var currentStep = 0;
+
+    // Build scrub-driven timelines for each illustration
+    var illusTimelines = buildIllusTimelines(illusEls);
+
+    // Set initial states — first slide & illus visible
+    gsap.set(slides[0], { opacity: 1, y: 0 });
+    gsap.set(illusEls[0], { opacity: 1 });
+    for (var i = 1; i < totalSteps; i++) {
+      gsap.set(slides[i], { opacity: 0, y: 30 });
+      gsap.set(illusEls[i], { opacity: 0 });
+    }
+
+    ScrollTrigger.create({
+      trigger: section,
+      start: 'top top',
+      end: function() { return '+=' + (window.innerHeight * 2.5); },
+      pin: true,
+      scrub: 0.6,
+      anticipatePin: 1,
+      invalidateOnRefresh: true,
+      onUpdate: function(self) {
+        var p = self.progress;
+
+        // Progress bar fill
+        if (barFill) barFill.style.transform = 'translateY(-50%) scaleX(' + p + ')';
+
+        // Determine active step
+        var step = Math.min(Math.floor(p * totalSteps), totalSteps - 1);
+
+        // Step-local progress (0–1 within each step)
+        var stepStart = step / totalSteps;
+        var stepWidth = 1 / totalSteps;
+        var stepP = Math.min((p - stepStart) / stepWidth, 1);
+
+        // Drive current illustration timeline
+        if (illusTimelines[step]) illusTimelines[step].progress(stepP);
+
+        // Update dots
+        barDots.forEach(function(dot, i) {
+          dot.classList.toggle('is-active', i <= step);
+        });
+
+        // Switch step on change
+        if (step !== currentStep) {
+          var prev = currentStep;
+          currentStep = step;
+
+          // Number crossfade
+          if (numEl) {
+            gsap.to(numEl, { opacity: 0, y: -15, duration: 0.25, ease: 'power2.in', overwrite: true, onComplete: function() {
+              numEl.textContent = nums[step] || '01';
+              gsap.to(numEl, { opacity: 0.06, y: 0, duration: 0.35, ease: 'power2.out', overwrite: true });
+            }});
+          }
+
+          // Slide crossfade
+          slides.forEach(function(slide, i) {
+            if (i === step) {
+              gsap.to(slide, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out', overwrite: true });
+              slide.classList.add('is-active');
+            } else {
+              var dir = i < step ? -1 : 1;
+              gsap.to(slide, { opacity: 0, y: 30 * dir, duration: 0.35, ease: 'power2.in', overwrite: true });
+              slide.classList.remove('is-active');
+            }
+          });
+
+          // Illustration crossfade
+          illusEls.forEach(function(el, i) {
+            if (i === step) {
+              gsap.to(el, { opacity: 1, duration: 0.4, ease: 'power2.out', overwrite: true });
+              // Reset its timeline so it plays from start
+              if (illusTimelines[i]) illusTimelines[i].progress(0);
+            } else {
+              gsap.to(el, { opacity: 0, duration: 0.3, ease: 'power2.in', overwrite: true });
+            }
+          });
+        }
+      }
+    });
   }
 
-  // PROCESS ILLUSTRATION ANIMATIONS
-  function initProcessIllustrations() {
-    // Stamp illustration (between step 1 → 2)
-    const stampIllus = document.querySelector('[data-illus="stamp"]');
-    if (stampIllus) {
-      const svg = stampIllus.querySelector('.process-illus-svg');
-      const blueprint = stampIllus.querySelector('.illus-blueprint');
-      const lines = stampIllus.querySelectorAll('.illus-blueprint-line');
-      const stamp = stampIllus.querySelector('.illus-stamp');
-      const check = stampIllus.querySelector('.illus-check');
+  // Build GSAP timelines for each illustration (paused, driven by .progress())
+  function buildIllusTimelines(illusEls) {
+    var timelines = [];
 
-      // Set initial stroke-dasharray for check animation
-      if (check) {
-        const checkLen = 30;
-        check.style.strokeDasharray = checkLen;
-        check.style.strokeDashoffset = checkLen;
+    illusEls.forEach(function(el) {
+      var type = el.getAttribute('data-illus');
+      var tl = gsap.timeline({ paused: true });
+
+      if (type === 'stamp') {
+        var blueprint = el.querySelector('.illus-blueprint');
+        var lines = el.querySelectorAll('.illus-blueprint-line');
+        var stamp = el.querySelector('.illus-stamp');
+        var check = el.querySelector('.illus-check');
+        if (check) { check.style.strokeDasharray = '80'; check.style.strokeDashoffset = '80'; }
+
+        // 0–0.3: blueprint + lines fade in
+        tl.to(blueprint, { opacity: 0.25, duration: 0.25, ease: 'power2.out' }, 0);
+        tl.to(lines, { opacity: 0.15, duration: 0.15, stagger: 0.05, ease: 'power2.out' }, 0.05);
+        // 0.35–0.55: stamp slams
+        tl.fromTo(stamp, { opacity: 0, scale: 2.5, transformOrigin: 'center center' },
+          { opacity: 0.9, scale: 1, duration: 0.15, ease: 'power4.in' }, 0.35);
+        // 0.55–0.75: check draws
+        tl.to(check, { opacity: 1, strokeDashoffset: 0, duration: 0.2, ease: 'power2.out' }, 0.55);
+
+      } else if (type === 'house') {
+        var foundation = el.querySelector('.illus-foundation');
+        var walls = el.querySelector('.illus-walls');
+        var roof = el.querySelector('.illus-roof');
+        var door = el.querySelector('.illus-door');
+        var windows = el.querySelectorAll('.illus-window');
+        if (roof) { roof.style.strokeDasharray = '400'; roof.style.strokeDashoffset = '400'; }
+
+        // 0–0.15: foundation
+        tl.to(foundation, { opacity: 0.3, duration: 0.12, ease: 'power2.out' }, 0);
+        // 0.15–0.35: walls rise
+        tl.fromTo(walls, { opacity: 0, scaleY: 0, transformOrigin: 'bottom center' },
+          { opacity: 0.25, scaleY: 1, duration: 0.2, ease: 'power3.out' }, 0.15);
+        // 0.35–0.55: roof draws
+        tl.to(roof, { opacity: 0.9, strokeDashoffset: 0, duration: 0.2, ease: 'power2.inOut' }, 0.35);
+        // 0.55–0.65: door
+        tl.to(door, { opacity: 0.25, duration: 0.1, ease: 'power2.out' }, 0.55);
+        // 0.65–0.8: windows
+        tl.to(windows, { opacity: 0.25, duration: 0.1, stagger: 0.05, ease: 'power2.out' }, 0.65);
+
+      } else if (type === 'keys') {
+        var keyring = el.querySelector('.illus-keyring');
+        var shaft = el.querySelector('.illus-keyshaft');
+        var teeth = el.querySelector('.illus-teeth');
+        var sparkles = el.querySelectorAll('.illus-sparkle');
+        if (keyring) { keyring.style.strokeDasharray = '230'; keyring.style.strokeDashoffset = '230'; }
+        if (shaft) { shaft.style.strokeDasharray = '80'; shaft.style.strokeDashoffset = '80'; }
+
+        // 0–0.2: keyring draws
+        tl.to(keyring, { opacity: 0.3, strokeDashoffset: 0, duration: 0.2, ease: 'power2.out' }, 0);
+        // 0.2–0.4: shaft draws
+        tl.to(shaft, { opacity: 0.3, strokeDashoffset: 0, duration: 0.2, ease: 'power2.out' }, 0.2);
+        // 0.4–0.6: teeth appear
+        tl.to(teeth, { opacity: 0.9, duration: 0.15, ease: 'power2.out' }, 0.4);
+        // 0.6–0.85: sparkles
+        tl.to(sparkles, { opacity: 0.9, duration: 0.1, stagger: 0.08, ease: 'power2.out' }, 0.6);
       }
 
-      ScrollTrigger.create({
-        trigger: stampIllus, start: 'top 70%',
-        onEnter: function() {
-          var tl = gsap.timeline();
-          tl.to(svg, { opacity: 1, scale: 1, duration: 0.5, ease: 'power3.out' }, 0);
-          tl.to(blueprint, { opacity: 0.25, duration: 0.6, ease: 'power2.out' }, 0.1);
-          tl.to(lines, { opacity: 0.15, duration: 0.4, stagger: 0.1, ease: 'power2.out' }, 0.2);
-          // Stamp slams down
-          tl.fromTo(stamp, { opacity: 0, scale: 2.5 }, { opacity: 0.9, scale: 1, duration: 0.3, ease: 'power4.in' }, 0.8);
-          // Check draws in
-          tl.to(check, { opacity: 1, strokeDashoffset: 0, duration: 0.5, ease: 'power2.out' }, 1.0);
-        }
-      });
-    }
+      timelines.push(tl);
+    });
 
-    // House illustration (between step 2 → 3)
-    var houseIllus = document.querySelector('[data-illus="house"]');
-    if (houseIllus) {
-      var svg = houseIllus.querySelector('.process-illus-svg');
-      var foundation = houseIllus.querySelector('.illus-foundation');
-      var walls = houseIllus.querySelector('.illus-walls');
-      var roof = houseIllus.querySelector('.illus-roof');
-      var door = houseIllus.querySelector('.illus-door');
-      var windows = houseIllus.querySelectorAll('.illus-window');
-
-      // Set roof stroke-dasharray for draw-in
-      if (roof) {
-        var roofLen = 120;
-        roof.style.strokeDasharray = roofLen;
-        roof.style.strokeDashoffset = roofLen;
-      }
-
-      ScrollTrigger.create({
-        trigger: houseIllus, start: 'top 70%',
-        onEnter: function() {
-          var tl = gsap.timeline();
-          tl.to(svg, { opacity: 1, scale: 1, duration: 0.5, ease: 'power3.out' }, 0);
-          // Foundation draws in
-          tl.to(foundation, { opacity: 0.3, duration: 0.4, ease: 'power2.out' }, 0.2);
-          // Walls rise up
-          tl.fromTo(walls, { opacity: 0, scaleY: 0, transformOrigin: 'bottom center' },
-            { opacity: 0.2, scaleY: 1, duration: 0.6, ease: 'power3.out' }, 0.5);
-          // Roof draws
-          tl.to(roof, { opacity: 0.9, strokeDashoffset: 0, duration: 0.7, ease: 'power2.inOut' }, 0.9);
-          // Door appears
-          tl.to(door, { opacity: 0.2, duration: 0.3, ease: 'power2.out' }, 1.3);
-          // Windows pop in
-          tl.to(windows, { opacity: 0.2, duration: 0.3, stagger: 0.1, ease: 'power2.out' }, 1.4);
-        }
-      });
-    }
+    return timelines;
   }
 
   // CTA WORD STAGGER ELASTIC

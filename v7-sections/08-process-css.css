@@ -1,7 +1,7 @@
-/* Avorino v7 — Process (HTMLtoFlow Section CSS) */
+/* Avorino v7 — Process Scroll-Lock (HTMLtoFlow Section CSS) */
 
 .process {
-  padding: 128px 80px;
+  padding: 128px 80px 80px;
   background-color: #e8e4df;
   position: relative;
   overflow: hidden;
@@ -11,7 +11,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 96px;
-  margin-bottom: 96px;
+  margin-bottom: 64px;
 }
 
 .process-heading {
@@ -41,117 +41,189 @@
   padding-top: 8px;
 }
 
-.process-timeline {
-  position: relative;
+/* ── Stage: pinned two-column layout ── */
+.process-stage {
   display: grid;
-  grid-template-columns: 60px 1px 1fr;
-  gap: 0 32px;
+  grid-template-columns: 80px 1fr 1fr;
+  grid-template-rows: 1fr auto;
+  gap: 0 48px;
+  min-height: calc(100vh - 380px);
+  align-items: center;
 }
 
-.process-line {
-  grid-column: 2;
-  grid-row: 1 / -1;
-  width: 1px;
-  position: relative;
-}
-
-.process-line-fill {
-  position: absolute;
-  top: var(--line-top, 61px);
-  width: 1px;
-  height: 0;
-  background-color: #c8222a;
-  opacity: 0.4;
-}
-
-.process-step {
-  position: relative;
-  grid-column: 3;
-  padding: 48px 0 64px;
-}
-
-.process-step:last-child {
-  padding-bottom: 0;
-}
-
-.process-step-number {
+/* Large step number (far left) */
+.process-num {
+  grid-column: 1;
+  grid-row: 1;
   font-family: 'DM Serif Display', Georgia, serif;
   font-weight: 400;
-  grid-column: 1;
-  font-size: 64px;
-  color: #111111;
-  opacity: 0.07;
+  font-size: 96px;
   line-height: 1;
+  color: #111111;
+  opacity: 0.06;
   text-align: center;
-  padding-top: 48px;
   align-self: start;
+  padding-top: 12px;
 }
 
-.process-step-dot {
+/* Stacked slides (center-left) */
+.process-slides {
+  grid-column: 2;
+  grid-row: 1;
+  position: relative;
+  min-height: 220px;
+}
+
+.process-slide {
   position: absolute;
-  left: calc(-32px - 5px);
-  top: calc(48px + 8px);
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(17, 17, 17, 0.15);
-  background-color: #e8e4df;
-  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  transform: translateY(24px);
+  pointer-events: none;
 }
 
-.process-step-title {
+.process-slide.is-active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.process-slide-title {
   font-family: 'DM Serif Display', Georgia, serif;
   font-weight: 400;
   font-size: 44px;
   line-height: 1.12;
   color: #111111;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
-.process-step-body {
+.process-slide-body {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-weight: 400;
   font-size: 17px;
   line-height: 1.9;
   color: #111111;
   opacity: 0.4;
-  max-width: 580px;
+  max-width: 480px;
 }
 
-/* ── Process Illustrations ── */
-.process-illus {
-  grid-column: 2 / 4;
+/* Illustration panel (right) */
+.process-vis {
+  grid-column: 3;
+  grid-row: 1;
+  position: relative;
+  min-height: 280px;
   display: flex;
-  justify-content: flex-start;
-  padding: 12px 0 12px 0;
-  margin-left: -36px;
+  align-items: center;
+  justify-content: center;
+  color: #111111;
 }
 
-.process-illus-svg {
-  width: 64px;
-  height: 64px;
+.process-vis-illus {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   opacity: 0;
-  transform: scale(0.8);
+  pointer-events: none;
 }
 
-.process-step-dot.active {
-  background-color: #c8222a;
+.process-vis-illus.is-active {
+  opacity: 1;
+}
+
+.process-vis-svg {
+  width: 100%;
+  max-width: 240px;
+  height: auto;
+  aspect-ratio: 1;
+}
+
+/* ── Horizontal progress bar ── */
+.process-bar {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  margin-top: 48px;
+}
+
+.process-bar-track {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(17, 17, 17, 0.08);
+  transform: translateY(-50%);
+}
+
+.process-bar-fill {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #c8222a;
+  opacity: 0.5;
+  transform: translateY(-50%) scaleX(0);
+  transform-origin: left center;
+}
+
+.process-bar-dot {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(17, 17, 17, 0.12);
+  background: #e8e4df;
+  z-index: 1;
+  transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.process-bar-dot.is-active {
+  background: #c8222a;
   border-color: #c8222a;
   box-shadow: 0 0 0 4px rgba(200, 34, 42, 0.12);
 }
 
-/* ── Process Float Instances ── */
+.process-bar-dot span {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: #111111;
+  opacity: 0.2;
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+}
+
+.process-bar-dot.is-active span {
+  opacity: 0.5;
+}
+
+/* ── Float instances ── */
 .float-process-1 {
   top: 12%;
   right: 10%;
-  background-color: rgba(17,17,17,0.06);
-  color: rgba(17,17,17,0.06);
+  background-color: rgba(17, 17, 17, 0.06);
+  color: rgba(17, 17, 17, 0.06);
 }
 
 .float-process-2 {
   bottom: 18%;
   right: 5%;
   height: 32px;
-  background-color: rgba(17,17,17,0.05);
-  color: rgba(17,17,17,0.05);
+  background-color: rgba(17, 17, 17, 0.05);
+  color: rgba(17, 17, 17, 0.05);
 }
