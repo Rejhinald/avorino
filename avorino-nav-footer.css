@@ -3,12 +3,6 @@
    Include via: <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@{hash}/avorino-nav-footer.css">
    ═══════════════════════════════════════════════════════════════ */
 
-/* ── Nav Spacer ── */
-.nav-spacer {
-  height: 96px;
-  background-color: transparent;
-}
-
 /* ═══════════════════════════════════════════
    NAVIGATION BAR
    ═══════════════════════════════════════════ */
