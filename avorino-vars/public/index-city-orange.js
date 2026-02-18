@@ -4,15 +4,15 @@
 // ════════════════════════════════════════════════════════════════
 import { webflow, log, logDetail, clearErrorLog, createAllVariables, buildCityPage, CALENDLY_CSS, CALENDLY_JS, } from './shared.js';
 const HEAD_CODE = [
-    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@d1d3300/avorino-responsive.css">',
-    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@d1d3300/avorino-nav-footer.css">',
+    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@eab31dd/avorino-responsive.css">',
+    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@eab31dd/avorino-nav-footer.css">',
     CALENDLY_CSS,
 ].join('\n');
 const FOOTER_CODE = [
     '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
-    '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@d1d3300/avorino-animations.js"><\/script>',
+    '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@eab31dd/avorino-animations.js"><\/script>',
     CALENDLY_JS,
 ].join('\n');
 const CITY_DATA = {

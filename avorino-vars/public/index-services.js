@@ -9,8 +9,8 @@ const PAGE_SLUG = 'services';
 const PAGE_TITLE = 'Our Services — Avorino Construction in Orange County';
 const PAGE_DESC = 'ADU construction, custom homes, new builds, additions, garage conversions, and commercial projects in Orange County. Licensed, insured, and fully permitted.';
 const HEAD_CODE = [
-    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@d1d3300/avorino-responsive.css">',
-    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@d1d3300/avorino-nav-footer.css">',
+    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@eab31dd/avorino-responsive.css">',
+    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@eab31dd/avorino-nav-footer.css">',
     CALENDLY_CSS,
 ].join('\n');
 const FOOTER_CODE = [
@@ -18,8 +18,8 @@ const FOOTER_CODE = [
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
     '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
-    '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@d1d3300/avorino-about-process3d.js"><\/script>',
-    '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@d1d3300/avorino-animations.js"><\/script>',
+    '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@eab31dd/avorino-about-process3d.js"><\/script>',
+    '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@eab31dd/avorino-animations.js"><\/script>',
     CALENDLY_JS,
 ].join('\n');
 // ── Update panel UI ──
