@@ -611,7 +611,7 @@ nav.site-nav.nav--dropdown-open .nav-link--has-dropdown {
   font-size: 14px;
   line-height: 1.7;
   color: #f0ede8;
-  opacity: 0.3;
+  opacity: 0.5;
   max-width: 300px;
   margin-bottom: 28px;
 }
@@ -628,7 +628,7 @@ nav.site-nav.nav--dropdown-open .nav-link--has-dropdown {
   font-size: 14px;
   font-weight: 400;
   color: #f0ede8;
-  opacity: 0.5;
+  opacity: 0.7;
   text-decoration: none;
   transition: opacity 0.2s ease;
 }
@@ -642,7 +642,7 @@ nav.site-nav.nav--dropdown-open .nav-link--has-dropdown {
   font-weight: 400;
   font-size: 12px;
   color: #f0ede8;
-  opacity: 0.15;
+  opacity: 0.35;
 }
 
 .footer-col-title {
@@ -652,7 +652,7 @@ nav.site-nav.nav--dropdown-open .nav-link--has-dropdown {
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: #f0ede8;
-  opacity: 0.3;
+  opacity: 0.5;
   margin-bottom: 20px;
 }
 
@@ -662,7 +662,7 @@ nav.site-nav.nav--dropdown-open .nav-link--has-dropdown {
   font-size: 14px;
   font-weight: 400;
   color: #f0ede8;
-  opacity: 0.4;
+  opacity: 0.6;
   padding: 5px 0;
   text-decoration: none;
   transition: opacity 0.2s ease, color 0.2s ease;
@@ -686,7 +686,7 @@ nav.site-nav.nav--dropdown-open .nav-link--has-dropdown {
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: #f0ede8;
-  opacity: 0.2;
+  opacity: 0.4;
   margin-bottom: 16px;
 }
 
@@ -701,7 +701,7 @@ nav.site-nav.nav--dropdown-open .nav-link--has-dropdown {
   font-size: 13px;
   font-weight: 400;
   color: #f0ede8;
-  opacity: 0.25;
+  opacity: 0.45;
   text-decoration: none;
   padding: 4px 0;
   transition: opacity 0.2s ease, color 0.2s ease;
@@ -725,7 +725,7 @@ nav.site-nav.nav--dropdown-open .nav-link--has-dropdown {
   font-size: 13px;
   line-height: 1.9;
   color: #f0ede8;
-  opacity: 0.15;
+  opacity: 0.35;
 }
 
 /* ── Bottom Bar ── */
