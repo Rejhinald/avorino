@@ -1,0 +1,5 @@
+/* Nav spacer — transparent push-down so hero clears the fixed nav */
+.nav-spacer {
+  height: 96px;
+  background-color: transparent !important;
+}
