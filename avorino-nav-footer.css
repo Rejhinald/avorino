@@ -21,8 +21,12 @@
               -webkit-backdrop-filter 0.4s ease, box-shadow 0.4s ease, padding 0.3s ease;
 }
 
+/* ── Kill stale navspacer if it still exists ── */
+.nav-spacer { display: none !important; }
+
 /* ── Default: light text (transparent nav over hero) ── */
-.nav-logo {
+/* Using nav.site-nav specificity to beat any stale HTMLtoFlow overrides */
+nav.site-nav .nav-logo {
   font-family: 'DM Serif Display', Georgia, serif;
   font-weight: 400;
   font-size: 20px;
@@ -38,7 +42,7 @@
   gap: 36px;
 }
 
-.nav-link {
+nav.site-nav .nav-link {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-size: 14px;
   font-weight: 400;
@@ -49,11 +53,11 @@
   transition: opacity 0.3s ease, color 0.4s ease;
 }
 
-.nav-link:hover {
+nav.site-nav .nav-link:hover {
   opacity: 1;
 }
 
-.nav-cta {
+nav.site-nav .nav-cta {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-size: 14px;
   font-weight: 500;
@@ -66,17 +70,17 @@
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.nav-cta:hover {
+nav.site-nav .nav-cta:hover {
   background-color: #c8222a;
   color: #f0ede8;
 }
 
-.nav-burger span {
+nav.site-nav .nav-burger span {
   background-color: #f0ede8;
 }
 
 /* ── Scrolled State: frosted glass + dark text ── */
-.site-nav.nav--scrolled {
+nav.site-nav.nav--scrolled {
   padding-top: 14px;
   padding-bottom: 14px;
   background-color: rgba(232, 228, 223, 0.88);
@@ -85,42 +89,42 @@
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
 }
 
-.site-nav.nav--scrolled .nav-logo,
-.site-nav.nav--scrolled .nav-link {
+nav.site-nav.nav--scrolled .nav-logo,
+nav.site-nav.nav--scrolled .nav-link {
   color: #111111;
 }
 
-.site-nav.nav--scrolled .nav-cta {
+nav.site-nav.nav--scrolled .nav-cta {
   color: #f0ede8;
   background-color: #111111;
 }
 
-.site-nav.nav--scrolled .nav-cta:hover {
+nav.site-nav.nav--scrolled .nav-cta:hover {
   background-color: #c8222a;
 }
 
-.site-nav.nav--scrolled .nav-burger span {
+nav.site-nav.nav--scrolled .nav-burger span {
   background-color: #111111;
 }
 
 /* ── Dropdown Open State: frosted glass + dark text ── */
-.site-nav.nav--dropdown-open {
+nav.site-nav.nav--dropdown-open {
   background-color: rgba(232, 228, 223, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
 
-.site-nav.nav--dropdown-open .nav-logo,
-.site-nav.nav--dropdown-open .nav-link {
+nav.site-nav.nav--dropdown-open .nav-logo,
+nav.site-nav.nav--dropdown-open .nav-link {
   color: #111111;
 }
 
-.site-nav.nav--dropdown-open .nav-cta {
+nav.site-nav.nav--dropdown-open .nav-cta {
   color: #f0ede8;
   background-color: #111111;
 }
 
-.site-nav.nav--dropdown-open .nav-link--has-dropdown {
+nav.site-nav.nav--dropdown-open .nav-link--has-dropdown {
   opacity: 1;
 }
 
