@@ -32,15 +32,15 @@ const TOOLS = [
 const TOOL = TOOLS[TOOL_INDEX];
 const OTHER_TOOLS = TOOLS.filter((_, i) => i !== TOOL_INDEX);
 const HEAD_CODE = [
-    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@91090e8/avorino-responsive.css">',
-    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@91090e8/avorino-nav-footer.css">',
+    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@c7533aa/avorino-responsive.css">',
+    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@c7533aa/avorino-nav-footer.css">',
     CALENDLY_CSS,
 ].join('\n');
 const FOOTER_CODE = [
     '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
-    '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@91090e8/avorino-animations.js"><\/script>',
+    '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@c7533aa/avorino-animations.js"><\/script>',
     CALENDLY_JS,
 ].join('\n');
 document.getElementById('page-name').textContent = TOOL.name;
