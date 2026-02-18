@@ -118,6 +118,28 @@
   max-width: 580px;
 }
 
+/* ── Process Illustrations ── */
+.process-illus {
+  grid-column: 2 / 4;
+  display: flex;
+  justify-content: flex-start;
+  padding: 12px 0 12px 0;
+  margin-left: -36px;
+}
+
+.process-illus-svg {
+  width: 64px;
+  height: 64px;
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.process-step-dot.active {
+  background-color: #c8222a;
+  border-color: #c8222a;
+  box-shadow: 0 0 0 4px rgba(200, 34, 42, 0.12);
+}
+
 /* ── Process Float Instances ── */
 .float-process-1 {
   top: 12%;

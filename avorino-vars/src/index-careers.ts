@@ -5,7 +5,7 @@
 
 import {
   webflow, log, logDetail, clearErrorLog, wait,
-  safeCall, getAvorinVars, getOrCreateStyle, freshStyle,
+  safeCall, getAvorinVars, getOrCreateStyle,
   clearAndSet, createSharedStyles, setSharedStyleProps,
   createAllVariables, createPageWithSlug,
   buildCTASection, applyCTAStyleProps,
@@ -88,39 +88,39 @@ async function buildCareersPage() {
     log('Setting careers-specific style properties...');
 
     // Hero: cream bg, left-aligned
-    await clearAndSet(await freshStyle('cr-hero'), 'cr-hero', {
+    await clearAndSet(crHero, 'cr-hero', {
       'min-height': '40vh', 'display': 'flex', 'align-items': 'flex-end',
       'padding-top': '180px', 'padding-bottom': '64px',
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
       'background-color': v['av-cream'], 'color': v['av-dark'],
     });
-    await clearAndSet(await freshStyle('cr-hero-content'), 'cr-hero-content', {
+    await clearAndSet(crHeroContent, 'cr-hero-content', {
       'max-width': '900px',
     });
     await wait(500);
 
     // Info column (left side — sticky)
-    await clearAndSet(await freshStyle('cr-info-col'), 'cr-info-col', {
+    await clearAndSet(crInfoCol, 'cr-info-col', {
       'display': 'flex', 'flex-direction': 'column', 'position': 'sticky', 'top': '160px',
     });
-    await clearAndSet(await freshStyle('cr-info-heading'), 'cr-info-heading', {
+    await clearAndSet(crInfoHeading, 'cr-info-heading', {
       'font-family': 'DM Serif Display', 'font-size': v['av-text-h2'],
       'line-height': '1.08', 'letter-spacing': '-0.02em', 'font-weight': '400',
       'margin-bottom': '16px',
     });
-    await clearAndSet(await freshStyle('cr-info-body'), 'cr-info-body', {
+    await clearAndSet(crInfoBody, 'cr-info-body', {
       'font-family': 'DM Sans', 'font-size': v['av-text-body'],
       'line-height': '1.9', 'opacity': '0.6',
     });
-    await clearAndSet(await freshStyle('cr-point-heading'), 'cr-point-heading', {
+    await clearAndSet(crPointHeading, 'cr-point-heading', {
       'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
       'line-height': '1.2', 'font-weight': '400', 'margin-bottom': '8px',
     });
-    await clearAndSet(await freshStyle('cr-point-body'), 'cr-point-body', {
+    await clearAndSet(crPointBody, 'cr-point-body', {
       'font-family': 'DM Sans', 'font-size': v['av-text-body'],
       'line-height': '1.7', 'opacity': '0.5',
     });
-    await clearAndSet(await freshStyle('cr-form-col'), 'cr-form-col', {
+    await clearAndSet(crFormCol, 'cr-form-col', {
       'display': 'flex', 'flex-direction': 'column',
     });
     await wait(500);

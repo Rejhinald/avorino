@@ -445,6 +445,80 @@
       if (numbers[i]) gsap.from(numbers[i], { opacity: 0, scale: 0.8, duration: 1.2, ease: 'power3.out', scrollTrigger: { trigger: step, start: 'top 75%' } });
       if (dots[i]) ScrollTrigger.create({ trigger: step, start: 'top 60%', onEnter: () => dots[i].classList.add('active'), onLeaveBack: () => dots[i].classList.remove('active') });
     });
+
+    // Process illustrations
+    initProcessIllustrations();
+  }
+
+  // PROCESS ILLUSTRATION ANIMATIONS
+  function initProcessIllustrations() {
+    // Stamp illustration (between step 1 → 2)
+    const stampIllus = document.querySelector('[data-illus="stamp"]');
+    if (stampIllus) {
+      const svg = stampIllus.querySelector('.process-illus-svg');
+      const blueprint = stampIllus.querySelector('.illus-blueprint');
+      const lines = stampIllus.querySelectorAll('.illus-blueprint-line');
+      const stamp = stampIllus.querySelector('.illus-stamp');
+      const check = stampIllus.querySelector('.illus-check');
+
+      // Set initial stroke-dasharray for check animation
+      if (check) {
+        const checkLen = 30;
+        check.style.strokeDasharray = checkLen;
+        check.style.strokeDashoffset = checkLen;
+      }
+
+      ScrollTrigger.create({
+        trigger: stampIllus, start: 'top 70%',
+        onEnter: function() {
+          var tl = gsap.timeline();
+          tl.to(svg, { opacity: 1, scale: 1, duration: 0.5, ease: 'power3.out' }, 0);
+          tl.to(blueprint, { opacity: 0.25, duration: 0.6, ease: 'power2.out' }, 0.1);
+          tl.to(lines, { opacity: 0.15, duration: 0.4, stagger: 0.1, ease: 'power2.out' }, 0.2);
+          // Stamp slams down
+          tl.fromTo(stamp, { opacity: 0, scale: 2.5 }, { opacity: 0.9, scale: 1, duration: 0.3, ease: 'power4.in' }, 0.8);
+          // Check draws in
+          tl.to(check, { opacity: 1, strokeDashoffset: 0, duration: 0.5, ease: 'power2.out' }, 1.0);
+        }
+      });
+    }
+
+    // House illustration (between step 2 → 3)
+    var houseIllus = document.querySelector('[data-illus="house"]');
+    if (houseIllus) {
+      var svg = houseIllus.querySelector('.process-illus-svg');
+      var foundation = houseIllus.querySelector('.illus-foundation');
+      var walls = houseIllus.querySelector('.illus-walls');
+      var roof = houseIllus.querySelector('.illus-roof');
+      var door = houseIllus.querySelector('.illus-door');
+      var windows = houseIllus.querySelectorAll('.illus-window');
+
+      // Set roof stroke-dasharray for draw-in
+      if (roof) {
+        var roofLen = 120;
+        roof.style.strokeDasharray = roofLen;
+        roof.style.strokeDashoffset = roofLen;
+      }
+
+      ScrollTrigger.create({
+        trigger: houseIllus, start: 'top 70%',
+        onEnter: function() {
+          var tl = gsap.timeline();
+          tl.to(svg, { opacity: 1, scale: 1, duration: 0.5, ease: 'power3.out' }, 0);
+          // Foundation draws in
+          tl.to(foundation, { opacity: 0.3, duration: 0.4, ease: 'power2.out' }, 0.2);
+          // Walls rise up
+          tl.fromTo(walls, { opacity: 0, scaleY: 0, transformOrigin: 'bottom center' },
+            { opacity: 0.2, scaleY: 1, duration: 0.6, ease: 'power3.out' }, 0.5);
+          // Roof draws
+          tl.to(roof, { opacity: 0.9, strokeDashoffset: 0, duration: 0.7, ease: 'power2.inOut' }, 0.9);
+          // Door appears
+          tl.to(door, { opacity: 0.2, duration: 0.3, ease: 'power2.out' }, 1.3);
+          // Windows pop in
+          tl.to(windows, { opacity: 0.2, duration: 0.3, stagger: 0.1, ease: 'power2.out' }, 1.4);
+        }
+      });
+    }
   }
 
   // CTA WORD STAGGER ELASTIC
@@ -464,10 +538,37 @@
     gsap.from(wordEls, { yPercent: 120, duration: 1.4, stagger: 0.06, ease: 'elastic.out(1, 0.4)', scrollTrigger: { trigger: ctaTitle, start: 'top 80%' } });
   }
 
-  // TOOLS FLOATING CARDS
+  // TOOLS CARD ANIMATIONS
   function initToolsAnimation() {
-    document.querySelectorAll('[data-animate="fade-up-tool"]').forEach((card, i) => {
-      gsap.from(card, { y: 60, opacity: 0, duration: 1.2, delay: i * 0.15, ease: 'power3.out', scrollTrigger: { trigger: card, start: 'top 85%' } });
+    var toolCards = document.querySelectorAll('.tool-card');
+    if (!toolCards.length) return;
+    var container = toolCards[0].parentElement;
+
+    toolCards.forEach(function(card, i) {
+      gsap.fromTo(card,
+        { y: 80, opacity: 0, scale: 0.92, filter: 'blur(6px)' },
+        { y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.2, delay: i * 0.15, ease: 'power3.out',
+          scrollTrigger: { trigger: container, start: 'top 80%' } }
+      );
+
+      // Tilt on hover (desktop only)
+      if (window.innerWidth > 768) {
+        card.addEventListener('mousemove', function(e) {
+          var rect = card.getBoundingClientRect();
+          var x = (e.clientX - rect.left) / rect.width - 0.5;
+          var y = (e.clientY - rect.top) / rect.height - 0.5;
+          gsap.to(card, { rotateY: x * 8, rotateX: -y * 8, duration: 0.4, ease: 'power2.out',
+            transformPerspective: 800, transformOrigin: 'center center' });
+          // Move glow to cursor position
+          var glow = card.querySelector('.tool-card-glow');
+          if (glow) gsap.to(glow, { x: x * 100, y: y * 100, duration: 0.4, ease: 'power2.out' });
+        });
+        card.addEventListener('mouseleave', function() {
+          gsap.to(card, { rotateY: 0, rotateX: 0, duration: 0.6, ease: 'elastic.out(1,0.5)' });
+          var glow = card.querySelector('.tool-card-glow');
+          if (glow) gsap.to(glow, { x: 0, y: 0, duration: 0.4 });
+        });
+      }
     });
   }
 
@@ -481,6 +582,13 @@
     const total = slides.length;
     let current = 0, isAnimating = false;
     if (!slides.length) return;
+
+    // Auto-advance timer
+    let autoTimer = null;
+    function startAuto() { stopAuto(); autoTimer = setInterval(function() { goToSlide(current + 1 < total ? current + 1 : 0); }, 3000); }
+    function stopAuto() { if (autoTimer) { clearInterval(autoTimer); autoTimer = null; } }
+    function resetAuto() { stopAuto(); startAuto(); }
+
     function goToSlide(target) {
       if (target === current || isAnimating || target < 0 || target >= total) return;
       isAnimating = true;
@@ -497,14 +605,21 @@
         }
       });
     }
-    dots.forEach(dot => { dot.addEventListener('click', (e) => { e.stopPropagation(); goToSlide(parseInt(dot.getAttribute('data-goto'))); }); });
+    dots.forEach(dot => { dot.addEventListener('click', (e) => { e.stopPropagation(); resetAuto(); goToSlide(parseInt(dot.getAttribute('data-goto'))); }); });
     arrows.forEach(arrow => {
       arrow.addEventListener('click', (e) => {
         e.stopPropagation();
+        resetAuto();
         if (arrow.getAttribute('data-dir') === 'next') goToSlide(current + 1 < total ? current + 1 : 0);
         else goToSlide(current - 1 >= 0 ? current - 1 : total - 1);
       });
     });
+
+    // Pause on hover, resume on leave
+    card.addEventListener('mouseenter', stopAuto);
+    card.addEventListener('mouseleave', startAuto);
+
+    startAuto();
   }
 
   // INIT

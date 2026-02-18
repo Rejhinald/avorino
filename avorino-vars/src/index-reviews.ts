@@ -5,7 +5,7 @@
 
 import {
   webflow, log, logDetail, clearErrorLog, wait,
-  safeCall, getAvorinVars, getOrCreateStyle, freshStyle,
+  safeCall, getAvorinVars, getOrCreateStyle,
   clearAndSet, createSharedStyles, setSharedStyleProps,
   createAllVariables, createPageWithSlug,
   buildCTASection, applyCTAStyleProps,
@@ -39,19 +39,17 @@ if (footerCodeEl) footerCodeEl.textContent = FOOTER_CODE;
 
 // ── Featured review (displayed in hero) ──
 const FEATURED = {
-  quote: 'Avorino transformed our backyard into a beautiful ADU. Professional from start to finish — permits, design, everything handled.',
-  author: 'Shoroque S.',
-  location: 'Anaheim',
+  quote: 'I am so happy I used Avorino Construction to build and renovate my two custom homes in Santa Ana. Raja and his team were absolutely amazing and made the whole process seamless and streamlined. The quality of work was absolutely fantastic and top notch all the way!',
+  author: 'S S.',
+  location: 'Irvine',
 };
 
-// ── All reviews (displayed in grid, excluding featured) ──
+// ── All reviews (displayed in grid) ──
 const REVIEWS = [
-  { quote: 'Exceptional attention to detail. Our garage conversion looks like it was always part of the house. Could not be happier.', author: 'Pooja M.', location: 'Irvine' },
-  { quote: 'They delivered on time and on budget. The weekly updates made the whole process stress-free. Highly recommend.', author: 'Jeremy C.', location: 'Huntington Beach' },
-  { quote: 'Our custom home turned out better than we imagined. The team was transparent about every cost and timeline.', author: 'Sonia H.', location: 'Newport Beach' },
-  { quote: 'Best construction experience we have had. Clear communication, quality craftsmanship, and fair pricing.', author: 'Michael T.', location: 'Costa Mesa' },
-  { quote: 'From the initial consultation to move-in day, Avorino exceeded our expectations. Our ADU is now fully rented.', author: 'David & Lisa R.', location: 'Tustin' },
-  { quote: 'The whole team was incredible. They took our rough ideas and turned them into a stunning space. Five stars.', author: 'Angela K.', location: 'Fullerton' },
+  { quote: 'Avorino converted our RV garage to a custom ADU. Raja is a great project manager and easy to work with. He is organized and a clear communicator. I highly recommend them.', author: 'Sam W.', location: 'Oakland', stars: 5 },
+  { quote: 'Raja uses technology and shared spreadsheets that really helped me stay on track with ordering finishes and the progress of the overall project. Absolutely amazing and 10/10 experience.', author: 'S S.', location: 'Irvine', stars: 5 },
+  { quote: 'Owner Raja was warm and friendly. Coordinator Jay was a gem. She worked to keep everything going on time. The team worked efficiently to get the work done.', author: 'Peter H.', location: 'Lakewood', stars: 4 },
+  { quote: 'Raja treated my project as if it was his own and I knew I was definitely in good hands. The quality of work was absolutely fantastic and top notch all the way!', author: 'S S.', location: 'Santa Ana', stars: 5 },
 ];
 
 // ── Build function ──
@@ -75,6 +73,7 @@ async function buildReviewsPage() {
   const rvQuote = await getOrCreateStyle('rv-quote');
   const rvAuthor = await getOrCreateStyle('rv-author');
   const rvLocation = await getOrCreateStyle('rv-location');
+  const rvStars = await getOrCreateStyle('rv-stars');
 
   const { body } = await createPageWithSlug(PAGE_NAME, PAGE_SLUG, PAGE_TITLE, PAGE_DESC);
 
@@ -86,39 +85,39 @@ async function buildReviewsPage() {
     log('Setting reviews-specific style properties...');
 
     // Hero: tall, dark, centered featured quote
-    await clearAndSet(await freshStyle('rv-hero'), 'rv-hero', {
+    await clearAndSet(rvHero, 'rv-hero', {
       'min-height': '70vh', 'display': 'flex', 'align-items': 'center', 'justify-content': 'center',
       'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
       'background-color': v['av-dark'], 'color': v['av-cream'],
       'text-align': 'center',
     });
-    await clearAndSet(await freshStyle('rv-hero-content'), 'rv-hero-content', {
+    await clearAndSet(rvHeroContent, 'rv-hero-content', {
       'max-width': '800px',
     });
-    await clearAndSet(await freshStyle('rv-hero-label'), 'rv-hero-label', {
+    await clearAndSet(rvHeroLabel, 'rv-hero-label', {
       'font-family': 'DM Sans', 'font-size': v['av-text-label'],
       'letter-spacing': '0.3em', 'text-transform': 'uppercase',
       'opacity': '0.3', 'margin-bottom': '48px',
     });
-    await clearAndSet(await freshStyle('rv-hero-quote'), 'rv-hero-quote', {
+    await clearAndSet(rvHeroQuote, 'rv-hero-quote', {
       'font-family': 'DM Serif Display',
       'font-size': 'clamp(28px, 3.5vw, 48px)',
       'line-height': '1.3', 'font-weight': '400', 'font-style': 'italic',
-      'margin-bottom': '40px',
+      'margin-bottom': '40px', 'color': v['av-cream'],
     });
-    await clearAndSet(await freshStyle('rv-hero-attrib'), 'rv-hero-attrib', {
+    await clearAndSet(rvHeroAttrib, 'rv-hero-attrib', {
       'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
       'opacity': '0.5',
     });
     await wait(500);
 
     // Review grid (2-col, light cards)
-    await clearAndSet(await freshStyle('rv-grid'), 'rv-grid', {
+    await clearAndSet(rvGrid, 'rv-grid', {
       'display': 'grid', 'grid-template-columns': '1fr 1fr',
       'grid-column-gap': '24px', 'grid-row-gap': '24px',
     });
-    await clearAndSet(await freshStyle('rv-card'), 'rv-card', {
+    await clearAndSet(rvCard, 'rv-card', {
       'background-color': v['av-cream'], 'color': v['av-dark'],
       'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
       'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
@@ -132,17 +131,20 @@ async function buildReviewsPage() {
       'border-top-color': v['av-dark-06'], 'border-bottom-color': v['av-dark-06'],
       'border-left-color': v['av-dark-06'], 'border-right-color': v['av-dark-06'],
     });
-    await clearAndSet(await freshStyle('rv-quote'), 'rv-quote', {
+    await clearAndSet(rvQuote, 'rv-quote', {
       'font-family': 'DM Serif Display', 'font-size': '20px',
       'line-height': '1.5', 'font-weight': '400', 'font-style': 'italic',
     });
-    await clearAndSet(await freshStyle('rv-author'), 'rv-author', {
+    await clearAndSet(rvAuthor, 'rv-author', {
       'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
       'font-weight': '500',
     });
-    await clearAndSet(await freshStyle('rv-location'), 'rv-location', {
+    await clearAndSet(rvLocation, 'rv-location', {
       'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
       'opacity': '0.4',
+    });
+    await clearAndSet(rvStars, 'rv-stars', {
+      'font-size': '18px', 'letter-spacing': '0.1em', 'color': v['av-red'],
     });
     await wait(500);
 
@@ -169,10 +171,10 @@ async function buildReviewsPage() {
   heroLabel.setAttribute('data-animate', 'fade-up');
 
   const heroQuote = heroC.append(webflow.elementPresets.DOM);
-  heroQuote.setTag('blockquote');
+  heroQuote.setTag('div');
   heroQuote.setStyles([rvHeroQuote]);
   heroQuote.setTextContent(`\u201C${FEATURED.quote}\u201D`);
-  heroQuote.setAttribute('data-animate', 'word-stagger-elastic');
+  heroQuote.setAttribute('data-animate', 'fade-up');
 
   const heroAttrib = heroC.append(webflow.elementPresets.DOM);
   heroAttrib.setTag('div');
@@ -200,6 +202,11 @@ async function buildReviewsPage() {
     card.setTag('div');
     card.setStyles([rvCard]);
     card.setAttribute('data-animate', 'fade-up');
+
+    const stars = card.append(webflow.elementPresets.DOM);
+    stars.setTag('div');
+    stars.setStyles([rvStars]);
+    stars.setTextContent('\u2605'.repeat(review.stars) + '\u2606'.repeat(5 - review.stars));
 
     const quote = card.append(webflow.elementPresets.DOM);
     quote.setTag('p');
