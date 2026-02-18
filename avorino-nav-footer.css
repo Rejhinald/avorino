@@ -672,11 +672,17 @@ nav.site-nav.nav--dropdown-open .nav-link--has-dropdown {
   opacity: 1;
 }
 
-/* ── City ADU Grid ── */
-.footer-cities {
+/* ── City ADU Grid + Also Serving (collapsible) ── */
+details.footer-cities,
+details.footer-serving {
   padding-bottom: 40px;
   border-bottom: 1px solid rgba(240, 237, 232, 0.06);
   margin-bottom: 32px;
+}
+
+details.footer-cities > .footer-cities-grid,
+details.footer-serving > .footer-serving-list {
+  margin-top: 16px;
 }
 
 .footer-cities-label {
@@ -688,6 +694,27 @@ nav.site-nav.nav--dropdown-open .nav-link--has-dropdown {
   color: #f0ede8;
   opacity: 0.4;
   margin-bottom: 16px;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-cities-label::-webkit-details-marker {
+  display: none;
+}
+
+.footer-cities-label::after {
+  content: '+';
+  font-size: 14px;
+  font-weight: 300;
+  opacity: 0.6;
+  transition: transform 0.3s ease;
+}
+
+details[open] > .footer-cities-label::after {
+  content: '\2212';
 }
 
 .footer-cities-grid {
@@ -712,13 +739,6 @@ nav.site-nav.nav--dropdown-open .nav-link--has-dropdown {
   color: #c8222a;
 }
 
-/* ── Also Serving ── */
-.footer-serving {
-  padding-bottom: 40px;
-  border-bottom: 1px solid rgba(240, 237, 232, 0.06);
-  margin-bottom: 32px;
-}
-
 .footer-serving-list {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-weight: 400;
@@ -740,7 +760,7 @@ nav.site-nav.nav--dropdown-open .nav-link--has-dropdown {
   font-weight: 400;
   font-size: 13px;
   color: #f0ede8;
-  opacity: 0.15;
+  opacity: 0.5;
 }
 
 .footer-bottom-links {
