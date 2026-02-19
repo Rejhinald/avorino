@@ -13,14 +13,14 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) rotate(45deg);
+  transform: translate(-50%, -50%) rotate(25deg);
   display: flex;
-  gap: 20px;
+  gap: 24px;
 }
 
 /* Each column */
 .rv-col {
-  width: 300px;
+  width: 500px;
   flex-shrink: 0;
   overflow: hidden;
   height: 250vmax;
@@ -30,7 +30,7 @@
 .rv-col-track {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 }
 
 /* Alternating scroll directions */
@@ -44,38 +44,38 @@
 
 @keyframes rv-scroll-up {
   0% { transform: translateY(0); }
-  100% { transform: translateY(calc(-50% - 10px)); }
+  100% { transform: translateY(calc(-50% - 12px)); }
 }
 
 @keyframes rv-scroll-down {
-  0% { transform: translateY(calc(-50% - 10px)); }
+  0% { transform: translateY(calc(-50% - 12px)); }
   100% { transform: translateY(0); }
 }
 
 /* Review card */
 .rv-card {
   background: #f0ede8;
-  border-radius: 16px;
-  padding: 32px 28px;
+  border-radius: 24px;
+  padding: 48px 44px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
   transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 
 .rv-stars {
   color: #c8222a;
-  font-size: 15px;
+  font-size: 19px;
   letter-spacing: 3px;
   font-family: system-ui, sans-serif;
 }
 
 .rv-quote {
   font-family: 'DM Serif Display', Georgia, serif;
-  font-size: 16px;
-  line-height: 1.55;
+  font-size: 22px;
+  line-height: 1.6;
   font-weight: 400;
   font-style: italic;
   color: #111111;
@@ -92,14 +92,14 @@
 
 .rv-author {
   font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   color: #111111;
 }
 
 .rv-location {
   font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: 12px;
+  font-size: 14px;
   color: #111111;
   opacity: 0.35;
 }
@@ -142,40 +142,43 @@
 /* ── Responsive ── */
 @media (max-width: 991px) {
   .rv-col {
-    width: 260px;
+    width: 400px;
   }
   .rv-card {
-    padding: 24px 20px;
+    padding: 36px 28px;
   }
   .rv-quote {
-    font-size: 14px;
+    font-size: 18px;
   }
 }
 
 @media (max-width: 767px) {
   .rv-grid {
-    gap: 14px;
+    gap: 16px;
   }
   .rv-col {
-    width: 220px;
+    width: 320px;
+  }
+  .rv-col-track {
+    gap: 16px;
   }
   .rv-card {
-    padding: 20px 16px;
-    gap: 12px;
-    border-radius: 12px;
+    padding: 24px 20px;
+    gap: 14px;
+    border-radius: 14px;
   }
   .rv-quote {
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.5;
   }
   .rv-stars {
-    font-size: 13px;
+    font-size: 14px;
     letter-spacing: 2px;
   }
   .rv-author {
-    font-size: 12px;
+    font-size: 13px;
   }
   .rv-location {
-    font-size: 11px;
+    font-size: 12px;
   }
 }

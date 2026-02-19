@@ -24,13 +24,17 @@
   // ── Card color variants (cycle through these) ──
   var VARIANTS = ['', '--dark', '--red', '--warm', '--slate'];
 
-  // ── Column config: card indices + speed + direction ──
+  // Cards per set — enough so 2× duplication fills 250vmax on large screens
+  var CARDS_PER_SET = 25;
+
+  // ── Column config: offset into REVIEWS + speed + direction ──
+  // 7 columns for wide-screen coverage
   var COLUMNS = [
-    { indices: [0, 5, 10, 3, 8, 13, 6],  speed: '35s', dir: 'up' },
-    { indices: [1, 6, 11, 4, 9, 14, 7],  speed: '48s', dir: 'down' },
-    { indices: [2, 7, 12, 0, 5, 10, 3],  speed: '32s', dir: 'up' },
-    { indices: [3, 8, 13, 1, 6, 11, 4],  speed: '52s', dir: 'down' },
-    { indices: [4, 9, 14, 2, 7, 12, 5],  speed: '42s', dir: 'up' },
+    { offset: 0,  speed: '80s', dir: 'up' },
+    { offset: 2,  speed: '100s', dir: 'down' },
+    { offset: 5,  speed: '70s', dir: 'up' },
+    { offset: 8,  speed: '110s', dir: 'down' },
+    { offset: 11, speed: '90s', dir: 'up' },
   ];
 
   function createCard(review, variant) {
@@ -82,11 +86,11 @@
 
       // Build cards twice for seamless marquee loop
       for (var dup = 0; dup < 2; dup++) {
-        colConfig.indices.forEach(function(idx, i) {
-          var review = REVIEWS[idx % REVIEWS.length];
+        for (var i = 0; i < CARDS_PER_SET; i++) {
+          var review = REVIEWS[(i + colConfig.offset) % REVIEWS.length];
           var variant = VARIANTS[(i + colIdx) % VARIANTS.length];
           track.appendChild(createCard(review, variant));
-        });
+        }
       }
 
       col.appendChild(track);
