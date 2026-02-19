@@ -21,6 +21,9 @@
     { quote: 'Avorino made the ADU building process stress-free. Weekly updates and transparent pricing. Highly recommend to anyone in Orange County.', author: 'S. G.', location: 'Aliso Viejo, CA', stars: 5 },
   ];
 
+  // ── Card color variants (cycle through these) ──
+  var VARIANTS = ['', '--dark', '--red', '--warm', '--slate'];
+
   // ── Column config: card indices + speed + direction ──
   var COLUMNS = [
     { indices: [0, 5, 10, 3, 8, 13, 6],  speed: '35s', dir: 'up' },
@@ -30,9 +33,9 @@
     { indices: [4, 9, 14, 2, 7, 12, 5],  speed: '42s', dir: 'up' },
   ];
 
-  function createCard(review) {
+  function createCard(review, variant) {
     var card = document.createElement('div');
-    card.className = 'rv-card';
+    card.className = 'rv-card' + (variant ? ' rv-card' + variant : '');
 
     var stars = document.createElement('div');
     stars.className = 'rv-stars';
@@ -69,7 +72,7 @@
     var grid = document.createElement('div');
     grid.className = 'rv-grid';
 
-    COLUMNS.forEach(function(colConfig) {
+    COLUMNS.forEach(function(colConfig, colIdx) {
       var col = document.createElement('div');
       col.className = 'rv-col rv-col--' + colConfig.dir;
       col.style.setProperty('--rv-speed', colConfig.speed);
@@ -79,9 +82,10 @@
 
       // Build cards twice for seamless marquee loop
       for (var dup = 0; dup < 2; dup++) {
-        colConfig.indices.forEach(function(idx) {
+        colConfig.indices.forEach(function(idx, i) {
           var review = REVIEWS[idx % REVIEWS.length];
-          track.appendChild(createCard(review));
+          var variant = VARIANTS[(i + colIdx) % VARIANTS.length];
+          track.appendChild(createCard(review, variant));
         });
       }
 
