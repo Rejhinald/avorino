@@ -93,15 +93,15 @@ const SERVICES = [
 const SVC = SERVICES[SERVICE_INDEX];
 
 const HEAD_CODE = [
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@2627e8f/avorino-responsive.css">',
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@2627e8f/avorino-nav-footer.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@a6d6a3e/avorino-responsive.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@a6d6a3e/avorino-nav-footer.css">',
   CALENDLY_CSS,
 ].join('\n');
 const FOOTER_CODE = [
   '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
-  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@2627e8f/avorino-animations.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@a6d6a3e/avorino-animations.js"><\/script>',
   CALENDLY_JS,
 ].join('\n');
 
