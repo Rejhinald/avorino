@@ -1,0 +1,151 @@
+/* Avorino — Reviews Wall (5-col rotated marquee) */
+
+.rv-wall {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  background: #111111;
+}
+
+/* Rotated grid container — oversized to fill viewport when tilted */
+.rv-grid {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  display: flex;
+  gap: 20px;
+}
+
+/* Each column */
+.rv-col {
+  width: 300px;
+  flex-shrink: 0;
+  overflow: hidden;
+  height: 250vmax;
+}
+
+/* Scrolling track inside column (contains cards × 2 for seamless loop) */
+.rv-col-track {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Alternating scroll directions */
+.rv-col--up .rv-col-track {
+  animation: rv-scroll-up var(--rv-speed, 40s) linear infinite;
+}
+
+.rv-col--down .rv-col-track {
+  animation: rv-scroll-down var(--rv-speed, 40s) linear infinite;
+}
+
+@keyframes rv-scroll-up {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(calc(-50% - 10px)); }
+}
+
+@keyframes rv-scroll-down {
+  0% { transform: translateY(calc(-50% - 10px)); }
+  100% { transform: translateY(0); }
+}
+
+/* Review card */
+.rv-card {
+  background: #f0ede8;
+  border-radius: 16px;
+  padding: 32px 28px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.rv-stars {
+  color: #c8222a;
+  font-size: 15px;
+  letter-spacing: 3px;
+  font-family: system-ui, sans-serif;
+}
+
+.rv-quote {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 16px;
+  line-height: 1.55;
+  font-weight: 400;
+  font-style: italic;
+  color: #111111;
+  margin: 0;
+}
+
+.rv-attrib {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(17, 17, 17, 0.06);
+}
+
+.rv-author {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111111;
+}
+
+.rv-location {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 12px;
+  color: #111111;
+  opacity: 0.35;
+}
+
+/* Pause animation on hover */
+.rv-wall:hover .rv-col-track {
+  animation-play-state: paused;
+}
+
+/* ── Responsive ── */
+@media (max-width: 991px) {
+  .rv-col {
+    width: 260px;
+  }
+  .rv-card {
+    padding: 24px 20px;
+  }
+  .rv-quote {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 767px) {
+  .rv-grid {
+    gap: 14px;
+  }
+  .rv-col {
+    width: 220px;
+  }
+  .rv-card {
+    padding: 20px 16px;
+    gap: 12px;
+    border-radius: 12px;
+  }
+  .rv-quote {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .rv-stars {
+    font-size: 13px;
+    letter-spacing: 2px;
+  }
+  .rv-author {
+    font-size: 12px;
+  }
+  .rv-location {
+    font-size: 11px;
+  }
+}
