@@ -8,15 +8,15 @@ const PAGE_SLUG = 'adu-plan-samples';
 const PAGE_TITLE = 'ADU Floor Plan Samples — Avorino Construction';
 const PAGE_DESC = 'Browse ADU floor plan samples. Studio, 1-bed, and 2-bed layouts designed for Orange County properties.';
 const HEAD_CODE = [
-    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@403b53d/avorino-responsive.css">',
-    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@403b53d/avorino-nav-footer.css">',
+    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@29e8db3/avorino-responsive.css">',
+    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@29e8db3/avorino-nav-footer.css">',
     CALENDLY_CSS,
 ].join('\n');
 const FOOTER_CODE = [
     '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
-    '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@403b53d/avorino-animations.js"><\/script>',
+    '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@29e8db3/avorino-animations.js"><\/script>',
     CALENDLY_JS,
 ].join('\n');
 document.getElementById('page-name').textContent = PAGE_NAME;
