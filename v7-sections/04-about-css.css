@@ -86,23 +86,50 @@
   letter-spacing: 0.3em;
   text-transform: uppercase;
   opacity: 0.2;
-  margin-bottom: 32px;
+  margin-bottom: 48px;
 }
 
-.press-logos {
+.press-marquee {
+  overflow: hidden;
+}
+
+.press-track {
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 64px;
-  flex-wrap: wrap;
+  animation: press-scroll 30s linear infinite;
 }
 
-.press-logos span {
-  font-family: 'DM Sans', system-ui, sans-serif;
-  font-weight: 400;
-  font-size: 14px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  opacity: 0.2;
+.press-item {
+  flex: 0 0 220px;
+  display: block;
+  height: 220px;
+  margin-left: 64px;
+  margin-right: 64px;
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.press-item img {
+  display: block;
+  width: 220px;
+  height: 220px;
+  object-fit: contain;
+  filter: grayscale(100%);
+  opacity: 0.4;
+  transition: filter 0.4s ease, opacity 0.4s ease;
+}
+
+.press-item:hover img {
+  filter: grayscale(0%);
+  opacity: 1;
+}
+
+
+@keyframes press-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 /* ── About Float Instances ── */

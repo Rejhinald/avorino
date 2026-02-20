@@ -69,6 +69,135 @@
     return card;
   }
 
+  function buildCarousel(wall) {
+    var carousel = document.createElement('div');
+    carousel.className = 'rv-carousel';
+
+    // Arrows
+    var arrowL = document.createElement('button');
+    arrowL.className = 'rv-carousel-arrow rv-carousel-arrow--left';
+    arrowL.innerHTML = '&#8249;';
+    arrowL.setAttribute('aria-label', 'Previous review');
+
+    var arrowR = document.createElement('button');
+    arrowR.className = 'rv-carousel-arrow rv-carousel-arrow--right';
+    arrowR.innerHTML = '&#8250;';
+    arrowR.setAttribute('aria-label', 'Next review');
+
+    // Viewport
+    var viewport = document.createElement('div');
+    viewport.className = 'rv-carousel-viewport';
+
+    // Track
+    var track = document.createElement('div');
+    track.className = 'rv-carousel-track';
+
+    // Build slides
+    var slides = [];
+    REVIEWS.forEach(function(review) {
+      var slide = document.createElement('div');
+      slide.className = 'rv-carousel-slide';
+
+      var card = document.createElement('div');
+      card.className = 'rv-carousel-card';
+
+      var stars = document.createElement('div');
+      stars.className = 'rv-stars';
+      stars.textContent = '\u2605'.repeat(review.stars) + '\u2606'.repeat(5 - review.stars);
+
+      var quote = document.createElement('p');
+      quote.className = 'rv-quote';
+      quote.textContent = '\u201C' + review.quote + '\u201D';
+
+      var attrib = document.createElement('div');
+      attrib.className = 'rv-attrib';
+
+      var author = document.createElement('span');
+      author.className = 'rv-author';
+      author.textContent = review.author;
+
+      var loc = document.createElement('span');
+      loc.className = 'rv-location';
+      loc.textContent = review.location;
+
+      attrib.appendChild(author);
+      attrib.appendChild(loc);
+      card.appendChild(stars);
+      card.appendChild(quote);
+      card.appendChild(attrib);
+      slide.appendChild(card);
+      track.appendChild(slide);
+      slides.push(slide);
+    });
+
+    viewport.appendChild(track);
+    carousel.appendChild(arrowL);
+    carousel.appendChild(viewport);
+    carousel.appendChild(arrowR);
+    wall.appendChild(carousel);
+
+    // ── Carousel logic ──
+    var current = 0;
+    var total = slides.length;
+    var autoTimer = null;
+    var isMobile = window.matchMedia('(max-width: 767px)');
+
+    function getSlideWidth() {
+      return isMobile.matches ? 100 : 100 / 3;
+    }
+
+    function goTo(idx) {
+      current = ((idx % total) + total) % total;
+      var offset = current * getSlideWidth();
+      // Center the active card: shift back by one card width (for 3-peek)
+      if (!isMobile.matches) {
+        offset -= getSlideWidth();
+      }
+      track.style.transform = 'translateX(-' + offset + '%)';
+
+      slides.forEach(function(s, i) {
+        s.classList.toggle('is-active', i === current);
+      });
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    function startAuto() {
+      stopAuto();
+      autoTimer = setInterval(next, 5000);
+    }
+    function stopAuto() {
+      if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+    }
+
+    arrowR.addEventListener('click', function() { stopAuto(); next(); startAuto(); });
+    arrowL.addEventListener('click', function() { stopAuto(); prev(); startAuto(); });
+
+    // Touch / swipe
+    var touchStartX = 0;
+    var touchEndX = 0;
+    viewport.addEventListener('touchstart', function(e) {
+      touchStartX = e.changedTouches[0].screenX;
+      stopAuto();
+    }, { passive: true });
+    viewport.addEventListener('touchend', function(e) {
+      touchEndX = e.changedTouches[0].screenX;
+      var diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) { next(); } else { prev(); }
+      }
+      startAuto();
+    }, { passive: true });
+
+    // Recalc on resize
+    isMobile.addEventListener('change', function() { goTo(current); });
+
+    // Init
+    goTo(0);
+    startAuto();
+  }
+
   function buildWall() {
     var wall = document.createElement('section');
     wall.className = 'rv-wall';
@@ -98,6 +227,9 @@
     });
 
     wall.appendChild(grid);
+
+    // ── Foreground carousel ──
+    buildCarousel(wall);
 
     // Insert wall after nav, or as first element
     var main = document.querySelector('main') || document.body;

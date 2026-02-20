@@ -582,10 +582,10 @@ export async function applyCalendlyStyleProps(v) {
         'margin-bottom': v['av-gap-md'], 'color': v['av-dark'],
     });
     await clearAndSet(await freshStyle('av-cal-widget'), 'av-cal-widget', {
-        'min-height': '700px', 'width': '100%',
+        'min-height': '1100px', 'width': '100%',
         'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
         'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
-        'overflow-x': 'hidden', 'overflow-y': 'hidden',
+        'overflow-x': 'hidden', 'overflow-y': 'auto',
     });
 }
 export function buildCleanForm(parent, fields, s, submitText = 'Send Message') {
