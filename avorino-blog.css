@@ -24,7 +24,7 @@
   overflow: hidden;
 }
 
-/* ── Scroll fade-in ── */
+/* ── Scroll fade-in: cards ── */
 .blog-card {
   opacity: 0;
   transform: translateY(40px);
@@ -44,17 +44,77 @@
 .blog-card:nth-child(3n+2).is-visible { transition-delay: 0.1s; }
 .blog-card:nth-child(3n+3).is-visible { transition-delay: 0.2s; }
 
-/* ── Hero text fade-in ── */
-.av-section-dark > * {
+/* ── Hero text fade-in (listing + template) ── */
+.av-section-dark > *,
+.blog-hero > *,
+.blog-hero > .bt-hero-inner > * {
   opacity: 0;
   transform: translateY(24px);
   transition: opacity 0.7s ease, transform 0.7s ease;
 }
 
-.av-section-dark.is-visible > * {
+.av-section-dark.is-visible > *,
+.blog-hero.is-visible > *,
+.blog-hero.is-visible > .bt-hero-inner > * {
   opacity: 1;
   transform: translateY(0);
 }
 
-.av-section-dark > *:nth-child(2) { transition-delay: 0.15s; }
-.av-section-dark > *:nth-child(3) { transition-delay: 0.3s; }
+.av-section-dark > *:nth-child(2),
+.blog-hero > .bt-hero-inner > *:nth-child(2) { transition-delay: 0.15s; }
+
+.av-section-dark > *:nth-child(3),
+.blog-hero > .bt-hero-inner > *:nth-child(3) { transition-delay: 0.3s; }
+
+.av-section-dark > *:nth-child(4),
+.blog-hero > .bt-hero-inner > *:nth-child(4) { transition-delay: 0.45s; }
+
+/* ── Blog post template: hero ── */
+.bt-hero > *,
+.bt-hero > .bt-hero-inner > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.bt-hero.is-visible > *,
+.bt-hero.is-visible > .bt-hero-inner > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.bt-hero > .bt-hero-inner > *:nth-child(2) { transition-delay: 0.15s; }
+.bt-hero > .bt-hero-inner > *:nth-child(3) { transition-delay: 0.3s; }
+
+/* ── Blog post template: featured image ── */
+.bt-img-wrap {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.bt-img-wrap.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Blog post template: article body ── */
+.bt-article-inner {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s;
+}
+
+.bt-article-inner.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Back link hover ── */
+.bt-back-link {
+  transition: opacity 0.3s ease;
+}
+
+.bt-back-link:hover {
+  opacity: 0.8;
+}
