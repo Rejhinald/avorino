@@ -324,10 +324,12 @@ async function buildBlogPage(v: Record<string, any>, s: Record<string, any>) {
 const HEAD_CODE = [
   `<link rel="stylesheet" href="${CDN}/avorino-responsive.css">`,
   `<link rel="stylesheet" href="${CDN}/avorino-nav-footer.css">`,
+  `<link rel="stylesheet" href="${CDN}/avorino-blog.css">`,
   CALENDLY_CSS,
 ].join('\n');
 
 const FOOTER_CODE = [
+  `<script src="${CDN}/avorino-blog.js"></script>`,
   CALENDLY_JS,
 ].join('\n');
 
