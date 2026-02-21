@@ -13,7 +13,7 @@ import {
 } from './shared';
 
 // ── CDN hash (auto-updated) ──
-const CDN = 'https://cdn.jsdelivr.net/gh/Rejhinald/avorino@3f8063a';
+const CDN = 'https://cdn.jsdelivr.net/gh/Rejhinald/avorino@933f826';
 const CALENDLY_CSS = '<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">';
 const CALENDLY_JS = '<script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>';
 
