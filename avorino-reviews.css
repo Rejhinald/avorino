@@ -172,6 +172,7 @@
   transition: transform 0.5s ease, opacity 0.5s ease;
   transform: scale(0.88);
   opacity: 0.4;
+  display: flex;
 }
 
 .rv-carousel-slide.is-active {
@@ -187,6 +188,7 @@
   flex-direction: column;
   gap: 24px;
   box-shadow: 0 12px 56px rgba(0, 0, 0, 0.35);
+  width: 100%;
 }
 
 .rv-carousel-card .rv-stars {
