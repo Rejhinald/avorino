@@ -145,17 +145,22 @@
     var autoTimer = null;
     var isMobile = window.matchMedia('(max-width: 767px)');
 
-    function getSlideWidth() {
-      return isMobile.matches ? 100 : 100 / 3;
-    }
-
     function goTo(idx) {
       current = ((idx % total) + total) % total;
-      var offset = current * getSlideWidth();
-      // Center the active card: shift back by one card width (for 3-peek)
-      if (!isMobile.matches) {
-        offset -= getSlideWidth();
+      var offset;
+
+      if (isMobile.matches) {
+        offset = current * 100;
+      } else {
+        // Center the active card (2nd of 3 visible)
+        var slideW = 100 / 3;
+        offset = (current - 1) * slideW;
+        // Clamp: don't go negative or past the last set of 3
+        var maxOffset = (total - 3) * slideW;
+        if (offset < 0) offset = 0;
+        if (offset > maxOffset) offset = maxOffset;
       }
+
       track.style.transform = 'translateX(-' + offset + '%)';
 
       slides.forEach(function(s, i) {
