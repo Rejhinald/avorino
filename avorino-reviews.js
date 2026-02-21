@@ -70,6 +70,9 @@
   }
 
   function buildCarousel(wall) {
+    // Guard: don't duplicate if carousel already exists
+    if (wall.querySelector('.rv-carousel')) return;
+
     var carousel = document.createElement('div');
     carousel.className = 'rv-carousel';
 
@@ -199,6 +202,9 @@
   }
 
   function buildWall() {
+    // Guard: don't duplicate if Webflow extension already built the wall
+    if (document.querySelector('.rv-wall')) return;
+
     var wall = document.createElement('section');
     wall.className = 'rv-wall';
 
