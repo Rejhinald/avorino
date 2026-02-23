@@ -20,15 +20,15 @@ const PAGE_SLUG = 'free-estimate';
 const PAGE_TITLE = 'Get Your Free Estimate — Avorino Construction';
 const PAGE_DESC = 'No obligations. Real numbers for your construction project in Orange County.';
 const HEAD_CODE = [
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@933f826/avorino-responsive.css">',
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@933f826/avorino-nav-footer.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@1bd982d/avorino-responsive.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@1bd982d/avorino-nav-footer.css">',
   CALENDLY_CSS,
 ].join('\n');
 const FOOTER_CODE = [
   '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
-  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@933f826/avorino-animations.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@1bd982d/avorino-animations.js"><\/script>',
   CALENDLY_JS,
 ].join('\n');
 

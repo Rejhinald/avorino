@@ -18,15 +18,15 @@ const PAGE_SLUG = 'about';
 const PAGE_TITLE = 'About Avorino — Custom Home & ADU Builder in Orange County';
 const PAGE_DESC = 'Learn about Avorino, a custom home and ADU builder in Orange County since 2010. Exceptional craftsmanship, innovative design, and unwavering commitment to quality.';
 const HEAD_CODE = [
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@933f826/avorino-about-head.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@1bd982d/avorino-about-head.css">',
   CALENDLY_CSS,
 ].join('\n');
 const FOOTER_CODE = [
   '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
-  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@933f826/avorino-about-footer.js"><\/script>',
-  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@933f826/avorino-animations.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@1bd982d/avorino-about-footer.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@1bd982d/avorino-animations.js"><\/script>',
   CALENDLY_JS,
 ].join('\n');
 
