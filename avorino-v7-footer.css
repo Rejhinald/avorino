@@ -254,6 +254,17 @@ ul,ol{list-style:none;margin:0;padding:0}
 .testimonial-card{min-height:360px}
 .testimonial-slide{padding:40px 32px 80px}
 .testimonial-quote{font-size:18px}
+.about-label,.featured-label{margin-bottom:40px}
+.about-body{margin-bottom:32px}
+.featured-grid-card-content{padding:32px}
+.cta-title{margin-bottom:32px}
+.cta-btn{padding:14px 32px}
+.btn-pill{padding:14px 28px}
+.testimonial-stars{margin-bottom:24px}
+.testimonial-quote{margin-bottom:32px}
+.footer-top{padding-bottom:48px}
+.footer-bottom-links{gap:24px}
+.process-stage{min-height:auto}
 .press-item{flex:0 0 160px;height:160px;margin-left:32px;margin-right:32px}
 .press-item img{width:160px;height:160px}
 .float-el{display:none}
@@ -302,6 +313,20 @@ ul,ol{list-style:none;margin:0;padding:0}
 .cta-section{padding:12px}
 .cta-container{min-height:36vh}
 .cta-content{padding:40px 24px}
+.about-label,.featured-label{margin-bottom:32px}
+.about-body{margin-bottom:24px}
+.featured-grid-card-content{padding:24px}
+.featured-grid{margin-top:32px}
+.cta-title{margin-bottom:24px}
+.cta-btn{padding:12px 28px;font-size:13px}
+.btn-pill{padding:12px 24px;font-size:13px}
+.testimonial-stars{margin-bottom:20px}
+.testimonial-quote{margin-bottom:24px}
+.footer{padding:48px 16px 28px}
+.footer-top{padding-bottom:36px;gap:28px}
+.footer-bottom-links{gap:16px}
+.footer-bottom{gap:16px;flex-direction:column}
+.process-stage{min-height:auto}
 .press-item{flex:0 0 120px;height:120px;margin-left:16px;margin-right:16px}
 .press-item img{width:120px;height:120px}
 }
