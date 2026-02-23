@@ -254,6 +254,8 @@ ul,ol{list-style:none;margin:0;padding:0}
 .testimonial-card{min-height:360px}
 .testimonial-slide{padding:40px 32px 80px}
 .testimonial-quote{font-size:18px}
+.press-item{flex:0 0 160px;height:160px;margin-left:32px;margin-right:32px}
+.press-item img{width:160px;height:160px}
 .float-el{display:none}
 .cursor-ring,.cursor-dot{display:none}
 }
@@ -300,4 +302,6 @@ ul,ol{list-style:none;margin:0;padding:0}
 .cta-section{padding:12px}
 .cta-container{min-height:36vh}
 .cta-content{padding:40px 24px}
+.press-item{flex:0 0 120px;height:120px;margin-left:16px;margin-right:16px}
+.press-item img{width:120px;height:120px}
 }

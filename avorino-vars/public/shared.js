@@ -566,6 +566,7 @@ export async function buildCalendlySection(body, v, heading = 'Book a Free Consu
     widget.setStyles([calWidget]);
     widget.setAttribute('class', 'calendly-inline-widget');
     widget.setAttribute('data-url', CALENDLY_URL + '?hide_gdpr_banner=1&background_color=f0ede8&text_color=111111&primary_color=111111');
+    widget.setAttribute('style', 'min-height:1100px;width:100%;');
     await safeCall('append:calendly', () => body.append(section));
     logDetail('Calendly section appended', 'ok');
 }
