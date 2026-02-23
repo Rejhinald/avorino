@@ -122,6 +122,23 @@ html, body { overflow-x: hidden; }
   transform: scale(1.4);
 }
 
+/* ─── Char Cascade Support ─── */
+[data-animate="char-cascade"] span {
+  display: inline-block;
+  will-change: transform, opacity, filter;
+}
+
+/* ─── Gold Accent Line (Hero) ─── */
+.about-hero-content div[style*="background:#c9a96e"] {
+  will-change: width;
+}
+
+/* ─── CTA Ambient Glow ─── */
+.about-cta-container {
+  position: relative;
+  overflow: hidden;
+}
+
 /* ─── Line Wipe Animation ─── */
 [data-animate="line-wipe"] .line {
   will-change: clip-path;

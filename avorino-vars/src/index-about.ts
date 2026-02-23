@@ -25,7 +25,9 @@ const FOOTER_CODE = [
   '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
   '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@3cf6b06/avorino-about-footer.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@3cf6b06/avorino-about-process3d.js"><\/script>',
   '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@3cf6b06/avorino-animations.js"><\/script>',
   CALENDLY_JS,
 ].join('\n');
@@ -77,8 +79,15 @@ async function buildAboutPage() {
   const valuesCard = await getOrCreateStyle('about-values-card');
   const valuesSpacer = await getOrCreateStyle('about-values-spacer');
   const valuesSnakeAnchor = await getOrCreateStyle('about-values-snake-anchor');
-  const cursorRing = await getOrCreateStyle('cursor-ring');
-  const cursorDot = await getOrCreateStyle('cursor-dot');
+  const processPinned = await getOrCreateStyle('about-process-pinned');
+  const processVisual = await getOrCreateStyle('about-process-visual');
+  const processFx = await getOrCreateStyle('about-process-fx');
+  const processCards = await getOrCreateStyle('about-process-cards');
+  const processCard = await getOrCreateStyle('about-process-card');
+  const processCardNum = await getOrCreateStyle('about-process-card-num');
+  const processCardTitle = await getOrCreateStyle('about-process-card-title');
+  const processCardBody = await getOrCreateStyle('about-process-card-body');
+  const processNav = await getOrCreateStyle('about-process-nav');
 
   // Create page
   const { body } = await createPageWithSlug(PAGE_NAME, PAGE_SLUG, PAGE_TITLE, PAGE_DESC);
@@ -190,18 +199,54 @@ async function buildAboutPage() {
       'position': 'absolute', 'top': '0px', 'left': '0px', 'width': '100%', 'height': '100%', 'z-index': '1',
     });
 
+    // Process section
+    await clearAndSet(await freshStyle('about-process-pinned'), 'about-process-pinned', {
+      'position': 'relative', 'width': '100vw', 'height': '100vh',
+      'overflow-x': 'hidden', 'overflow-y': 'hidden',
+    });
+    await clearAndSet(await freshStyle('about-process-visual'), 'about-process-visual', {
+      'position': 'absolute', 'top': '0px', 'left': '0px', 'width': '100%', 'height': '100%',
+    });
+    await clearAndSet(await freshStyle('about-process-fx'), 'about-process-fx', {
+      'position': 'absolute', 'top': '0px', 'left': '0px', 'width': '100%', 'height': '100%',
+      'z-index': '2', 'pointer-events': 'none',
+    });
+    await clearAndSet(await freshStyle('about-process-cards'), 'about-process-cards', {
+      'position': 'absolute', 'top': '0px', 'left': '0px', 'width': '100%', 'height': '100%',
+      'display': 'flex', 'align-items': 'center', 'justify-content': 'center', 'z-index': '3',
+    });
+    await clearAndSet(await freshStyle('about-process-card'), 'about-process-card', {
+      'position': 'absolute', 'top': '50%', 'left': '50%',
+      'max-width': '500px', 'width': '90%',
+      'background-color': v['av-dark'], 'color': v['av-cream'],
+      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
+      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
+      'padding-top': '48px', 'padding-bottom': '48px',
+      'padding-left': '40px', 'padding-right': '40px',
+    });
+    await clearAndSet(await freshStyle('about-process-card-num'), 'about-process-card-num', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
+      'letter-spacing': '0.25em', 'text-transform': 'uppercase',
+      'opacity': '0.4', 'margin-bottom': '16px', 'color': v['av-cream'],
+    });
+    await clearAndSet(await freshStyle('about-process-card-title'), 'about-process-card-title', {
+      'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
+      'line-height': '1.2', 'font-weight': '400', 'margin-bottom': '16px', 'color': v['av-cream'],
+    });
+    await clearAndSet(await freshStyle('about-process-card-body'), 'about-process-card-body', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
+      'line-height': '1.8', 'opacity': '0.6', 'color': v['av-cream'],
+    });
+    await clearAndSet(await freshStyle('about-process-nav'), 'about-process-nav', {
+      'position': 'absolute', 'bottom': '40px', 'left': '50%',
+      'z-index': '4', 'text-align': 'center',
+    });
+    await wait(500);
+
     await applyCTAStyleProps(v);
   }
 
   // ═══════════════ BUILD ELEMENTS ═══════════════
-
-  // Cursor elements
-  const cursorRingEl = webflow.elementBuilder(webflow.elementPresets.DOM);
-  cursorRingEl.setTag('div'); cursorRingEl.setStyles([cursorRing]);
-  await safeCall('append:cursor-ring', () => body.append(cursorRingEl));
-  const cursorDotEl = webflow.elementBuilder(webflow.elementPresets.DOM);
-  cursorDotEl.setTag('div'); cursorDotEl.setStyles([cursorDot]);
-  await safeCall('append:cursor-dot', () => body.append(cursorDotEl));
 
   // HERO
   log('Building Hero...');
@@ -210,9 +255,9 @@ async function buildAboutPage() {
   const overlay = hero.append(webflow.elementPresets.DOM); overlay.setTag('div'); overlay.setStyles([heroOverlay]);
   const heroC = hero.append(webflow.elementPresets.DOM); heroC.setTag('div'); heroC.setStyles([heroContent]);
   const heroH = heroC.append(webflow.elementPresets.DOM); heroH.setTag('h1'); heroH.setStyles([s.headingXL]);
-  heroH.setTextContent('About Avorino'); heroH.setAttribute('data-animate', 'opacity-sweep');
+  heroH.setTextContent('About Avorino'); heroH.setAttribute('data-animate', 'char-cascade');
   const heroSub = heroC.append(webflow.elementPresets.DOM); heroSub.setTag('p'); heroSub.setStyles([heroSubtitle]);
-  heroSub.setTextContent('Custom home and ADU builder in Orange County since 2010'); heroSub.setAttribute('data-animate', 'fade-up');
+  heroSub.setTextContent('Custom home and ADU builder in Orange County since 2023'); heroSub.setAttribute('data-animate', 'fade-up');
   await safeCall('append:hero', () => body.append(hero));
 
   // STORY
@@ -230,7 +275,7 @@ async function buildAboutPage() {
   storyH.setTextContent('We redefine the art of construction'); storyH.setAttribute('data-animate', 'line-wipe');
   const storyP = storyRight.append(webflow.elementPresets.DOM); storyP.setTag('p'); storyP.setStyles([s.body, s.bodyMuted, maxWidth520, mb48]);
   storyP.setTextContent('Avorino is a custom home and an ADU builder in Orange County that takes pride in its exceptional customer service. With a friendly and professional approach, Avorino actively involves clients throughout the process, ensuring their unique needs are met with utmost care. Our unwavering commitment to quality is evident in every detail, resulting in remarkable outcomes that exceed expectations. Avorino stands out by embracing innovation, leveraging cutting-edge technologies and sustainable practices to deliver exceptional results. Our in-house crew is capable of handling every aspect of a project from design to execution.');
-  storyP.setAttribute('data-animate', 'fade-up');
+  storyP.setAttribute('data-animate', 'opacity-sweep');
   const storyLinkEl = storyRight.append(webflow.elementPresets.DOM); storyLinkEl.setTag('a'); storyLinkEl.setStyles([storyLink]);
   storyLinkEl.setTextContent('Learn our story \u2192'); storyLinkEl.setAttribute('href', '#about-values'); storyLinkEl.setAttribute('data-animate', 'fade-up'); storyLinkEl.setAttribute('data-magnetic', '');
   await safeCall('append:story', () => body.append(story));
@@ -301,6 +346,36 @@ async function buildAboutPage() {
     }
   });
   await safeCall('append:values', () => body.append(vals));
+
+  // PROCESS
+  log('Building Process...');
+  const proc = webflow.elementBuilder(webflow.elementPresets.DOM);
+  proc.setTag('section'); proc.setStyles([s.section, s.sectionDark]); proc.setAttribute('id', 'about-process');
+  const procLbl = proc.append(webflow.elementPresets.DOM); procLbl.setTag('div'); procLbl.setStyles([s.label, mb64]); procLbl.setAttribute('data-animate', 'fade-up');
+  const procLblTxt = procLbl.append(webflow.elementPresets.DOM); procLblTxt.setTag('div'); procLblTxt.setTextContent('Our Process');
+  const procLblLn = procLbl.append(webflow.elementPresets.DOM); procLblLn.setTag('div'); procLblLn.setStyles([labelLine]);
+  const procH = proc.append(webflow.elementPresets.DOM); procH.setTag('h2'); procH.setStyles([s.headingLG, mb96]);
+  procH.setTextContent('How We Build Your ADU'); procH.setAttribute('data-animate', 'line-wipe');
+  const pinned = proc.append(webflow.elementPresets.DOM); pinned.setTag('div'); pinned.setStyles([processPinned]); pinned.setAttribute('data-process-pinned', '');
+  const visual = pinned.append(webflow.elementPresets.DOM); visual.setTag('div'); visual.setStyles([processVisual]); visual.setAttribute('data-process-visual', '');
+  const fx = pinned.append(webflow.elementPresets.DOM); fx.setTag('div'); fx.setStyles([processFx]); fx.setAttribute('data-process-fx', '');
+  const pCards = pinned.append(webflow.elementPresets.DOM); pCards.setTag('div'); pCards.setStyles([processCards]); pCards.setAttribute('data-process-cards', '');
+  const processData = [
+    { num: '01', title: 'Pre-Construction', body: 'We survey your property, assess local zoning regulations, and create a detailed feasibility study for your ADU project.' },
+    { num: '02', title: 'Design & Architecture', body: 'Our architects craft custom floor plans and 3D renderings, balancing aesthetics with functionality for your space.' },
+    { num: '03', title: 'Financing Options', body: 'We connect you with trusted lenders and guide you through ADU-specific loans, HELOCs, and financing strategies.' },
+    { num: '04', title: 'Permitting & Approvals', body: 'We handle all permits, city submissions, and regulatory approvals so you can focus on the exciting parts.' },
+    { num: '05', title: 'Construction Phase', body: 'Our in-house crew brings the design to life with quality craftsmanship and transparent project management.' },
+    { num: '06', title: 'Project Completion', body: 'Final inspections, walkthrough, and handover — your new ADU is ready for living or renting.' },
+  ];
+  processData.forEach(card => {
+    const c = pCards.append(webflow.elementPresets.DOM); c.setTag('div'); c.setStyles([processCard]); c.setAttribute('data-process-card', '');
+    const n = c.append(webflow.elementPresets.DOM); n.setTag('div'); n.setStyles([processCardNum]); n.setTextContent(card.num);
+    const t = c.append(webflow.elementPresets.DOM); t.setTag('h3'); t.setStyles([processCardTitle]); t.setTextContent(card.title);
+    const p = c.append(webflow.elementPresets.DOM); p.setTag('p'); p.setStyles([processCardBody]); p.setTextContent(card.body);
+  });
+  const pNav = pinned.append(webflow.elementPresets.DOM); pNav.setTag('div'); pNav.setStyles([processNav]); pNav.setAttribute('data-process-nav', '');
+  await safeCall('append:process', () => body.append(proc));
 
   // CTA
   log('Building CTA...');

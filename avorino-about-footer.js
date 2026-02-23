@@ -18,44 +18,7 @@
   ScrollTrigger.addEventListener('refresh', function () { lenis.resize(); });
 
   /* ═══════════════════════════════════════════════
-     CUSTOM CURSOR
-     ═══════════════════════════════════════════════ */
-  var cursorRing = document.querySelector('.cursor-ring');
-  var cursorDot = document.querySelector('.cursor-dot');
-  var mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
-
-  if (cursorRing && cursorDot && window.innerWidth > 768) {
-    document.addEventListener('mousemove', function (e) {
-      mouseX = e.clientX; mouseY = e.clientY;
-      gsap.set(cursorDot, { x: mouseX, y: mouseY });
-    });
-    gsap.ticker.add(function () {
-      ringX += (mouseX - ringX) * 0.12;
-      ringY += (mouseY - ringY) * 0.12;
-      gsap.set(cursorRing, { x: ringX, y: ringY });
-    });
-
-    document.querySelectorAll('a, button, [data-magnetic]').forEach(function (el) {
-      el.addEventListener('mouseenter', function () { cursorRing.classList.add('hover-link'); });
-      el.addEventListener('mouseleave', function () { cursorRing.classList.remove('hover-link'); });
-    });
-
-    document.querySelectorAll('[data-magnetic]').forEach(function (btn) {
-      btn.addEventListener('mousemove', function (e) {
-        var rect = btn.getBoundingClientRect();
-        var dx = e.clientX - (rect.left + rect.width / 2);
-        var dy = e.clientY - (rect.top + rect.height / 2);
-        gsap.to(btn, { x: dx * 0.25, y: dy * 0.25, duration: 0.4, ease: 'power3.out' });
-      });
-      btn.addEventListener('mouseleave', function () {
-        gsap.to(btn, { x: 0, y: 0, duration: 0.8, ease: 'elastic.out(1, 0.5)' });
-      });
-    });
-  }
-
-  /* ═══════════════════════════════════════════════
-     UTILITY — TEXT SPLITTING
-     Fixed: uses flex gap instead of marginRight
+     UTILITY — TEXT SPLITTING (WORDS)
      ═══════════════════════════════════════════════ */
   function splitIntoWords(el) {
     var text = el.textContent.trim();
@@ -80,7 +43,37 @@
   }
 
   /* ═══════════════════════════════════════════════
-     HERO ENTRANCE
+     UTILITY — TEXT SPLITTING (CHARACTERS)
+     For char-cascade animation on hero h1
+     ═══════════════════════════════════════════════ */
+  function splitIntoChars(el) {
+    var text = el.textContent.trim();
+    el.innerHTML = '';
+    el.style.display = 'flex';
+    el.style.flexWrap = 'wrap';
+    el.style.gap = '0 0.3em';
+    var charEls = [];
+    text.split(/\s+/).forEach(function (word, wi) {
+      var wordWrap = document.createElement('span');
+      wordWrap.style.display = 'inline-flex';
+      wordWrap.style.overflow = 'hidden';
+      for (var i = 0; i < word.length; i++) {
+        var charSpan = document.createElement('span');
+        charSpan.style.display = 'inline-block';
+        charSpan.textContent = word[i];
+        wordWrap.appendChild(charSpan);
+        charEls.push(charSpan);
+      }
+      el.appendChild(wordWrap);
+    });
+    return charEls;
+  }
+
+  /* ═══════════════════════════════════════════════
+     HERO ENTRANCE — Character Cascade
+     Each character rises with rotateX + blur,
+     gold accent line draws before subtitle fades in.
+     Hero content fades out on scroll past.
      ═══════════════════════════════════════════════ */
   function initHeroEntrance() {
     var hero = document.getElementById('about-hero');
@@ -91,23 +84,51 @@
 
     if (h1) {
       h1.removeAttribute('data-animate');
-      var words = splitIntoWords(h1);
-      gsap.set(words, { yPercent: 110, opacity: 0, filter: 'blur(6px)' });
-      var tl = gsap.timeline({ delay: 0.4 });
-      tl.to(words, {
-        yPercent: 0, opacity: 1, filter: 'blur(0px)',
-        duration: 1.4, stagger: 0.08, ease: 'power4.out',
+      var chars = splitIntoChars(h1);
+      gsap.set(chars, { yPercent: 120, opacity: 0, rotateX: -90, filter: 'blur(8px)' });
+      var tl = gsap.timeline({ delay: 0.3 });
+      tl.to(chars, {
+        yPercent: 0, opacity: 1, rotateX: 0, filter: 'blur(0px)',
+        duration: 1.2, stagger: 0.03, ease: 'elastic.out(1, 0.6)',
       }, 0);
     }
 
     if (subtitle) {
       subtitle.removeAttribute('data-animate');
-      gsap.set(subtitle, { opacity: 0, y: 30, filter: 'blur(4px)' });
-      gsap.to(subtitle, {
+
+      // Gold accent line that draws before text
+      var goldLine = document.createElement('div');
+      goldLine.style.cssText = 'width:0;height:1px;background:#c9a96e;margin-bottom:16px;will-change:width;';
+      subtitle.parentElement.insertBefore(goldLine, subtitle);
+
+      gsap.set(subtitle, { opacity: 0, y: 20, filter: 'blur(4px)' });
+
+      var subTl = gsap.timeline({ delay: 0.9 });
+      subTl.to(goldLine, { width: '60px', duration: 0.8, ease: 'power3.inOut' }, 0);
+      subTl.to(subtitle, {
         opacity: 0.6, y: 0, filter: 'blur(0px)',
-        duration: 1, ease: 'power3.out', delay: 1.2,
+        duration: 1, ease: 'power3.out',
+      }, 0.3);
+    }
+
+    // Hero content fades out as user scrolls past
+    var heroContent = hero.querySelector('.about-hero-content');
+    if (heroContent) {
+      gsap.to(heroContent, {
+        opacity: 0, y: -40, filter: 'blur(6px)', ease: 'none',
+        scrollTrigger: {
+          trigger: hero, start: 'top top', end: 'bottom top',
+          scrub: 1,
+        },
       });
     }
+
+    // Ken Burns zoom on hero background
+    gsap.fromTo(hero,
+      { backgroundSize: '105%' },
+      { backgroundSize: '115%', ease: 'none',
+        scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 1 } }
+    );
   }
 
   /* ═══════════════════════════════════════════════
@@ -115,7 +136,7 @@
      ═══════════════════════════════════════════════ */
   function initScrollAnimations() {
 
-    /* fade-up (reverses on scroll-back so elements re-animate) */
+    /* fade-up */
     document.querySelectorAll('[data-animate="fade-up"]').forEach(function (el) {
       gsap.fromTo(el,
         { y: 50, opacity: 0, filter: 'blur(4px)' },
@@ -125,7 +146,7 @@
       );
     });
 
-    /* opacity-sweep */
+    /* opacity-sweep — character-by-character reveal on scroll */
     document.querySelectorAll('[data-animate="opacity-sweep"]').forEach(function (el) {
       var text = el.textContent.trim();
       var wordParts = text.split(/(\s+)/);
@@ -155,7 +176,18 @@
       });
     });
 
-    /* blur-focus — re-blurs when element scrolls out of view in either direction */
+    /* char-cascade — used by hero h1 on scroll (fallback for elements not caught by initHeroEntrance) */
+    document.querySelectorAll('[data-animate="char-cascade"]').forEach(function (el) {
+      var chars = splitIntoChars(el);
+      gsap.set(chars, { yPercent: 120, opacity: 0, rotateX: -90, filter: 'blur(8px)' });
+      gsap.to(chars, {
+        yPercent: 0, opacity: 1, rotateX: 0, filter: 'blur(0px)',
+        duration: 1.2, stagger: 0.03, ease: 'elastic.out(1, 0.6)',
+        scrollTrigger: { trigger: el, start: 'top 82%' },
+      });
+    });
+
+    /* blur-focus */
     document.querySelectorAll('[data-animate="blur-focus"]').forEach(function (el) {
       gsap.fromTo(el,
         { filter: 'blur(14px)', opacity: 0.08, y: 20 },
@@ -232,7 +264,7 @@
       });
     });
 
-    /* split-text-reveal — words rise from behind overflow mask */
+    /* split-text-reveal */
     document.querySelectorAll('[data-animate="split-text-reveal"]').forEach(function (el) {
       var words = splitIntoWords(el);
       gsap.set(words, { yPercent: 105, opacity: 0 });
@@ -255,44 +287,47 @@
       );
     });
 
-    /* Image placeholder reveal */
+    /* Image placeholder reveal — diagonal polygon clip-path */
     document.querySelectorAll('.about-story-img, .about-comm-img').forEach(function (img) {
       gsap.fromTo(img,
-        { clipPath: 'inset(100% 0 0 0)' },
-        { clipPath: 'inset(0% 0 0 0)', duration: 1.4, ease: 'power4.inOut',
+        { clipPath: 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)' },
+        { clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+          duration: 1.6, ease: 'power4.inOut',
           scrollTrigger: { trigger: img, start: 'top 80%' } }
       );
     });
 
-    /* Mission/Vision cards: dramatic slide with 3D rotation + blur */
+    /* Mission/Vision cards: "book-open" reveal — cards split apart from center with rotateY */
     var mvSection = document.getElementById('about-mission-vision');
     if (mvSection) {
+      var mvGrid = mvSection.querySelector('.av-grid-2col');
+      if (mvGrid) mvGrid.style.perspective = '1200px';
+
       var mvCards = mvSection.querySelectorAll('.av-card-dark');
       mvCards.forEach(function (card, i) {
         card.removeAttribute('data-animate');
+
+        // Cards start overlapping at center, split apart
         gsap.fromTo(card,
-          { x: i === 0 ? -60 : 60, opacity: 0, rotateY: i === 0 ? 5 : -5,
-            scale: 0.95, filter: 'blur(4px)' },
+          { x: i === 0 ? 60 : -60, opacity: 0, rotateY: i === 0 ? 8 : -8,
+            scale: 0.92, filter: 'blur(6px)' },
           { x: 0, opacity: 1, rotateY: 0, scale: 1, filter: 'blur(0px)',
-            duration: 1.6, ease: 'power3.out',
-            scrollTrigger: { trigger: card, start: 'top 82%',
-              toggleActions: 'play none none reverse' } }
+            duration: 1.8, ease: 'power3.out',
+            scrollTrigger: { trigger: mvSection, start: 'top 75%',
+              toggleActions: 'play none none reverse' },
+            onComplete: function () {
+              // Internal content stagger after card arrives
+              var children = card.children;
+              for (var c = 0; c < children.length; c++) {
+                gsap.fromTo(children[c],
+                  { y: 20, opacity: 0 },
+                  { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', delay: c * 0.12 }
+                );
+              }
+            }
+          }
         );
       });
-    }
-
-    /* ADU card: scale-up entrance with gradient shift */
-    var aduSection = document.getElementById('about-adu');
-    if (aduSection) {
-      var aduCard = aduSection.querySelector('.about-adu-card');
-      if (aduCard) {
-        gsap.fromTo(aduCard,
-          { y: 60, opacity: 0, scale: 0.97 },
-          { y: 0, opacity: 1, scale: 1, duration: 1.4, ease: 'power3.out',
-            scrollTrigger: { trigger: aduCard, start: 'top 85%',
-              toggleActions: 'play none none reverse' } }
-        );
-      }
     }
 
     /* ScrollTrigger refresh */
@@ -305,10 +340,7 @@
   }
 
   /* ═══════════════════════════════════════════════
-     VALUES SNAKE ZIGZAG
-     Cards alternate left/right with an SVG snake path
-     that draws itself on scroll. Each card enters from
-     its respective side.
+     VALUES SNAKE ZIGZAG — Enhanced with gold glow trail + node dots
      ═══════════════════════════════════════════════ */
   function initValuesSnake() {
     var section = document.getElementById('about-values');
@@ -318,11 +350,9 @@
     var rows = zigzag.querySelectorAll('[data-values-row]');
     if (!rows.length) return;
 
-    /* ── Build SVG snake path dynamically ── */
     var anchor = document.getElementById('values-snake-anchor');
     if (anchor) {
       function buildSnakePath() {
-        // Clear previous SVG if rebuilding
         var oldSvg = anchor.querySelector('svg');
         if (oldSvg) anchor.removeChild(oldSvg);
 
@@ -363,25 +393,63 @@
              (w / 2) + ' ' + (lastPt.y + (h - lastPt.y) / 2) + ', ' +
              (w / 2) + ' ' + h;
 
-        // Background path (always visible, faint)
+        // SVG filter for gold glow
+        var defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        var filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+        filter.setAttribute('id', 'gold-glow');
+        filter.setAttribute('x', '-20%'); filter.setAttribute('y', '-20%');
+        filter.setAttribute('width', '140%'); filter.setAttribute('height', '140%');
+        var blur = document.createElementNS('http://www.w3.org/2000/svg', 'feGaussianBlur');
+        blur.setAttribute('in', 'SourceGraphic');
+        blur.setAttribute('stdDeviation', '4');
+        filter.appendChild(blur);
+        defs.appendChild(filter);
+        svg.appendChild(defs);
+
+        // Background path
         var bgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         bgPath.setAttribute('d', d);
         bgPath.setAttribute('class', 'about-values-snake-path-bg');
         svg.appendChild(bgPath);
 
-        // Animated foreground path
+        // Gold glow trail (drawn behind the red path)
+        var glowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        glowPath.setAttribute('d', d);
+        glowPath.style.fill = 'none';
+        glowPath.style.stroke = '#c9a96e';
+        glowPath.style.strokeWidth = '3';
+        glowPath.style.strokeLinecap = 'round';
+        glowPath.style.filter = 'url(#gold-glow)';
+        glowPath.style.opacity = '0.5';
+        svg.appendChild(glowPath);
+
+        // Animated foreground path (red)
         var fgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         fgPath.setAttribute('d', d);
         fgPath.setAttribute('class', 'about-values-snake-path');
         svg.appendChild(fgPath);
 
+        // Node dots at each waypoint
+        points.forEach(function (pt) {
+          var dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          dot.setAttribute('cx', String(pt.x));
+          dot.setAttribute('cy', String(pt.y));
+          dot.setAttribute('r', '0');
+          dot.style.fill = '#c9a96e';
+          dot.style.transition = 'r 0.4s ease';
+          svg.appendChild(dot);
+        });
+
         anchor.appendChild(svg);
 
         var pathLength = fgPath.getTotalLength();
+        var glowLength = glowPath.getTotalLength();
         gsap.set(fgPath, { strokeDasharray: pathLength, strokeDashoffset: pathLength });
+        gsap.set(glowPath, { strokeDasharray: glowLength, strokeDashoffset: glowLength });
 
-        // Scrub-draw the snake path as section scrolls
-        gsap.to(fgPath, {
+        // Scrub-draw both paths + scale node dots
+        var nodeDots = svg.querySelectorAll('circle');
+        gsap.to([fgPath, glowPath], {
           strokeDashoffset: 0,
           ease: 'none',
           scrollTrigger: {
@@ -389,15 +457,22 @@
             start: 'top 70%',
             end: 'bottom 30%',
             scrub: 1,
+            onUpdate: function (self) {
+              // Scale up node dots as path reaches them
+              var p = self.progress;
+              nodeDots.forEach(function (dot, i) {
+                var threshold = (i + 0.5) / points.length;
+                var dotScale = p > threshold ? 5 : 0;
+                dot.setAttribute('r', String(dotScale));
+              });
+            },
           },
         });
       }
 
-      // Build after layout settles
       requestAnimationFrame(function () {
         requestAnimationFrame(buildSnakePath);
       });
-      // Rebuild on resize
       var resizeTimer;
       window.addEventListener('resize', function () {
         clearTimeout(resizeTimer);
@@ -405,7 +480,7 @@
       });
     }
 
-    /* ── Card entrance animations ── */
+    /* Card entrance animations with internal stagger */
     rows.forEach(function (row, i) {
       var card = row.querySelector('.about-values-card');
       if (!card) return;
@@ -419,10 +494,20 @@
             trigger: row, start: 'top 82%',
             toggleActions: 'play none none reverse',
           },
+          onComplete: function () {
+            // Internal stagger: number → title → description
+            var children = card.children;
+            for (var c = 0; c < children.length; c++) {
+              gsap.fromTo(children[c],
+                { y: 15, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', delay: c * 0.1 }
+              );
+            }
+          },
         }
       );
 
-      // Subtle parallax depth per card
+      // Subtle parallax depth
       gsap.to(card, {
         yPercent: -8 + (i % 3) * 3,
         ease: 'none',
@@ -434,9 +519,7 @@
   }
 
   /* ═══════════════════════════════════════════════
-     STAT COUNTER
-     Fixed: no conflicting initial hide, items start visible.
-     Count-up from 0, scramble-decode labels.
+     STAT COUNTER — Enhanced with gold glow pulse + elastic suffix
      ═══════════════════════════════════════════════ */
   function initStatCounter() {
     var statsSection = document.getElementById('about-stats');
@@ -468,13 +551,40 @@
             if (match) {
               var target = parseInt(match[1]);
               var suffix = match[2];
-              numEl.textContent = '0' + suffix;
+
+              // Wrap suffix in a span for elastic bounce
+              numEl.textContent = '';
+              var numSpan = document.createElement('span');
+              numSpan.textContent = '0';
+              var suffixSpan = document.createElement('span');
+              suffixSpan.style.display = 'inline-block';
+              suffixSpan.style.opacity = '0';
+              suffixSpan.style.transform = 'scale(0)';
+              suffixSpan.textContent = suffix;
+              numEl.appendChild(numSpan);
+              numEl.appendChild(suffixSpan);
+
               gsap.to({ val: 0 }, {
                 val: target, duration: 2.2, ease: 'power2.out', delay: idx * 0.2 + 0.3,
-                onUpdate: function () { numEl.textContent = Math.round(this.targets()[0].val) + suffix; },
+                onUpdate: function () { numSpan.textContent = String(Math.round(this.targets()[0].val)); },
                 onComplete: function () {
-                  numEl.textContent = target + suffix;
-                  gsap.fromTo(numEl, { scale: 1 }, { scale: 1.05, duration: 0.3, yoyo: true, repeat: 1, ease: 'power2.inOut' });
+                  numSpan.textContent = String(target);
+
+                  // Suffix bounces in with elastic ease
+                  gsap.to(suffixSpan, {
+                    opacity: 1, scale: 1, duration: 0.8, ease: 'elastic.out(1.2, 0.4)',
+                  });
+
+                  // Gold glow pulse on the number
+                  gsap.fromTo(numEl,
+                    { textShadow: '0 0 0px rgba(201, 169, 110, 0)' },
+                    { textShadow: '0 0 20px rgba(201, 169, 110, 0.4)',
+                      duration: 0.6, yoyo: true, repeat: 1, ease: 'power2.inOut',
+                      onComplete: function () {
+                        numEl.style.textShadow = 'none';
+                      }
+                    }
+                  );
                 }
               });
             }
@@ -512,6 +622,7 @@
      SECTION PARALLAX
      ═══════════════════════════════════════════════ */
   function initSectionParallax() {
+    // Stats background parallax
     var stats = document.getElementById('about-stats');
     if (stats) {
       gsap.fromTo(stats,
@@ -520,24 +631,22 @@
           scrollTrigger: { trigger: stats, start: 'top bottom', end: 'bottom top', scrub: 1 } }
       );
     }
-    var commGrid = document.querySelector('.about-comm-grid');
-    if (commGrid) {
-      var commCols = commGrid.children;
-      if (commCols.length >= 2) {
-        gsap.to(commCols[0], { y: -30, ease: 'none',
-          scrollTrigger: { trigger: commGrid, start: 'top bottom', end: 'bottom top', scrub: 1 } });
-        gsap.to(commCols[1], { y: 30, ease: 'none',
-          scrollTrigger: { trigger: commGrid, start: 'top bottom', end: 'bottom top', scrub: 1 } });
+
+    // Story grid column parallax (image up, text down)
+    var storySection = document.getElementById('about-story');
+    if (storySection) {
+      var storyGrid = storySection.querySelector('.av-grid-2col');
+      if (storyGrid && storyGrid.children.length >= 2) {
+        gsap.to(storyGrid.children[0], { y: -25, ease: 'none',
+          scrollTrigger: { trigger: storyGrid, start: 'top bottom', end: 'bottom top', scrub: 1 } });
+        gsap.to(storyGrid.children[1], { y: 25, ease: 'none',
+          scrollTrigger: { trigger: storyGrid, start: 'top bottom', end: 'bottom top', scrub: 1 } });
       }
     }
   }
 
   /* ═══════════════════════════════════════════════
-     INIT
-     ═══════════════════════════════════════════════ */
-  /* ═══════════════════════════════════════════════
      SECTION TRANSITIONS
-     Subtle opacity shift on section enter for polish.
      ═══════════════════════════════════════════════ */
   function initSectionTransitions() {
     document.querySelectorAll('.av-section-warm, .av-section-dark').forEach(function (sec) {
@@ -553,6 +662,47 @@
     });
   }
 
+  /* ═══════════════════════════════════════════════
+     CTA AMBIENT GLOW
+     Subtle pulsing red radial gradient behind CTA content
+     ═══════════════════════════════════════════════ */
+  function initCTAGlow() {
+    var ctaSection = document.querySelector('.about-cta-container');
+    if (!ctaSection) return;
+
+    var glow = document.createElement('div');
+    glow.style.cssText = [
+      'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);',
+      'width:120%;height:120%;border-radius:50%;pointer-events:none;z-index:0;',
+      'background:radial-gradient(ellipse at center, rgba(200,34,42,0.04) 0%, transparent 70%);',
+      'opacity:0;',
+    ].join('');
+    ctaSection.style.position = 'relative';
+    ctaSection.insertBefore(glow, ctaSection.firstChild);
+
+    // Pulse on scroll enter
+    ScrollTrigger.create({
+      trigger: ctaSection,
+      start: 'top 80%',
+      onEnter: function () {
+        gsap.to(glow, {
+          opacity: 1, duration: 1.5, ease: 'power2.out',
+          onComplete: function () {
+            gsap.to(glow, {
+              opacity: 0.5, duration: 4, yoyo: true, repeat: -1, ease: 'sine.inOut',
+            });
+          },
+        });
+      },
+      onLeaveBack: function () {
+        gsap.to(glow, { opacity: 0, duration: 0.5, overwrite: true });
+      },
+    });
+  }
+
+  /* ═══════════════════════════════════════════════
+     INIT
+     ═══════════════════════════════════════════════ */
   window.addEventListener('DOMContentLoaded', function () {
     initHeroEntrance();
     initScrollAnimations();
@@ -561,5 +711,6 @@
     initStatCounter();
     initSectionParallax();
     initSectionTransitions();
+    initCTAGlow();
   });
 })();
