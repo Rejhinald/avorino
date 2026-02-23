@@ -20,7 +20,8 @@ ul,ol{list-style:none;margin:0;padding:0}
 
 
 /* RESPONSIVE TYPOGRAPHY (clamp) */
-.hero-title{font-size:clamp(32px,4vw,52px)}
+.hero-word{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(40px,6.5vw,96px);line-height:1.08;letter-spacing:-.03em;color:#f0ede8}
+.hero-scroll-text{font-family:'DM Sans',system-ui,sans-serif;color:rgba(240,237,232,.45)}
 .about-heading{display:block;font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(44px,5.5vw,80px);line-height:1.06;letter-spacing:-.025em;max-width:580px}
 .process-heading,.testimonials-heading,.tools-heading,.cta-title{font-size:clamp(40px,4.5vw,64px)}
 .process-step-title,.process-slide-title,.featured-panel-title{font-size:clamp(28px,3vw,44px)}
@@ -76,9 +77,13 @@ ul,ol{list-style:none;margin:0;padding:0}
 .testimonial-dot{transition:all .4s ease}
 .testimonial-arrow{transition:border-color .3s ease,background .3s ease}
 
-/* Tool card */
-.tool-card{transition:transform .5s cubic-bezier(.23,1,.32,1),border-color .4s ease,box-shadow .4s ease}
-.tool-cta{transition:opacity .3s ease,gap .3s ease}
+/* Tool panel accordion */
+.tool-panel{transition:flex .7s cubic-bezier(.23,1,.32,1)}
+.tool-panel-bg{transition:transform .7s cubic-bezier(.23,1,.32,1)}
+.tool-panel-label{transition:opacity .4s ease,transform .4s ease}
+.tool-panel-content{transition:opacity .5s ease .15s,transform .5s cubic-bezier(.23,1,.32,1) .15s}
+.tool-panel-label-text{font-family:'DM Serif Display',Georgia,serif;font-weight:400;color:#f0ede8}
+.tool-cta{transition:opacity .3s ease,gap .3s ease,color .3s ease}
 
 /* Footer links */
 .footer-col a{transition:opacity .3s ease}
@@ -99,6 +104,8 @@ ul,ol{list-style:none;margin:0;padding:0}
 .featured-grid-card-title,.featured-grid-card-title>div,.featured-grid-card-title>div>span{font-family:'DM Serif Display',Georgia,serif;font-weight:400;color:#f0ede8}
 .process-heading,.process-heading>div,.process-heading>div>span,
 .process-step-title,.process-slide-title{font-family:'DM Serif Display',Georgia,serif;font-weight:400;color:#111}
+.process-num{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:96px;line-height:1;color:#111;opacity:.12}
+.service-title{font-family:'DM Serif Display',Georgia,serif;font-weight:400;color:#f0ede8}
 .testimonials-heading,.testimonials-heading>div,.testimonials-heading>div>span{font-family:'DM Serif Display',Georgia,serif;font-weight:400;color:#111}
 .tools-heading,.tools-heading>div,.tools-heading>div>span{font-family:'DM Serif Display',Georgia,serif;font-weight:400;color:#f0ede8}
 .testimonial-quote{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-style:italic;color:#f0ede8}
@@ -128,9 +135,12 @@ ul,ol{list-style:none;margin:0;padding:0}
 .service-cta:hover .arrow{transform:translateX(6px);color:#c8222a}
 .featured-grid-card:hover .featured-grid-card-image{transform:scale(1.05)}
 .featured-grid-card:hover::after{opacity:.9}
-.tool-card:hover{transform:translateY(-6px);border-color:rgba(200,34,42,.3);box-shadow:0 24px 64px rgba(0,0,0,.4),0 0 0 1px rgba(200,34,42,.15)}
-.tool-card:hover .tool-cta{opacity:1;gap:12px}
-.tool-card:hover .tool-icon-wrap{color:#c8222a}
+.tool-panel:hover{flex:3 1 0}
+.tool-panel:hover .tool-panel-bg{transform:scale(1.06)}
+.tool-panel:hover .tool-panel-label{opacity:0}
+.tool-panel:hover .tool-panel-content{opacity:1;transform:translateY(0)}
+.tool-panel:hover .tool-cta{opacity:1}
+.tool-panel:hover::after{transform:scaleX(1)}
 .testimonial-arrow:hover{border-color:rgba(240,237,232,.4);background:rgba(240,237,232,.05)}
 .footer-col a:hover{opacity:.8}
 .footer-bottom-links a:hover{opacity:.5}
@@ -193,7 +203,8 @@ ul,ol{list-style:none;margin:0;padding:0}
 .service-number{margin-bottom:20px}
 .stats-grid{grid-template-columns:repeat(2,1fr);gap:48px}
 .footer-top{grid-template-columns:1fr 1fr;gap:48px}
-.hero-content{flex-direction:column;align-items:flex-start;gap:32px}
+.hero-content{padding:0 32px}
+.hero-word{font-size:clamp(36px,7vw,72px)}
 .featured-panel{margin-left:32px;margin-right:32px}
 .featured-grid{grid-template-columns:1fr;gap:24px}
 .featured-grid-card{height:38vh;min-height:260px;max-height:380px}
@@ -214,8 +225,10 @@ ul,ol{list-style:none;margin:0;padding:0}
 .section-pad,.about,.stats,.featured,.process,.testimonials,.tools,.footer{padding-left:24px;padding-right:24px}
 .about,.featured,.process,.testimonials,.tools{padding-top:80px;padding-bottom:80px}
 .hero{padding:16px;height:calc(100vh - 56px)}
-.hero-content{left:32px;right:32px;bottom:48px}
-.hero-text{max-width:100%}
+.hero-content{padding:0 24px}
+.hero-word{font-size:clamp(32px,9vw,56px)}
+.hero-subtitle{font-size:11px;letter-spacing:.2em}
+.hero-scroll-indicator{bottom:20px}
 .cta-section{padding:16px}
 .cta-container{min-height:40vh}
 .cta-content{padding:48px 32px}
@@ -237,8 +250,15 @@ ul,ol{list-style:none;margin:0;padding:0}
 .stat-suffix{font-size:24px}
 .stat-separator{font-size:24px;margin-bottom:8px}
 .footer-top{grid-template-columns:1fr}
-.tools-cards{grid-template-columns:1fr}
-.tool-card{padding:36px 28px}
+.tools-accordion{flex-direction:column;height:auto;min-height:0;max-height:none;gap:12px}
+.tool-panel{min-height:80px;flex:none}
+.tool-panel:hover{flex:none}
+.tool-panel-label{position:relative;bottom:auto;left:auto;transform:none;padding:24px 28px}
+.tool-panel-label-text{font-size:18px}
+.tool-panel:hover .tool-panel-label{opacity:1;transform:none}
+.tool-panel-content{position:relative;padding:0 28px 28px;opacity:1;transform:none;pointer-events:auto;display:none}
+.tool-panel:hover .tool-panel-content{display:block}
+.tool-panel::after{display:none}
 .featured-image-wrap{height:40vh}
 .featured-panel{margin-top:-48px;margin-left:16px;margin-right:16px;padding:40px 32px}
 .featured-panel-title{font-size:clamp(24px,5vw,36px)}
@@ -273,7 +293,12 @@ ul,ol{list-style:none;margin:0;padding:0}
 @media(max-width:479px){
 .nav-spacer{height:48px}
 .hero{height:calc(100vh - 48px);padding:12px}
-.hero-content{left:24px;right:24px;bottom:36px;gap:24px}
+.hero-content{padding:0 16px}
+.hero-word{font-size:clamp(28px,10vw,44px)}
+.hero-subtitle{font-size:10px;margin-bottom:28px}
+.hero-text-center{margin-bottom:24px}
+.hero-scroll-indicator{bottom:16px}
+.hero-scroll-line{height:32px}
 .about,.featured,.process,.testimonials,.tools{padding-top:64px;padding-bottom:64px;padding-left:16px;padding-right:16px}
 .about-heading{font-size:clamp(32px,8vw,44px)}
 .about-body{font-size:16px}
@@ -307,7 +332,9 @@ ul,ol{list-style:none;margin:0;padding:0}
 .testimonial-slide{padding:32px 24px 72px}
 .testimonial-quote{font-size:16px}
 .testimonial-nav{left:24px;right:24px;bottom:32px}
-.tool-card{padding:32px 24px}
+.tool-panel-label{padding:20px 20px}
+.tool-panel-label-text{font-size:16px}
+.tool-panel-content{padding:0 20px 24px}
 .tool-name{font-size:20px}
 .tool-desc{font-size:14px}
 .cta-section{padding:12px}

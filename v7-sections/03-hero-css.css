@@ -35,42 +35,51 @@
   z-index: 1;
 }
 
+/* ── Centered Content Layout ── */
 .hero-content {
   position: absolute;
-  bottom: 80px;
-  left: 80px;
-  right: 80px;
+  inset: 0;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   z-index: 2;
+  text-align: center;
+  padding: 0 48px;
 }
 
-.hero-text {
-  max-width: 520px;
+.hero-text-center {
+  margin-bottom: 32px;
 }
 
-.hero-title {
+/* ── Word Rows (scroll parallax targets) ── */
+.hero-word-row {
+  overflow: hidden;
+}
+
+.hero-word {
+  display: block;
   font-family: 'DM Serif Display', Georgia, serif;
   font-weight: 400;
-  font-size: clamp(32px, 4vw, 52px);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  word-spacing: 0.1em;
+  font-size: clamp(40px, 6.5vw, 96px);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
   color: #f0ede8;
-  margin-bottom: 20px;
-  perspective: 600px;
+  will-change: transform, opacity;
 }
 
+/* ── Subtitle ── */
 .hero-subtitle {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-weight: 400;
-  font-size: 12px;
-  color: rgba(240,237,232,0.6);
-  letter-spacing: 0.2em;
+  font-size: 13px;
+  color: rgba(240, 237, 232, 0.6);
+  letter-spacing: 0.25em;
   text-transform: uppercase;
+  margin-bottom: 40px;
 }
 
+/* ── CTA ── */
 .hero-cta-wrap {
   flex-shrink: 0;
 }
@@ -92,6 +101,53 @@
 
 .btn-pill .arrow {
   display: inline-block;
+}
+
+/* ── Scroll Indicator ── */
+.hero-scroll-indicator {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 3;
+}
+
+.hero-scroll-text {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(240, 237, 232, 0.45);
+}
+
+.hero-scroll-line {
+  width: 1px;
+  height: 48px;
+  background: rgba(240, 237, 232, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-scroll-dot {
+  width: 1px;
+  height: 12px;
+  background: rgba(240, 237, 232, 0.6);
+  position: absolute;
+  top: -12px;
+  left: 0;
+  animation: scroll-dot 2s ease-in-out infinite;
+}
+
+@keyframes scroll-dot {
+  0% { top: -12px; opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { top: 48px; opacity: 0; }
 }
 
 /* ── Floating Elements ── */
@@ -128,19 +184,19 @@
 .float-hero-1 {
   top: 18%;
   right: 12%;
-  color: rgba(240,237,232,0.35);
+  color: rgba(240, 237, 232, 0.35);
 }
 
 .float-hero-2 {
   bottom: 28%;
   right: 22%;
-  background-color: rgba(240,237,232,0.4);
-  color: rgba(240,237,232,0.4);
+  background-color: rgba(240, 237, 232, 0.4);
+  color: rgba(240, 237, 232, 0.4);
 }
 
 .float-hero-3 {
   top: 35%;
   right: 8%;
-  background-color: rgba(240,237,232,0.25);
-  color: rgba(240,237,232,0.25);
+  background-color: rgba(240, 237, 232, 0.25);
+  color: rgba(240, 237, 232, 0.25);
 }

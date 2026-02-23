@@ -55,77 +55,18 @@
     });
   }
 
-  // TEXT SPLITTING
-  function splitChars(el) {
-    const text = el.textContent;
-    el.innerHTML = '';
-    el.setAttribute('aria-label', text);
-    for (let i = 0; i < text.length; i++) {
-      const span = document.createElement('span');
-      span.classList.add('char');
-      span.style.display = 'inline-block';
-      if (text[i] === ' ') { span.innerHTML = '&nbsp;'; } else { span.textContent = text[i]; }
-      el.appendChild(span);
-    }
-    return el.querySelectorAll('.char');
-  }
-
-  // HERO TITLE CHAR-CASCADE
-  function splitHeroTitle(titleEl) {
-    const titleCharsAll = [];
-    function splitTitleNode(node, parent) {
-      if (node.nodeType === Node.TEXT_NODE) {
-        const text = node.textContent.replace(/\s*\n\s*/g, ' ').replace(/\s{2,}/g, ' ');
-        if (!text.trim()) { parent.removeChild(node); return; }
-        const words = text.split(/(\s+)/);
-        const frag = document.createDocumentFragment();
-        words.forEach(word => {
-          if (/^\s+$/.test(word)) {
-            const s = document.createElement('span');
-            s.classList.add('char'); s.style.display = 'inline-block';
-            s.innerHTML = '&nbsp;'; s.style.opacity = '0';
-            s.style.transform = 'translateY(60px) rotateX(-90deg)';
-            s.style.filter = 'blur(4px)';
-            frag.appendChild(s); titleCharsAll.push(s);
-          } else if (word) {
-            const w = document.createElement('span');
-            w.style.whiteSpace = 'nowrap'; w.style.display = 'inline';
-            for (let i = 0; i < word.length; i++) {
-              const s = document.createElement('span');
-              s.classList.add('char'); s.style.display = 'inline-block';
-              s.style.opacity = '0'; s.style.transform = 'translateY(60px) rotateX(-90deg)';
-              s.style.filter = 'blur(4px)'; s.textContent = word[i];
-              w.appendChild(s); titleCharsAll.push(s);
-            }
-            frag.appendChild(w);
-          }
-        });
-        parent.insertBefore(frag, node);
-        parent.removeChild(node);
-      } else if (node.nodeName === 'BR') {
-        // keep
-      } else {
-        Array.from(node.childNodes).forEach(child => splitTitleNode(child, node));
-      }
-    }
-    Array.from(titleEl.childNodes).forEach(child => splitTitleNode(child, titleEl));
-    return titleCharsAll;
-  }
-
   // PRELOADER
   function initPreloader() {
     const preloader = document.querySelector('.preloader');
     const curtain = document.querySelector('.preloader-curtain');
     const heroImage = document.querySelector('.hero-image');
-    const heroTitle = document.querySelector('.hero-title');
-    const heroSubtitle = document.querySelector('.hero-subtitle');
     if (heroImage) gsap.set(heroImage, { clipPath: 'inset(6%)', scale: 1.25 });
     gsap.set('.preloader-char', { opacity: 0, y: 60, rotateX: -90, filter: 'blur(4px)' });
     if (preloader) gsap.set(preloader, { display: 'flex' });
 
     if (!preloader) {
       initScrollAnimations();
-      initHeroEntrance(heroImage, heroTitle, heroSubtitle);
+      initHeroEntrance(heroImage);
       return;
     }
 
@@ -142,31 +83,100 @@
     tl.set(preloader, { background: 'transparent' });
     if (curtain) tl.to(curtain, { yPercent: -100, duration: 1.2, ease: 'power4.inOut' });
     if (heroImage) tl.to(heroImage, { clipPath: 'inset(0%)', scale: 1, duration: 1.8, ease: 'power4.inOut' }, '-=0.8');
-    // Hero text is delayed 20s — hide it and schedule reveal
-    initDelayedHeroText(heroTitle, heroSubtitle);
+    // Hero text entrance (staggered word rows)
+    initHeroTextEntrance();
   }
 
-  // HERO ENTRANCE (no-preloader)
-  function initHeroEntrance(heroImage, heroTitle, heroSubtitle) {
+  // HERO ENTRANCE (no-preloader fallback)
+  function initHeroEntrance(heroImage) {
     const tl = gsap.timeline({ delay: 0.3 });
     if (heroImage) tl.to(heroImage, { clipPath: 'inset(0%)', scale: 1, duration: 1.8, ease: 'power4.inOut' }, 0);
-    // Hero text is delayed 20s
-    initDelayedHeroText(heroTitle, heroSubtitle);
+    initHeroTextEntrance();
   }
 
-  // HERO TEXT — 20s delayed reveal
-  function initDelayedHeroText(heroTitle, heroSubtitle) {
-    const heroContent = document.querySelector('.hero-content');
-    const heroCta = document.querySelector('.hero-cta-wrap');
+  // HERO TEXT — staggered entrance + scroll-driven parallax
+  function initHeroTextEntrance() {
+    const heroContent = document.querySelector('[data-el="hero-content"]');
+    const rows = document.querySelectorAll('[data-hero-row]');
+    const subtitle = document.querySelector('[data-el="hero-subtitle"]');
+    const cta = document.querySelector('[data-el="hero-cta"]');
+    const scrollIndicator = document.querySelector('[data-el="hero-scroll"]');
+    const heroImage = document.querySelector('.hero-image');
     if (!heroContent) return;
-    // Hide hero content initially
-    gsap.set(heroContent, { opacity: 0, y: 20 });
-    // Reveal after 20 seconds
-    const tl = gsap.timeline({ delay: 20 });
-    tl.to(heroContent, { opacity: 1, y: 0, duration: 1.6, ease: 'power3.out' }, 0);
-    if (heroCta) {
-      gsap.set(heroCta, { opacity: 0, y: 12 });
-      tl.to(heroCta, { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out' }, 0.3);
+
+    // Set initial states
+    rows.forEach(row => {
+      gsap.set(row.querySelector('.hero-word'), { opacity: 0, y: 60, filter: 'blur(6px)' });
+    });
+    if (subtitle) gsap.set(subtitle, { opacity: 0, y: 20 });
+    if (cta) gsap.set(cta, { opacity: 0, y: 20 });
+    if (scrollIndicator) gsap.set(scrollIndicator, { opacity: 0 });
+
+    // Staggered entrance timeline
+    const tl = gsap.timeline({ delay: 0.6 });
+
+    rows.forEach((row, i) => {
+      const word = row.querySelector('.hero-word');
+      tl.to(word, {
+        opacity: 1, y: 0, filter: 'blur(0px)',
+        duration: 1.2, ease: 'power4.out'
+      }, i * 0.15);
+    });
+
+    if (subtitle) {
+      tl.to(subtitle, { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, 0.5);
+    }
+    if (cta) {
+      tl.to(cta, { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, 0.7);
+    }
+    if (scrollIndicator) {
+      tl.to(scrollIndicator, { opacity: 1, duration: 1.5, ease: 'power2.out' }, 1.2);
+    }
+
+    // SCROLL-DRIVEN PARALLAX — each row moves up at a different speed
+    if (window.innerWidth > 767) {
+      const hero = document.querySelector('.hero');
+      if (!hero) return;
+
+      rows.forEach((row, i) => {
+        const speed = 80 + i * 40; // row 0: 80px, row 1: 120px, row 2: 160px
+        gsap.to(row, {
+          y: -speed, ease: 'none',
+          scrollTrigger: {
+            trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.6
+          }
+        });
+      });
+
+      // Subtitle and CTA parallax (faster, fades out)
+      if (subtitle) {
+        gsap.to(subtitle, {
+          y: -200, opacity: 0, ease: 'none',
+          scrollTrigger: { trigger: hero, start: 'top top', end: '60% top', scrub: 0.6 }
+        });
+      }
+      if (cta) {
+        gsap.to(cta, {
+          y: -180, opacity: 0, ease: 'none',
+          scrollTrigger: { trigger: hero, start: 'top top', end: '50% top', scrub: 0.6 }
+        });
+      }
+
+      // Hero image scale on scroll (subtle zoom)
+      if (heroImage) {
+        gsap.to(heroImage, {
+          scale: 1.08, ease: 'none',
+          scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.6 }
+        });
+      }
+
+      // Scroll indicator fades out quickly
+      if (scrollIndicator) {
+        gsap.to(scrollIndicator, {
+          opacity: 0, ease: 'none',
+          scrollTrigger: { trigger: hero, start: 'top top', end: '20% top', scrub: 0.6 }
+        });
+      }
     }
   }
 
@@ -608,37 +618,19 @@
     gsap.from(wordEls, { yPercent: 120, duration: 1.4, stagger: 0.06, ease: 'elastic.out(1, 0.4)', scrollTrigger: { trigger: ctaTitle, start: 'top 80%' } });
   }
 
-  // TOOLS CARD ANIMATIONS
+  // TOOLS ACCORDION ANIMATION
   function initToolsAnimation() {
-    var toolCards = document.querySelectorAll('.tool-card');
-    if (!toolCards.length) return;
-    var container = toolCards[0].parentElement;
+    var panels = document.querySelectorAll('.tool-panel');
+    if (!panels.length) return;
+    var container = panels[0].parentElement;
 
-    toolCards.forEach(function(card, i) {
-      gsap.fromTo(card,
-        { y: 80, opacity: 0, scale: 0.92, filter: 'blur(6px)' },
-        { y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.2, delay: i * 0.15, ease: 'power3.out',
+    // Staggered entrance on scroll
+    panels.forEach(function(panel, i) {
+      gsap.fromTo(panel,
+        { opacity: 0, x: 40, filter: 'blur(4px)' },
+        { opacity: 1, x: 0, filter: 'blur(0px)', duration: 1, delay: i * 0.12, ease: 'power3.out',
           scrollTrigger: { trigger: container, start: 'top 80%' } }
       );
-
-      // Tilt on hover (desktop only)
-      if (window.innerWidth > 768) {
-        card.addEventListener('mousemove', function(e) {
-          var rect = card.getBoundingClientRect();
-          var x = (e.clientX - rect.left) / rect.width - 0.5;
-          var y = (e.clientY - rect.top) / rect.height - 0.5;
-          gsap.to(card, { rotateY: x * 8, rotateX: -y * 8, duration: 0.4, ease: 'power2.out',
-            transformPerspective: 800, transformOrigin: 'center center' });
-          // Move glow to cursor position
-          var glow = card.querySelector('.tool-card-glow');
-          if (glow) gsap.to(glow, { x: x * 100, y: y * 100, duration: 0.4, ease: 'power2.out' });
-        });
-        card.addEventListener('mouseleave', function() {
-          gsap.to(card, { rotateY: 0, rotateX: 0, duration: 0.6, ease: 'elastic.out(1,0.5)' });
-          var glow = card.querySelector('.tool-card-glow');
-          if (glow) gsap.to(glow, { x: 0, y: 0, duration: 0.4 });
-        });
-      }
     });
   }
 

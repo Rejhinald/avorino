@@ -1,4 +1,4 @@
-/* Avorino v7 — Tools (HTMLtoFlow Section CSS) */
+/* Avorino v7 — Tools Accordion (HTMLtoFlow Section CSS) */
 
 .tools {
   padding: 128px 80px;
@@ -42,56 +42,128 @@
   padding-top: 8px;
 }
 
-.tools-cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-
-.tool-card {
-  position: relative;
-  padding: 48px 36px;
+/* ── Accordion Container ── */
+.tools-accordion {
+  display: flex;
+  gap: 4px;
+  height: 56vh;
+  min-height: 420px;
+  max-height: 640px;
   border-radius: 12px;
-  background: linear-gradient(145deg, rgba(240,237,232,0.06) 0%, rgba(240,237,232,0.02) 100%);
-  border: 1px solid rgba(240,237,232,0.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: transform 0.5s cubic-bezier(0.23,1,0.32,1), border-color 0.4s ease, box-shadow 0.4s ease;
   overflow: hidden;
 }
 
-.tool-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(200, 34, 42, 0.3);
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(200, 34, 42, 0.15);
+/* ── Individual Panel ── */
+.tool-panel {
+  position: relative;
+  flex: 1 1 0;
+  overflow: hidden;
+  cursor: pointer;
+  text-decoration: none;
+  color: #f0ede8;
+  transition: flex 0.7s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.tool-card-glow {
+.tool-panel:hover {
+  flex: 3 1 0;
+}
+
+/* ── Panel Background ── */
+.tool-panel-bg {
   position: absolute;
-  top: -40%;
-  left: -40%;
-  width: 180%;
-  height: 180%;
-  background: radial-gradient(circle at 50% 50%, rgba(200,34,42,0.08) 0%, transparent 60%);
+  inset: 0;
+  transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.tool-panel:hover .tool-panel-bg {
+  transform: scale(1.06);
+}
+
+/* Gradient overlays per card */
+.tool-panel[data-tool="cost"] .tool-panel-bg {
+  background: linear-gradient(145deg, rgba(200, 34, 42, 0.2) 0%, rgba(17, 17, 17, 0.95) 60%);
+}
+
+.tool-panel[data-tool="roi"] .tool-panel-bg {
+  background: linear-gradient(145deg, rgba(42, 63, 78, 0.25) 0%, rgba(17, 17, 17, 0.95) 60%);
+}
+
+.tool-panel[data-tool="loan"] .tool-panel-bg {
+  background: linear-gradient(145deg, rgba(139, 115, 85, 0.2) 0%, rgba(17, 17, 17, 0.95) 60%);
+}
+
+/* Subtle border between panels */
+.tool-panel + .tool-panel {
+  border-left: 1px solid rgba(240, 237, 232, 0.06);
+}
+
+/* ── Vertical Label (default/collapsed state) ── */
+.tool-panel-label {
+  position: absolute;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-90deg);
+  transform-origin: center center;
+  white-space: nowrap;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  z-index: 2;
+}
+
+.tool-panel-label-text {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-weight: 400;
+  font-size: 20px;
+  letter-spacing: 0.04em;
+  color: #f0ede8;
+  opacity: 0.7;
+}
+
+/* Hide label on hover */
+.tool-panel:hover .tool-panel-label {
   opacity: 0;
-  transition: opacity 0.5s ease;
+  transform: translateX(-50%) rotate(-90deg) translateY(-20px);
+}
+
+/* ── Expanded Content (hidden by default, revealed on hover) ── */
+.tool-panel-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 48px;
+  z-index: 3;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s ease 0.15s, transform 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0.15s;
   pointer-events: none;
 }
 
-.tool-card:hover .tool-card-glow {
+.tool-panel:hover .tool-panel-content {
   opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
+/* Gradient overlay at bottom for readability */
+.tool-panel-content::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 320px;
+  background: linear-gradient(to top, rgba(17, 17, 17, 0.95) 0%, rgba(17, 17, 17, 0.6) 60%, transparent 100%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ── Content Elements ── */
 .tool-icon-wrap {
-  width: 56px;
-  height: 56px;
-  margin-bottom: 32px;
-  color: rgba(240, 237, 232, 0.55);
-  transition: color 0.4s ease;
-}
-
-.tool-card:hover .tool-icon-wrap {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 24px;
   color: #c8222a;
+  opacity: 0.8;
 }
 
 .tool-icon-svg {
@@ -102,9 +174,9 @@
 .tool-name {
   font-family: 'DM Serif Display', Georgia, serif;
   font-weight: 400;
-  font-size: 24px;
+  font-size: 28px;
   color: #f0ede8;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   line-height: 1.2;
 }
 
@@ -114,8 +186,9 @@
   font-size: 15px;
   line-height: 1.7;
   color: #f0ede8;
-  opacity: 0.5;
-  margin-bottom: 32px;
+  opacity: 0.55;
+  margin-bottom: 28px;
+  max-width: 320px;
 }
 
 .tool-cta {
@@ -124,16 +197,20 @@
   font-weight: 500;
   letter-spacing: 0.06em;
   color: #f0ede8;
-  opacity: 0.65;
+  opacity: 0.75;
   display: inline-flex;
   align-items: center;
   gap: 8px;
   text-decoration: none;
-  transition: opacity 0.3s ease, gap 0.3s ease;
+  transition: opacity 0.3s ease, gap 0.3s ease, color 0.3s ease;
 }
 
-.tool-card:hover .tool-cta {
+.tool-panel:hover .tool-cta {
   opacity: 1;
+}
+
+.tool-cta:hover {
+  color: #c8222a;
   gap: 12px;
 }
 
@@ -143,22 +220,41 @@
   transition: transform 0.3s ease;
 }
 
-.tool-card:hover .tool-arrow {
+.tool-cta:hover .tool-arrow {
   transform: translateX(4px);
 }
 
-/* ── Tools Float Instances ── */
+/* ── Hover accent line at top of active panel ── */
+.tool-panel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #c8222a;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: 4;
+}
+
+.tool-panel:hover::after {
+  transform: scaleX(1);
+}
+
+/* ── Float Instances ── */
 .float-tools-1 {
   top: 18%;
   right: 7%;
-  border: 1px solid rgba(240,237,232,0.1);
-  color: rgba(240,237,232,0.1);
+  border: 1px solid rgba(240, 237, 232, 0.1);
+  color: rgba(240, 237, 232, 0.1);
 }
 
 .float-tools-2 {
   bottom: 22%;
   left: 6%;
   height: 36px;
-  background-color: rgba(240,237,232,0.1);
-  color: rgba(240,237,232,0.1);
+  background-color: rgba(240, 237, 232, 0.1);
+  color: rgba(240, 237, 232, 0.1);
 }
