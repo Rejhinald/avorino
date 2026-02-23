@@ -36,3 +36,12 @@
     height: 600px;
   }
 }
+
+@media (max-width: 479px) {
+  .tool-iframe {
+    height: 480px;
+  }
+  .tool-embed-container {
+    border-radius: 8px;
+  }
+}

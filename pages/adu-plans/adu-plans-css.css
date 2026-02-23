@@ -42,3 +42,11 @@
     height: 160px;
   }
 }
+
+@media (max-width: 479px) {
+  .plans-img {
+    height: 140px;
+    margin: -20px -20px 20px -20px;
+    width: calc(100% + 40px);
+  }
+}
