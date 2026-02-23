@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════
-   AVORINO — RESPONSIVE OVERRIDES (v2)
-   Adds mobile/tablet breakpoints to Webflow-generated styles.
+   AVORINO — RESPONSIVE OVERRIDES (v3)
+   Comprehensive mobile/tablet breakpoints for all pages.
    Breakpoints: 991px (tablet), 767px (mobile-l), 478px (mobile-p)
    ═══════════════════════════════════════════════════════ */
 
@@ -23,11 +23,27 @@
   /* ── Heroes: reduce top padding + min-height ── */
   .sv-hero, .adu-hero, .ct-hero, .est-hero,
   .rv-hero, .fin-hero, .inv-hero, .svsub-hero,
-  .cy-hero, .pl-hero, .tl-hero, .about-hero {
+  .cy-hero, .pl-hero, .tl-hero, .about-hero,
+  .blog-hero, .bt-hero, .sch-hero {
     padding-top: 120px !important;
     padding-left: 48px !important;
     padding-right: 48px !important;
     min-height: 45vh !important;
+  }
+
+  /* ── Hero content containers: widen on tablet ── */
+  .sv-hero-content,
+  .adu-hero-content,
+  .ct-hero-content,
+  .est-hero-content,
+  .inv-hero-content,
+  .svsub-hero-content,
+  .cy-hero-content,
+  .pl-hero-content,
+  .tl-hero-content,
+  .blog-hero-content,
+  .sch-hero-content {
+    max-width: 100% !important;
   }
 
   /* ── Split layouts → single column ── */
@@ -52,7 +68,8 @@
   .sv-grid,
   .av-grid-3col,
   .about-stats-grid,
-  .pl-grid {
+  .pl-grid,
+  .blog-grid {
     grid-template-columns: 1fr 1fr !important;
   }
 
@@ -100,9 +117,45 @@
     padding: 40px 36px !important;
   }
 
+  /* ── Contact / Estimate info column: unstick ── */
+  .ct-info-col,
+  .est-info-col {
+    position: relative !important;
+    top: auto !important;
+  }
+
+  /* ── Calendly widget: reduce height ── */
+  .av-cal-widget {
+    min-height: 900px !important;
+  }
+
+  /* ── Blog cards: tighter ── */
+  .blog-card-body {
+    padding: 28px !important;
+  }
+  .blog-card-img-wrap {
+    height: 200px !important;
+  }
+
+  /* ── Blog template: tighter ── */
+  .bt-img-wrap {
+    padding-left: 48px !important;
+    padding-right: 48px !important;
+  }
+  .bt-article {
+    padding-left: 48px !important;
+    padding-right: 48px !important;
+  }
+
   /* ── Spacing reductions ── */
   .av-mb-96, .sv-mb-96 {
     margin-bottom: 56px !important;
+  }
+
+  /* ── Overview paragraphs: allow full width ── */
+  .cy-overview,
+  .inv-overview {
+    max-width: 100% !important;
   }
 }
 
@@ -125,7 +178,8 @@
   /* ── Heroes ── */
   .sv-hero, .adu-hero, .ct-hero, .est-hero,
   .rv-hero, .fin-hero, .inv-hero, .svsub-hero,
-  .cy-hero, .pl-hero, .tl-hero, .about-hero {
+  .cy-hero, .pl-hero, .tl-hero, .about-hero,
+  .blog-hero, .bt-hero, .sch-hero {
     padding-top: 100px !important;
     padding-left: 24px !important;
     padding-right: 24px !important;
@@ -138,7 +192,8 @@
   .av-grid-2col,
   .rv-grid,
   .pl-grid,
-  .tl-related-grid {
+  .tl-related-grid,
+  .blog-grid {
     grid-template-columns: 1fr !important;
   }
 
@@ -245,6 +300,112 @@
   .about-values-spacer {
     display: none !important;
   }
+
+  /* ── Contact / Estimate: unstick info column, reduce spacing ── */
+  .ct-info-col,
+  .est-info-col {
+    position: relative !important;
+    top: auto !important;
+  }
+  .ct-info-phone {
+    font-size: clamp(24px, 5vw, 32px) !important;
+  }
+  .est-step-item {
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+  }
+
+  /* ── Financing: hero content full-width ── */
+  .fin-hero-content {
+    max-width: 100% !important;
+  }
+
+  /* ── Investment: reduce stat size, centered layout ── */
+  .inv-hero-stat {
+    font-size: clamp(56px, 14vw, 96px) !important;
+  }
+  .inv-hero-stat-label {
+    margin-bottom: 32px !important;
+  }
+
+  /* ── Calendly widget: reduce height for mobile ── */
+  .av-cal-section {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+  .av-cal-widget {
+    min-height: 700px !important;
+  }
+
+  /* ── Blog: card layout adjustments ── */
+  .blog-card-body {
+    padding: 24px !important;
+  }
+  .blog-card-img-wrap {
+    height: 180px !important;
+  }
+  .blog-card-title {
+    font-size: 19px !important;
+  }
+  .blog-grid-wrap {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+
+  /* ── Blog template ── */
+  .bt-hero-inner {
+    max-width: 100% !important;
+  }
+  .bt-title {
+    font-size: clamp(28px, 5vw, 42px) !important;
+  }
+  .bt-meta {
+    gap: 12px !important;
+    flex-wrap: wrap !important;
+  }
+  .bt-img-wrap {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+  .bt-article {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+  .bt-rich-text {
+    font-size: 16px !important;
+    line-height: 2.2 !important;
+  }
+  .bt-featured-img {
+    max-width: 100% !important;
+  }
+
+  /* ── City ADU: overview and permit meta ── */
+  .cy-overview {
+    max-width: 100% !important;
+    margin-bottom: 40px !important;
+  }
+  .cy-permit-meta {
+    font-size: 12px !important;
+  }
+
+  /* ── Heading size overrides for inner pages ── */
+  .av-heading-xl {
+    font-size: clamp(36px, 8vw, 56px) !important;
+  }
+  .av-heading-lg {
+    font-size: clamp(28px, 6vw, 40px) !important;
+  }
+
+  /* ── Flex column gap reduction ── */
+  .av-flex-col {
+    grid-row-gap: 16px !important;
+  }
+
+  /* ── Cards: reduce padding ── */
+  .av-card-dark,
+  .av-card-light {
+    padding: 40px 32px !important;
+  }
 }
 
 
@@ -266,7 +427,8 @@
   /* ── Heroes: compact ── */
   .sv-hero, .adu-hero, .ct-hero, .est-hero,
   .rv-hero, .fin-hero, .inv-hero, .svsub-hero,
-  .cy-hero, .pl-hero, .tl-hero, .about-hero {
+  .cy-hero, .pl-hero, .tl-hero, .about-hero,
+  .blog-hero, .bt-hero, .sch-hero {
     padding-top: 80px !important;
     padding-bottom: 32px !important;
     padding-left: 16px !important;
@@ -373,11 +535,143 @@
   .inv-hero-stat {
     font-size: clamp(48px, 12vw, 80px) !important;
   }
+  .inv-hero-stat-label {
+    font-size: 14px !important;
+    margin-bottom: 24px !important;
+  }
 
   /* ── Dividers: tighten ── */
   .av-divider,
   .av-divider-light {
     margin-top: 24px !important;
     margin-bottom: 24px !important;
+  }
+
+  /* ── Contact / Estimate: compact ── */
+  .ct-hero-content,
+  .est-hero-content {
+    max-width: 100% !important;
+  }
+  .ct-info-phone {
+    font-size: clamp(20px, 6vw, 28px) !important;
+  }
+  .ct-info-heading,
+  .est-info-heading {
+    font-size: clamp(24px, 6vw, 32px) !important;
+  }
+  .est-step-item {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+  }
+  .est-step-note {
+    margin-left: 0 !important;
+  }
+
+  /* ── Financing: compact ── */
+  .fin-hero-content {
+    max-width: 100% !important;
+  }
+
+  /* ── Service-sub: compact narrative ── */
+  .svsub-narr-heading {
+    font-size: clamp(24px, 6vw, 32px) !important;
+  }
+
+  /* ── City ADU: compact ── */
+  .cy-overview {
+    max-width: 100% !important;
+    margin-bottom: 32px !important;
+    font-size: 15px !important;
+  }
+  .cy-step-num {
+    font-size: clamp(32px, 8vw, 44px) !important;
+  }
+  .cy-permit-meta {
+    font-size: 11px !important;
+  }
+
+  /* ── Calendly: minimal ── */
+  .av-cal-section {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  .av-cal-heading {
+    font-size: clamp(24px, 6vw, 32px) !important;
+  }
+  .av-cal-widget {
+    min-height: 600px !important;
+  }
+
+  /* ── Blog: compact cards ── */
+  .blog-card-body {
+    padding: 20px !important;
+  }
+  .blog-card-img-wrap {
+    height: 160px !important;
+  }
+  .blog-card-title {
+    font-size: 17px !important;
+  }
+  .blog-card-summary {
+    font-size: 13px !important;
+  }
+  .blog-card-date {
+    font-size: 9px !important;
+  }
+  .blog-grid-wrap {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* ── Blog template: compact ── */
+  .bt-title {
+    font-size: clamp(24px, 6vw, 36px) !important;
+  }
+  .bt-meta {
+    gap: 8px !important;
+    font-size: 12px !important;
+  }
+  .bt-img-wrap {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  .bt-article {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  .bt-rich-text {
+    font-size: 15px !important;
+    line-height: 2 !important;
+  }
+  .bt-divider {
+    margin-top: 32px !important;
+    margin-bottom: 32px !important;
+  }
+  .bt-back-link {
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  /* ── Heading sizes: tightest ── */
+  .av-heading-xl {
+    font-size: clamp(28px, 9vw, 42px) !important;
+  }
+  .av-heading-lg {
+    font-size: clamp(24px, 6vw, 32px) !important;
+  }
+  .av-heading-md {
+    font-size: clamp(20px, 5vw, 28px) !important;
+  }
+
+  /* ── Cards: minimal padding ── */
+  .av-card-dark,
+  .av-card-light {
+    padding: 32px 20px !important;
+  }
+
+  /* ── Flex column: tighter gap ── */
+  .av-flex-col {
+    grid-row-gap: 14px !important;
   }
 }
