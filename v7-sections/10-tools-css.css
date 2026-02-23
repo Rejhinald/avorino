@@ -108,7 +108,7 @@
   font-size: 72px;
   line-height: 1;
   letter-spacing: -0.04em;
-  color: rgba(201, 169, 110, 0.06);
+  color: rgba(201, 169, 110, 0.1);
   z-index: 1;
   transition: opacity 0.5s ease;
   pointer-events: none;
@@ -136,7 +136,7 @@
   font-size: 20px;
   letter-spacing: 0.04em;
   color: #f0ede8;
-  opacity: 0.5;
+  opacity: 0.65;
 }
 
 /* Hide label on hover */
@@ -153,21 +153,21 @@
   top: 0;
   left: 0;
   right: 0;
-  bottom: 50%;
+  bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2;
-  padding: 48px 40px 24px;
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.6s ease 0.1s, transform 0.6s cubic-bezier(0.23, 1, 0.32, 1) 0.1s;
+  padding: 48px 24px;
+  opacity: 0.5;
+  transform: scale(0.85);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
   pointer-events: none;
 }
 
 .tool-panel:hover .tool-visual {
   opacity: 1;
-  transform: translateY(0);
+  transform: scale(1) translateY(-15%);
 }
 
 /* ── Shared Visual Elements ── */
