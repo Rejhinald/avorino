@@ -16,10 +16,10 @@
 .services-label {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-weight: 400;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  opacity: 0.2;
+  opacity: 0.35;
 }
 
 .services-counter-wrap {
@@ -33,7 +33,7 @@
   font-weight: 400;
   font-size: 14px;
   letter-spacing: 0.1em;
-  opacity: 0.3;
+  opacity: 0.45;
 }
 
 .services-progress {
@@ -105,7 +105,7 @@
   font-size: 10px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  opacity: 0.5;
+  opacity: 0.65;
   margin-bottom: 24px;
 }
 

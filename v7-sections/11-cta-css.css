@@ -64,12 +64,12 @@
 .float-cta-1 {
   top: 22%;
   left: 8%;
-  color: rgba(240,237,232,0.08);
+  color: rgba(240,237,232,0.18);
 }
 
 .float-cta-2 {
   bottom: 25%;
   right: 10%;
-  border: 1px solid rgba(240,237,232,0.06);
-  color: rgba(240,237,232,0.06);
+  border: 1px solid rgba(240,237,232,0.14);
+  color: rgba(240,237,232,0.14);
 }

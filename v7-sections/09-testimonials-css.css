@@ -43,7 +43,7 @@
   font-weight: 400;
   font-size: 14px;
   color: #111111;
-  opacity: 0.4;
+  opacity: 0.55;
 }
 
 .testimonial-card {
@@ -86,7 +86,7 @@
   font-style: italic;
   line-height: 1.7;
   color: #f0ede8;
-  opacity: 0.7;
+  opacity: 0.8;
   margin-bottom: 48px;
   flex: 1;
 }
@@ -97,7 +97,7 @@
   font-size: 14px;
   letter-spacing: 0.04em;
   color: #f0ede8;
-  opacity: 0.6;
+  opacity: 0.7;
   margin-bottom: 2px;
 }
 
@@ -106,7 +106,7 @@
   font-weight: 400;
   font-size: 14px;
   color: #f0ede8;
-  opacity: 0.3;
+  opacity: 0.45;
 }
 
 .testimonial-nav {
@@ -168,12 +168,12 @@
 .float-testimonials-1 {
   top: 15%;
   left: 5%;
-  color: rgba(17,17,17,0.04);
+  color: rgba(17,17,17,0.12);
 }
 
 .float-testimonials-2 {
   bottom: 20%;
   right: 8%;
-  background-color: rgba(17,17,17,0.05);
-  color: rgba(17,17,17,0.05);
+  background-color: rgba(17,17,17,0.12);
+  color: rgba(17,17,17,0.12);
 }

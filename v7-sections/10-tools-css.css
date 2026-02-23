@@ -37,7 +37,7 @@
   font-size: 17px;
   line-height: 1.9;
   color: #f0ede8;
-  opacity: 0.5;
+  opacity: 0.65;
   max-width: 520px;
   padding-top: 8px;
 }
@@ -86,7 +86,7 @@
   width: 56px;
   height: 56px;
   margin-bottom: 32px;
-  color: rgba(240, 237, 232, 0.4);
+  color: rgba(240, 237, 232, 0.55);
   transition: color 0.4s ease;
 }
 
@@ -114,7 +114,7 @@
   font-size: 15px;
   line-height: 1.7;
   color: #f0ede8;
-  opacity: 0.35;
+  opacity: 0.5;
   margin-bottom: 32px;
 }
 
@@ -124,7 +124,7 @@
   font-weight: 500;
   letter-spacing: 0.06em;
   color: #f0ede8;
-  opacity: 0.5;
+  opacity: 0.65;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -151,14 +151,14 @@
 .float-tools-1 {
   top: 18%;
   right: 7%;
-  border: 1px solid rgba(240,237,232,0.04);
-  color: rgba(240,237,232,0.04);
+  border: 1px solid rgba(240,237,232,0.1);
+  color: rgba(240,237,232,0.1);
 }
 
 .float-tools-2 {
   bottom: 22%;
   left: 6%;
   height: 36px;
-  background-color: rgba(240,237,232,0.04);
-  color: rgba(240,237,232,0.04);
+  background-color: rgba(240,237,232,0.1);
+  color: rgba(240,237,232,0.1);
 }

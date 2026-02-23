@@ -20,7 +20,7 @@ ul,ol{list-style:none;margin:0;padding:0}
 
 
 /* RESPONSIVE TYPOGRAPHY (clamp) */
-.hero-title{font-size:clamp(56px,7vw,96px)}
+.hero-title{font-size:clamp(32px,4vw,52px)}
 .about-heading{display:block;font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(44px,5.5vw,80px);line-height:1.06;letter-spacing:-.025em;max-width:580px}
 .process-heading,.testimonials-heading,.tools-heading,.cta-title{font-size:clamp(40px,4.5vw,64px)}
 .process-step-title,.process-slide-title,.featured-panel-title{font-size:clamp(28px,3vw,44px)}
@@ -37,7 +37,7 @@ ul,ol{list-style:none;margin:0;padding:0}
 .service-card--teal::after{background:linear-gradient(to bottom,rgba(42,63,78,.02) 0%,rgba(42,63,78,.2) 40%,rgba(42,63,78,.9) 100%)}
 .service-card--warm::after{background:linear-gradient(to bottom,rgba(139,115,85,.02) 0%,rgba(139,115,85,.15) 40%,rgba(139,115,85,.82) 100%)}
 .featured-grid-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(17,17,17,0) 0%,rgba(17,17,17,.1) 40%,rgba(17,17,17,.75) 100%);z-index:1;transition:opacity .5s ease}
-.hero-overlay{background:linear-gradient(to bottom,rgba(0,0,0,.04) 0%,rgba(0,0,0,.55) 100%);opacity:1}
+.hero-overlay{background:linear-gradient(to bottom,rgba(0,0,0,.02) 0%,rgba(0,0,0,.35) 100%);opacity:1}
 .float-el--cross::before,.float-el--cross::after{content:'';position:absolute;background:currentColor}
 .float-el--cross::before{width:14px;height:1px;top:50%;left:0}
 .float-el--cross::after{width:1px;height:14px;left:50%;top:0}
@@ -182,6 +182,8 @@ ul,ol{list-style:none;margin:0;padding:0}
 
 /* RESPONSIVE — SMALL VIEWPORTS */
 @media(max-width:991px){
+.nav-spacer{height:80px}
+.hero{height:calc(100vh - 80px)}
 .about-grid,.process-header,.testimonials-grid,.tools-header{grid-template-columns:1fr;gap:48px}
 .services-header{padding:96px 48px 48px}
 .services-track{padding:0 48px 96px;gap:24px}
@@ -195,20 +197,28 @@ ul,ol{list-style:none;margin:0;padding:0}
 .featured-panel{margin-left:32px;margin-right:32px}
 .featured-grid{grid-template-columns:1fr;gap:24px}
 .featured-grid-card{height:38vh;min-height:260px;max-height:380px}
+.featured-image-wrap{height:55vh}
+.testimonial-card{min-height:400px}
 .process-timeline{grid-template-columns:48px 1px 1fr;gap:0 24px}
 .process-step-number{font-size:48px}
 .process-stage{grid-template-columns:60px 1fr;gap:0 32px}
 .process-vis{display:none}
 .process-num{font-size:64px}
+.cta-container{min-height:44vh}
 }
 @media(max-width:767px){
 .nav-burger{display:flex}
 .nav-links{display:none}
 .nav-mobile-overlay{display:flex}
+.nav-spacer{height:56px}
 .section-pad,.about,.stats,.featured,.process,.testimonials,.tools,.footer{padding-left:24px;padding-right:24px}
-.hero{padding:16px}
+.about,.featured,.process,.testimonials,.tools{padding-top:80px;padding-bottom:80px}
+.hero{padding:16px;height:calc(100vh - 56px)}
 .hero-content{left:32px;right:32px;bottom:48px}
+.hero-text{max-width:100%}
 .cta-section{padding:16px}
+.cta-container{min-height:40vh}
+.cta-content{padding:48px 32px}
 .services-header{padding:80px 24px 32px}
 .services-track{padding:0 24px 80px;gap:16px}
 .service-card{width:72vw;min-width:260px;height:52vh;min-height:340px;max-height:500px}
@@ -219,7 +229,7 @@ ul,ol{list-style:none;margin:0;padding:0}
 .service-cta{opacity:.6;transform:translateY(0);font-size:13px;margin-top:16px}
 .services-progress{width:80px}
 .services-counter-wrap{gap:20px}
-.stats{padding:96px 24px}
+.stats{padding:80px 24px}
 .stats-grid{grid-template-columns:1fr 1fr;gap:32px 24px}
 .stat-label{font-size:9px;letter-spacing:.2em}
 .flip-card{width:48px;height:64px}
@@ -228,14 +238,33 @@ ul,ol{list-style:none;margin:0;padding:0}
 .stat-separator{font-size:24px;margin-bottom:8px}
 .footer-top{grid-template-columns:1fr}
 .tools-cards{grid-template-columns:1fr}
+.tool-card{padding:36px 28px}
+.featured-image-wrap{height:40vh}
+.featured-panel{margin-top:-48px;margin-left:16px;margin-right:16px;padding:40px 32px}
+.featured-panel-title{font-size:clamp(24px,5vw,36px)}
+.featured-grid-card{height:32vh;min-height:220px;max-height:320px}
 .process-stage{grid-template-columns:1fr;gap:24px 0}
 .process-num{display:none}
 .process-vis{display:none}
 .process-slides{min-height:180px}
+.process-slide-title{font-size:clamp(24px,5vw,36px)}
+.process-bar{margin-top:32px}
 .testimonials-left{position:static}
+.testimonials-grid{gap:48px}
+.testimonial-card{min-height:360px}
+.testimonial-slide{padding:40px 32px 80px}
+.testimonial-quote{font-size:18px}
+.float-el{display:none}
 .cursor-ring,.cursor-dot{display:none}
 }
 @media(max-width:479px){
+.nav-spacer{height:48px}
+.hero{height:calc(100vh - 48px);padding:12px}
+.hero-content{left:24px;right:24px;bottom:36px;gap:24px}
+.about,.featured,.process,.testimonials,.tools{padding-top:64px;padding-bottom:64px;padding-left:16px;padding-right:16px}
+.about-heading{font-size:clamp(32px,8vw,44px)}
+.about-body{font-size:16px}
+.about-grid{gap:32px}
 .services-header{padding:64px 16px 24px;flex-direction:column;align-items:flex-start;gap:20px}
 .services-track{padding:0 16px 64px;gap:12px}
 .service-card{width:82vw;min-width:240px;height:48vh;min-height:300px;max-height:420px}
@@ -246,10 +275,29 @@ ul,ol{list-style:none;margin:0;padding:0}
 .service-cta{font-size:12px;margin-top:12px}
 .services-counter{font-size:12px}
 .services-progress{width:60px}
+.stats{padding:64px 16px}
 .stats-grid{gap:24px 16px}
 .flip-card{width:40px;height:56px}
 .flip-card-top,.flip-card-bottom,.flip-card-flip-top,.flip-card-flip-bottom{font-size:24px}
 .stat-suffix,.stat-separator{font-size:20px}
 .stat-digits{gap:4px}
 .stat-label{font-size:8px;letter-spacing:.15em}
+.featured-image-wrap{height:32vh}
+.featured-panel{padding:32px 24px;margin-left:12px;margin-right:12px}
+.featured-panel-title{font-size:clamp(20px,6vw,28px)}
+.featured-panel-meta{gap:24px}
+.featured-grid{margin-top:48px;gap:16px}
+.featured-grid-card{height:28vh;min-height:180px;max-height:260px}
+.process-header{gap:32px}
+.process-bar{display:none}
+.testimonial-card{min-height:320px}
+.testimonial-slide{padding:32px 24px 72px}
+.testimonial-quote{font-size:16px}
+.testimonial-nav{left:24px;right:24px;bottom:32px}
+.tool-card{padding:32px 24px}
+.tool-name{font-size:20px}
+.tool-desc{font-size:14px}
+.cta-section{padding:12px}
+.cta-container{min-height:36vh}
+.cta-content{padding:40px 24px}
 }

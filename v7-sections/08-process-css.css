@@ -36,7 +36,7 @@
   font-size: 17px;
   line-height: 1.9;
   color: #111111;
-  opacity: 0.6;
+  opacity: 0.7;
   max-width: 520px;
   padding-top: 8px;
 }
@@ -60,7 +60,7 @@
   font-size: 96px;
   line-height: 1;
   color: #111111;
-  opacity: 0.06;
+  opacity: 0.12;
   text-align: center;
   align-self: start;
   padding-top: 12px;
@@ -105,7 +105,7 @@
   font-size: 17px;
   line-height: 1.9;
   color: #111111;
-  opacity: 0.4;
+  opacity: 0.55;
   max-width: 480px;
 }
 
@@ -203,27 +203,27 @@
   font-weight: 500;
   letter-spacing: 0.08em;
   color: #111111;
-  opacity: 0.2;
+  opacity: 0.35;
   white-space: nowrap;
   transition: opacity 0.3s ease;
 }
 
 .process-bar-dot.is-active span {
-  opacity: 0.5;
+  opacity: 0.65;
 }
 
 /* ── Float instances ── */
 .float-process-1 {
   top: 12%;
   right: 10%;
-  background-color: rgba(17, 17, 17, 0.06);
-  color: rgba(17, 17, 17, 0.06);
+  background-color: rgba(17, 17, 17, 0.14);
+  color: rgba(17, 17, 17, 0.14);
 }
 
 .float-process-2 {
   bottom: 18%;
   right: 5%;
   height: 32px;
-  background-color: rgba(17, 17, 17, 0.05);
-  color: rgba(17, 17, 17, 0.05);
+  background-color: rgba(17, 17, 17, 0.12);
+  color: rgba(17, 17, 17, 0.12);
 }

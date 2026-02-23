@@ -10,11 +10,11 @@
 .featured-label {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-weight: 400;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: #111111;
-  opacity: 0.2;
+  opacity: 0.35;
   margin-bottom: 64px;
   display: flex;
   align-items: center;
@@ -88,7 +88,7 @@
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: #f0ede8;
-  opacity: 0.4;
+  opacity: 0.55;
 }
 
 .featured-meta-value {
@@ -96,7 +96,7 @@
   font-weight: 400;
   font-size: 14px;
   color: #f0ede8;
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
 .featured-grid {
@@ -169,21 +169,21 @@
   gap: 24px;
   font-size: 14px;
   color: #f0ede8;
-  opacity: 0.5;
+  opacity: 0.65;
 }
 
 /* ── Featured Float Instances ── */
 .float-featured-1 {
   top: 10%;
   right: 5%;
-  background-color: rgba(17,17,17,0.05);
-  color: rgba(17,17,17,0.05);
+  background-color: rgba(17,17,17,0.12);
+  color: rgba(17,17,17,0.12);
 }
 
 .float-featured-2 {
   bottom: 30%;
   left: 3%;
   height: 40px;
-  background-color: rgba(17,17,17,0.04);
-  color: rgba(17,17,17,0.04);
+  background-color: rgba(17,17,17,0.1);
+  color: rgba(17,17,17,0.1);
 }

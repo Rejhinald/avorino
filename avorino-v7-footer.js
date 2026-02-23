@@ -142,22 +142,32 @@
     tl.set(preloader, { background: 'transparent' });
     if (curtain) tl.to(curtain, { yPercent: -100, duration: 1.2, ease: 'power4.inOut' });
     if (heroImage) tl.to(heroImage, { clipPath: 'inset(0%)', scale: 1, duration: 1.8, ease: 'power4.inOut' }, '-=0.8');
-    if (heroTitle) {
-      const vc = splitHeroTitle(heroTitle);
-      tl.to(vc, { opacity: 1, y: 0, rotateX: 0, filter: 'blur(0px)', duration: 1.2, stagger: 0.025, ease: 'power4.out' }, '-=1.2');
-    }
-    if (heroSubtitle) tl.from(heroSubtitle, { opacity: 0, y: 20, duration: 0.8, ease: 'power3.out' }, '-=0.6');
+    // Hero text is delayed 20s — hide it and schedule reveal
+    initDelayedHeroText(heroTitle, heroSubtitle);
   }
 
   // HERO ENTRANCE (no-preloader)
   function initHeroEntrance(heroImage, heroTitle, heroSubtitle) {
     const tl = gsap.timeline({ delay: 0.3 });
     if (heroImage) tl.to(heroImage, { clipPath: 'inset(0%)', scale: 1, duration: 1.8, ease: 'power4.inOut' }, 0);
-    if (heroTitle) {
-      const tc = splitHeroTitle(heroTitle);
-      tl.to(tc, { opacity: 1, y: 0, rotateX: 0, filter: 'blur(0px)', duration: 1.2, stagger: 0.025, ease: 'power4.out' }, 0.6);
+    // Hero text is delayed 20s
+    initDelayedHeroText(heroTitle, heroSubtitle);
+  }
+
+  // HERO TEXT — 20s delayed reveal
+  function initDelayedHeroText(heroTitle, heroSubtitle) {
+    const heroContent = document.querySelector('.hero-content');
+    const heroCta = document.querySelector('.hero-cta-wrap');
+    if (!heroContent) return;
+    // Hide hero content initially
+    gsap.set(heroContent, { opacity: 0, y: 20 });
+    // Reveal after 20 seconds
+    const tl = gsap.timeline({ delay: 20 });
+    tl.to(heroContent, { opacity: 1, y: 0, duration: 1.6, ease: 'power3.out' }, 0);
+    if (heroCta) {
+      gsap.set(heroCta, { opacity: 0, y: 12 });
+      tl.to(heroCta, { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out' }, 0.3);
     }
-    if (heroSubtitle) tl.from(heroSubtitle, { opacity: 0, y: 20, duration: 0.8, ease: 'power3.out' }, '-=0.6');
   }
 
   // SCROLL ANIMATIONS

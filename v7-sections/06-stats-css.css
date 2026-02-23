@@ -105,7 +105,7 @@
   font-size: 11px;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  opacity: 0.4;
+  opacity: 0.55;
   text-align: center;
 }
 
@@ -113,12 +113,12 @@
 .float-stats-1 {
   top: 20%;
   left: 6%;
-  color: rgba(240,237,232,0.04);
+  color: rgba(240,237,232,0.1);
 }
 
 .float-stats-2 {
   bottom: 15%;
   right: 8%;
-  border: 1px solid rgba(240,237,232,0.05);
-  color: rgba(240,237,232,0.05);
+  border: 1px solid rgba(240,237,232,0.12);
+  color: rgba(240,237,232,0.12);
 }

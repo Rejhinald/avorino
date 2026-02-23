@@ -21,18 +21,17 @@
   inset: 0;
 }
 
-.hero-img {
+.hero-video {
   width: 100%;
   height: 100%;
-  background-size: cover;
-  background-position: center;
+  object-fit: cover;
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
   background-color: #000000;
-  opacity: 0.35;
+  opacity: 0.2;
   z-index: 1;
 }
 
@@ -48,25 +47,26 @@
 }
 
 .hero-text {
-  max-width: 680px;
+  max-width: 520px;
 }
 
 .hero-title {
   font-family: 'DM Serif Display', Georgia, serif;
   font-weight: 400;
-  line-height: 1.04;
-  letter-spacing: -0.03em;
-  word-spacing: 0.15em;
+  font-size: clamp(32px, 4vw, 52px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  word-spacing: 0.1em;
   color: #f0ede8;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   perspective: 600px;
 }
 
 .hero-subtitle {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-weight: 400;
-  font-size: 14px;
-  color: rgba(240,237,232,0.45);
+  font-size: 12px;
+  color: rgba(240,237,232,0.6);
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }
@@ -128,19 +128,19 @@
 .float-hero-1 {
   top: 18%;
   right: 12%;
-  color: rgba(240,237,232,0.15);
+  color: rgba(240,237,232,0.35);
 }
 
 .float-hero-2 {
   bottom: 28%;
   right: 22%;
-  background-color: rgba(240,237,232,0.2);
-  color: rgba(240,237,232,0.2);
+  background-color: rgba(240,237,232,0.4);
+  color: rgba(240,237,232,0.4);
 }
 
 .float-hero-3 {
   top: 35%;
   right: 8%;
-  background-color: rgba(240,237,232,0.1);
-  color: rgba(240,237,232,0.1);
+  background-color: rgba(240,237,232,0.25);
+  color: rgba(240,237,232,0.25);
 }
