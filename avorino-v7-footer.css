@@ -80,10 +80,14 @@ ul,ol{list-style:none;margin:0;padding:0}
 /* Tool panel accordion */
 .tool-panel{transition:flex .7s cubic-bezier(.23,1,.32,1)}
 .tool-panel-bg{transition:transform .7s cubic-bezier(.23,1,.32,1)}
+.tool-panel-num{font-family:'DM Serif Display',Georgia,serif;transition:opacity .5s ease}
 .tool-panel-label{transition:opacity .4s ease,transform .4s ease}
-.tool-panel-content{transition:opacity .5s ease .15s,transform .5s cubic-bezier(.23,1,.32,1) .15s}
 .tool-panel-label-text{font-family:'DM Serif Display',Georgia,serif;font-weight:400;color:#f0ede8}
+.tool-visual{transition:opacity .6s ease .1s,transform .6s cubic-bezier(.23,1,.32,1) .1s}
+.tool-panel-content{transition:opacity .5s ease .15s,transform .5s cubic-bezier(.23,1,.32,1) .15s}
 .tool-cta{transition:opacity .3s ease,gap .3s ease,color .3s ease}
+.tv-total-value,.tv-stat-big,.tv-gauge-amount{font-family:'DM Serif Display',Georgia,serif;color:rgba(201,169,110,.85)}
+.tv-label,.tv-total-label,.tv-stat-sub,.tv-bar-label,.tv-gauge-status{font-family:'DM Sans',system-ui,sans-serif}
 
 /* Footer links */
 .footer-col a{transition:opacity .3s ease}
@@ -251,9 +255,11 @@ ul,ol{list-style:none;margin:0;padding:0}
 .tools-accordion{flex-direction:column;height:auto;min-height:0;max-height:none;gap:12px}
 .tool-panel{min-height:80px;flex:none}
 .tool-panel:hover{flex:none}
+.tool-panel-num{display:none}
 .tool-panel-label{position:relative;bottom:auto;left:auto;transform:none;padding:24px 28px}
 .tool-panel-label-text{font-size:18px}
 .tool-panel:hover .tool-panel-label{opacity:1;transform:none}
+.tool-visual{display:none}
 .tool-panel-content{position:relative;padding:0 28px 28px;opacity:1;transform:none;pointer-events:auto;display:none}
 .tool-panel:hover .tool-panel-content{display:block}
 .tool-panel::after{display:none}

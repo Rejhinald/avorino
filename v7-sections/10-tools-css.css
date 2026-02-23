@@ -45,10 +45,10 @@
 /* ── Accordion Container ── */
 .tools-accordion {
   display: flex;
-  gap: 4px;
-  height: 56vh;
-  min-height: 420px;
-  max-height: 640px;
+  gap: 3px;
+  height: 60vh;
+  min-height: 460px;
+  max-height: 680px;
   border-radius: 12px;
   overflow: hidden;
 }
@@ -79,25 +79,46 @@
   transform: scale(1.06);
 }
 
-/* Gradient overlays per card */
+/* Per-panel luxury gradients — warm gold tints */
 .tool-panel[data-tool="cost"] .tool-panel-bg {
-  background: linear-gradient(145deg, rgba(200, 34, 42, 0.2) 0%, rgba(17, 17, 17, 0.95) 60%);
+  background: linear-gradient(165deg, rgba(201, 169, 110, 0.08) 0%, #141414 40%, #0f0f0f 100%);
 }
 
 .tool-panel[data-tool="roi"] .tool-panel-bg {
-  background: linear-gradient(145deg, rgba(42, 63, 78, 0.25) 0%, rgba(17, 17, 17, 0.95) 60%);
+  background: linear-gradient(165deg, rgba(201, 169, 110, 0.06) 0%, #151515 40%, #0f0f0f 100%);
 }
 
 .tool-panel[data-tool="loan"] .tool-panel-bg {
-  background: linear-gradient(145deg, rgba(139, 115, 85, 0.2) 0%, rgba(17, 17, 17, 0.95) 60%);
+  background: linear-gradient(165deg, rgba(201, 169, 110, 0.07) 0%, #141414 40%, #0f0f0f 100%);
 }
 
-/* Subtle border between panels */
+/* Subtle gold border between panels */
 .tool-panel + .tool-panel {
-  border-left: 1px solid rgba(240, 237, 232, 0.06);
+  border-left: 1px solid rgba(201, 169, 110, 0.08);
 }
 
-/* ── Vertical Label (default/collapsed state) ── */
+/* ── Panel Number (large faint watermark) ── */
+.tool-panel-num {
+  position: absolute;
+  top: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-weight: 400;
+  font-size: 72px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: rgba(201, 169, 110, 0.06);
+  z-index: 1;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.tool-panel:hover .tool-panel-num {
+  opacity: 0;
+}
+
+/* ── Vertical Label (collapsed state) ── */
 .tool-panel-label {
   position: absolute;
   bottom: 48px;
@@ -115,7 +136,7 @@
   font-size: 20px;
   letter-spacing: 0.04em;
   color: #f0ede8;
-  opacity: 0.7;
+  opacity: 0.5;
 }
 
 /* Hide label on hover */
@@ -124,7 +145,238 @@
   transform: translateX(-50%) rotate(-90deg) translateY(-20px);
 }
 
-/* ── Expanded Content (hidden by default, revealed on hover) ── */
+/* ═══════════════════════════════════════════════════ */
+/* CSS-ONLY TOOL VISUALS                              */
+/* ═══════════════════════════════════════════════════ */
+.tool-visual {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  padding: 48px 40px 24px;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease 0.1s, transform 0.6s cubic-bezier(0.23, 1, 0.32, 1) 0.1s;
+  pointer-events: none;
+}
+
+.tool-panel:hover .tool-visual {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Shared Visual Elements ── */
+.tv-rule {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(201, 169, 110, 0.2), transparent);
+  margin: 20px 0;
+}
+
+.tv-label {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(240, 237, 232, 0.35);
+}
+
+.tv-value {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 13px;
+  color: rgba(201, 169, 110, 0.7);
+  letter-spacing: 0.02em;
+}
+
+/* ── Cost Calculator Visual ── */
+.tv-cost {
+  width: 100%;
+  max-width: 280px;
+}
+
+.tv-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.tv-slider {
+  width: 100%;
+  height: 2px;
+  background: rgba(240, 237, 232, 0.06);
+  border-radius: 1px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.tv-slider-fill {
+  height: 100%;
+  background: linear-gradient(to right, rgba(201, 169, 110, 0.5), rgba(201, 169, 110, 0.15));
+  border-radius: 1px;
+}
+
+.tv-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.tv-total-label {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(240, 237, 232, 0.4);
+}
+
+.tv-total-value {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 28px;
+  color: rgba(201, 169, 110, 0.85);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+/* ── ROI Calculator Visual ── */
+.tv-roi {
+  width: 100%;
+  max-width: 280px;
+}
+
+.tv-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  height: 140px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(240, 237, 232, 0.06);
+}
+
+.tv-bar-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.tv-bar {
+  width: 100%;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(to top, rgba(201, 169, 110, 0.15), rgba(201, 169, 110, 0.04));
+}
+
+.tv-bar--highlight {
+  background: linear-gradient(to top, rgba(201, 169, 110, 0.45), rgba(201, 169, 110, 0.12));
+}
+
+.tv-bar-label {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(240, 237, 232, 0.25);
+}
+
+.tv-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.tv-stat-big {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 28px;
+  color: rgba(201, 169, 110, 0.85);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.tv-stat-sub {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(240, 237, 232, 0.35);
+}
+
+/* ── Loan Qualifier Visual ── */
+.tv-loan {
+  width: 100%;
+  max-width: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tv-gauge {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  margin-bottom: 4px;
+}
+
+.tv-gauge-track {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(240, 237, 232, 0.06);
+}
+
+.tv-gauge-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: rgba(201, 169, 110, 0.5);
+  border-right-color: rgba(201, 169, 110, 0.35);
+  border-bottom-color: rgba(201, 169, 110, 0.15);
+  transform: rotate(-45deg);
+}
+
+.tv-gauge-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.tv-gauge-status {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(201, 169, 110, 0.6);
+}
+
+.tv-gauge-amount {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 32px;
+  color: rgba(201, 169, 110, 0.85);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+/* ═══════════════════════════════════════════════════ */
+/* EXPANDED CONTENT (bottom of panel)                 */
+/* ═══════════════════════════════════════════════════ */
 .tool-panel-content {
   position: absolute;
   bottom: 0;
@@ -144,7 +396,7 @@
   pointer-events: auto;
 }
 
-/* Gradient overlay at bottom for readability */
+/* Gradient overlay for readability */
 .tool-panel-content::before {
   content: '';
   position: absolute;
@@ -152,25 +404,12 @@
   left: 0;
   right: 0;
   height: 320px;
-  background: linear-gradient(to top, rgba(17, 17, 17, 0.95) 0%, rgba(17, 17, 17, 0.6) 60%, transparent 100%);
+  background: linear-gradient(to top, rgba(15, 15, 15, 0.98) 0%, rgba(15, 15, 15, 0.7) 50%, transparent 100%);
   z-index: -1;
   pointer-events: none;
 }
 
-/* ── Content Elements ── */
-.tool-icon-wrap {
-  width: 48px;
-  height: 48px;
-  margin-bottom: 24px;
-  color: #c8222a;
-  opacity: 0.8;
-}
-
-.tool-icon-svg {
-  width: 100%;
-  height: 100%;
-}
-
+/* ── Content Typography ── */
 .tool-name {
   font-family: 'DM Serif Display', Georgia, serif;
   font-weight: 400;
@@ -186,18 +425,19 @@
   font-size: 15px;
   line-height: 1.7;
   color: #f0ede8;
-  opacity: 0.55;
+  opacity: 0.45;
   margin-bottom: 28px;
   max-width: 320px;
 }
 
 .tool-cta {
   font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
-  letter-spacing: 0.06em;
-  color: #f0ede8;
-  opacity: 0.75;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(201, 169, 110, 0.8);
+  opacity: 0;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -210,7 +450,7 @@
 }
 
 .tool-cta:hover {
-  color: #c8222a;
+  color: #c9a96e;
   gap: 12px;
 }
 
@@ -224,15 +464,15 @@
   transform: translateX(4px);
 }
 
-/* ── Hover accent line at top of active panel ── */
+/* ── Hover accent line — gold gradient ── */
 .tool-panel::after {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
-  background: #c8222a;
+  height: 2px;
+  background: linear-gradient(to right, #c9a96e, rgba(201, 169, 110, 0.3));
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
