@@ -146,28 +146,125 @@
 }
 
 /* ═══════════════════════════════════════════════════ */
-/* CSS-ONLY TOOL VISUALS                              */
+/* COLLAPSED PREVIEWS — narrow-friendly, always visible */
+/* ═══════════════════════════════════════════════════ */
+.tool-preview {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -65%);
+  z-index: 1;
+  opacity: 0.35;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+}
+
+.tool-panel:hover .tool-preview {
+  opacity: 0;
+  transform: translate(-50%, -75%);
+}
+
+/* Cost preview: 3 horizontal lines + dollar sign */
+.tp-cost {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 64px;
+}
+
+.tp-line {
+  height: 2px;
+  background: linear-gradient(to right, rgba(201, 169, 110, 0.5), rgba(201, 169, 110, 0.1));
+  border-radius: 1px;
+}
+
+.tp-symbol {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 36px;
+  color: rgba(201, 169, 110, 0.25);
+  line-height: 1;
+  margin-top: 8px;
+}
+
+/* ROI preview: 4 ascending bars */
+.tp-roi {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 80px;
+  width: 56px;
+}
+
+.tp-bar {
+  flex: 1;
+  border-radius: 2px 2px 0 0;
+  background: rgba(201, 169, 110, 0.15);
+}
+
+.tp-bar--accent {
+  background: rgba(201, 169, 110, 0.35);
+}
+
+/* Loan preview: ring gauge */
+.tp-loan {
+  width: 72px;
+  height: 72px;
+}
+
+.tp-ring {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 2px solid rgba(201, 169, 110, 0.12);
+  position: relative;
+}
+
+.tp-ring::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: rgba(201, 169, 110, 0.35);
+  border-right-color: rgba(201, 169, 110, 0.2);
+  transform: rotate(-45deg);
+}
+
+.tp-ring-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(201, 169, 110, 0.3);
+}
+
+/* ═══════════════════════════════════════════════════ */
+/* CSS-ONLY TOOL VISUALS (expanded state)             */
 /* ═══════════════════════════════════════════════════ */
 .tool-visual {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2;
-  padding: 48px 24px;
-  opacity: 0.5;
-  transform: scale(0.85);
-  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  padding: 48px 40px 24px;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease 0.1s, transform 0.6s cubic-bezier(0.23, 1, 0.32, 1) 0.1s;
   pointer-events: none;
 }
 
 .tool-panel:hover .tool-visual {
   opacity: 1;
-  transform: scale(1) translateY(-15%);
+  transform: translateY(0);
 }
 
 /* ── Shared Visual Elements ── */

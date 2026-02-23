@@ -260,6 +260,7 @@ ul,ol{list-style:none;margin:0;padding:0}
 .tool-panel-label-text{font-size:18px}
 .tool-panel:hover .tool-panel-label{opacity:1;transform:none}
 .tool-visual{display:none}
+.tool-preview{display:none}
 .tool-panel-content{position:relative;padding:0 28px 28px;opacity:1;transform:none;pointer-events:auto;display:none}
 .tool-panel:hover .tool-panel-content{display:block}
 .tool-panel::after{display:none}
