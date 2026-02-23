@@ -1,0 +1,35 @@
+#!/bin/bash
+COLLECTION_ID="6998fed0533149dfcb215079"
+TOKEN="161fea01d2a9b8037f3a68ef6c578a74f9730ed1749565bdcf84d9414cf39ca3"
+API="https://api.webflow.com/v2/collections/$COLLECTION_ID/items"
+
+post() {
+  local result=$(curl -s -X POST "$API" \
+    -H "Authorization: Bearer $TOKEN" \
+    -H "Content-Type: application/json" \
+    -d "$1")
+  local name=$(echo "$result" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('fieldData',{}).get('name','FAILED: '+str(d)))" 2>&1)
+  echo "  $name"
+}
+
+echo "Populating 9 blog posts..."
+
+post '{"isArchived":false,"isDraft":false,"fieldData":{"name":"Maximizing Energy Efficiency in Your Custom Home","slug":"maximizing-energy-efficiency-in-your-custom-home","post-summary":"How to reduce utility costs, improve comfort, and lower environmental impact? Key energy-efficient features to consider.","post-body":"<p>How to reduce utility costs, improve comfort, and lower environmental impact? Key energy-efficient features to consider.</p><p><em>Full article content to be added.</em></p>","author":"Admin Avorino","publish-date":"March 27, 2025","thumbnail-url":"https://static.wixstatic.com/media/11062b_c68182fbfc224eee8aa7825605dcb461~mv2.jpg"}}'
+
+post '{"isArchived":false,"isDraft":false,"fieldData":{"name":"How Potential Tariffs Could Impact the ADU Market","slug":"how-potential-tariffs-could-impact-the-adu-market-and-micro-construction-industry","post-summary":"This will help you understand how the potential tariff will affect building ADU in your property.","post-body":"<p>This will help you understand how the potential tariff will affect building ADU in your property.</p><p><em>Full article content to be added.</em></p>","author":"Admin Avorino","publish-date":"February 19, 2025","thumbnail-url":"https://static.wixstatic.com/media/11062b_b4fd5956141849c781c58d3c109c145c~mv2.jpeg"}}'
+
+post '{"isArchived":false,"isDraft":false,"fieldData":{"name":"Rebuilding After Fire: A Chance to Build Luxurious, Safe, and Sustainable Custom Homes","slug":"rebuilding-after-fire-a-chance-to-build-luxurious-safe-and-sustainable-custom-homes","post-summary":"The opportunity to rebuild after the wildfire comes with the chance to reimagine your home and tailor it to your lifestyle.","post-body":"<p>The opportunity to rebuild after the wildfire comes with the chance to reimagine your home and tailor it to your lifestyle.</p><p><em>Full article content to be added.</em></p>","author":"Admin Avorino","publish-date":"February 10, 2025","thumbnail-url":"https://static.wixstatic.com/media/b3a9a1_2f5f778c7e124ff79f87a3062380b07d~mv2.jpg"}}'
+
+post '{"isArchived":false,"isDraft":false,"fieldData":{"name":"Custom Home Builder Orange County: Custom vs Spec Homes Explained","slug":"custom-home-builder-orange-county-custom-vs-spec-homes-explained","post-summary":"Compare custom vs spec homes in Orange County. Hire a trusted custom home builder Orange County to build your dream home today.","post-body":"<p>Compare custom vs spec homes in Orange County. Hire a trusted custom home builder Orange County to build your dream home today.</p><p><em>Full article content to be added.</em></p>","author":"Avorino","publish-date":"February 7, 2025","thumbnail-url":"https://static.wixstatic.com/media/5a3eca_aa34e6b7a8d441f4b5b4527332cda458~mv2.png"}}'
+
+post '{"isArchived":false,"isDraft":false,"fieldData":{"name":"Wildfire-Resistant Landscaping for Custom Homes","slug":"wildfire-resistant-landscaping-for-custom-homes","post-summary":"Wildfires are a growing concern in many regions. Creating a landscape that prioritizes safety without compromising beauty is essential.","post-body":"<p>Wildfires are a growing concern in many regions. For custom homeowners, creating a landscape that prioritizes safety without compromising beauty is essential.</p><p><em>Full article content to be added.</em></p>","author":"Admin Avorino","publish-date":"January 31, 2025","thumbnail-url":"https://static.wixstatic.com/media/06e87b_392f96af6f4f49ebb9d5fa4378a5ea81~mv2.jpg"}}'
+
+post '{"isArchived":false,"isDraft":false,"fieldData":{"name":"Shaping the Future of Construction: The Fascinating Impact of 3D Renderings on ADU Projects","slug":"shaping-the-future-of-construction-the-fascinating-impact-of-3d-renderings-on-adu-projects","post-summary":"In the dynamic landscape of home expansion and construction, 3D renderings have emerged as a game-changer for ADUs in Orange County.","post-body":"<p>In the dynamic landscape of home expansion and construction, the advent of 3D renderings has emerged as a game-changer for ADUs in Orange County, CA.</p><p><em>Full article content to be added.</em></p>","author":"Avo Rino","publish-date":"March 31, 2024","thumbnail-url":"https://static.wixstatic.com/media/06e87b_663ad4dffe8149ebadf65a1102e6cc8e~mv2.jpg"}}'
+
+post '{"isArchived":false,"isDraft":false,"fieldData":{"name":"Avorino Guide to ADU Construction in Orange County: What You Need to Know","slug":"avorino-s-guide-to-adu-construction-in-orange-county-what-you-need-to-know","post-summary":"Learn everything about ADU construction in Orange County with Avorino. From foundation to finish, increase property value and rental income.","post-body":"<p>Learn everything about ADU construction in Orange County with Avorino. From foundation to finish, increase property value and rental income.</p><p><em>Full article content to be added.</em></p>","author":"Avorino","publish-date":"July 19, 2023","thumbnail-url":"https://static.wixstatic.com/media/e962d0f54c71471b8962607de56eaaff.jpg"}}'
+
+post '{"isArchived":false,"isDraft":false,"fieldData":{"name":"Understanding the Process of Obtaining Building Permits in Orange County, CA","slug":"understanding-the-process-of-obtaining-building-permits-in-orange-county-ca","post-summary":"Building permits are essential documents that ensure compliance with local regulations and the safety of structures being built or modified.","post-body":"<p>Building permits are essential documents that ensure compliance with local regulations and the safety of structures being built or modified.</p><p><em>Full article content to be added.</em></p>","author":"Avo Rino","publish-date":"May 21, 2023","thumbnail-url":"https://static.wixstatic.com/media/06e87b_2cca91b00cde44908ed48a8c9d49664b~mv2.png"}}'
+
+post '{"isArchived":false,"isDraft":false,"fieldData":{"name":"How to Choose the Right Construction Company for Your Project: Why Avorino is the Right Choice in OC","slug":"how-to-choose-the-right-construction-company-for-your-project-why-avorino-is-the-right-choice-in-oc","post-summary":"Choosing the right construction company for your project is a crucial decision that can greatly impact the outcome and success of your endeavor.","post-body":"<p>Choosing the right construction company for your project is a crucial decision that can greatly impact the outcome and success of your construction endeavor.</p><p><em>Full article content to be added.</em></p>","author":"Avo Rino","publish-date":"May 20, 2023","thumbnail-url":"https://static.wixstatic.com/media/06e87b_e22f81b1a1844287bd57f2db7ff2d2fa~mv2.jpg"}}'
+
+echo "Done!"
