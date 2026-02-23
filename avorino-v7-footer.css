@@ -20,8 +20,8 @@ ul,ol{list-style:none;margin:0;padding:0}
 
 
 /* RESPONSIVE TYPOGRAPHY (clamp) */
-.hero-word{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(40px,6.5vw,96px);line-height:1.08;letter-spacing:-.03em;color:#f0ede8}
 .hero-scroll-text{font-family:'DM Sans',system-ui,sans-serif;color:rgba(240,237,232,.45)}
+.hero-subtitle{font-family:'DM Sans',system-ui,sans-serif;color:rgba(240,237,232,.6)}
 .about-heading{display:block;font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(44px,5.5vw,80px);line-height:1.06;letter-spacing:-.025em;max-width:580px}
 .process-heading,.testimonials-heading,.tools-heading,.cta-title{font-size:clamp(40px,4.5vw,64px)}
 .process-step-title,.process-slide-title,.featured-panel-title{font-size:clamp(28px,3vw,44px)}
@@ -203,8 +203,7 @@ ul,ol{list-style:none;margin:0;padding:0}
 .service-number{margin-bottom:20px}
 .stats-grid{grid-template-columns:repeat(2,1fr);gap:48px}
 .footer-top{grid-template-columns:1fr 1fr;gap:48px}
-.hero-content{padding:0 32px}
-.hero-word{font-size:clamp(36px,7vw,72px)}
+.hero-content{left:32px;bottom:32px}
 .featured-panel{margin-left:32px;margin-right:32px}
 .featured-grid{grid-template-columns:1fr;gap:24px}
 .featured-grid-card{height:38vh;min-height:260px;max-height:380px}
@@ -225,8 +224,7 @@ ul,ol{list-style:none;margin:0;padding:0}
 .section-pad,.about,.stats,.featured,.process,.testimonials,.tools,.footer{padding-left:24px;padding-right:24px}
 .about,.featured,.process,.testimonials,.tools{padding-top:80px;padding-bottom:80px}
 .hero{padding:16px;height:calc(100vh - 56px)}
-.hero-content{padding:0 24px}
-.hero-word{font-size:clamp(32px,9vw,56px)}
+.hero-content{left:24px;bottom:24px}
 .hero-subtitle{font-size:11px;letter-spacing:.2em}
 .hero-scroll-indicator{bottom:20px}
 .cta-section{padding:16px}
@@ -293,10 +291,8 @@ ul,ol{list-style:none;margin:0;padding:0}
 @media(max-width:479px){
 .nav-spacer{height:48px}
 .hero{height:calc(100vh - 48px);padding:12px}
-.hero-content{padding:0 16px}
-.hero-word{font-size:clamp(28px,10vw,44px)}
-.hero-subtitle{font-size:10px;margin-bottom:28px}
-.hero-text-center{margin-bottom:24px}
+.hero-content{left:16px;bottom:20px}
+.hero-subtitle{font-size:10px}
 .hero-scroll-indicator{bottom:16px}
 .hero-scroll-line{height:32px}
 .about,.featured,.process,.testimonials,.tools{padding-top:64px;padding-bottom:64px;padding-left:16px;padding-right:16px}

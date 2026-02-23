@@ -35,7 +35,7 @@
       el.addEventListener('mouseenter', () => cursorRing.classList.add('hover-link'));
       el.addEventListener('mouseleave', () => cursorRing.classList.remove('hover-link'));
     });
-    document.querySelectorAll('.hero-image, .featured-image-wrap, .service-card-image').forEach(el => {
+    document.querySelectorAll('.hero-container, .featured-image-wrap, .service-card-image').forEach(el => {
       el.addEventListener('mouseenter', () => {
         cursorRing.classList.add('hover-image');
         cursorRing.classList.remove('hover-link');
@@ -59,14 +59,12 @@
   function initPreloader() {
     const preloader = document.querySelector('.preloader');
     const curtain = document.querySelector('.preloader-curtain');
-    const heroImage = document.querySelector('.hero-image');
-    if (heroImage) gsap.set(heroImage, { clipPath: 'inset(6%)', scale: 1.25 });
     gsap.set('.preloader-char', { opacity: 0, y: 60, rotateX: -90, filter: 'blur(4px)' });
     if (preloader) gsap.set(preloader, { display: 'flex' });
 
     if (!preloader) {
       initScrollAnimations();
-      initHeroEntrance(heroImage);
+      initHeroEntrance();
       return;
     }
 
@@ -82,89 +80,63 @@
     tl.to(chars, { y: -60, opacity: 0, duration: 0.4, stagger: 0.01, ease: 'power3.in' });
     tl.set(preloader, { background: 'transparent' });
     if (curtain) tl.to(curtain, { yPercent: -100, duration: 1.2, ease: 'power4.inOut' });
-    if (heroImage) tl.to(heroImage, { clipPath: 'inset(0%)', scale: 1, duration: 1.8, ease: 'power4.inOut' }, '-=0.8');
-    // Hero text entrance (staggered word rows)
-    initHeroTextEntrance();
+    initHeroContentEntrance();
   }
 
   // HERO ENTRANCE (no-preloader fallback)
-  function initHeroEntrance(heroImage) {
-    const tl = gsap.timeline({ delay: 0.3 });
-    if (heroImage) tl.to(heroImage, { clipPath: 'inset(0%)', scale: 1, duration: 1.8, ease: 'power4.inOut' }, 0);
-    initHeroTextEntrance();
+  function initHeroEntrance() {
+    initHeroContentEntrance();
   }
 
-  // HERO TEXT — staggered entrance + scroll-driven parallax
-  function initHeroTextEntrance() {
+  // HERO CONTENT — subtitle + CTA entrance + scroll-driven effects
+  function initHeroContentEntrance() {
     const heroContent = document.querySelector('[data-el="hero-content"]');
-    const rows = document.querySelectorAll('[data-hero-row]');
     const subtitle = document.querySelector('[data-el="hero-subtitle"]');
     const cta = document.querySelector('[data-el="hero-cta"]');
     const scrollIndicator = document.querySelector('[data-el="hero-scroll"]');
-    const heroImage = document.querySelector('.hero-image');
+    const heroVideo = document.querySelector('.hero-container video');
     if (!heroContent) return;
 
     // Set initial states
-    rows.forEach(row => {
-      gsap.set(row.querySelector('.hero-word'), { opacity: 0, y: 60, filter: 'blur(6px)' });
-    });
-    if (subtitle) gsap.set(subtitle, { opacity: 0, y: 20 });
-    if (cta) gsap.set(cta, { opacity: 0, y: 20 });
+    if (subtitle) gsap.set(subtitle, { opacity: 0, x: -20 });
+    if (cta) gsap.set(cta, { opacity: 0, x: -20 });
     if (scrollIndicator) gsap.set(scrollIndicator, { opacity: 0 });
 
-    // Staggered entrance timeline
+    // Entrance timeline
     const tl = gsap.timeline({ delay: 0.6 });
 
-    rows.forEach((row, i) => {
-      const word = row.querySelector('.hero-word');
-      tl.to(word, {
-        opacity: 1, y: 0, filter: 'blur(0px)',
-        duration: 1.2, ease: 'power4.out'
-      }, i * 0.15);
-    });
-
     if (subtitle) {
-      tl.to(subtitle, { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, 0.5);
+      tl.to(subtitle, { opacity: 1, x: 0, duration: 1, ease: 'power3.out' }, 0);
     }
     if (cta) {
-      tl.to(cta, { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, 0.7);
+      tl.to(cta, { opacity: 1, x: 0, duration: 1, ease: 'power3.out' }, 0.2);
     }
     if (scrollIndicator) {
-      tl.to(scrollIndicator, { opacity: 1, duration: 1.5, ease: 'power2.out' }, 1.2);
+      tl.to(scrollIndicator, { opacity: 1, duration: 1.5, ease: 'power2.out' }, 0.8);
     }
 
-    // SCROLL-DRIVEN PARALLAX — each row moves up at a different speed
+    // SCROLL-DRIVEN EFFECTS (desktop only)
     if (window.innerWidth > 767) {
       const hero = document.querySelector('.hero');
       if (!hero) return;
 
-      rows.forEach((row, i) => {
-        const speed = 80 + i * 40; // row 0: 80px, row 1: 120px, row 2: 160px
-        gsap.to(row, {
-          y: -speed, ease: 'none',
-          scrollTrigger: {
-            trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.6
-          }
-        });
-      });
-
-      // Subtitle and CTA parallax (faster, fades out)
+      // Subtitle and CTA fade out on scroll
       if (subtitle) {
         gsap.to(subtitle, {
-          y: -200, opacity: 0, ease: 'none',
-          scrollTrigger: { trigger: hero, start: 'top top', end: '60% top', scrub: 0.6 }
+          y: -80, opacity: 0, ease: 'none',
+          scrollTrigger: { trigger: hero, start: 'top top', end: '50% top', scrub: 0.6 }
         });
       }
       if (cta) {
         gsap.to(cta, {
-          y: -180, opacity: 0, ease: 'none',
-          scrollTrigger: { trigger: hero, start: 'top top', end: '50% top', scrub: 0.6 }
+          y: -60, opacity: 0, ease: 'none',
+          scrollTrigger: { trigger: hero, start: 'top top', end: '40% top', scrub: 0.6 }
         });
       }
 
-      // Hero image scale on scroll (subtle zoom)
-      if (heroImage) {
-        gsap.to(heroImage, {
+      // Video subtle zoom on scroll
+      if (heroVideo) {
+        gsap.to(heroVideo, {
           scale: 1.08, ease: 'none',
           scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.6 }
         });

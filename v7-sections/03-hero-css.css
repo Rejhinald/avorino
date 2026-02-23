@@ -16,12 +16,14 @@
   overflow: hidden;
 }
 
-.hero-image {
+/* Webflow Background Video — ensure it fills the hero container */
+.hero-container .w-background-video {
   position: absolute;
   inset: 0;
+  z-index: 0;
 }
 
-.hero-video {
+.hero-container .w-background-video video {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -35,37 +37,16 @@
   z-index: 1;
 }
 
-/* ── Centered Content Layout ── */
+/* ── Bottom-Left Content ── */
 .hero-content {
   position: absolute;
-  inset: 0;
+  bottom: 48px;
+  left: 48px;
+  z-index: 2;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
-  text-align: center;
-  padding: 0 48px;
-}
-
-.hero-text-center {
-  margin-bottom: 32px;
-}
-
-/* ── Word Rows (scroll parallax targets) ── */
-.hero-word-row {
-  overflow: hidden;
-}
-
-.hero-word {
-  display: block;
-  font-family: 'DM Serif Display', Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(40px, 6.5vw, 96px);
-  line-height: 1.08;
-  letter-spacing: -0.03em;
-  color: #f0ede8;
-  will-change: transform, opacity;
+  align-items: flex-start;
+  gap: 24px;
 }
 
 /* ── Subtitle ── */
@@ -76,7 +57,6 @@
   color: rgba(240, 237, 232, 0.6);
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  margin-bottom: 40px;
 }
 
 /* ── CTA ── */
