@@ -39,9 +39,40 @@ ul,ol{list-style:none;margin:0;padding:0}
 .service-card--warm::after{background:linear-gradient(to bottom,rgba(139,115,85,.02) 0%,rgba(139,115,85,.15) 40%,rgba(139,115,85,.82) 100%)}
 .featured-grid-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(17,17,17,0) 0%,rgba(17,17,17,.1) 40%,rgba(17,17,17,.75) 100%);z-index:1;transition:opacity .5s ease}
 .hero-overlay{background:linear-gradient(to bottom,rgba(0,0,0,.02) 0%,rgba(0,0,0,.35) 100%);opacity:1}
+/* Floating elements — base + shapes */
+.float-el{position:absolute;pointer-events:none;z-index:1;opacity:0}
+.float-el--line{width:1px;height:48px}
+.float-el--cross{width:14px;height:14px}
+.float-el--dot{width:5px;height:5px;border-radius:50%}
+.float-el--ring{width:18px;height:18px;border-radius:50%}
 .float-el--cross::before,.float-el--cross::after{content:'';position:absolute;background:currentColor}
 .float-el--cross::before{width:14px;height:1px;top:50%;left:0}
 .float-el--cross::after{width:1px;height:14px;left:50%;top:0}
+/* Float positions — Hero */
+.float-hero-1{top:18%;right:12%;color:rgba(240,237,232,.35)}
+.float-hero-2{bottom:28%;right:22%;background-color:rgba(240,237,232,.4);color:rgba(240,237,232,.4)}
+.float-hero-3{top:35%;right:8%;background-color:rgba(240,237,232,.25);color:rgba(240,237,232,.25)}
+/* Float positions — About */
+.float-about-1{top:15%;right:6%;border:1px solid rgba(17,17,17,.15);color:rgba(17,17,17,.15)}
+.float-about-2{bottom:20%;left:4%;color:rgba(17,17,17,.12)}
+/* Float positions — Stats */
+.float-stats-1{top:20%;left:6%;color:rgba(240,237,232,.1)}
+.float-stats-2{bottom:15%;right:8%;border:1px solid rgba(240,237,232,.12);color:rgba(240,237,232,.12)}
+/* Float positions — Featured */
+.float-featured-1{top:10%;right:5%;background-color:rgba(17,17,17,.12);color:rgba(17,17,17,.12)}
+.float-featured-2{bottom:30%;left:3%;height:40px;background-color:rgba(17,17,17,.1);color:rgba(17,17,17,.1)}
+/* Float positions — Process */
+.float-process-1{top:12%;right:10%;background-color:rgba(17,17,17,.14);color:rgba(17,17,17,.14)}
+.float-process-2{bottom:18%;right:5%;height:32px;background-color:rgba(17,17,17,.12);color:rgba(17,17,17,.12)}
+/* Float positions — Testimonials */
+.float-testimonials-1{top:15%;left:5%;color:rgba(17,17,17,.12)}
+.float-testimonials-2{bottom:20%;right:8%;background-color:rgba(17,17,17,.12);color:rgba(17,17,17,.12)}
+/* Float positions — Tools */
+.float-tools-1{top:18%;right:7%;border:1px solid rgba(240,237,232,.1);color:rgba(240,237,232,.1)}
+.float-tools-2{bottom:22%;left:6%;height:36px;background-color:rgba(240,237,232,.1);color:rgba(240,237,232,.1)}
+/* Float positions — CTA */
+.float-cta-1{top:22%;left:8%;color:rgba(240,237,232,.18)}
+.float-cta-2{bottom:25%;right:10%;border:1px solid rgba(240,237,232,.14);color:rgba(240,237,232,.14)}
 .testimonial-dot::before{content:'';position:absolute;inset:-10px}
 
 /* TRANSITIONS & TRANSFORMS */
