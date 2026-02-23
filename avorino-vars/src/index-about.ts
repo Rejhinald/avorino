@@ -8,7 +8,6 @@ import {
   safeCall, getAvorinVars, getOrCreateStyle, freshStyle,
   clearAndSet, createSharedStyles, setSharedStyleProps,
   createAllVariables, createPageWithSlug,
-  buildCTASection, applyCTAStyleProps,
   CALENDLY_CSS, CALENDLY_JS,
 } from './shared.js';
 
@@ -16,7 +15,7 @@ import {
 const PAGE_NAME = 'About';
 const PAGE_SLUG = 'about';
 const PAGE_TITLE = 'About Avorino — Custom Home & ADU Builder in Orange County';
-const PAGE_DESC = 'Learn about Avorino, a custom home and ADU builder in Orange County since 2010. Exceptional craftsmanship, innovative design, and unwavering commitment to quality.';
+const PAGE_DESC = 'Learn about Avorino, a custom home and ADU builder in Orange County since 2023. Exceptional craftsmanship, innovative design, and unwavering commitment to quality.';
 const HEAD_CODE = [
   '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@5a18436/avorino-about-head.css">',
   CALENDLY_CSS,
@@ -27,7 +26,7 @@ const FOOTER_CODE = [
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
   '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
   '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@5a18436/avorino-about-footer.js"><\/script>',
-  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@5a18436/avorino-about-process3d.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@5a18436/avorino-about-values3d.js"><\/script>',
   '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@5a18436/avorino-animations.js"><\/script>',
   CALENDLY_JS,
 ].join('\n');
@@ -67,27 +66,34 @@ async function buildAboutPage() {
   const cardHeading = await getOrCreateStyle('about-card-heading');
   const cardBody = await getOrCreateStyle('about-card-body');
   const labelLine = await getOrCreateStyle('about-label-line');
+
+  // Stats — flip-clock styles
   const statsGrid = await getOrCreateStyle('about-stats-grid');
   const statItem = await getOrCreateStyle('about-stat-item');
-  const statNumber = await getOrCreateStyle('about-stat-number');
+  const statDigits = await getOrCreateStyle('about-stat-digits');
+  const flipCard = await getOrCreateStyle('about-flip-card');
+  const flipCardInner = await getOrCreateStyle('about-flip-card-inner');
+  const flipCardTop = await getOrCreateStyle('about-flip-card-top');
+  const flipCardBottom = await getOrCreateStyle('about-flip-card-bottom');
+  const statSuffix = await getOrCreateStyle('about-stat-suffix');
+  const statSeparator = await getOrCreateStyle('about-stat-separator');
   const statLabel = await getOrCreateStyle('about-stat-label');
+
+  // Values — grid + canvas
+  const valuesCanvasWrap = await getOrCreateStyle('about-values-canvas-wrap');
+  const valuesGrid = await getOrCreateStyle('about-values-grid');
+  const valuesCard = await getOrCreateStyle('about-values-card');
   const valueNumber = await getOrCreateStyle('about-value-num');
   const valueTitle = await getOrCreateStyle('about-value-title');
   const valueDesc = await getOrCreateStyle('about-value-desc');
-  const valuesZigzag = await getOrCreateStyle('about-values-zigzag');
-  const valuesRow = await getOrCreateStyle('about-values-row');
-  const valuesCard = await getOrCreateStyle('about-values-card');
-  const valuesSpacer = await getOrCreateStyle('about-values-spacer');
-  const valuesSnakeAnchor = await getOrCreateStyle('about-values-snake-anchor');
-  const processPinned = await getOrCreateStyle('about-process-pinned');
-  const processVisual = await getOrCreateStyle('about-process-visual');
-  const processFx = await getOrCreateStyle('about-process-fx');
-  const processCards = await getOrCreateStyle('about-process-cards');
-  const processCard = await getOrCreateStyle('about-process-card');
-  const processCardNum = await getOrCreateStyle('about-process-card-num');
-  const processCardTitle = await getOrCreateStyle('about-process-card-title');
-  const processCardBody = await getOrCreateStyle('about-process-card-body');
-  const processNav = await getOrCreateStyle('about-process-nav');
+
+  // CTA — custom build
+  const ctaSection = await getOrCreateStyle('av-cta');
+  const ctaContainer = await getOrCreateStyle('av-cta-container');
+  const ctaBg = await getOrCreateStyle('av-cta-bg');
+  const ctaContent = await getOrCreateStyle('av-cta-content');
+  const ctaHeading = await getOrCreateStyle('av-cta-heading');
+  const ctaBtn = await getOrCreateStyle('av-cta-btn');
 
   // Create page
   const { body } = await createPageWithSlug(PAGE_NAME, PAGE_SLUG, PAGE_TITLE, PAGE_DESC);
@@ -154,18 +160,72 @@ async function buildAboutPage() {
     await clearAndSet(await freshStyle('about-label-line'), 'about-label-line', { 'flex-grow': '1', 'height': '1px', 'background-color': v['av-dark-15'] });
     await wait(500);
 
+    // Stats — flip-clock styles
     await clearAndSet(await freshStyle('about-stats-grid'), 'about-stats-grid', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr 1fr', 'grid-column-gap': '64px', 'grid-row-gap': '64px', 'text-align': 'center',
+      'display': 'grid', 'grid-template-columns': '1fr 1fr 1fr 1fr', 'grid-column-gap': '64px', 'grid-row-gap': '64px',
     });
-    await clearAndSet(await freshStyle('about-stat-item'), 'about-stat-item', { 'display': 'flex', 'flex-direction': 'column', 'align-items': 'center' });
-    await clearAndSet(await freshStyle('about-stat-number'), 'about-stat-number', {
-      'font-family': 'DM Serif Display', 'font-size': 'clamp(64px, 8vw, 120px)', 'line-height': '1', 'letter-spacing': '-0.03em', 'font-weight': '400', 'color': v['av-cream'], 'margin-bottom': '16px',
+    await clearAndSet(await freshStyle('about-stat-item'), 'about-stat-item', {
+      'display': 'flex', 'flex-direction': 'column', 'align-items': 'center', 'grid-row-gap': '24px', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
+    });
+    await clearAndSet(await freshStyle('about-stat-digits'), 'about-stat-digits', {
+      'display': 'flex', 'align-items': 'center', 'grid-column-gap': '6px',
+    });
+    await clearAndSet(await freshStyle('about-flip-card'), 'about-flip-card', {
+      'position': 'relative', 'width': '72px', 'height': '96px',
+    });
+    await clearAndSet(await freshStyle('about-flip-card-inner'), 'about-flip-card-inner', {
+      'position': 'relative', 'width': '100%', 'height': '100%',
+    });
+    await clearAndSet(await freshStyle('about-flip-card-top'), 'about-flip-card-top', {
+      'font-family': 'DM Serif Display', 'font-weight': '400',
+      'position': 'absolute', 'width': '100%', 'height': '50%',
+      'overflow-x': 'hidden', 'overflow-y': 'hidden',
+      'display': 'flex', 'justify-content': 'center', 'align-items': 'flex-start',
+      'font-size': '48px', 'color': v['av-cream'], 'background-color': '#1a1a1a',
+      'padding-top': '2px',
+      'border-top-left-radius': '6px', 'border-top-right-radius': '6px',
+      'border-bottom-left-radius': '0px', 'border-bottom-right-radius': '0px',
+    });
+    await clearAndSet(await freshStyle('about-flip-card-bottom'), 'about-flip-card-bottom', {
+      'font-family': 'DM Serif Display', 'font-weight': '400',
+      'position': 'absolute', 'width': '100%', 'height': '50%',
+      'overflow-x': 'hidden', 'overflow-y': 'hidden',
+      'display': 'flex', 'justify-content': 'center', 'align-items': 'flex-end',
+      'font-size': '48px', 'color': v['av-cream'], 'background-color': '#1a1a1a',
+      'padding-bottom': '2px', 'bottom': '0px',
+      'border-top-left-radius': '0px', 'border-top-right-radius': '0px',
+      'border-bottom-left-radius': '6px', 'border-bottom-right-radius': '6px',
+    });
+    await clearAndSet(await freshStyle('about-stat-suffix'), 'about-stat-suffix', {
+      'font-family': 'DM Serif Display', 'font-weight': '400',
+      'font-size': '36px', 'color': v['av-cream'], 'opacity': '0', 'margin-left': '4px',
+    });
+    await clearAndSet(await freshStyle('about-stat-separator'), 'about-stat-separator', {
+      'font-family': 'DM Serif Display', 'font-weight': '400',
+      'font-size': '36px', 'color': v['av-cream'], 'opacity': '0',
+      'margin-bottom': '12px',
     });
     await clearAndSet(await freshStyle('about-stat-label'), 'about-stat-label', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-sm'], 'letter-spacing': '0.15em', 'text-transform': 'uppercase', 'opacity': '0.4', 'color': v['av-cream'],
+      'font-family': 'DM Sans', 'font-size': '11px', 'letter-spacing': '0.25em', 'text-transform': 'uppercase', 'opacity': '0.55', 'text-align': 'center', 'color': v['av-cream'],
     });
     await wait(500);
 
+    // Values — grid + canvas
+    await clearAndSet(await freshStyle('about-values-canvas-wrap'), 'about-values-canvas-wrap', {
+      'position': 'absolute', 'top': '0px', 'left': '0px', 'width': '100%', 'height': '100%', 'z-index': '1', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
+    });
+    await clearAndSet(await freshStyle('about-values-grid'), 'about-values-grid', {
+      'display': 'grid', 'grid-template-columns': '1fr 1fr', 'grid-column-gap': '32px', 'grid-row-gap': '32px',
+      'position': 'relative', 'z-index': '2',
+    });
+    await clearAndSet(await freshStyle('about-values-card'), 'about-values-card', {
+      'background-color': 'rgba(17,17,17,0.85)', 'color': v['av-cream'],
+      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
+      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
+      'padding-top': '48px', 'padding-bottom': '48px',
+      'padding-left': '40px', 'padding-right': '40px',
+      'position': 'relative', 'z-index': '2',
+    });
     await clearAndSet(await freshStyle('about-value-num'), 'about-value-num', {
       'font-family': 'DM Serif Display', 'font-size': '56px',
       'line-height': '1', 'opacity': '0.07', 'margin-bottom': '24px', 'color': v['av-cream'],
@@ -178,72 +238,49 @@ async function buildAboutPage() {
       'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
       'line-height': '1.7', 'opacity': '0.5', 'color': v['av-cream'],
     });
-    await clearAndSet(await freshStyle('about-values-zigzag'), 'about-values-zigzag', {
-      'display': 'flex', 'flex-direction': 'column', 'position': 'relative',
-    });
-    await clearAndSet(await freshStyle('about-values-row'), 'about-values-row', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr',
-      'grid-column-gap': '64px', 'align-items': 'center',
-      'padding-top': '32px', 'padding-bottom': '32px',
-    });
-    await clearAndSet(await freshStyle('about-values-card'), 'about-values-card', {
-      'background-color': v['av-dark'], 'color': v['av-cream'],
-      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
-      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
-      'padding-top': '48px', 'padding-bottom': '48px',
-      'padding-left': '40px', 'padding-right': '40px',
-      'position': 'relative', 'z-index': '2',
-    });
-    await clearAndSet(await freshStyle('about-values-spacer'), 'about-values-spacer', { 'min-height': '1px' });
-    await clearAndSet(await freshStyle('about-values-snake-anchor'), 'about-values-snake-anchor', {
-      'position': 'absolute', 'top': '0px', 'left': '0px', 'width': '100%', 'height': '100%', 'z-index': '1',
-    });
-
-    // Process section
-    await clearAndSet(await freshStyle('about-process-pinned'), 'about-process-pinned', {
-      'position': 'relative', 'width': '100vw', 'height': '100vh',
-      'overflow-x': 'hidden', 'overflow-y': 'hidden',
-    });
-    await clearAndSet(await freshStyle('about-process-visual'), 'about-process-visual', {
-      'position': 'absolute', 'top': '0px', 'left': '0px', 'width': '100%', 'height': '100%',
-    });
-    await clearAndSet(await freshStyle('about-process-fx'), 'about-process-fx', {
-      'position': 'absolute', 'top': '0px', 'left': '0px', 'width': '100%', 'height': '100%',
-      'z-index': '2', 'pointer-events': 'none',
-    });
-    await clearAndSet(await freshStyle('about-process-cards'), 'about-process-cards', {
-      'position': 'absolute', 'top': '0px', 'left': '0px', 'width': '100%', 'height': '100%',
-      'display': 'flex', 'align-items': 'center', 'justify-content': 'center', 'z-index': '3',
-    });
-    await clearAndSet(await freshStyle('about-process-card'), 'about-process-card', {
-      'position': 'absolute', 'top': '50%', 'left': '50%',
-      'max-width': '500px', 'width': '90%',
-      'background-color': v['av-dark'], 'color': v['av-cream'],
-      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
-      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
-      'padding-top': '48px', 'padding-bottom': '48px',
-      'padding-left': '40px', 'padding-right': '40px',
-    });
-    await clearAndSet(await freshStyle('about-process-card-num'), 'about-process-card-num', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
-      'letter-spacing': '0.25em', 'text-transform': 'uppercase',
-      'opacity': '0.4', 'margin-bottom': '16px', 'color': v['av-cream'],
-    });
-    await clearAndSet(await freshStyle('about-process-card-title'), 'about-process-card-title', {
-      'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
-      'line-height': '1.2', 'font-weight': '400', 'margin-bottom': '16px', 'color': v['av-cream'],
-    });
-    await clearAndSet(await freshStyle('about-process-card-body'), 'about-process-card-body', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
-      'line-height': '1.8', 'opacity': '0.6', 'color': v['av-cream'],
-    });
-    await clearAndSet(await freshStyle('about-process-nav'), 'about-process-nav', {
-      'position': 'absolute', 'bottom': '40px', 'left': '50%',
-      'z-index': '4', 'text-align': 'center',
-    });
     await wait(500);
 
-    await applyCTAStyleProps(v);
+    // CTA styles
+    await clearAndSet(await freshStyle('av-cta'), 'av-cta', {
+      'padding-top': v['av-page-pad'], 'padding-bottom': v['av-page-pad'],
+      'padding-left': v['av-page-pad'], 'padding-right': v['av-page-pad'],
+    });
+    await clearAndSet(await freshStyle('av-cta-container'), 'av-cta-container', {
+      'background-color': v['av-dark'], 'color': v['av-cream'],
+      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
+      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
+      'min-height': '56vh',
+      'padding-top': v['av-gap-lg'], 'padding-bottom': v['av-gap-lg'],
+      'padding-left': v['av-gap-md'], 'padding-right': v['av-gap-md'],
+      'display': 'flex', 'flex-direction': 'column', 'align-items': 'center', 'justify-content': 'center',
+      'text-align': 'center', 'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
+    });
+    await clearAndSet(await freshStyle('av-cta-bg'), 'av-cta-bg', {
+      'position': 'absolute', 'top': '0px', 'left': '0px', 'right': '0px', 'bottom': '0px',
+      'opacity': '0.2',
+    });
+    await clearAndSet(await freshStyle('av-cta-content'), 'av-cta-content', {
+      'position': 'relative', 'z-index': '2',
+      'padding-top': '64px', 'padding-bottom': '64px',
+      'padding-left': '64px', 'padding-right': '64px',
+    });
+    await clearAndSet(await freshStyle('av-cta-heading'), 'av-cta-heading', {
+      'font-family': 'DM Serif Display', 'font-size': v['av-text-h2'],
+      'line-height': '1.08', 'letter-spacing': '-0.02em', 'font-weight': '400',
+      'margin-bottom': v['av-gap-sm'], 'max-width': '10em', 'color': v['av-cream'],
+      'margin-left': 'auto', 'margin-right': 'auto',
+    });
+    await clearAndSet(await freshStyle('av-cta-btn'), 'av-cta-btn', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
+      'font-weight': '500', 'letter-spacing': '0.04em',
+      'display': 'inline-flex', 'align-items': 'center', 'grid-column-gap': '12px',
+      'color': v['av-dark'], 'background-color': v['av-cream'],
+      'padding-top': v['av-btn-pad-y'], 'padding-bottom': v['av-btn-pad-y'],
+      'padding-left': v['av-btn-pad-x'], 'padding-right': v['av-btn-pad-x'],
+      'border-top-left-radius': v['av-radius-pill'], 'border-top-right-radius': v['av-radius-pill'],
+      'border-bottom-left-radius': v['av-radius-pill'], 'border-bottom-right-radius': v['av-radius-pill'],
+      'text-decoration': 'none',
+    });
   }
 
   // ═══════════════ BUILD ELEMENTS ═══════════════
@@ -280,15 +317,72 @@ async function buildAboutPage() {
   storyLinkEl.setTextContent('Learn our story \u2192'); storyLinkEl.setAttribute('href', '#about-values'); storyLinkEl.setAttribute('data-animate', 'fade-up'); storyLinkEl.setAttribute('data-magnetic', '');
   await safeCall('append:story', () => body.append(story));
 
-  // STATS
-  log('Building Stats...');
+  // STATS — Flip-Clock
+  log('Building Stats (flip-clock)...');
   const stats = webflow.elementBuilder(webflow.elementPresets.DOM);
   stats.setTag('section'); stats.setStyles([s.section, s.sectionDark]); stats.setAttribute('id', 'about-stats');
   const statsG = stats.append(webflow.elementPresets.DOM); statsG.setTag('div'); statsG.setStyles([statsGrid]);
-  [{ number: '15+', label: 'Years of Experience' }, { number: '200+', label: 'Projects Completed' }, { number: '50+', label: 'ADUs Built' }].forEach(stat => {
-    const item = statsG.append(webflow.elementPresets.DOM); item.setTag('div'); item.setStyles([statItem]);
-    const num = item.append(webflow.elementPresets.DOM); num.setTag('div'); num.setStyles([statNumber]); num.setTextContent(stat.number);
-    const lbl = item.append(webflow.elementPresets.DOM); lbl.setTag('div'); lbl.setStyles([statLabel]); lbl.setTextContent(stat.label);
+
+  const statsData = [
+    { digits: [1, 5, 0], suffix: '+', label: 'Projects Completed' },
+    { digits: [3, 0], suffix: '+', label: 'Orange County Cities' },
+    { digits: [4, 9], suffix: '', separator: '.', label: 'Google Rating' },
+    { digits: [1, 0, 0], suffix: '%', label: 'Licensed & Insured' },
+  ];
+
+  statsData.forEach(stat => {
+    const item = statsG.append(webflow.elementPresets.DOM);
+    item.setTag('div'); item.setStyles([statItem]);
+    item.setAttribute('data-animate', 'flip-clock');
+    item.setAttribute('data-target', stat.digits.join(''));
+    item.setAttribute('data-suffix', stat.suffix);
+    if (stat.separator) item.setAttribute('data-separator', stat.separator);
+
+    const digitsWrap = item.append(webflow.elementPresets.DOM);
+    digitsWrap.setTag('div'); digitsWrap.setStyles([statDigits]);
+
+    stat.digits.forEach((digit, di) => {
+      // Insert separator before second digit if needed (e.g. 4.9)
+      if (stat.separator && di === 1) {
+        const sep = digitsWrap.append(webflow.elementPresets.DOM);
+        sep.setTag('span'); sep.setStyles([statSeparator]);
+        sep.setTextContent(stat.separator);
+        sep.setAttribute('data-el', 'stat-separator');
+      }
+
+      const card = digitsWrap.append(webflow.elementPresets.DOM);
+      card.setTag('div'); card.setStyles([flipCard]);
+      card.setAttribute('data-el', 'flip-card');
+      card.setAttribute('data-digit', String(digit));
+
+      const inner = card.append(webflow.elementPresets.DOM);
+      inner.setTag('div'); inner.setStyles([flipCardInner]);
+      inner.setAttribute('data-el', 'flip-card-inner');
+
+      const top = inner.append(webflow.elementPresets.DOM);
+      top.setTag('div'); top.setStyles([flipCardTop]);
+      top.setAttribute('data-el', 'flip-card-top');
+      const topSpan = top.append(webflow.elementPresets.DOM);
+      topSpan.setTag('span'); topSpan.setTextContent('0');
+
+      const bottom = inner.append(webflow.elementPresets.DOM);
+      bottom.setTag('div'); bottom.setStyles([flipCardBottom]);
+      bottom.setAttribute('data-el', 'flip-card-bottom');
+      const bottomSpan = bottom.append(webflow.elementPresets.DOM);
+      bottomSpan.setTag('span'); bottomSpan.setTextContent('0');
+    });
+
+    if (stat.suffix) {
+      const suf = digitsWrap.append(webflow.elementPresets.DOM);
+      suf.setTag('span'); suf.setStyles([statSuffix]);
+      suf.setTextContent(stat.suffix);
+      suf.setAttribute('data-el', 'stat-suffix');
+    }
+
+    const lbl = item.append(webflow.elementPresets.DOM);
+    lbl.setTag('div'); lbl.setStyles([statLabel]);
+    lbl.setTextContent(stat.label);
+    lbl.setAttribute('data-animate', 'scramble');
   });
   await safeCall('append:stats', () => body.append(stats));
 
@@ -308,7 +402,7 @@ async function buildAboutPage() {
   });
   await safeCall('append:mission-vision', () => body.append(mv));
 
-  // VALUES
+  // VALUES — Three.js background + 2×2 grid
   log('Building Values...');
   const vals = webflow.elementBuilder(webflow.elementPresets.DOM);
   vals.setTag('section'); vals.setStyles([s.section, s.sectionDark]); vals.setAttribute('id', 'about-values');
@@ -317,69 +411,61 @@ async function buildAboutPage() {
   const valsLblLine = valsLbl.append(webflow.elementPresets.DOM); valsLblLine.setTag('div'); valsLblLine.setStyles([labelLine]);
   const valsH = vals.append(webflow.elementPresets.DOM); valsH.setTag('h2'); valsH.setStyles([s.headingLG, mb96]);
   valsH.setTextContent('What We Stand For'); valsH.setAttribute('data-animate', 'line-wipe');
-  const zigzag = vals.append(webflow.elementPresets.DOM); zigzag.setTag('div'); zigzag.setStyles([valuesZigzag]);
-  const snakeAnchor = zigzag.append(webflow.elementPresets.DOM); snakeAnchor.setTag('div'); snakeAnchor.setStyles([valuesSnakeAnchor]); snakeAnchor.setAttribute('id', 'values-snake-anchor');
+
+  // Canvas wrapper for Three.js (absolute positioned behind cards)
+  const canvasWrap = vals.append(webflow.elementPresets.DOM);
+  canvasWrap.setTag('div'); canvasWrap.setStyles([valuesCanvasWrap]);
+  canvasWrap.setAttribute('data-values-canvas', '');
+
+  // Values grid — 2×2
+  const vGrid = vals.append(webflow.elementPresets.DOM);
+  vGrid.setTag('div'); vGrid.setStyles([valuesGrid]);
+  vGrid.setAttribute('data-animate', 'fade-up-stagger');
+
   const valuesData = [
-    { title: 'Integrity', desc: 'Nurturing honesty, transparency, and ethical practices in everything we do.' },
-    { title: 'Navigating Challenges', desc: 'Skillfully navigating obstacles and finding effective solutions to overcome project complexities and deliver successful outcomes.' },
-    { title: 'Safety First', desc: 'Making safety a top priority, implementing rigorous safety protocols to protect our team members, clients, and the communities we serve.' },
-    { title: 'People-Oriented', desc: 'Putting people at the center of our business, valuing our team members, clients, and community and prioritizing their needs.' },
-    { title: 'Innovation', desc: 'Embracing creativity and pushing the boundaries of construction with cutting-edge technologies.' },
-    { title: 'Resourceful Solutions', desc: 'Applying resourcefulness and ingenuity to find innovative and efficient solutions that meet our clients\' needs and exceed their expectations.' },
+    { title: 'Integrity', desc: 'Nurturing honesty, transparency, and ethical practices in everything we do. We build trust through every interaction.' },
+    { title: 'Innovation', desc: 'Embracing creativity and pushing the boundaries of construction with cutting-edge technologies and sustainable practices.' },
     { title: 'Excellence', desc: 'Striving for continuous improvement and delivering outstanding results in every project we undertake.' },
+    { title: 'People-Oriented', desc: 'Putting people at the center of our business, valuing our team members, clients, and community.' },
   ];
   valuesData.forEach((val, i) => {
-    const isLeft = i % 2 === 0;
-    const row = zigzag.append(webflow.elementPresets.DOM); row.setTag('div'); row.setStyles([valuesRow]); row.setAttribute('data-values-row', String(i));
-    if (isLeft) {
-      const card = row.append(webflow.elementPresets.DOM); card.setTag('div'); card.setStyles([valuesCard]); card.setAttribute('data-animate', 'snake-card-left');
-      const n = card.append(webflow.elementPresets.DOM); n.setTag('div'); n.setStyles([valueNumber]); n.setTextContent(String(i + 1).padStart(2, '0'));
-      const t = card.append(webflow.elementPresets.DOM); t.setTag('h3'); t.setStyles([valueTitle]); t.setTextContent(val.title);
-      const d = card.append(webflow.elementPresets.DOM); d.setTag('p'); d.setStyles([valueDesc]); d.setTextContent(val.desc);
-      const sp = row.append(webflow.elementPresets.DOM); sp.setTag('div'); sp.setStyles([valuesSpacer]);
-    } else {
-      const sp = row.append(webflow.elementPresets.DOM); sp.setTag('div'); sp.setStyles([valuesSpacer]);
-      const card = row.append(webflow.elementPresets.DOM); card.setTag('div'); card.setStyles([valuesCard]); card.setAttribute('data-animate', 'snake-card-right');
-      const n = card.append(webflow.elementPresets.DOM); n.setTag('div'); n.setStyles([valueNumber]); n.setTextContent(String(i + 1).padStart(2, '0'));
-      const t = card.append(webflow.elementPresets.DOM); t.setTag('h3'); t.setStyles([valueTitle]); t.setTextContent(val.title);
-      const d = card.append(webflow.elementPresets.DOM); d.setTag('p'); d.setStyles([valueDesc]); d.setTextContent(val.desc);
-    }
+    const card = vGrid.append(webflow.elementPresets.DOM);
+    card.setTag('div'); card.setStyles([valuesCard]);
+    const n = card.append(webflow.elementPresets.DOM); n.setTag('div'); n.setStyles([valueNumber]); n.setTextContent(String(i + 1).padStart(2, '0'));
+    const t = card.append(webflow.elementPresets.DOM); t.setTag('h3'); t.setStyles([valueTitle]); t.setTextContent(val.title);
+    const d = card.append(webflow.elementPresets.DOM); d.setTag('p'); d.setStyles([valueDesc]); d.setTextContent(val.desc);
   });
   await safeCall('append:values', () => body.append(vals));
 
-  // PROCESS
-  log('Building Process...');
-  const proc = webflow.elementBuilder(webflow.elementPresets.DOM);
-  proc.setTag('section'); proc.setStyles([s.section, s.sectionDark]); proc.setAttribute('id', 'about-process');
-  const procLbl = proc.append(webflow.elementPresets.DOM); procLbl.setTag('div'); procLbl.setStyles([s.label, mb64]); procLbl.setAttribute('data-animate', 'fade-up');
-  const procLblTxt = procLbl.append(webflow.elementPresets.DOM); procLblTxt.setTag('div'); procLblTxt.setTextContent('Our Process');
-  const procLblLn = procLbl.append(webflow.elementPresets.DOM); procLblLn.setTag('div'); procLblLn.setStyles([labelLine]);
-  const procH = proc.append(webflow.elementPresets.DOM); procH.setTag('h2'); procH.setStyles([s.headingLG, mb96]);
-  procH.setTextContent('How We Build Your ADU'); procH.setAttribute('data-animate', 'line-wipe');
-  const pinned = proc.append(webflow.elementPresets.DOM); pinned.setTag('div'); pinned.setStyles([processPinned]); pinned.setAttribute('data-process-pinned', '');
-  const visual = pinned.append(webflow.elementPresets.DOM); visual.setTag('div'); visual.setStyles([processVisual]); visual.setAttribute('data-process-visual', '');
-  const fx = pinned.append(webflow.elementPresets.DOM); fx.setTag('div'); fx.setStyles([processFx]); fx.setAttribute('data-process-fx', '');
-  const pCards = pinned.append(webflow.elementPresets.DOM); pCards.setTag('div'); pCards.setStyles([processCards]); pCards.setAttribute('data-process-cards', '');
-  const processData = [
-    { num: '01', title: 'Pre-Construction', body: 'We survey your property, assess local zoning regulations, and create a detailed feasibility study for your ADU project.' },
-    { num: '02', title: 'Design & Architecture', body: 'Our architects craft custom floor plans and 3D renderings, balancing aesthetics with functionality for your space.' },
-    { num: '03', title: 'Financing Options', body: 'We connect you with trusted lenders and guide you through ADU-specific loans, HELOCs, and financing strategies.' },
-    { num: '04', title: 'Permitting & Approvals', body: 'We handle all permits, city submissions, and regulatory approvals so you can focus on the exciting parts.' },
-    { num: '05', title: 'Construction Phase', body: 'Our in-house crew brings the design to life with quality craftsmanship and transparent project management.' },
-    { num: '06', title: 'Project Completion', body: 'Final inspections, walkthrough, and handover — your new ADU is ready for living or renting.' },
-  ];
-  processData.forEach(card => {
-    const c = pCards.append(webflow.elementPresets.DOM); c.setTag('div'); c.setStyles([processCard]); c.setAttribute('data-process-card', '');
-    const n = c.append(webflow.elementPresets.DOM); n.setTag('div'); n.setStyles([processCardNum]); n.setTextContent(card.num);
-    const t = c.append(webflow.elementPresets.DOM); t.setTag('h3'); t.setStyles([processCardTitle]); t.setTextContent(card.title);
-    const p = c.append(webflow.elementPresets.DOM); p.setTag('p'); p.setStyles([processCardBody]); p.setTextContent(card.body);
-  });
-  const pNav = pinned.append(webflow.elementPresets.DOM); pNav.setTag('div'); pNav.setStyles([processNav]); pNav.setAttribute('data-process-nav', '');
-  await safeCall('append:process', () => body.append(proc));
-
-  // CTA
+  // CTA — Custom build with parallax bg + arrow button
   log('Building CTA...');
-  await buildCTASection(body, v, 'Create your dream home', 'Get a Free Estimate', '/schedule-a-meeting', 'Learn About ADUs', '/adu');
+  const cta = webflow.elementBuilder(webflow.elementPresets.DOM);
+  cta.setTag('section'); cta.setStyles([ctaSection]);
+
+  const ctaC = cta.append(webflow.elementPresets.DOM);
+  ctaC.setTag('div'); ctaC.setStyles([ctaContainer]);
+  ctaC.setAttribute('class', 'about-cta-container');
+
+  const ctaBgEl = ctaC.append(webflow.elementPresets.DOM);
+  ctaBgEl.setTag('div'); ctaBgEl.setStyles([ctaBg]);
+  ctaBgEl.setAttribute('data-animate', 'parallax-depth');
+
+  const ctaContentEl = ctaC.append(webflow.elementPresets.DOM);
+  ctaContentEl.setTag('div'); ctaContentEl.setStyles([ctaContent]);
+
+  const ctaH = ctaContentEl.append(webflow.elementPresets.DOM);
+  ctaH.setTag('h2'); ctaH.setStyles([ctaHeading]);
+  ctaH.setTextContent("Let's build something remarkable");
+  ctaH.setAttribute('data-animate', 'word-stagger-elastic');
+
+  const ctaBtnEl = ctaContentEl.append(webflow.elementPresets.DOM);
+  ctaBtnEl.setTag('a'); ctaBtnEl.setStyles([ctaBtn]);
+  ctaBtnEl.setTextContent('Schedule a Free Call \u2192');
+  ctaBtnEl.setAttribute('href', '/schedule-a-meeting');
+  ctaBtnEl.setAttribute('data-magnetic', '');
+  ctaBtnEl.setAttribute('data-animate', 'fade-up');
+
+  await safeCall('append:cta', () => body.append(cta));
 
   // APPLY STYLES
   await applyStyleProperties();

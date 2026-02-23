@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Avorino — Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  /* ─── Reset ─── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overflow-x: hidden; font-family: 'DM Sans', sans-serif; background: #f0ede8; color: #111; }
+
+  /* ─── Avorino Design Tokens ─── */
+  :root {
+    --av-dark: #111111;
+    --av-cream: #f0ede8;
+    --av-warm: #e8e4df;
+    --av-red: #c8222a;
+    --av-gold: #c9a96e;
+    --av-radius: 8px;
+    --av-section-pad-y: 128px;
+    --av-section-pad-x: 80px;
+    --av-text-xl: clamp(48px, 5vw, 96px);
+    --av-text-lg: clamp(36px, 3.5vw, 64px);
+    --av-text-h3: clamp(24px, 2vw, 36px);
+    --av-text-body: clamp(16px, 1.1vw, 18px);
+    --av-text-sm: clamp(14px, 0.9vw, 16px);
+    --av-text-xs: clamp(11px, 0.7vw, 13px);
+  }
+
+  /* ─── Shared Section Styles ─── */
+  .av-section { padding: var(--av-section-pad-y) var(--av-section-pad-x); }
+  .av-section-warm { background: var(--av-warm); color: var(--av-dark); }
+  .av-section-dark { background: var(--av-dark); color: var(--av-cream); }
+
+  /* ─── Grid ─── */
+  .av-grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
+
+  /* ─── Typography ─── */
+  .av-heading-xl {
+    font-family: 'DM Serif Display', serif;
+    font-size: var(--av-text-xl); line-height: 1.05; font-weight: 400; letter-spacing: -0.02em;
+  }
+  .av-heading-lg {
+    font-family: 'DM Serif Display', serif;
+    font-size: var(--av-text-lg); line-height: 1.1; font-weight: 400;
+  }
+  .av-body { font-size: var(--av-text-body); line-height: 1.9; }
+  .av-body-muted { opacity: 0.5; }
+
+  /* ─── Label ─── */
+  .av-label {
+    display: flex; align-items: center; gap: 16px;
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+    letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.4;
+  }
+  .about-label-line { flex-grow: 1; height: 1px; background: rgba(17,17,17,0.15); transform-origin: left center; }
+
+  /* ─── Cards ─── */
+  .av-card-dark {
+    background: var(--av-dark); color: var(--av-cream); border-radius: var(--av-radius); padding: 48px 40px;
+    transition: transform 0.6s cubic-bezier(0.23,1,0.32,1), box-shadow 0.6s ease; backface-visibility: hidden;
+  }
+  .av-card-dark:hover { transform: translateY(-4px); box-shadow: 0 24px 64px rgba(0,0,0,0.2); }
+
+  /* ─── Hero ─── */
+  .about-hero {
+    min-height: 60vh; display: flex; align-items: flex-end;
+    padding: 160px var(--av-section-pad-x) var(--av-section-pad-y);
+    background-color: var(--av-dark); color: var(--av-cream); position: relative; overflow: hidden;
+    background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80');
+    background-size: 105%; background-position: center;
+  }
+  .about-hero-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)); }
+  .about-hero-content { position: relative; z-index: 2; max-width: 800px; }
+  .about-hero-subtitle { font-family: 'DM Sans', sans-serif; font-size: var(--av-text-body); line-height: 1.9; opacity: 0.6; margin-top: 24px; color: var(--av-cream); }
+
+  /* ─── Story ─── */
+  .about-story-body { display: flex; flex-direction: column; justify-content: flex-end; padding-top: 8px; }
+  .about-story-img {
+    width: 100%; min-height: 400px; background: rgba(17,17,17,0.06); border-radius: var(--av-radius);
+    background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80');
+    background-size: cover; background-position: center; will-change: clip-path, transform;
+  }
+  .about-story-link {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-sm); color: var(--av-dark);
+    text-decoration: none; opacity: 0.5; margin-top: 24px; display: inline-block;
+    transition: opacity 0.3s ease, color 0.3s ease;
+  }
+  .about-story-link:hover { opacity: 1; color: var(--av-red); }
+
+  /* ─── Stats — Flip-Clock ─── */
+  .about-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 64px; }
+  .about-stat-item { display: flex; flex-direction: column; align-items: center; gap: 24px; overflow: hidden; }
+  .about-stat-digits { display: flex; align-items: center; gap: 6px; }
+  .about-flip-card { position: relative; width: 72px; height: 96px; perspective: 400px; border-radius: 6px; }
+  .about-flip-card-inner { position: relative; width: 100%; height: 100%; }
+  .about-flip-card-top {
+    font-family: 'DM Serif Display', Georgia, serif; font-weight: 400;
+    position: absolute; width: 100%; height: 50%; overflow: hidden;
+    display: flex; justify-content: center; align-items: flex-start;
+    font-size: 48px; color: var(--av-cream); background: #1a1a1a;
+    top: 0; padding-top: 2px; border-radius: 6px 6px 0 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .about-flip-card-bottom {
+    font-family: 'DM Serif Display', Georgia, serif; font-weight: 400;
+    position: absolute; width: 100%; height: 50%; overflow: hidden;
+    display: flex; justify-content: center; align-items: flex-end;
+    font-size: 48px; color: var(--av-cream); background: #1a1a1a;
+    bottom: 0; padding-bottom: 2px; border-radius: 0 0 6px 6px;
+  }
+  .about-stat-suffix {
+    font-family: 'DM Serif Display', Georgia, serif; font-weight: 400;
+    font-size: 36px; color: var(--av-cream); opacity: 0; margin-left: 4px; align-self: center;
+  }
+  .about-stat-separator {
+    font-family: 'DM Serif Display', Georgia, serif; font-weight: 400;
+    font-size: 36px; color: var(--av-cream); opacity: 0; align-self: flex-end; margin-bottom: 12px;
+  }
+  .about-stat-label {
+    font-family: 'DM Sans', system-ui, sans-serif; font-weight: 400;
+    font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.55; text-align: center;
+  }
+
+  /* ─── Mission/Vision Card Labels ─── */
+  .about-card-label { font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs); letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.4; margin-bottom: 24px; color: var(--av-cream); }
+  .about-card-heading { font-family: 'DM Serif Display', serif; font-size: var(--av-text-h3); line-height: 1.12; font-weight: 400; margin-bottom: 24px; color: var(--av-cream); }
+  .about-card-body { font-family: 'DM Sans', sans-serif; font-size: var(--av-text-sm); line-height: 1.9; opacity: 0.6; color: var(--av-cream); }
+
+  /* ─── Values — Grid + Three.js Canvas ─── */
+  #about-values { position: relative; overflow: hidden; }
+  .about-values-canvas-wrap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: hidden; pointer-events: none; }
+  .about-values-canvas-wrap canvas { display: block; width: 100%; height: 100%; }
+  .about-values-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; position: relative; z-index: 2; }
+  .about-values-card {
+    background: rgba(17,17,17,0.85); color: var(--av-cream); border-radius: var(--av-radius);
+    padding: 48px 40px; position: relative; z-index: 2;
+    will-change: transform, opacity; backface-visibility: hidden;
+    transition: transform 0.6s cubic-bezier(0.23,1,0.32,1), box-shadow 0.6s ease;
+    border-top: 2px solid rgba(201,169,110,0.3);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  }
+  .about-values-card:hover { transform: translateY(-4px); box-shadow: 0 24px 64px rgba(0,0,0,0.25); border-top-color: rgba(201,169,110,0.6); }
+  .about-value-num { font-family: 'DM Serif Display', serif; font-size: 56px; line-height: 1; opacity: 0.07; margin-bottom: 24px; color: var(--av-cream); }
+  .about-value-title { font-family: 'DM Serif Display', serif; font-size: 24px; line-height: 1.2; font-weight: 400; margin-bottom: 16px; color: var(--av-cream); }
+  .about-value-desc { font-family: 'DM Sans', sans-serif; font-size: var(--av-text-sm); line-height: 1.7; opacity: 0.5; color: var(--av-cream); }
+
+  /* ─── CTA ─── */
+  .av-cta { padding: 48px; }
+  .about-cta-container {
+    background: var(--av-dark); border-radius: var(--av-radius); min-height: 56vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .av-cta-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.2; }
+  .av-cta-content { position: relative; z-index: 2; padding: 64px; }
+  .av-cta-heading {
+    font-family: 'DM Serif Display', serif; font-size: var(--av-text-lg);
+    line-height: 1.08; letter-spacing: -0.02em; font-weight: 400;
+    color: var(--av-cream); margin-bottom: 48px; max-width: 10em; margin-left: auto; margin-right: auto;
+  }
+  .av-cta-btn {
+    display: inline-flex; align-items: center; gap: 12px; padding: 18px 40px;
+    border-radius: 100px; font-family: 'DM Sans', sans-serif;
+    font-size: var(--av-text-sm); font-weight: 500; letter-spacing: 0.04em;
+    text-decoration: none; color: var(--av-dark); background: var(--av-cream);
+    transition: transform 0.5s cubic-bezier(0.23,1,0.32,1), box-shadow 0.3s ease; cursor: pointer;
+  }
+  .av-cta-btn:hover { box-shadow: 0 8px 32px rgba(200,34,42,0.15); }
+
+  /* ─── Utility ─── */
+  .av-max-520 { max-width: 520px; }
+  .av-max-580 { max-width: 580px; }
+  .av-mb-48 { margin-bottom: 48px; }
+  .av-mb-64 { margin-bottom: 64px; }
+  .av-mb-96 { margin-bottom: 96px; }
+
+  /* ─── Animation supports ─── */
+  [data-animate="char-cascade"] span { display: inline-block; will-change: transform, opacity, filter; }
+  [data-animate="line-wipe"] .line { will-change: clip-path; }
+  #about-mission-vision { overflow: hidden; }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 991px) {
+    .av-section { padding: 80px 40px !important; }
+    .about-hero { min-height: 50vh !important; padding: 120px 40px 80px !important; }
+    .av-grid-2col { grid-template-columns: 1fr !important; gap: 48px !important; }
+    .about-stats-grid { grid-template-columns: 1fr 1fr !important; gap: 48px 32px !important; }
+    .about-values-canvas-wrap { display: none !important; }
+    .about-values-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
+    .av-cta { padding: 40px !important; }
+  }
+  @media (max-width: 767px) {
+    .av-section { padding: 64px 24px !important; }
+    .about-hero { min-height: 45vh !important; padding: 100px 24px 64px !important; }
+    .about-stats-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
+    .about-flip-card { width: 56px !important; height: 76px !important; }
+    .about-flip-card-top, .about-flip-card-bottom { font-size: 36px !important; }
+    .about-stat-suffix, .about-stat-separator { font-size: 28px !important; }
+    .av-heading-xl { font-size: clamp(36px, 8vw, 56px) !important; }
+    .av-heading-lg { font-size: clamp(28px, 6vw, 40px) !important; }
+    .av-cta { padding: 24px !important; }
+  }
+  @media (max-width: 478px) {
+    .av-section { padding: 48px 16px !important; }
+    .about-hero { min-height: 40vh !important; padding: 80px 16px 48px !important; }
+    .about-flip-card { width: 48px !important; height: 64px !important; }
+    .about-flip-card-top, .about-flip-card-bottom { font-size: 28px !important; }
+    .about-stat-suffix, .about-stat-separator { font-size: 22px !important; }
+    .av-heading-xl { font-size: clamp(28px, 9vw, 42px) !important; }
+    .av-heading-lg { font-size: clamp(24px, 6vw, 32px) !important; }
+    .av-cta { padding: 16px !important; }
+    .av-cta-btn { width: 100% !important; justify-content: center !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="about-hero" id="about-hero">
+  <div class="about-hero-overlay"></div>
+  <div class="about-hero-content">
+    <h1 class="av-heading-xl" data-animate="char-cascade">About Avorino</h1>
+    <p class="about-hero-subtitle" data-animate="fade-up">Custom home and ADU builder in Orange County since 2023</p>
+  </div>
+</section>
+
+<!-- ═══════════ STORY ═══════════ -->
+<section class="av-section av-section-warm" id="about-story">
+  <div class="av-label av-mb-64" data-animate="fade-up">
+    <div>Our Story</div>
+    <div class="about-label-line"></div>
+  </div>
+  <div class="av-grid-2col">
+    <div data-animate="fade-up">
+      <div class="about-story-img"></div>
+    </div>
+    <div class="about-story-body">
+      <h2 class="av-heading-lg av-max-580 av-mb-48" data-animate="line-wipe">We redefine the art of construction</h2>
+      <p class="av-body av-body-muted av-max-520 av-mb-48" data-animate="opacity-sweep">Avorino is a custom home and an ADU builder in Orange County that takes pride in its exceptional customer service. With a friendly and professional approach, Avorino actively involves clients throughout the process, ensuring their unique needs are met with utmost care. Our unwavering commitment to quality is evident in every detail, resulting in remarkable outcomes that exceed expectations. Avorino stands out by embracing innovation, leveraging cutting-edge technologies and sustainable practices to deliver exceptional results. Our in-house crew is capable of handling every aspect of a project from design to execution.</p>
+      <a href="#about-values" class="about-story-link" data-animate="fade-up">Learn our story &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ STATS — FLIP-CLOCK ═══════════ -->
+<section class="av-section av-section-dark" id="about-stats">
+  <div class="about-stats-grid">
+    <!-- 150+ -->
+    <div class="about-stat-item" data-animate="flip-clock" data-target="150" data-suffix="+">
+      <div class="about-stat-digits">
+        <div class="about-flip-card" data-el="flip-card" data-digit="1">
+          <div class="about-flip-card-inner" data-el="flip-card-inner">
+            <div class="about-flip-card-top" data-el="flip-card-top"><span>0</span></div>
+            <div class="about-flip-card-bottom" data-el="flip-card-bottom"><span>0</span></div>
+          </div>
+        </div>
+        <div class="about-flip-card" data-el="flip-card" data-digit="5">
+          <div class="about-flip-card-inner" data-el="flip-card-inner">
+            <div class="about-flip-card-top" data-el="flip-card-top"><span>0</span></div>
+            <div class="about-flip-card-bottom" data-el="flip-card-bottom"><span>0</span></div>
+          </div>
+        </div>
+        <div class="about-flip-card" data-el="flip-card" data-digit="0">
+          <div class="about-flip-card-inner" data-el="flip-card-inner">
+            <div class="about-flip-card-top" data-el="flip-card-top"><span>0</span></div>
+            <div class="about-flip-card-bottom" data-el="flip-card-bottom"><span>0</span></div>
+          </div>
+        </div>
+        <span class="about-stat-suffix" data-el="stat-suffix">+</span>
+      </div>
+      <div class="about-stat-label" data-animate="scramble">Projects Completed</div>
+    </div>
+    <!-- 30+ -->
+    <div class="about-stat-item" data-animate="flip-clock" data-target="30" data-suffix="+">
+      <div class="about-stat-digits">
+        <div class="about-flip-card" data-el="flip-card" data-digit="3">
+          <div class="about-flip-card-inner" data-el="flip-card-inner">
+            <div class="about-flip-card-top" data-el="flip-card-top"><span>0</span></div>
+            <div class="about-flip-card-bottom" data-el="flip-card-bottom"><span>0</span></div>
+          </div>
+        </div>
+        <div class="about-flip-card" data-el="flip-card" data-digit="0">
+          <div class="about-flip-card-inner" data-el="flip-card-inner">
+            <div class="about-flip-card-top" data-el="flip-card-top"><span>0</span></div>
+            <div class="about-flip-card-bottom" data-el="flip-card-bottom"><span>0</span></div>
+          </div>
+        </div>
+        <span class="about-stat-suffix" data-el="stat-suffix">+</span>
+      </div>
+      <div class="about-stat-label" data-animate="scramble">Orange County Cities</div>
+    </div>
+    <!-- 4.9 -->
+    <div class="about-stat-item" data-animate="flip-clock" data-target="49" data-separator="." data-suffix="">
+      <div class="about-stat-digits">
+        <div class="about-flip-card" data-el="flip-card" data-digit="4">
+          <div class="about-flip-card-inner" data-el="flip-card-inner">
+            <div class="about-flip-card-top" data-el="flip-card-top"><span>0</span></div>
+            <div class="about-flip-card-bottom" data-el="flip-card-bottom"><span>0</span></div>
+          </div>
+        </div>
+        <span class="about-stat-separator" data-el="stat-separator">.</span>
+        <div class="about-flip-card" data-el="flip-card" data-digit="9">
+          <div class="about-flip-card-inner" data-el="flip-card-inner">
+            <div class="about-flip-card-top" data-el="flip-card-top"><span>0</span></div>
+            <div class="about-flip-card-bottom" data-el="flip-card-bottom"><span>0</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="about-stat-label" data-animate="scramble">Google Rating</div>
+    </div>
+    <!-- 100% -->
+    <div class="about-stat-item" data-animate="flip-clock" data-target="100" data-suffix="%">
+      <div class="about-stat-digits">
+        <div class="about-flip-card" data-el="flip-card" data-digit="1">
+          <div class="about-flip-card-inner" data-el="flip-card-inner">
+            <div class="about-flip-card-top" data-el="flip-card-top"><span>0</span></div>
+            <div class="about-flip-card-bottom" data-el="flip-card-bottom"><span>0</span></div>
+          </div>
+        </div>
+        <div class="about-flip-card" data-el="flip-card" data-digit="0">
+          <div class="about-flip-card-inner" data-el="flip-card-inner">
+            <div class="about-flip-card-top" data-el="flip-card-top"><span>0</span></div>
+            <div class="about-flip-card-bottom" data-el="flip-card-bottom"><span>0</span></div>
+          </div>
+        </div>
+        <div class="about-flip-card" data-el="flip-card" data-digit="0">
+          <div class="about-flip-card-inner" data-el="flip-card-inner">
+            <div class="about-flip-card-top" data-el="flip-card-top"><span>0</span></div>
+            <div class="about-flip-card-bottom" data-el="flip-card-bottom"><span>0</span></div>
+          </div>
+        </div>
+        <span class="about-stat-suffix" data-el="stat-suffix">%</span>
+      </div>
+      <div class="about-stat-label" data-animate="scramble">Licensed &amp; Insured</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ MISSION & VISION ═══════════ -->
+<section class="av-section av-section-warm" id="about-mission-vision">
+  <div class="av-grid-2col">
+    <div class="av-card-dark" data-animate="fade-up">
+      <div class="about-card-label">Mission</div>
+      <h3 class="about-card-heading">Bringing visionary dreams to life</h3>
+      <p class="about-card-body">Our mission is to bring visionary dreams to life through strong communication and transformative construction. As builders, we are committed to delivering exceptional projects that exceed expectations, inspire awe, and leave a lasting impact. With a focus on collaboration and innovation, we strive to create spaces that not only fulfill our clients' visions but also enhance the lives of those who experience them.</p>
+    </div>
+    <div class="av-card-dark" data-animate="fade-up">
+      <div class="about-card-label">Vision</div>
+      <h3 class="about-card-heading">The catalyst for transformation</h3>
+      <p class="about-card-body">Our vision is to be the catalyst for transformation in the construction industry. We aspire to be known as the go-to builders for visionary projects, where dreams become reality. Through our commitment to strong communication, we aim to foster deep understanding and collaboration with our clients, partners, and communities.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ VALUES — Three.js + Grid ═══════════ -->
+<section class="av-section av-section-dark" id="about-values">
+  <div class="av-label av-mb-64" data-animate="fade-up" style="color:var(--av-cream);">
+    <div>Our Values</div>
+    <div class="about-label-line" style="background:rgba(240,237,232,0.15);"></div>
+  </div>
+  <h2 class="av-heading-lg av-mb-96" data-animate="line-wipe">What We Stand For</h2>
+
+  <!-- Three.js canvas renders here -->
+  <div class="about-values-canvas-wrap" data-values-canvas></div>
+
+  <!-- 2×2 grid of value cards -->
+  <div class="about-values-grid" data-animate="fade-up-stagger">
+    <div class="about-values-card">
+      <div class="about-value-num">01</div>
+      <h3 class="about-value-title">Integrity</h3>
+      <p class="about-value-desc">Nurturing honesty, transparency, and ethical practices in everything we do. We build trust through every interaction.</p>
+    </div>
+    <div class="about-values-card">
+      <div class="about-value-num">02</div>
+      <h3 class="about-value-title">Innovation</h3>
+      <p class="about-value-desc">Embracing creativity and pushing the boundaries of construction with cutting-edge technologies and sustainable practices.</p>
+    </div>
+    <div class="about-values-card">
+      <div class="about-value-num">03</div>
+      <h3 class="about-value-title">Excellence</h3>
+      <p class="about-value-desc">Striving for continuous improvement and delivering outstanding results in every project we undertake.</p>
+    </div>
+    <div class="about-values-card">
+      <div class="about-value-num">04</div>
+      <h3 class="about-value-title">People-Oriented</h3>
+      <p class="about-value-desc">Putting people at the center of our business, valuing our team members, clients, and community.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CTA ═══════════ -->
+<section class="av-cta">
+  <div class="about-cta-container">
+    <div class="av-cta-bg" data-animate="parallax-depth"></div>
+    <div class="av-cta-content">
+      <h2 class="av-cta-heading" data-animate="word-stagger-elastic">Let's build something remarkable</h2>
+      <a href="/schedule-a-meeting" class="av-cta-btn" data-magnetic data-animate="fade-up">Schedule a Free Call &#8594;</a>
+    </div>
+  </div>
+</section>
+
+<!-- Scripts -->
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+<script src="avorino-about-footer.js"></script>
+<script src="avorino-about-values3d.js"></script>
+
+</body>
+</html>

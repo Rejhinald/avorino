@@ -44,7 +44,6 @@
 
   /* ═══════════════════════════════════════════════
      UTILITY — TEXT SPLITTING (CHARACTERS)
-     For char-cascade animation on hero h1
      ═══════════════════════════════════════════════ */
   function splitIntoChars(el) {
     var text = el.textContent.trim();
@@ -53,7 +52,7 @@
     el.style.flexWrap = 'wrap';
     el.style.gap = '0 0.3em';
     var charEls = [];
-    text.split(/\s+/).forEach(function (word, wi) {
+    text.split(/\s+/).forEach(function (word) {
       var wordWrap = document.createElement('span');
       wordWrap.style.display = 'inline-flex';
       wordWrap.style.overflow = 'hidden';
@@ -71,9 +70,6 @@
 
   /* ═══════════════════════════════════════════════
      HERO ENTRANCE — Character Cascade
-     Each character rises with rotateX + blur,
-     gold accent line draws before subtitle fades in.
-     Hero content fades out on scroll past.
      ═══════════════════════════════════════════════ */
   function initHeroEntrance() {
     var hero = document.getElementById('about-hero');
@@ -96,7 +92,6 @@
     if (subtitle) {
       subtitle.removeAttribute('data-animate');
 
-      // Gold accent line that draws before text
       var goldLine = document.createElement('div');
       goldLine.style.cssText = 'width:0;height:1px;background:#c9a96e;margin-bottom:16px;will-change:width;';
       subtitle.parentElement.insertBefore(goldLine, subtitle);
@@ -111,7 +106,7 @@
       }, 0.3);
     }
 
-    // Hero content fades out as user scrolls past
+    // Hero content fades out on scroll
     var heroContent = hero.querySelector('.about-hero-content');
     if (heroContent) {
       gsap.to(heroContent, {
@@ -123,7 +118,7 @@
       });
     }
 
-    // Ken Burns zoom on hero background
+    // Ken Burns zoom
     gsap.fromTo(hero,
       { backgroundSize: '105%' },
       { backgroundSize: '115%', ease: 'none',
@@ -146,7 +141,7 @@
       );
     });
 
-    /* opacity-sweep — character-by-character reveal on scroll */
+    /* opacity-sweep */
     document.querySelectorAll('[data-animate="opacity-sweep"]').forEach(function (el) {
       var text = el.textContent.trim();
       var wordParts = text.split(/(\s+)/);
@@ -176,7 +171,7 @@
       });
     });
 
-    /* char-cascade — used by hero h1 on scroll (fallback for elements not caught by initHeroEntrance) */
+    /* char-cascade — fallback for elements not caught by initHeroEntrance */
     document.querySelectorAll('[data-animate="char-cascade"]').forEach(function (el) {
       var chars = splitIntoChars(el);
       gsap.set(chars, { yPercent: 120, opacity: 0, rotateX: -90, filter: 'blur(8px)' });
@@ -228,7 +223,7 @@
       );
     });
 
-    /* line-wipe — text revealed by clip-path wipe left-to-right */
+    /* line-wipe */
     document.querySelectorAll('[data-animate="line-wipe"]').forEach(function (el) {
       var lineEls = el.querySelectorAll('.line');
       if (!lineEls.length) {
@@ -297,7 +292,7 @@
       );
     });
 
-    /* Mission/Vision cards: "book-open" reveal — cards split apart from center with rotateY */
+    /* Mission/Vision cards: "book-open" reveal */
     var mvSection = document.getElementById('about-mission-vision');
     if (mvSection) {
       var mvGrid = mvSection.querySelector('.av-grid-2col');
@@ -307,7 +302,6 @@
       mvCards.forEach(function (card, i) {
         card.removeAttribute('data-animate');
 
-        // Cards start overlapping at center, split apart
         gsap.fromTo(card,
           { x: i === 0 ? 60 : -60, opacity: 0, rotateY: i === 0 ? 8 : -8,
             scale: 0.92, filter: 'blur(6px)' },
@@ -316,7 +310,6 @@
             scrollTrigger: { trigger: mvSection, start: 'top 75%',
               toggleActions: 'play none none reverse' },
             onComplete: function () {
-              // Internal content stagger after card arrives
               var children = card.children;
               for (var c = 0; c < children.length; c++) {
                 gsap.fromTo(children[c],
@@ -340,260 +333,65 @@
   }
 
   /* ═══════════════════════════════════════════════
-     VALUES SNAKE ZIGZAG — Enhanced with gold glow trail + node dots
+     FLIP-CLOCK STATS — Ported from v7
+     Split-flap digit cards with perspective flip animation.
      ═══════════════════════════════════════════════ */
-  function initValuesSnake() {
-    var section = document.getElementById('about-values');
-    if (!section) return;
-    var zigzag = section.querySelector('.about-values-zigzag');
-    if (!zigzag) return;
-    var rows = zigzag.querySelectorAll('[data-values-row]');
-    if (!rows.length) return;
-
-    var anchor = document.getElementById('values-snake-anchor');
-    if (anchor) {
-      function buildSnakePath() {
-        var oldSvg = anchor.querySelector('svg');
-        if (oldSvg) anchor.removeChild(oldSvg);
-
-        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.style.position = 'absolute';
-        svg.style.top = '0';
-        svg.style.left = '0';
-        svg.style.width = '100%';
-        svg.style.height = '100%';
-        svg.style.overflow = 'visible';
-        svg.style.pointerEvents = 'none';
-
-        var containerRect = zigzag.getBoundingClientRect();
-        var w = containerRect.width;
-        var h = containerRect.height;
-        svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
-        svg.setAttribute('preserveAspectRatio', 'none');
-
-        var points = [];
-        rows.forEach(function (row, i) {
-          var rect = row.getBoundingClientRect();
-          var centerY = rect.top + rect.height / 2 - containerRect.top;
-          var xPos = i % 2 === 0 ? w * 0.25 : w * 0.75;
-          points.push({ x: xPos, y: centerY });
-        });
-
-        if (points.length < 2) return;
-
-        // Build smooth cubic bezier path
-        var d = 'M ' + (w / 2) + ' 0';
-        points.forEach(function (pt, i) {
-          var prev = i === 0 ? { x: w / 2, y: 0 } : points[i - 1];
-          var cpY = prev.y + (pt.y - prev.y) / 2;
-          d += ' C ' + prev.x + ' ' + cpY + ', ' + pt.x + ' ' + cpY + ', ' + pt.x + ' ' + pt.y;
-        });
-        var lastPt = points[points.length - 1];
-        d += ' C ' + lastPt.x + ' ' + (lastPt.y + (h - lastPt.y) / 2) + ', ' +
-             (w / 2) + ' ' + (lastPt.y + (h - lastPt.y) / 2) + ', ' +
-             (w / 2) + ' ' + h;
-
-        // SVG filter for gold glow
-        var defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-        var filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
-        filter.setAttribute('id', 'gold-glow');
-        filter.setAttribute('x', '-20%'); filter.setAttribute('y', '-20%');
-        filter.setAttribute('width', '140%'); filter.setAttribute('height', '140%');
-        var blur = document.createElementNS('http://www.w3.org/2000/svg', 'feGaussianBlur');
-        blur.setAttribute('in', 'SourceGraphic');
-        blur.setAttribute('stdDeviation', '4');
-        filter.appendChild(blur);
-        defs.appendChild(filter);
-        svg.appendChild(defs);
-
-        // Background path
-        var bgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        bgPath.setAttribute('d', d);
-        bgPath.setAttribute('class', 'about-values-snake-path-bg');
-        svg.appendChild(bgPath);
-
-        // Gold glow trail (drawn behind the red path)
-        var glowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        glowPath.setAttribute('d', d);
-        glowPath.style.fill = 'none';
-        glowPath.style.stroke = '#c9a96e';
-        glowPath.style.strokeWidth = '3';
-        glowPath.style.strokeLinecap = 'round';
-        glowPath.style.filter = 'url(#gold-glow)';
-        glowPath.style.opacity = '0.5';
-        svg.appendChild(glowPath);
-
-        // Animated foreground path (red)
-        var fgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        fgPath.setAttribute('d', d);
-        fgPath.setAttribute('class', 'about-values-snake-path');
-        svg.appendChild(fgPath);
-
-        // Node dots at each waypoint
-        points.forEach(function (pt) {
-          var dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-          dot.setAttribute('cx', String(pt.x));
-          dot.setAttribute('cy', String(pt.y));
-          dot.setAttribute('r', '0');
-          dot.style.fill = '#c9a96e';
-          dot.style.transition = 'r 0.4s ease';
-          svg.appendChild(dot);
-        });
-
-        anchor.appendChild(svg);
-
-        var pathLength = fgPath.getTotalLength();
-        var glowLength = glowPath.getTotalLength();
-        gsap.set(fgPath, { strokeDasharray: pathLength, strokeDashoffset: pathLength });
-        gsap.set(glowPath, { strokeDasharray: glowLength, strokeDashoffset: glowLength });
-
-        // Scrub-draw both paths + scale node dots
-        var nodeDots = svg.querySelectorAll('circle');
-        gsap.to([fgPath, glowPath], {
-          strokeDashoffset: 0,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: zigzag,
-            start: 'top 70%',
-            end: 'bottom 30%',
-            scrub: 1,
-            onUpdate: function (self) {
-              // Scale up node dots as path reaches them
-              var p = self.progress;
-              nodeDots.forEach(function (dot, i) {
-                var threshold = (i + 0.5) / points.length;
-                var dotScale = p > threshold ? 5 : 0;
-                dot.setAttribute('r', String(dotScale));
-              });
-            },
-          },
-        });
-      }
-
-      requestAnimationFrame(function () {
-        requestAnimationFrame(buildSnakePath);
-      });
-      var resizeTimer;
-      window.addEventListener('resize', function () {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(buildSnakePath, 200);
-      });
-    }
-
-    /* Card entrance animations with internal stagger */
-    rows.forEach(function (row, i) {
-      var card = row.querySelector('.about-values-card');
-      if (!card) return;
-      var isLeft = i % 2 === 0;
-
-      gsap.fromTo(card,
-        { x: isLeft ? -80 : 80, opacity: 0, rotateY: isLeft ? 4 : -4, filter: 'blur(4px)' },
-        { x: 0, opacity: 1, rotateY: 0, filter: 'blur(0px)',
-          duration: 1.4, ease: 'power3.out',
-          scrollTrigger: {
-            trigger: row, start: 'top 82%',
-            toggleActions: 'play none none reverse',
-          },
-          onComplete: function () {
-            // Internal stagger: number → title → description
-            var children = card.children;
-            for (var c = 0; c < children.length; c++) {
-              gsap.fromTo(children[c],
-                { y: 15, opacity: 0 },
-                { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', delay: c * 0.1 }
-              );
-            }
-          },
-        }
-      );
-
-      // Subtle parallax depth
-      gsap.to(card, {
-        yPercent: -8 + (i % 3) * 3,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: row, start: 'top bottom', end: 'bottom top', scrub: 1,
-        },
-      });
+  function initFlipClock() {
+    var statsSection = document.getElementById('about-stats');
+    if (!statsSection) return;
+    var hasFlipped = false;
+    ScrollTrigger.create({
+      trigger: statsSection, start: 'top 70%',
+      onEnter: function () { if (hasFlipped) return; hasFlipped = true; animateAllFlipClocks(); }
     });
   }
 
-  /* ═══════════════════════════════════════════════
-     STAT COUNTER — Enhanced with gold glow pulse + elastic suffix
-     ═══════════════════════════════════════════════ */
-  function initStatCounter() {
-    var statsSection = document.getElementById('about-stats');
-    if (!statsSection) return;
-    var statItems = statsSection.querySelectorAll('.about-stat-item');
-    if (!statItems.length) return;
-    var hasAnimated = false;
-
-    ScrollTrigger.create({
-      trigger: statsSection, start: 'top 72%',
-      once: true,
-      onEnter: function () {
-        if (hasAnimated) return;
-        hasAnimated = true;
-        statItems.forEach(function (item, idx) {
-          var numEl = item.querySelector('.about-stat-number');
-          var labelEl = item.querySelector('.about-stat-label');
-
-          // Fade the item in with stagger
-          gsap.fromTo(item,
-            { opacity: 0, y: 30 },
-            { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: idx * 0.2 }
-          );
-
-          // Count up the number
-          if (numEl) {
-            var text = numEl.textContent.trim();
-            var match = text.match(/^(\d+)(.*)$/);
-            if (match) {
-              var target = parseInt(match[1]);
-              var suffix = match[2];
-
-              // Wrap suffix in a span for elastic bounce
-              numEl.textContent = '';
-              var numSpan = document.createElement('span');
-              numSpan.textContent = '0';
-              var suffixSpan = document.createElement('span');
-              suffixSpan.style.display = 'inline-block';
-              suffixSpan.style.opacity = '0';
-              suffixSpan.style.transform = 'scale(0)';
-              suffixSpan.textContent = suffix;
-              numEl.appendChild(numSpan);
-              numEl.appendChild(suffixSpan);
-
-              gsap.to({ val: 0 }, {
-                val: target, duration: 2.2, ease: 'power2.out', delay: idx * 0.2 + 0.3,
-                onUpdate: function () { numSpan.textContent = String(Math.round(this.targets()[0].val)); },
-                onComplete: function () {
-                  numSpan.textContent = String(target);
-
-                  // Suffix bounces in with elastic ease
-                  gsap.to(suffixSpan, {
-                    opacity: 1, scale: 1, duration: 0.8, ease: 'elastic.out(1.2, 0.4)',
-                  });
-
-                  // Gold glow pulse on the number
-                  gsap.fromTo(numEl,
-                    { textShadow: '0 0 0px rgba(201, 169, 110, 0)' },
-                    { textShadow: '0 0 20px rgba(201, 169, 110, 0.4)',
-                      duration: 0.6, yoyo: true, repeat: 1, ease: 'power2.inOut',
-                      onComplete: function () {
-                        numEl.style.textShadow = 'none';
-                      }
-                    }
-                  );
-                }
-              });
-            }
-          }
-
-          if (labelEl) { scrambleDecode(labelEl, idx * 0.2 + 0.6); }
-        });
-      }
+  function animateAllFlipClocks() {
+    document.querySelectorAll('[data-animate="flip-clock"]').forEach(function (item, itemIdx) {
+      var cards = item.querySelectorAll('[data-el="flip-card"]');
+      var suffix = item.querySelector('[data-el="stat-suffix"]');
+      var separator = item.querySelector('[data-el="stat-separator"]');
+      cards.forEach(function (card, cardIdx) {
+        var target = parseInt(card.getAttribute('data-digit'));
+        var topSpan = card.querySelector('[data-el="flip-card-top"] span');
+        var bottomSpan = card.querySelector('[data-el="flip-card-bottom"] span');
+        animateSingleDigit(card, topSpan, bottomSpan, target, (itemIdx * 0.5) + (cardIdx * 0.2));
+      });
+      var sd = (itemIdx * 0.5) + (cards.length * 0.2) + 1.6;
+      if (suffix) gsap.to(suffix, { opacity: 1, duration: 0.4, delay: sd, ease: 'power2.out' });
+      if (separator) gsap.to(separator, { opacity: 1, duration: 0.4, delay: (itemIdx * 0.5) + 0.4, ease: 'power2.out' });
+      var label = item.querySelector('[data-animate="scramble"]');
+      if (label) scrambleDecode(label, sd + 0.2);
     });
+  }
+
+  function animateSingleDigit(card, topSpan, bottomSpan, target, delay) {
+    var inner = card.querySelector('[data-el="flip-card-inner"]');
+    var flipDuration = 0.3;
+    var steps = [];
+    if (target === 0) { steps.push(8, 4, 0); }
+    else if (target <= 3) { for (var i = 1; i <= target; i++) steps.push(i); }
+    else {
+      var step = Math.max(1, Math.floor(target / 3));
+      for (var v = step; v < target; v += step) steps.push(v);
+      if (steps[steps.length - 1] !== target) steps.push(target);
+    }
+    var currentDigit = 0, stepIndex = 0;
+    function doNextFlip() {
+      if (stepIndex >= steps.length) return;
+      var nd = steps[stepIndex];
+      topSpan.textContent = nd;
+      var o = document.createElement('div');
+      o.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:50%;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:2px;font-family:"DM Serif Display",Georgia,serif;font-size:48px;color:#f0ede8;background:#1a1a1a;border-radius:6px 6px 0 0;transform-origin:bottom center;z-index:4;';
+      o.innerHTML = '<span>' + currentDigit + '</span>';
+      inner.appendChild(o);
+      gsap.set(o, { rotateX: 0, transformPerspective: 400 });
+      gsap.to(o, {
+        rotateX: -90, duration: flipDuration, ease: 'power2.in',
+        onComplete: function () { o.remove(); bottomSpan.textContent = nd; currentDigit = nd; stepIndex++; doNextFlip(); }
+      });
+    }
+    gsap.delayedCall(delay, doNextFlip);
   }
 
   /* ═══════════════════════════════════════════════
@@ -602,7 +400,7 @@
   function scrambleDecode(el, delay) {
     var originalText = el.textContent;
     var chars = '\u2588\u2593\u2591\u2592ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    var frame = 0, totalFrames = 24;
+    var frame = 0, totalFrames = 30;
     setTimeout(function () {
       var interval = setInterval(function () {
         frame++;
@@ -614,7 +412,7 @@
         }
         el.textContent = decoded;
         if (frame >= totalFrames) { clearInterval(interval); el.textContent = originalText; }
-      }, 40);
+      }, 50);
     }, delay * 1000);
   }
 
@@ -622,7 +420,6 @@
      SECTION PARALLAX
      ═══════════════════════════════════════════════ */
   function initSectionParallax() {
-    // Stats background parallax
     var stats = document.getElementById('about-stats');
     if (stats) {
       gsap.fromTo(stats,
@@ -632,7 +429,6 @@
       );
     }
 
-    // Story grid column parallax (image up, text down)
     var storySection = document.getElementById('about-story');
     if (storySection) {
       var storyGrid = storySection.querySelector('.av-grid-2col');
@@ -663,8 +459,7 @@
   }
 
   /* ═══════════════════════════════════════════════
-     CTA AMBIENT GLOW
-     Subtle pulsing red radial gradient behind CTA content
+     CTA AMBIENT GLOW — Enhanced pulsing
      ═══════════════════════════════════════════════ */
   function initCTAGlow() {
     var ctaSection = document.querySelector('.about-cta-container');
@@ -673,14 +468,13 @@
     var glow = document.createElement('div');
     glow.style.cssText = [
       'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);',
-      'width:120%;height:120%;border-radius:50%;pointer-events:none;z-index:0;',
-      'background:radial-gradient(ellipse at center, rgba(200,34,42,0.04) 0%, transparent 70%);',
+      'width:140%;height:140%;border-radius:50%;pointer-events:none;z-index:0;',
+      'background:radial-gradient(ellipse at center, rgba(200,34,42,0.06) 0%, transparent 60%);',
       'opacity:0;',
     ].join('');
     ctaSection.style.position = 'relative';
     ctaSection.insertBefore(glow, ctaSection.firstChild);
 
-    // Pulse on scroll enter
     ScrollTrigger.create({
       trigger: ctaSection,
       start: 'top 80%',
@@ -689,7 +483,7 @@
           opacity: 1, duration: 1.5, ease: 'power2.out',
           onComplete: function () {
             gsap.to(glow, {
-              opacity: 0.5, duration: 4, yoyo: true, repeat: -1, ease: 'sine.inOut',
+              opacity: 0.4, duration: 3, yoyo: true, repeat: -1, ease: 'sine.inOut',
             });
           },
         });
@@ -706,9 +500,7 @@
   window.addEventListener('DOMContentLoaded', function () {
     initHeroEntrance();
     initScrollAnimations();
-    initValuesSnake();
-    // Process section handled by avorino-about-process3d.js (Three.js)
-    initStatCounter();
+    initFlipClock();
     initSectionParallax();
     initSectionTransitions();
     initCTAGlow();

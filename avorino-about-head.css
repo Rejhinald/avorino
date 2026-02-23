@@ -1,15 +1,15 @@
 /* Avorino About Page — Head CSS
    Page Settings → Custom Code → Head Code
-   Covers: interactive transitions, hover states */
+   Covers: interactive transitions, hover states, flip-clock, values grid */
 
 /* ─── Prevent Horizontal Scroll ─── */
 html, body { overflow-x: hidden; }
 
 /* ─── Button Transitions ─── */
-.about-cta-btn {
+.av-cta-btn {
   transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease;
 }
-.about-cta-btn:hover {
+.av-cta-btn:hover {
   box-shadow: 0 8px 32px rgba(200, 34, 42, 0.15);
 }
 
@@ -51,75 +51,39 @@ html, body { overflow-x: hidden; }
   transform-origin: left center;
 }
 
-/* ─── Values Snake Zigzag Layout ─── */
-.about-values-zigzag {
-  position: relative;
+/* ─── Flip-Clock Stats ─── */
+.about-flip-card {
+  perspective: 400px;
+  border-radius: 6px;
 }
-.about-values-snake-anchor {
-  overflow: visible;
+.about-flip-card-top {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ─── Values Section — Three.js Canvas + Grid ─── */
+#about-values {
+  position: relative;
+  overflow: hidden;
+}
+.about-values-canvas-wrap {
   pointer-events: none;
 }
-.about-values-snake-path {
-  fill: none;
-  stroke: #c8222a;
-  stroke-width: 2;
-  stroke-linecap: round;
-  will-change: stroke-dashoffset;
-}
-.about-values-snake-path-bg {
-  fill: none;
-  stroke: rgba(200, 34, 42, 0.1);
-  stroke-width: 2;
-  stroke-linecap: round;
+.about-values-canvas-wrap canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 .about-values-card {
   will-change: transform, opacity;
   transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.6s ease;
+  border-top: 2px solid rgba(201, 169, 110, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 .about-values-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
-}
-
-/* ─── Process Section: Full-Width Scroll-Lock + Three.js ─── */
-#about-process {
-  overflow: hidden;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-}
-/* Restore horizontal spacing for header elements above the pinned viewport */
-#about-process > :not([data-process-pinned]) {
-  margin-left: 80px;
-  margin-right: 80px;
-}
-.about-process-pinned {
-  width: 100vw !important;
-  max-width: 100vw !important;
-}
-.about-process-pinned canvas {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-}
-[data-process-cards] {
-  pointer-events: none;
-}
-.about-process-card {
-  opacity: 0;
-  will-change: transform, opacity;
-  pointer-events: auto;
-}
-.about-process-nav-dot {
-  display: inline-block;
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: rgba(17, 17, 17, 0.15);
-  margin: 0 6px;
-  transition: background 0.3s ease, transform 0.3s ease;
-}
-.about-process-nav-dot.is-active {
-  background: #c8222a;
-  transform: scale(1.4);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25);
+  border-top-color: rgba(201, 169, 110, 0.6);
 }
 
 /* ─── Char Cascade Support ─── */
@@ -145,10 +109,7 @@ html, body { overflow-x: hidden; }
 }
 
 /* ─── 3D Transform Support ─── */
-/* NOTE: perspective on body breaks position:fixed (ScrollTrigger pin).
-   Apply perspective only to containers that need 3D child transforms. */
 .about-values-card,
-.about-process-card,
 .av-card-dark {
   backface-visibility: hidden;
 }
@@ -187,94 +148,27 @@ html, body { overflow-x: hidden; }
     gap: 48px !important;
   }
 
-  /* Stats: 3 col → 3 col, tighter gap */
+  /* Stats: 4 col → 2 col */
   .about-stats-grid {
-    gap: 32px !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 48px 32px !important;
   }
 
-  /* Values zigzag: 1 column, hide spacers + snake */
-  .about-values-row {
-    grid-template-columns: 1fr !important;
-    gap: 0 !important;
-    padding-top: 16px !important;
-    padding-bottom: 16px !important;
-  }
-  .about-values-spacer {
+  /* Values: hide canvas, grid 2→1 col */
+  .about-values-canvas-wrap {
     display: none !important;
   }
-  .about-values-snake-anchor {
-    display: none !important;
-  }
-
-  /* Communication */
-  .about-comm {
-    padding-left: 40px !important;
-    padding-right: 40px !important;
-  }
-  .about-comm-grid {
+  .about-values-grid {
     grid-template-columns: 1fr !important;
-    gap: 48px !important;
-  }
-  .about-comm-img {
-    height: 300px !important;
+    gap: 24px !important;
   }
 
   /* CTA */
-  .about-cta {
+  .av-cta {
     padding: 40px !important;
   }
   .about-cta-container {
     padding: 80px 40px !important;
-  }
-
-  /* ADU card */
-  .about-adu-card {
-    padding: 64px 40px !important;
-  }
-
-  /* Process: full-width fix */
-  #about-process {
-    margin-left: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-  #about-process > :not([data-process-pinned]) {
-    margin-left: 40px !important;
-    margin-right: 40px !important;
-  }
-  .about-process-pinned {
-    height: auto !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overflow: visible !important;
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-  .about-process-visual { display: none !important; }
-  .about-process-cards,
-  [data-process-cards] {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 32px !important;
-    width: 100% !important;
-    height: auto !important;
-    position: relative !important;
-    padding: 0 40px !important;
-    pointer-events: auto !important;
-  }
-  .about-process-card {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    opacity: 1 !important;
-    transform: none !important;
-    pointer-events: auto !important;
-    max-width: 100% !important;
-    width: 100% !important;
-    padding: 40px 32px !important;
-  }
-  .about-process-nav {
-    display: none !important;
   }
 }
 
@@ -305,13 +199,24 @@ html, body { overflow-x: hidden; }
     gap: 32px !important;
   }
 
-  /* Stats: 3 col → 1 col */
+  /* Stats: 2 col → 1 col */
   .about-stats-grid {
     grid-template-columns: 1fr !important;
     gap: 40px !important;
   }
-  .about-stat-number {
-    font-size: clamp(48px, 12vw, 72px) !important;
+  .about-flip-card {
+    width: 56px !important;
+    height: 76px !important;
+  }
+  .about-flip-card-top,
+  .about-flip-card-bottom {
+    font-size: 36px !important;
+  }
+  .about-stat-suffix {
+    font-size: 28px !important;
+  }
+  .about-stat-separator {
+    font-size: 28px !important;
   }
 
   /* Cards padding */
@@ -322,30 +227,12 @@ html, body { overflow-x: hidden; }
     padding: 36px 28px !important;
   }
 
-  /* Communication */
-  .about-comm {
-    padding-left: 24px !important;
-    padding-right: 24px !important;
-  }
-  .about-comm-img {
-    height: 240px !important;
-  }
-
   /* CTA */
-  .about-cta {
+  .av-cta {
     padding: 24px !important;
   }
   .about-cta-container {
     padding: 64px 24px !important;
-  }
-  .about-cta-btns {
-    flex-direction: column !important;
-    align-items: center !important;
-  }
-
-  /* ADU card */
-  .about-adu-card {
-    padding: 48px 24px !important;
   }
 
   /* Heading sizes — tighten up */
@@ -362,18 +249,6 @@ html, body { overflow-x: hidden; }
   }
   .av-mb-64 {
     margin-bottom: 32px !important;
-  }
-
-  /* Process header + cards */
-  #about-process > :not([data-process-pinned]) {
-    margin-left: 24px !important;
-    margin-right: 24px !important;
-  }
-  [data-process-cards] {
-    padding: 0 24px !important;
-  }
-  .about-process-card {
-    padding: 32px 24px !important;
   }
 }
 
@@ -425,55 +300,38 @@ html, body { overflow-x: hidden; }
     font-size: 20px !important;
   }
 
-  /* Stats */
-  .about-stat-number {
-    font-size: clamp(40px, 14vw, 56px) !important;
+  /* Flip-clock — smaller cards */
+  .about-flip-card {
+    width: 48px !important;
+    height: 64px !important;
   }
-
-  /* Communication */
-  .about-comm {
-    padding-left: 16px !important;
-    padding-right: 16px !important;
+  .about-flip-card-top,
+  .about-flip-card-bottom {
+    font-size: 28px !important;
   }
-  .about-comm-img {
-    height: 200px !important;
+  .about-stat-suffix {
+    font-size: 22px !important;
+  }
+  .about-stat-separator {
+    font-size: 22px !important;
+    margin-bottom: 8px !important;
   }
 
   /* CTA */
-  .about-cta {
+  .av-cta {
     padding: 16px !important;
   }
   .about-cta-container {
     padding: 48px 16px !important;
   }
-  .about-cta-heading {
+  .av-cta-heading {
     font-size: clamp(24px, 7vw, 36px) !important;
   }
-  .about-cta-btn {
+  .av-cta-btn {
     width: 100% !important;
     justify-content: center !important;
     padding-left: 24px !important;
     padding-right: 24px !important;
-  }
-
-  /* ADU card */
-  .about-adu-card {
-    padding: 40px 16px !important;
-  }
-
-  /* Process header + cards */
-  #about-process > :not([data-process-pinned]) {
-    margin-left: 16px !important;
-    margin-right: 16px !important;
-  }
-  [data-process-cards] {
-    padding: 0 16px !important;
-  }
-  .about-process-card {
-    padding: 28px 20px !important;
-  }
-  .about-process-card-title {
-    font-size: 22px !important;
   }
 
   /* Utility margins */
