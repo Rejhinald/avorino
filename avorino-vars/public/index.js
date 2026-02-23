@@ -5,7 +5,7 @@
 // ════════════════════════════════════════════════════════════════
 import { webflow, log, logDetail, clearErrorLog, wait, safeCall, getAvorinVars, getOrCreateStyle, clearAndSet, freshStyle, createSharedStyles, setSharedStyleProps, createPageWithSlug, buildCTASection, applyCTAStyleProps, } from './shared.js';
 // ── CDN hash (auto-updated) ──
-const CDN = 'https://cdn.jsdelivr.net/gh/Rejhinald/avorino@2b396b4';
+const CDN = 'https://cdn.jsdelivr.net/gh/Rejhinald/avorino@9f2e416';
 const CALENDLY_CSS = '<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">';
 const CALENDLY_JS = '<script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>';
 // ── Blog post data (scraped from Wix) ──

@@ -47,9 +47,9 @@ const PAGE_SLUG = 'clientreviews';
 const PAGE_TITLE = 'Client Reviews — Avorino Construction';
 const PAGE_DESC = '4.9 average rating from 35+ reviews. See what Orange County homeowners say about working with Avorino.';
 const HEAD_CODE = [
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@2b396b4/avorino-responsive.css">',
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@2b396b4/avorino-nav-footer.css">',
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@2b396b4/avorino-reviews.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@9f2e416/avorino-responsive.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@9f2e416/avorino-nav-footer.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@9f2e416/avorino-reviews.css">',
   CALENDLY_CSS,
 ].join('\n');
 const FOOTER_CODE = [
