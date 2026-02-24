@@ -111,15 +111,25 @@
       cols.push(col);
     });
 
-    // Create roller bar
-    const roller = document.createElement('div');
-    roller.style.cssText = 'position:absolute;height:2px;background:rgba(240,237,232,0.7);z-index:10;opacity:0;pointer-events:none;width:' + (logoW / 3) + 'px;';
-    textWrap.appendChild(roller);
+    // Create SVG paint roller — slightly larger than column, slanted
+    const colW = logoW / 3;
+    const rollerWrap = document.createElement('div');
+    rollerWrap.style.cssText = 'position:absolute;z-index:10;opacity:0;pointer-events:none;width:' + (colW + 10) + 'px;transform-origin:center center;';
+    rollerWrap.innerHTML = '<svg viewBox="0 0 80 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;">'
+      // Roller cylinder
+      + '<rect x="4" y="12" width="52" height="14" rx="7" fill="rgba(240,237,232,0.45)"/>'
+      + '<rect x="8" y="15" width="44" height="8" rx="4" fill="rgba(240,237,232,0.75)"/>'
+      // Arm connecting roller to handle
+      + '<line x1="56" y1="18" x2="66" y2="8" stroke="rgba(240,237,232,0.4)" stroke-width="2.5" stroke-linecap="round"/>'
+      // Handle grip
+      + '<rect x="63" y="2" width="12" height="10" rx="3" fill="rgba(240,237,232,0.35)"/>'
+      + '</svg>';
+    textWrap.appendChild(rollerWrap);
 
-    // Initial clip states
-    gsap.set(cols[0], { clipPath: 'inset(0 0 100% 0)' }); // right: hidden, will reveal bottom→top
-    gsap.set(cols[1], { clipPath: 'inset(100% 0 0 0)' }); // mid: hidden, will reveal top→bottom
-    gsap.set(cols[2], { clipPath: 'inset(0 0 100% 0)' }); // left: hidden, will reveal bottom→top
+    // Initial clip states — reveal follows roller direction
+    gsap.set(cols[0], { clipPath: 'inset(100% 0 0 0)' }); // right: reveal bottom→top
+    gsap.set(cols[1], { clipPath: 'inset(0 0 100% 0)' }); // mid: reveal top→bottom
+    gsap.set(cols[2], { clipPath: 'inset(100% 0 0 0)' }); // left: reveal bottom→top
 
     const tl = gsap.timeline({
       onComplete: function() {
@@ -129,23 +139,47 @@
       }
     });
 
-    // Pass 1: Right third ("NO") — roller bottom → top
-    tl.set(roller, { left: (logoW * 2 / 3) + 'px', top: logoH + 'px', opacity: 0.8 }, 0);
-    tl.to(roller, { top: '-2px', duration: 0.55, ease: 'power2.inOut' }, 0);
-    tl.to(cols[0], { clipPath: 'inset(0 0 0% 0)', duration: 0.55, ease: 'power2.inOut' }, 0);
+    const rH = 28; // roller SVG height
+    const slant = 8; // degrees of slant
 
-    // Pass 2: Middle third ("RI") — roller top → bottom
-    tl.set(roller, { left: (logoW / 3) + 'px', top: '-2px' }, 0.65);
-    tl.to(roller, { top: logoH + 'px', duration: 0.55, ease: 'power2.inOut' }, 0.65);
-    tl.to(cols[1], { clipPath: 'inset(0% 0 0 0)', duration: 0.55, ease: 'power2.inOut' }, 0.65);
+    // Roller starts below the logo at the right column, slightly slanted
+    tl.set(rollerWrap, {
+      left: (logoW * 2 / 3 - 5) + 'px',
+      top: (logoH + rH) + 'px',
+      rotation: -slant,
+      opacity: 0.9
+    }, 0);
 
-    // Pass 3: Left third ("AVO") — roller bottom → top
-    tl.set(roller, { left: '0px', top: logoH + 'px' }, 1.3);
-    tl.to(roller, { top: '-2px', duration: 0.55, ease: 'power2.inOut' }, 1.3);
-    tl.to(cols[2], { clipPath: 'inset(0 0 0% 0)', duration: 0.55, ease: 'power2.inOut' }, 1.3);
+    // Pass 1: Right third ("NO") — sweep bottom → top
+    tl.to(rollerWrap, { top: -rH + 'px', duration: 0.55, ease: 'power2.inOut' }, 0);
+    tl.to(cols[0], { clipPath: 'inset(0 0 0 0)', duration: 0.55, ease: 'power2.inOut' }, 0);
 
-    // Roller fades
-    tl.to(roller, { opacity: 0, duration: 0.25 }, 1.9);
+    // Transition: roller slides left to middle column + flips slant
+    tl.to(rollerWrap, {
+      left: (logoW / 3 - 5) + 'px',
+      rotation: slant,
+      duration: 0.15,
+      ease: 'power1.inOut'
+    }, 0.55);
+
+    // Pass 2: Middle third ("RI") — sweep top → bottom
+    tl.to(rollerWrap, { top: (logoH + rH) + 'px', duration: 0.55, ease: 'power2.inOut' }, 0.7);
+    tl.to(cols[1], { clipPath: 'inset(0 0 0 0)', duration: 0.55, ease: 'power2.inOut' }, 0.7);
+
+    // Transition: roller slides left to first column + flips slant back
+    tl.to(rollerWrap, {
+      left: '-5px',
+      rotation: -slant,
+      duration: 0.15,
+      ease: 'power1.inOut'
+    }, 1.25);
+
+    // Pass 3: Left third ("AVO") — sweep bottom → top
+    tl.to(rollerWrap, { top: -rH + 'px', duration: 0.55, ease: 'power2.inOut' }, 1.4);
+    tl.to(cols[2], { clipPath: 'inset(0 0 0 0)', duration: 0.55, ease: 'power2.inOut' }, 1.4);
+
+    // Roller fades out after final pass
+    tl.to(rollerWrap, { opacity: 0, duration: 0.3 }, 2.0);
 
     // Hold full logo
     tl.to({}, { duration: 0.6 });
