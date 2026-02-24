@@ -203,11 +203,6 @@ html, body { overflow-x: hidden; }
 .about-cta-container {
   position: relative;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
 }
 .av-cta-subtitle {
   font-family: 'DM Sans', sans-serif;
