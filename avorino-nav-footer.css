@@ -96,10 +96,12 @@ nav.site-nav.nav--dropdown-open {
               -webkit-backdrop-filter 0.35s ease, box-shadow 0.35s ease, padding 0.3s ease;
 }
 
-/* Keep blend-mode normal while dropdown is closing to prevent flash */
-nav.site-nav:has(.is-open),
+/* Keep blend-mode normal + bg while dropdown is closing to prevent flash */
 nav.site-nav:has(.is-closing) {
   mix-blend-mode: normal;
+  background-color: rgba(232, 228, 223, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 nav.site-nav.nav--dropdown-open .nav-logo,
@@ -609,12 +611,26 @@ nav.site-nav.nav--dropdown-open .nav-link--has-dropdown {
 }
 
 .footer-brand-name {
-  font-family: 'DM Serif Display', Georgia, serif;
-  font-weight: 400;
-  font-size: 24px;
-  color: #f0ede8;
   margin-bottom: 20px;
-  letter-spacing: 0.08em;
+}
+
+/* Support both <img> and <div> with background-image for logo */
+.footer-logo-img {
+  height: 32px;
+  width: auto;
+  display: block;
+  filter: brightness(0) invert(1);
+}
+
+/* When logo is a div with background-image */
+.footer-brand-name > div,
+.footer-brand-name .footer-logo-div {
+  height: 32px;
+  width: 160px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: left center;
+  filter: brightness(0) invert(1);
 }
 
 .footer-brand-desc {
