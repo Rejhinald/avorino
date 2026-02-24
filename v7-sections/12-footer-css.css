@@ -99,8 +99,14 @@
 }
 
 /* ═══════════════════════════════════════════
-   ROW 2: City ADU Pages — Linked Grid
+   ROW 2: Cities We Serve — Flat Grid
    ═══════════════════════════════════════════ */
+.footer-cities {
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(240, 237, 232, 0.06);
+  margin-bottom: 32px;
+}
+
 .footer-cities-label {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-weight: 400;
@@ -110,37 +116,6 @@
   color: #f0ede8;
   opacity: 0.55;
   margin-bottom: 16px;
-  cursor: pointer;
-  list-style: none;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.footer-cities-label::-webkit-details-marker {
-  display: none;
-}
-
-.footer-cities-label::after {
-  content: '+';
-  font-size: 14px;
-  font-weight: 300;
-  opacity: 0.6;
-  transition: transform 0.3s ease;
-}
-
-details[open] > .footer-cities-label::after {
-  content: '−';
-}
-
-details.footer-cities {
-  padding-bottom: 40px;
-  border-bottom: 1px solid rgba(240, 237, 232, 0.06);
-  margin-bottom: 32px;
-}
-
-details.footer-cities > .footer-cities-grid {
-  margin-top: 16px;
 }
 
 .footer-cities-grid {
