@@ -494,6 +494,11 @@
       return;
     }
 
+    // Progress bar — subtle gold line at bottom
+    var progressBar = document.createElement('div');
+    progressBar.className = 'mv-progress-bar';
+    section.appendChild(progressBar);
+
     // Split phrase into words
     var text = phraseEl.textContent.trim();
     phraseEl.innerHTML = '';
@@ -524,6 +529,9 @@
       scrub: 1,
       onUpdate: function (self) {
         var p = self.progress;
+
+        // Progress bar
+        progressBar.style.transform = 'scaleX(' + p + ')';
 
         // Phase 1 (0–30%): Words scale in
         if (p < 0.3) {

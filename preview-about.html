@@ -142,6 +142,11 @@
 
   /* ─── Mission/Vision — Cinematic Scroll-Lock ─── */
   #about-mission-vision { overflow: hidden; min-height: 100vh; position: relative; }
+  .mv-progress-bar {
+    position: absolute; bottom: 0; left: 0; width: 100%; height: 2px;
+    background: rgba(201,169,110,0.45); transform-origin: left center;
+    transform: scaleX(0); z-index: 10; pointer-events: none;
+  }
   .mv-phrase-layer {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     display: flex; align-items: center; justify-content: center;
