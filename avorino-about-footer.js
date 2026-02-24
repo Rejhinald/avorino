@@ -22,10 +22,13 @@
      ═══════════════════════════════════════════════ */
   function splitIntoWords(el) {
     var text = el.textContent.trim();
+    var align = window.getComputedStyle(el).textAlign;
     el.innerHTML = '';
     el.style.display = 'flex';
     el.style.flexWrap = 'wrap';
     el.style.gap = '0 0.3em';
+    if (align === 'center') el.style.justifyContent = 'center';
+    else if (align === 'right' || align === 'end') el.style.justifyContent = 'flex-end';
     var wordEls = [];
     text.split(/\s+/).forEach(function (word) {
       var wrapper = document.createElement('span');
