@@ -18,6 +18,7 @@ const FOOTER_CODE = [
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
     '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
     '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@671374c/avorino-about-footer.js"><\/script>',
+    '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@671374c/avorino-about-mv3d.js"><\/script>',
     '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@671374c/avorino-about-values3d.js"><\/script>',
     '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@671374c/avorino-animations.js"><\/script>',
     CALENDLY_JS,
@@ -189,7 +190,7 @@ async function buildAboutPage() {
         });
         await clearAndSet(await freshStyle('about-value-num'), 'about-value-num', {
             'font-family': 'DM Serif Display', 'font-size': '56px',
-            'line-height': '1', 'opacity': '0.07', 'margin-bottom': '24px', 'color': v['av-cream'],
+            'line-height': '1', 'opacity': '0.12', 'margin-bottom': '24px', 'color': v['av-cream'],
         });
         await clearAndSet(await freshStyle('about-value-title'), 'about-value-title', {
             'font-family': 'DM Serif Display', 'font-size': '24px',
@@ -390,6 +391,10 @@ async function buildAboutPage() {
     mv.setTag('section');
     mv.setStyles([s.section, s.sectionWarm]);
     mv.setAttribute('id', 'about-mission-vision');
+    // Three.js canvas wrapper (right half — populated by mv3d.js)
+    const mvCanvasWrap = mv.append(webflow.elementPresets.DOM);
+    mvCanvasWrap.setTag('div');
+    mvCanvasWrap.setAttribute('class', 'mv-canvas-wrap');
     // Phrase layer — big text that fills viewport first
     const mvPhraseLayer = mv.append(webflow.elementPresets.DOM);
     mvPhraseLayer.setTag('div');
