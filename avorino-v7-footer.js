@@ -111,25 +111,30 @@
       cols.push(col);
     });
 
-    // Create SVG paint roller — slightly larger than column, slanted
+    // Create SVG paint roller
     const colW = logoW / 3;
     const rollerWrap = document.createElement('div');
-    rollerWrap.style.cssText = 'position:absolute;z-index:10;opacity:0;pointer-events:none;width:' + (colW + 10) + 'px;transform-origin:center center;';
-    rollerWrap.innerHTML = '<svg viewBox="0 0 80 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;">'
-      // Roller cylinder
-      + '<rect x="4" y="12" width="52" height="14" rx="7" fill="rgba(240,237,232,0.45)"/>'
-      + '<rect x="8" y="15" width="44" height="8" rx="4" fill="rgba(240,237,232,0.75)"/>'
-      // Arm connecting roller to handle
-      + '<line x1="56" y1="18" x2="66" y2="8" stroke="rgba(240,237,232,0.4)" stroke-width="2.5" stroke-linecap="round"/>'
-      // Handle grip
-      + '<rect x="63" y="2" width="12" height="10" rx="3" fill="rgba(240,237,232,0.35)"/>'
+    rollerWrap.style.cssText = 'position:absolute;z-index:10;opacity:0;pointer-events:none;';
+    rollerWrap.innerHTML = '<svg width="100" height="56" viewBox="0 0 100 56" fill="none" xmlns="http://www.w3.org/2000/svg">'
+      + '<rect x="4" y="32" width="64" height="20" rx="10" fill="rgba(240,237,232,0.3)" stroke="rgba(240,237,232,0.15)" stroke-width="1"/>'
+      + '<rect x="10" y="36" width="52" height="12" rx="6" fill="rgba(240,237,232,0.65)"/>'
+      + '<rect x="14" y="39" width="44" height="3" rx="1.5" fill="rgba(240,237,232,0.9)" opacity="0.4"/>'
+      + '<path d="M 68 42 C 74 42, 78 34, 80 26" stroke="rgba(240,237,232,0.45)" stroke-width="3" stroke-linecap="round" fill="none"/>'
+      + '<rect x="74" y="6" width="14" height="22" rx="5" fill="rgba(240,237,232,0.3)" stroke="rgba(240,237,232,0.15)" stroke-width="1"/>'
+      + '<rect x="77" y="10" width="8" height="14" rx="3" fill="rgba(240,237,232,0.5)"/>'
       + '</svg>';
     textWrap.appendChild(rollerWrap);
 
-    // Initial clip states — reveal follows roller direction
-    gsap.set(cols[0], { clipPath: 'inset(100% 0 0 0)' }); // right: reveal bottom→top
-    gsap.set(cols[1], { clipPath: 'inset(0 0 100% 0)' }); // mid: reveal top→bottom
-    gsap.set(cols[2], { clipPath: 'inset(100% 0 0 0)' }); // left: reveal bottom→top
+    const headY = 42; // vertical center of roller head in SVG coords
+    const slant = 6;
+
+    // Initial clip states
+    gsap.set(cols[0], { clipPath: 'inset(100% 0 0 0)' });
+    gsap.set(cols[1], { clipPath: 'inset(0 0 100% 0)' });
+    gsap.set(cols[2], { clipPath: 'inset(100% 0 0 0)' });
+
+    // Proxy progress objects — onUpdate syncs roller + clip-path every frame
+    const p1 = { v: 0 }, p2 = { v: 0 }, p3 = { v: 0 };
 
     const tl = gsap.timeline({
       onComplete: function() {
@@ -139,47 +144,40 @@
       }
     });
 
-    const rH = 28; // roller SVG height
-    const slant = 8; // degrees of slant
-
-    // Roller starts below the logo at the right column, slightly slanted
+    // Roller appears at bottom-right
     tl.set(rollerWrap, {
-      left: (logoW * 2 / 3 - 5) + 'px',
-      top: (logoH + rH) + 'px',
+      left: (colW * 2 - 5) + 'px',
+      top: logoH + 'px',
       rotation: -slant,
       opacity: 0.9
     }, 0);
 
-    // Pass 1: Right third ("NO") — sweep bottom → top
-    tl.to(rollerWrap, { top: -rH + 'px', duration: 0.55, ease: 'power2.inOut' }, 0);
-    tl.to(cols[0], { clipPath: 'inset(0 0 0 0)', duration: 0.55, ease: 'power2.inOut' }, 0);
+    // Pass 1: Right ("NO") — bottom → top, clip synced to roller
+    tl.to(p1, { v: 1, duration: 0.6, ease: 'power2.inOut', onUpdate: function() {
+      cols[0].style.clipPath = 'inset(' + ((1 - p1.v) * 100) + '% 0 0 0)';
+      rollerWrap.style.top = (logoH * (1 - p1.v) - headY) + 'px';
+    }}, 0);
 
-    // Transition: roller slides left to middle column + flips slant
-    tl.to(rollerWrap, {
-      left: (logoW / 3 - 5) + 'px',
-      rotation: slant,
-      duration: 0.15,
-      ease: 'power1.inOut'
-    }, 0.55);
+    // Transition: slide left to middle, flip slant
+    tl.to(rollerWrap, { left: (colW - 5) + 'px', rotation: slant, duration: 0.12, ease: 'power1.inOut' });
 
-    // Pass 2: Middle third ("RI") — sweep top → bottom
-    tl.to(rollerWrap, { top: (logoH + rH) + 'px', duration: 0.55, ease: 'power2.inOut' }, 0.7);
-    tl.to(cols[1], { clipPath: 'inset(0 0 0 0)', duration: 0.55, ease: 'power2.inOut' }, 0.7);
+    // Pass 2: Middle ("RI") — top → bottom
+    tl.to(p2, { v: 1, duration: 0.6, ease: 'power2.inOut', onUpdate: function() {
+      cols[1].style.clipPath = 'inset(0 0 ' + ((1 - p2.v) * 100) + '% 0)';
+      rollerWrap.style.top = (logoH * p2.v - headY) + 'px';
+    }});
 
-    // Transition: roller slides left to first column + flips slant back
-    tl.to(rollerWrap, {
-      left: '-5px',
-      rotation: -slant,
-      duration: 0.15,
-      ease: 'power1.inOut'
-    }, 1.25);
+    // Transition: slide left, flip slant back
+    tl.to(rollerWrap, { left: '-5px', rotation: -slant, duration: 0.12, ease: 'power1.inOut' });
 
-    // Pass 3: Left third ("AVO") — sweep bottom → top
-    tl.to(rollerWrap, { top: -rH + 'px', duration: 0.55, ease: 'power2.inOut' }, 1.4);
-    tl.to(cols[2], { clipPath: 'inset(0 0 0 0)', duration: 0.55, ease: 'power2.inOut' }, 1.4);
+    // Pass 3: Left ("AVO") — bottom → top
+    tl.to(p3, { v: 1, duration: 0.6, ease: 'power2.inOut', onUpdate: function() {
+      cols[2].style.clipPath = 'inset(' + ((1 - p3.v) * 100) + '% 0 0 0)';
+      rollerWrap.style.top = (logoH * (1 - p3.v) - headY) + 'px';
+    }});
 
-    // Roller fades out after final pass
-    tl.to(rollerWrap, { opacity: 0, duration: 0.3 }, 2.0);
+    // Roller fades
+    tl.to(rollerWrap, { opacity: 0, duration: 0.3 });
 
     // Hold full logo
     tl.to({}, { duration: 0.6 });
