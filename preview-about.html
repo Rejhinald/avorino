@@ -129,17 +129,36 @@
     font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.55; text-align: center;
   }
 
-  /* ─── Mission/Vision ─── */
-  .about-card-label { font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs); letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.4; margin-bottom: 24px; color: var(--av-cream); }
-  .about-card-heading { font-family: 'DM Serif Display', serif; font-size: var(--av-text-h3); line-height: 1.12; font-weight: 400; margin-bottom: 24px; color: var(--av-cream); }
-  .about-card-body { font-family: 'DM Sans', sans-serif; font-size: var(--av-text-sm); line-height: 1.9; opacity: 0.6; color: var(--av-cream); }
-  .about-mv-accent {
-    border-left: 2px solid rgba(201,169,110,0.4); padding-left: 48px; position: relative;
+  /* ─── Mission/Vision — Cinematic Scroll-Lock ─── */
+  #about-mission-vision { overflow: hidden; min-height: 100vh; position: relative; }
+  .mv-phrase-layer {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 2; padding: 40px 80px; text-align: center;
   }
-  .about-mv-divider { width: 40px; height: 1px; background: rgba(201,169,110,0.4); margin-top: 8px; margin-bottom: 24px; }
-  .about-mv-number {
-    font-family: 'DM Serif Display', Georgia, serif; font-size: 72px; line-height: 1;
-    opacity: 0.04; position: absolute; top: 32px; right: 32px; pointer-events: none; color: var(--av-cream);
+  .mv-phrase {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: clamp(48px, 6vw, 96px); line-height: 1.08; font-weight: 400; color: #111;
+  }
+  .mv-panel {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column; justify-content: center;
+    z-index: 3; opacity: 0; padding: 80px; max-width: 720px;
+  }
+  .mv-panel-label {
+    font-family: 'DM Sans', sans-serif; font-size: 11px;
+    letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.4;
+    margin-bottom: 32px; color: #111;
+  }
+  .mv-panel-heading {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: clamp(28px, 3vw, 48px); line-height: 1.12; font-weight: 400;
+    margin-bottom: 24px; color: #111;
+  }
+  .mv-panel-line { width: 0; height: 1px; background: rgba(201,169,110,0.5); margin-bottom: 32px; }
+  .mv-panel-body {
+    font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.9;
+    opacity: 0; color: #111; max-width: 560px;
   }
 
   /* ─── Values — Grid + Three.js Canvas ─── */
@@ -201,7 +220,6 @@
   /* ─── Animation supports ─── */
   [data-animate="char-cascade"] span { display: inline-block; will-change: transform, opacity, filter; }
   [data-animate="line-wipe"] .line { will-change: clip-path; }
-  #about-mission-vision { overflow: hidden; }
 
   /* ─── Responsive ─── */
   @media (max-width: 991px) {
@@ -224,7 +242,6 @@
     .av-heading-xl { font-size: clamp(36px, 8vw, 56px) !important; }
     .av-heading-lg { font-size: clamp(28px, 6vw, 40px) !important; }
     .av-cta { padding: 24px !important; }
-    .about-mv-accent { padding-left: 32px !important; }
   }
   @media (max-width: 478px) {
     .av-section { padding: 48px 16px !important; }
@@ -237,8 +254,6 @@
     .av-heading-lg { font-size: clamp(24px, 6vw, 32px) !important; }
     .av-cta { padding: 16px !important; }
     .av-cta-btn { width: 100% !important; justify-content: center !important; }
-    .about-mv-accent { padding-left: 20px !important; }
-    .about-mv-number { font-size: 48px !important; }
   }
 </style>
 </head>
@@ -266,7 +281,6 @@
     <div class="about-story-body">
       <h2 class="av-heading-lg av-max-580 av-mb-48" data-animate="line-wipe">We redefine the art of construction</h2>
       <p class="av-body av-body-muted av-max-520 av-mb-48" data-animate="opacity-sweep">Avorino is a custom home and an ADU builder in Orange County that takes pride in its exceptional customer service. With a friendly and professional approach, Avorino actively involves clients throughout the process, ensuring their unique needs are met with utmost care. Our unwavering commitment to quality is evident in every detail, resulting in remarkable outcomes that exceed expectations. Avorino stands out by embracing innovation, leveraging cutting-edge technologies and sustainable practices to deliver exceptional results. Our in-house crew is capable of handling every aspect of a project from design to execution.</p>
-      <a href="#about-values" class="about-story-link" data-animate="fade-up">Learn our story &rarr;</a>
     </div>
   </div>
 </section>
@@ -335,7 +349,7 @@
           </div>
         </div>
       </div>
-      <div class="about-stat-label" data-animate="scramble">Google Rating</div>
+      <div class="about-stat-label" data-animate="scramble">Yelp Rating</div>
     </div>
     <!-- 100% -->
     <div class="about-stat-item" data-animate="flip-clock" data-target="100" data-suffix="%">
@@ -365,28 +379,27 @@
   </div>
 </section>
 
-<!-- ═══════════ MISSION & VISION ═══════════ -->
+<!-- ═══════════ MISSION & VISION — Cinematic Scroll-Lock ═══════════ -->
 <section class="av-section av-section-warm" id="about-mission-vision">
-  <div class="av-label av-mb-64" data-animate="fade-up">
-    <div>Our Purpose</div>
-    <div class="about-label-line"></div>
+  <!-- Phrase layer — big text that fills viewport first -->
+  <div class="mv-phrase-layer">
+    <div class="mv-phrase" data-mv-phrase>Bringing visionary dreams to life</div>
   </div>
-  <h2 class="av-heading-lg av-mb-96" data-animate="line-wipe">What Drives Us</h2>
-  <div class="av-grid-2col">
-    <div class="av-card-dark about-mv-accent" data-animate="fade-up">
-      <div class="about-mv-number">01</div>
-      <div class="about-card-label">Mission</div>
-      <h3 class="about-card-heading">Bringing visionary dreams to life</h3>
-      <div class="about-mv-divider"></div>
-      <p class="about-card-body">Our mission is to bring visionary dreams to life through strong communication and transformative construction. As builders, we are committed to delivering exceptional projects that exceed expectations, inspire awe, and leave a lasting impact. With a focus on collaboration and innovation, we strive to create spaces that not only fulfill our clients' visions but also enhance the lives of those who experience them.</p>
-    </div>
-    <div class="av-card-dark about-mv-accent" data-animate="fade-up">
-      <div class="about-mv-number">02</div>
-      <div class="about-card-label">Vision</div>
-      <h3 class="about-card-heading">The catalyst for transformation</h3>
-      <div class="about-mv-divider"></div>
-      <p class="about-card-body">Our vision is to be the catalyst for transformation in the construction industry. We aspire to be known as the go-to builders for visionary projects, where dreams become reality. Through our commitment to strong communication, we aim to foster deep understanding and collaboration with our clients, partners, and communities.</p>
-    </div>
+
+  <!-- Mission panel -->
+  <div class="mv-panel" data-mv="mission">
+    <div class="mv-panel-label">Mission</div>
+    <h3 class="mv-panel-heading">Bringing visionary dreams to life</h3>
+    <div class="mv-panel-line"></div>
+    <p class="mv-panel-body">Our mission is to bring visionary dreams to life through strong communication and transformative construction. As builders, we are committed to delivering exceptional projects that exceed expectations, inspire awe, and leave a lasting impact. With a focus on collaboration and innovation, we strive to create spaces that not only fulfill our clients' visions but also enhance the lives of those who experience them.</p>
+  </div>
+
+  <!-- Vision panel -->
+  <div class="mv-panel" data-mv="vision">
+    <div class="mv-panel-label">Vision</div>
+    <h3 class="mv-panel-heading">The catalyst for transformation</h3>
+    <div class="mv-panel-line"></div>
+    <p class="mv-panel-body">Our vision is to be the catalyst for transformation in the construction industry. We aspire to be known as the go-to builders for visionary projects, where dreams become reality. Through our commitment to strong communication, we aim to foster deep understanding and collaboration with our clients, partners, and communities.</p>
   </div>
 </section>
 

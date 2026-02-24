@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mission/Vision — Animation Options Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overflow-x: hidden; font-family: 'DM Sans', sans-serif; background: #f0ede8; color: #111; }
+
+  :root {
+    --av-dark: #111111;
+    --av-cream: #f0ede8;
+    --av-warm: #e8e4df;
+    --av-red: #c8222a;
+    --av-gold: #c9a96e;
+    --av-radius: 8px;
+  }
+
+  /* ─── Option label banner ─── */
+  .option-banner {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--av-gold); color: var(--av-dark);
+    padding: 16px 40px; font-family: 'DM Sans', sans-serif;
+    font-weight: 600; font-size: 18px; letter-spacing: 0.04em;
+    border-bottom: 2px solid rgba(0,0,0,0.1);
+  }
+  .option-banner span { opacity: 0.6; font-weight: 400; font-size: 14px; margin-left: 12px; }
+
+  /* ─── Spacer between options ─── */
+  .option-spacer {
+    height: 200px; background: linear-gradient(to bottom, var(--av-warm), var(--av-cream));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif; font-size: 24px; opacity: 0.15;
+  }
+
+  /* ─── Shared card styles ─── */
+  .mv-card {
+    background: var(--av-dark); color: var(--av-cream); border-radius: var(--av-radius);
+    padding: 48px 40px; border-left: 2px solid rgba(201,169,110,0.4);
+  }
+  .mv-card-label {
+    font-family: 'DM Sans', sans-serif; font-size: 11px; letter-spacing: 0.25em;
+    text-transform: uppercase; opacity: 0.4; margin-bottom: 16px;
+  }
+  .mv-card-heading {
+    font-family: 'DM Serif Display', serif; font-size: clamp(22px, 2vw, 32px);
+    line-height: 1.15; font-weight: 400; margin-bottom: 20px;
+  }
+  .mv-card-divider { width: 40px; height: 1px; background: rgba(201,169,110,0.4); margin-bottom: 20px; }
+  .mv-card-body { font-size: 14px; line-height: 1.85; opacity: 0.55; }
+
+  /* ═══════════════════════════════════════
+     OPTION A — Pinned Split-Screen
+     ═══════════════════════════════════════ */
+  .opt-a-wrap {
+    position: relative; overflow: hidden;
+  }
+  .opt-a-inner {
+    display: flex; min-height: 100vh; background: var(--av-warm);
+  }
+  .opt-a-left {
+    width: 50%; display: flex; align-items: center; justify-content: center;
+    padding: 80px 60px; position: relative;
+  }
+  .opt-a-phrase {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 4vw, 72px); line-height: 1.1; font-weight: 400;
+  }
+  .opt-a-phrase .word {
+    display: inline-block; opacity: 0.08; transition: opacity 0.5s ease;
+    margin-right: 0.2em;
+  }
+  .opt-a-phrase .word.revealed { opacity: 1; }
+  .opt-a-right {
+    width: 50%; display: flex; align-items: center; justify-content: center;
+    padding: 80px 60px; position: relative;
+  }
+  .opt-a-card-stack { position: relative; width: 100%; }
+  .opt-a-card-stack .mv-card {
+    position: absolute; top: 0; left: 0; width: 100%; opacity: 0; transform: translateY(40px);
+  }
+  .opt-a-card-stack .mv-card.active { opacity: 1; transform: translateY(0); }
+  .opt-a-card-stack .mv-card:first-child { position: relative; }
+  .opt-a-progress {
+    position: absolute; bottom: 40px; left: 60px; right: 60px; height: 2px;
+    background: rgba(17,17,17,0.08);
+  }
+  .opt-a-progress-bar {
+    height: 100%; width: 0%; background: var(--av-gold);
+    transition: width 0.1s linear;
+  }
+
+  /* ═══════════════════════════════════════
+     OPTION B — Full-Screen Text Morph
+     ═══════════════════════════════════════ */
+  .opt-b-wrap { position: relative; overflow: hidden; }
+  .opt-b-inner { min-height: 100vh; background: var(--av-warm); position: relative; }
+  .opt-b-phrase-layer {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px 80px; text-align: center; z-index: 2;
+  }
+  .opt-b-phrase {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(48px, 6vw, 96px); line-height: 1.08; font-weight: 400;
+  }
+  .opt-b-phrase .word {
+    display: inline-block; opacity: 0; transform: scale(0.8) translateY(20px);
+    margin-right: 0.15em;
+  }
+  .opt-b-content-layer {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column; padding: 0 80px; z-index: 3;
+    opacity: 0;
+  }
+  .opt-b-top-phrase {
+    font-family: 'DM Serif Display', serif; font-size: clamp(20px, 2vw, 32px);
+    line-height: 1.2; font-weight: 400; padding: 48px 0 24px;
+    border-bottom: 1px solid rgba(17,17,17,0.08);
+  }
+  .opt-b-card-area {
+    flex: 1; display: flex; align-items: center; padding: 40px 0;
+  }
+  .opt-b-card-area .mv-card { width: 100%; max-width: 640px; }
+  .opt-b-card-area .mv-card.vision { opacity: 0; position: absolute; }
+
+  /* ═══════════════════════════════════════
+     OPTION C — Horizontal Scroll Panels
+     ═══════════════════════════════════════ */
+  .opt-c-wrap { position: relative; overflow: hidden; }
+  .opt-c-inner { min-height: 100vh; background: var(--av-warm); position: relative; overflow: hidden; }
+  .opt-c-track {
+    display: flex; width: 300vw;
+    will-change: transform;
+  }
+  .opt-c-panel {
+    width: 100vw; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 80px;
+  }
+  .opt-c-panel-statement {
+    text-align: center; max-width: 700px;
+  }
+  .opt-c-panel-statement h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(40px, 5vw, 80px); line-height: 1.08; font-weight: 400;
+    margin-bottom: 32px;
+  }
+  .opt-c-panel-statement .gold-line {
+    width: 60px; height: 2px; background: var(--av-gold); margin: 0 auto;
+  }
+  .opt-c-panel .mv-card { max-width: 560px; width: 100%; }
+  .opt-c-progress {
+    position: absolute; top: 0; left: 0; width: 100%; height: 3px; z-index: 10;
+    background: rgba(17,17,17,0.05);
+  }
+  .opt-c-progress-bar {
+    height: 100%; width: 0%; background: var(--av-gold);
+  }
+
+  /* ═══════════════════════════════════════
+     OPTION D — Layered Depth Stack
+     ═══════════════════════════════════════ */
+  .opt-d-wrap { position: relative; overflow: hidden; }
+  .opt-d-inner {
+    min-height: 100vh; background: var(--av-warm); position: relative;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 80px;
+  }
+  .opt-d-watermark {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    font-family: 'DM Serif Display', serif; font-size: clamp(80px, 15vw, 200px);
+    font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase;
+    opacity: 0; color: var(--av-dark); pointer-events: none; white-space: nowrap;
+    z-index: 1;
+  }
+  .opt-d-phrase-block {
+    position: relative; z-index: 3; text-align: center; margin-bottom: 64px;
+  }
+  .opt-d-phrase-block h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(32px, 4vw, 64px); line-height: 1.1; font-weight: 400;
+    opacity: 0; filter: blur(12px);
+  }
+  .opt-d-phrase-block .gold-line {
+    width: 0; height: 1px; background: var(--av-gold); margin: 24px auto 0;
+  }
+  .opt-d-cards {
+    position: relative; z-index: 3;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+    width: 100%; max-width: 960px;
+  }
+  .opt-d-cards .mv-card {
+    opacity: 0; transform: translateY(80px);
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ INTRO ═══════════ -->
+<div style="min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px;">
+  <h1 style="font-family:'DM Serif Display',serif;font-size:clamp(32px,4vw,56px);font-weight:400;margin-bottom:16px;">Mission/Vision Animation Options</h1>
+  <p style="opacity:0.5;max-width:500px;line-height:1.8;">Scroll down to see each option in action. Each section pins on scroll and plays its animation.</p>
+  <div style="margin-top:40px;opacity:0.3;font-size:24px;">&#8595;</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     OPTION A — Pinned Split-Screen Reveal
+     ═══════════════════════════════════════════════ -->
+<div class="option-banner">Option A: Pinned Split-Screen <span>Word-by-word reveal left, cards swap right</span></div>
+<div class="opt-a-wrap" id="opt-a">
+  <div class="opt-a-inner">
+    <div class="opt-a-left">
+      <div>
+        <div class="mv-card-label" style="color:var(--av-dark);margin-bottom:24px;">Our Purpose</div>
+        <div class="opt-a-phrase">
+          <span class="word">Bringing</span>
+          <span class="word">visionary</span>
+          <span class="word">dreams</span>
+          <span class="word">to</span>
+          <span class="word">life</span>
+        </div>
+      </div>
+      <div class="opt-a-progress">
+        <div class="opt-a-progress-bar"></div>
+      </div>
+    </div>
+    <div class="opt-a-right">
+      <div class="opt-a-card-stack">
+        <div class="mv-card active" data-card="mission">
+          <div class="mv-card-label">Mission</div>
+          <div class="mv-card-heading">Bringing visionary dreams to life</div>
+          <div class="mv-card-divider"></div>
+          <div class="mv-card-body">Our mission is to bring visionary dreams to life through strong communication and transformative construction. As builders, we are committed to delivering exceptional projects that exceed expectations, inspire awe, and leave a lasting impact.</div>
+        </div>
+        <div class="mv-card" data-card="vision">
+          <div class="mv-card-label">Vision</div>
+          <div class="mv-card-heading">The catalyst for transformation</div>
+          <div class="mv-card-divider"></div>
+          <div class="mv-card-body">Our vision is to be the catalyst for transformation in the construction industry. We aspire to be known as the go-to builders for visionary projects, where dreams become reality. Through our commitment to strong communication, we aim to foster deep understanding and collaboration.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="option-spacer">&#8595; Scroll to Option B &#8595;</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     OPTION B — Full-Screen Text Morph
+     ═══════════════════════════════════════════════ -->
+<div class="option-banner">Option B: Full-Screen Text Morph <span>Giant text fills screen, shrinks to reveal content</span></div>
+<div class="opt-b-wrap" id="opt-b">
+  <div class="opt-b-inner">
+    <div class="opt-b-phrase-layer">
+      <div class="opt-b-phrase">
+        <span class="word">Bringing</span>
+        <span class="word">visionary</span>
+        <span class="word">dreams</span>
+        <span class="word">to</span>
+        <span class="word">life</span>
+      </div>
+    </div>
+    <div class="opt-b-content-layer">
+      <div class="opt-b-top-phrase">Bringing visionary dreams to life</div>
+      <div class="opt-b-card-area">
+        <div class="mv-card mission">
+          <div class="mv-card-label">Mission</div>
+          <div class="mv-card-heading">Bringing visionary dreams to life</div>
+          <div class="mv-card-divider"></div>
+          <div class="mv-card-body">Our mission is to bring visionary dreams to life through strong communication and transformative construction. As builders, we are committed to delivering exceptional projects that exceed expectations, inspire awe, and leave a lasting impact.</div>
+        </div>
+        <div class="mv-card vision">
+          <div class="mv-card-label">Vision</div>
+          <div class="mv-card-heading">The catalyst for transformation</div>
+          <div class="mv-card-divider"></div>
+          <div class="mv-card-body">Our vision is to be the catalyst for transformation in the construction industry. We aspire to be known as the go-to builders for visionary projects, where dreams become reality.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="option-spacer">&#8595; Scroll to Option C &#8595;</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     OPTION C — Horizontal Scroll Panels
+     ═══════════════════════════════════════════════ -->
+<div class="option-banner">Option C: Horizontal Scroll Panels <span>Vertical scroll drives horizontal slide</span></div>
+<div class="opt-c-wrap" id="opt-c">
+  <div class="opt-c-inner">
+    <div class="opt-c-progress"><div class="opt-c-progress-bar"></div></div>
+    <div class="opt-c-track">
+      <div class="opt-c-panel">
+        <div class="opt-c-panel-statement">
+          <div class="mv-card-label" style="color:var(--av-dark);margin-bottom:24px;">Our Purpose</div>
+          <h2>Bringing visionary dreams to life</h2>
+          <div class="gold-line"></div>
+        </div>
+      </div>
+      <div class="opt-c-panel">
+        <div class="mv-card">
+          <div class="mv-card-label">Mission</div>
+          <div class="mv-card-heading">Bringing visionary dreams to life</div>
+          <div class="mv-card-divider"></div>
+          <div class="mv-card-body">Our mission is to bring visionary dreams to life through strong communication and transformative construction. As builders, we are committed to delivering exceptional projects that exceed expectations, inspire awe, and leave a lasting impact. With a focus on collaboration and innovation, we strive to create spaces that not only fulfill our clients' visions but also enhance the lives of those who experience them.</div>
+        </div>
+      </div>
+      <div class="opt-c-panel">
+        <div class="mv-card">
+          <div class="mv-card-label">Vision</div>
+          <div class="mv-card-heading">The catalyst for transformation</div>
+          <div class="mv-card-divider"></div>
+          <div class="mv-card-body">Our vision is to be the catalyst for transformation in the construction industry. We aspire to be known as the go-to builders for visionary projects, where dreams become reality. Through our commitment to strong communication, we aim to foster deep understanding and collaboration with our clients, partners, and communities.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="option-spacer">&#8595; Scroll to Option D &#8595;</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     OPTION D — Layered Depth Stack
+     ═══════════════════════════════════════════════ -->
+<div class="option-banner">Option D: Layered Depth Stack <span>Watermark drifts, phrase sharpens, cards rise with parallax</span></div>
+<div class="opt-d-wrap" id="opt-d">
+  <div class="opt-d-inner">
+    <div class="opt-d-watermark">PURPOSE</div>
+    <div class="opt-d-phrase-block">
+      <div class="mv-card-label" style="color:var(--av-dark);margin-bottom:24px;">Our Purpose</div>
+      <h2>Bringing visionary dreams to life</h2>
+      <div class="gold-line"></div>
+    </div>
+    <div class="opt-d-cards">
+      <div class="mv-card">
+        <div class="mv-card-label">Mission</div>
+        <div class="mv-card-heading">Bringing visionary dreams to life</div>
+        <div class="mv-card-divider"></div>
+        <div class="mv-card-body">Our mission is to bring visionary dreams to life through strong communication and transformative construction. As builders, we are committed to delivering exceptional projects that exceed expectations, inspire awe, and leave a lasting impact.</div>
+      </div>
+      <div class="mv-card">
+        <div class="mv-card-label">Vision</div>
+        <div class="mv-card-heading">The catalyst for transformation</div>
+        <div class="mv-card-divider"></div>
+        <div class="mv-card-body">Our vision is to be the catalyst for transformation in the construction industry. We aspire to be known as the go-to builders for visionary projects, where dreams become reality.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:40px;">
+  <div>
+    <h2 style="font-family:'DM Serif Display',serif;font-size:32px;font-weight:400;margin-bottom:16px;">That's all 4 options</h2>
+    <p style="opacity:0.5;">Scroll back up to compare or let me know which one you prefer.</p>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* ═══════════════════════════════════════
+   OPTION A — Pinned Split-Screen
+   ═══════════════════════════════════════ */
+(function() {
+  var wrap = document.getElementById('opt-a');
+  var words = wrap.querySelectorAll('.opt-a-phrase .word');
+  var cards = wrap.querySelectorAll('.opt-a-card-stack .mv-card');
+  var progressBar = wrap.querySelector('.opt-a-progress-bar');
+
+  ScrollTrigger.create({
+    trigger: wrap,
+    start: 'top top',
+    end: '+=250%',
+    pin: true,
+    scrub: 1,
+    onUpdate: function(self) {
+      var p = self.progress;
+      // Progress bar
+      progressBar.style.width = (p * 100) + '%';
+
+      // Word reveal (0-60% of scroll)
+      var wordProgress = Math.min(p / 0.6, 1);
+      words.forEach(function(w, i) {
+        var threshold = i / words.length;
+        if (wordProgress > threshold) {
+          w.classList.add('revealed');
+        } else {
+          w.classList.remove('revealed');
+        }
+      });
+
+      // Card swap (mission: 0-50%, vision: 50-100%)
+      if (p < 0.5) {
+        cards[0].style.opacity = '1';
+        cards[0].style.transform = 'translateY(0)';
+        cards[1].style.opacity = '0';
+        cards[1].style.transform = 'translateY(40px)';
+      } else {
+        var t = (p - 0.5) / 0.15;
+        t = Math.min(t, 1);
+        cards[0].style.opacity = String(1 - t);
+        cards[0].style.transform = 'translateY(' + (-40 * t) + 'px)';
+        cards[1].style.opacity = String(t);
+        cards[1].style.transform = 'translateY(' + (40 * (1 - t)) + 'px)';
+      }
+    }
+  });
+})();
+
+/* ═══════════════════════════════════════
+   OPTION B — Full-Screen Text Morph
+   ═══════════════════════════════════════ */
+(function() {
+  var wrap = document.getElementById('opt-b');
+  var phraseLayer = wrap.querySelector('.opt-b-phrase-layer');
+  var contentLayer = wrap.querySelector('.opt-b-content-layer');
+  var words = wrap.querySelectorAll('.opt-b-phrase .word');
+  var missionCard = wrap.querySelector('.mv-card.mission');
+  var visionCard = wrap.querySelector('.mv-card.vision');
+
+  ScrollTrigger.create({
+    trigger: wrap,
+    start: 'top top',
+    end: '+=350%',
+    pin: true,
+    scrub: 1,
+    onUpdate: function(self) {
+      var p = self.progress;
+
+      if (p < 0.33) {
+        // Phase 1: Words scale in
+        var wp = p / 0.33;
+        phraseLayer.style.opacity = '1';
+        contentLayer.style.opacity = '0';
+        words.forEach(function(w, i) {
+          var threshold = i / words.length;
+          var wordP = Math.max(0, Math.min(1, (wp - threshold) / 0.3));
+          w.style.opacity = String(wordP);
+          w.style.transform = 'scale(' + (0.8 + 0.2 * wordP) + ') translateY(' + (20 * (1 - wordP)) + 'px)';
+        });
+      } else if (p < 0.45) {
+        // Transition: phrase fades, content appears
+        var tp = (p - 0.33) / 0.12;
+        phraseLayer.style.opacity = String(1 - tp);
+        contentLayer.style.opacity = String(tp);
+        missionCard.style.opacity = '1';
+        missionCard.style.transform = 'translateY(0)';
+        visionCard.style.opacity = '0';
+      } else if (p < 0.7) {
+        // Phase 2: Mission visible
+        phraseLayer.style.opacity = '0';
+        contentLayer.style.opacity = '1';
+        missionCard.style.opacity = '1';
+        missionCard.style.transform = 'translateY(0)';
+        visionCard.style.opacity = '0';
+      } else {
+        // Phase 3: Crossfade to Vision
+        var vp = (p - 0.7) / 0.15;
+        vp = Math.min(vp, 1);
+        phraseLayer.style.opacity = '0';
+        contentLayer.style.opacity = '1';
+        missionCard.style.opacity = String(1 - vp);
+        missionCard.style.transform = 'translateY(' + (-30 * vp) + 'px)';
+        visionCard.style.opacity = String(vp);
+        visionCard.style.transform = 'translateY(' + (30 * (1 - vp)) + 'px)';
+      }
+    }
+  });
+})();
+
+/* ═══════════════════════════════════════
+   OPTION C — Horizontal Scroll Panels
+   ═══════════════════════════════════════ */
+(function() {
+  var wrap = document.getElementById('opt-c');
+  var track = wrap.querySelector('.opt-c-track');
+  var progressBar = wrap.querySelector('.opt-c-progress-bar');
+
+  gsap.to(track, {
+    x: function() { return -(track.scrollWidth - window.innerWidth); },
+    ease: 'none',
+    scrollTrigger: {
+      trigger: wrap,
+      start: 'top top',
+      end: '+=300%',
+      pin: true,
+      scrub: 1,
+      onUpdate: function(self) {
+        progressBar.style.width = (self.progress * 100) + '%';
+      }
+    }
+  });
+})();
+
+/* ═══════════════════════════════════════
+   OPTION D — Layered Depth Stack
+   ═══════════════════════════════════════ */
+(function() {
+  var wrap = document.getElementById('opt-d');
+  var watermark = wrap.querySelector('.opt-d-watermark');
+  var phraseH2 = wrap.querySelector('.opt-d-phrase-block h2');
+  var goldLine = wrap.querySelector('.opt-d-phrase-block .gold-line');
+  var cards = wrap.querySelectorAll('.opt-d-cards .mv-card');
+
+  ScrollTrigger.create({
+    trigger: wrap,
+    start: 'top top',
+    end: '+=300%',
+    pin: true,
+    scrub: 1,
+    onUpdate: function(self) {
+      var p = self.progress;
+
+      // Watermark drifts in (0-100%)
+      watermark.style.opacity = String(0.03 * Math.min(p / 0.2, 1));
+      watermark.style.transform = 'translate(-50%, -50%) translateY(' + (-30 * p) + 'px)';
+
+      // Phrase blur-to-sharp (0-35%)
+      if (p < 0.35) {
+        var pp = p / 0.35;
+        phraseH2.style.opacity = String(pp);
+        phraseH2.style.filter = 'blur(' + (12 * (1 - pp)) + 'px)';
+      } else {
+        phraseH2.style.opacity = '1';
+        phraseH2.style.filter = 'blur(0px)';
+      }
+
+      // Gold line draws (20-45%)
+      if (p > 0.2) {
+        var lp = Math.min((p - 0.2) / 0.25, 1);
+        goldLine.style.width = (60 * lp) + 'px';
+      }
+
+      // Cards rise (40-80%)
+      cards.forEach(function(card, i) {
+        var cardStart = 0.4 + i * 0.12;
+        var cardEnd = cardStart + 0.25;
+        if (p > cardStart) {
+          var cp = Math.min((p - cardStart) / (cardEnd - cardStart), 1);
+          card.style.opacity = String(cp);
+          card.style.transform = 'translateY(' + (80 * (1 - cp)) + 'px)';
+        } else {
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(80px)';
+        }
+      });
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -70,27 +70,65 @@ html, body { overflow-x: hidden; }
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-/* ─── Mission/Vision — Gold Accent ─── */
-.about-mv-accent {
-  border-left: 2px solid rgba(201, 169, 110, 0.4) !important;
-  padding-left: 48px !important;
-}
-.about-mv-divider {
-  width: 40px;
-  height: 1px;
-  background: rgba(201, 169, 110, 0.4);
-  margin-top: 8px;
-  margin-bottom: 24px;
-}
-.about-mv-number {
-  font-family: 'DM Serif Display', Georgia, serif;
-  font-size: 72px;
-  line-height: 1;
-  opacity: 0.04;
+/* ─── Mission/Vision — Cinematic Scroll-Lock ─── */
+.mv-phrase-layer {
   position: absolute;
-  top: 32px;
-  right: 32px;
-  pointer-events: none;
+  top: 0; left: 0; width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  padding: 40px 80px;
+  text-align: center;
+}
+.mv-phrase {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(48px, 6vw, 96px);
+  line-height: 1.08;
+  font-weight: 400;
+  color: #111;
+}
+.mv-panel {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 3;
+  opacity: 0;
+  padding: 80px;
+  max-width: 720px;
+}
+.mv-panel-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  opacity: 0.4;
+  margin-bottom: 32px;
+  color: #111;
+}
+.mv-panel-heading {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: clamp(28px, 3vw, 48px);
+  line-height: 1.12;
+  font-weight: 400;
+  margin-bottom: 24px;
+  color: #111;
+}
+.mv-panel-line {
+  width: 0;
+  height: 1px;
+  background: rgba(201, 169, 110, 0.5);
+  margin-bottom: 32px;
+}
+.mv-panel-body {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.9;
+  opacity: 0;
+  color: #111;
+  max-width: 560px;
 }
 
 /* ─── Values Section — Three.js Canvas + Grid ─── */
@@ -159,9 +197,11 @@ html, body { overflow-x: hidden; }
   backface-visibility: hidden;
 }
 
-/* ─── Mission/Vision Overflow Fix ─── */
+/* ─── Mission/Vision Section ─── */
 #about-mission-vision {
   overflow: hidden;
+  min-height: 100vh;
+  position: relative;
 }
 
 /* ═══════════════════════════════════════════════

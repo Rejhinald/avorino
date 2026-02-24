@@ -47,15 +47,11 @@ async function buildAboutPage() {
     const heroSubtitle = await getOrCreateStyle('about-hero-subtitle');
     const storyBody = await getOrCreateStyle('about-story-body');
     const storyImg = await getOrCreateStyle('about-story-img');
-    const storyLink = await getOrCreateStyle('about-story-link');
     const maxWidth520 = await getOrCreateStyle('av-max-520');
     const maxWidth580 = await getOrCreateStyle('av-max-580');
     const mb48 = await getOrCreateStyle('av-mb-48');
     const mb64 = await getOrCreateStyle('av-mb-64');
     const mb96 = await getOrCreateStyle('av-mb-96');
-    const cardLabel = await getOrCreateStyle('about-card-label');
-    const cardHeading = await getOrCreateStyle('about-card-heading');
-    const cardBody = await getOrCreateStyle('about-card-body');
     const labelLine = await getOrCreateStyle('about-label-line');
     // Stats — flip-clock styles
     const statsGrid = await getOrCreateStyle('about-stats-grid');
@@ -75,10 +71,6 @@ async function buildAboutPage() {
     const valueNumber = await getOrCreateStyle('about-value-num');
     const valueTitle = await getOrCreateStyle('about-value-title');
     const valueDesc = await getOrCreateStyle('about-value-desc');
-    // Mission/Vision accent styles
-    const mvAccent = await getOrCreateStyle('about-mv-accent');
-    const mvDivider = await getOrCreateStyle('about-mv-divider');
-    const mvNumber = await getOrCreateStyle('about-mv-number');
     // CTA — custom build
     const ctaSubtitle = await getOrCreateStyle('av-cta-subtitle');
     const ctaSection = await getOrCreateStyle('av-cta');
@@ -123,28 +115,12 @@ async function buildAboutPage() {
             'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
             'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
         });
-        await clearAndSet(await freshStyle('about-story-link'), 'about-story-link', {
-            'font-family': 'DM Sans', 'font-size': v['av-text-sm'], 'color': v['av-dark'], 'text-decoration': 'none', 'opacity': '0.5', 'margin-top': '24px', 'display': 'inline-block',
-        });
         await clearAndSet(await freshStyle('av-max-520'), 'av-max-520', { 'max-width': '520px' });
         await clearAndSet(await freshStyle('av-max-580'), 'av-max-580', { 'max-width': '580px' });
         await clearAndSet(await freshStyle('av-mb-48'), 'av-mb-48', { 'margin-bottom': '48px' });
         await clearAndSet(await freshStyle('av-mb-64'), 'av-mb-64', { 'margin-bottom': v['av-gap-md'] });
         await clearAndSet(await freshStyle('av-mb-96'), 'av-mb-96', { 'margin-bottom': v['av-gap-lg'] });
         await wait(500);
-        await clearAndSet(await freshStyle('about-card-label'), 'about-card-label', {
-            'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
-            'letter-spacing': '0.25em', 'text-transform': 'uppercase',
-            'opacity': '0.4', 'margin-bottom': '24px', 'color': v['av-cream'],
-        });
-        await clearAndSet(await freshStyle('about-card-heading'), 'about-card-heading', {
-            'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
-            'line-height': '1.12', 'font-weight': '400', 'margin-bottom': '24px', 'color': v['av-cream'],
-        });
-        await clearAndSet(await freshStyle('about-card-body'), 'about-card-body', {
-            'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
-            'line-height': '1.9', 'opacity': '0.6', 'color': v['av-cream'],
-        });
         await clearAndSet(await freshStyle('about-label-line'), 'about-label-line', { 'flex-grow': '1', 'height': '1px', 'background-color': v['av-dark-15'] });
         await wait(500);
         // Stats — flip-clock styles
@@ -224,20 +200,6 @@ async function buildAboutPage() {
             'line-height': '1.7', 'opacity': '0.5', 'color': v['av-cream'],
         });
         await wait(500);
-        // Mission/Vision accent styles
-        await clearAndSet(await freshStyle('about-mv-accent'), 'about-mv-accent', {
-            'border-left-width': '2px', 'border-left-style': 'solid', 'border-left-color': 'rgba(201,169,110,0.4)',
-            'padding-left': '48px', 'position': 'relative',
-        });
-        await clearAndSet(await freshStyle('about-mv-divider'), 'about-mv-divider', {
-            'width': '40px', 'height': '1px', 'background-color': 'rgba(201,169,110,0.4)',
-            'margin-top': '8px', 'margin-bottom': '24px',
-        });
-        await clearAndSet(await freshStyle('about-mv-number'), 'about-mv-number', {
-            'font-family': 'DM Serif Display', 'font-size': '72px', 'line-height': '1',
-            'opacity': '0.04', 'position': 'absolute', 'top': '32px', 'right': '32px',
-            'color': v['av-cream'], 'pointer-events': 'none',
-        });
         await clearAndSet(await freshStyle('av-cta-subtitle'), 'av-cta-subtitle', {
             'font-family': 'DM Sans', 'font-size': '12px', 'letter-spacing': '0.3em',
             'text-transform': 'uppercase', 'opacity': '0.4', 'margin-bottom': '32px', 'color': v['av-cream'],
@@ -347,13 +309,6 @@ async function buildAboutPage() {
     storyP.setStyles([s.body, s.bodyMuted, maxWidth520, mb48]);
     storyP.setTextContent('Avorino is a custom home and an ADU builder in Orange County that takes pride in its exceptional customer service. With a friendly and professional approach, Avorino actively involves clients throughout the process, ensuring their unique needs are met with utmost care. Our unwavering commitment to quality is evident in every detail, resulting in remarkable outcomes that exceed expectations. Avorino stands out by embracing innovation, leveraging cutting-edge technologies and sustainable practices to deliver exceptional results. Our in-house crew is capable of handling every aspect of a project from design to execution.');
     storyP.setAttribute('data-animate', 'opacity-sweep');
-    const storyLinkEl = storyRight.append(webflow.elementPresets.DOM);
-    storyLinkEl.setTag('a');
-    storyLinkEl.setStyles([storyLink]);
-    storyLinkEl.setTextContent('Learn our story \u2192');
-    storyLinkEl.setAttribute('href', '#about-values');
-    storyLinkEl.setAttribute('data-animate', 'fade-up');
-    storyLinkEl.setAttribute('data-magnetic', '');
     await safeCall('append:story', () => body.append(story));
     // STATS — Flip-Clock
     log('Building Stats (flip-clock)...');
@@ -367,7 +322,7 @@ async function buildAboutPage() {
     const statsData = [
         { digits: [1, 5, 0], suffix: '+', label: 'Projects Completed' },
         { digits: [3, 0], suffix: '+', label: 'Orange County Cities' },
-        { digits: [4, 9], suffix: '', separator: '.', label: 'Google Rating' },
+        { digits: [4, 9], suffix: '', separator: '.', label: 'Yelp Rating' },
         { digits: [1, 0, 0], suffix: '%', label: 'Licensed & Insured' },
     ];
     statsData.forEach(stat => {
@@ -429,58 +384,61 @@ async function buildAboutPage() {
         lbl.setAttribute('data-animate', 'scramble');
     });
     await safeCall('append:stats', () => body.append(stats));
-    // MISSION & VISION
+    // MISSION & VISION — Cinematic scroll-lock (no cards, full-bleed panels)
     log('Building Mission & Vision...');
     const mv = webflow.elementBuilder(webflow.elementPresets.DOM);
     mv.setTag('section');
     mv.setStyles([s.section, s.sectionWarm]);
     mv.setAttribute('id', 'about-mission-vision');
-    const mvLbl = mv.append(webflow.elementPresets.DOM);
-    mvLbl.setTag('div');
-    mvLbl.setStyles([s.label, mb64]);
-    mvLbl.setAttribute('data-animate', 'fade-up');
-    const mvLblTxt = mvLbl.append(webflow.elementPresets.DOM);
-    mvLblTxt.setTag('div');
-    mvLblTxt.setTextContent('Our Purpose');
-    const mvLblLine = mvLbl.append(webflow.elementPresets.DOM);
-    mvLblLine.setTag('div');
-    mvLblLine.setStyles([labelLine]);
-    const mvH = mv.append(webflow.elementPresets.DOM);
-    mvH.setTag('h2');
-    mvH.setStyles([s.headingLG, mb96]);
-    mvH.setTextContent('What Drives Us');
-    mvH.setAttribute('data-animate', 'line-wipe');
-    const mvGrid = mv.append(webflow.elementPresets.DOM);
-    mvGrid.setTag('div');
-    mvGrid.setStyles([s.grid2]);
-    [
-        { num: '01', label: 'Mission', heading: 'Bringing visionary dreams to life', body: 'Our mission is to bring visionary dreams to life through strong communication and transformative construction. As builders, we are committed to delivering exceptional projects that exceed expectations, inspire awe, and leave a lasting impact. With a focus on collaboration and innovation, we strive to create spaces that not only fulfill our clients\' visions but also enhance the lives of those who experience them.' },
-        { num: '02', label: 'Vision', heading: 'The catalyst for transformation', body: 'Our vision is to be the catalyst for transformation in the construction industry. We aspire to be known as the go-to builders for visionary projects, where dreams become reality. Through our commitment to strong communication, we aim to foster deep understanding and collaboration with our clients, partners, and communities.' },
-    ].forEach(card => {
-        const c = mvGrid.append(webflow.elementPresets.DOM);
-        c.setTag('div');
-        c.setStyles([s.cardDark, mvAccent]);
-        c.setAttribute('data-animate', 'fade-up');
-        const n = c.append(webflow.elementPresets.DOM);
-        n.setTag('div');
-        n.setStyles([mvNumber]);
-        n.setTextContent(card.num);
-        const l = c.append(webflow.elementPresets.DOM);
-        l.setTag('div');
-        l.setStyles([cardLabel]);
-        l.setTextContent(card.label);
-        const h = c.append(webflow.elementPresets.DOM);
-        h.setTag('h3');
-        h.setStyles([cardHeading]);
-        h.setTextContent(card.heading);
-        const d = c.append(webflow.elementPresets.DOM);
-        d.setTag('div');
-        d.setStyles([mvDivider]);
-        const p = c.append(webflow.elementPresets.DOM);
-        p.setTag('p');
-        p.setStyles([cardBody]);
-        p.setTextContent(card.body);
-    });
+    // Phrase layer — big text that fills viewport first
+    const mvPhraseLayer = mv.append(webflow.elementPresets.DOM);
+    mvPhraseLayer.setTag('div');
+    mvPhraseLayer.setAttribute('class', 'mv-phrase-layer');
+    const mvPhrase = mvPhraseLayer.append(webflow.elementPresets.DOM);
+    mvPhrase.setTag('div');
+    mvPhrase.setAttribute('class', 'mv-phrase');
+    mvPhrase.setAttribute('data-mv-phrase', '');
+    mvPhrase.setTextContent('Bringing visionary dreams to life');
+    // Mission panel
+    const missionPanel = mv.append(webflow.elementPresets.DOM);
+    missionPanel.setTag('div');
+    missionPanel.setAttribute('class', 'mv-panel');
+    missionPanel.setAttribute('data-mv', 'mission');
+    const mLabel = missionPanel.append(webflow.elementPresets.DOM);
+    mLabel.setTag('div');
+    mLabel.setAttribute('class', 'mv-panel-label');
+    mLabel.setTextContent('Mission');
+    const mHeading = missionPanel.append(webflow.elementPresets.DOM);
+    mHeading.setTag('h3');
+    mHeading.setAttribute('class', 'mv-panel-heading');
+    mHeading.setTextContent('Bringing visionary dreams to life');
+    const mLine = missionPanel.append(webflow.elementPresets.DOM);
+    mLine.setTag('div');
+    mLine.setAttribute('class', 'mv-panel-line');
+    const mBody = missionPanel.append(webflow.elementPresets.DOM);
+    mBody.setTag('p');
+    mBody.setAttribute('class', 'mv-panel-body');
+    mBody.setTextContent('Our mission is to bring visionary dreams to life through strong communication and transformative construction. As builders, we are committed to delivering exceptional projects that exceed expectations, inspire awe, and leave a lasting impact. With a focus on collaboration and innovation, we strive to create spaces that not only fulfill our clients\' visions but also enhance the lives of those who experience them.');
+    // Vision panel
+    const visionPanel = mv.append(webflow.elementPresets.DOM);
+    visionPanel.setTag('div');
+    visionPanel.setAttribute('class', 'mv-panel');
+    visionPanel.setAttribute('data-mv', 'vision');
+    const vLabel = visionPanel.append(webflow.elementPresets.DOM);
+    vLabel.setTag('div');
+    vLabel.setAttribute('class', 'mv-panel-label');
+    vLabel.setTextContent('Vision');
+    const vHeading = visionPanel.append(webflow.elementPresets.DOM);
+    vHeading.setTag('h3');
+    vHeading.setAttribute('class', 'mv-panel-heading');
+    vHeading.setTextContent('The catalyst for transformation');
+    const vLine = visionPanel.append(webflow.elementPresets.DOM);
+    vLine.setTag('div');
+    vLine.setAttribute('class', 'mv-panel-line');
+    const vBody = visionPanel.append(webflow.elementPresets.DOM);
+    vBody.setTag('p');
+    vBody.setAttribute('class', 'mv-panel-body');
+    vBody.setTextContent('Our vision is to be the catalyst for transformation in the construction industry. We aspire to be known as the go-to builders for visionary projects, where dreams become reality. Through our commitment to strong communication, we aim to foster deep understanding and collaboration with our clients, partners, and communities.');
     await safeCall('append:mission-vision', () => body.append(mv));
     // VALUES — Three.js background + 2×2 grid
     log('Building Values...');

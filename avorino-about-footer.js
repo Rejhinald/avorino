@@ -292,37 +292,6 @@
       );
     });
 
-    /* Mission/Vision cards: "book-open" reveal */
-    var mvSection = document.getElementById('about-mission-vision');
-    if (mvSection) {
-      var mvGrid = mvSection.querySelector('.av-grid-2col');
-      if (mvGrid) mvGrid.style.perspective = '1200px';
-
-      var mvCards = mvSection.querySelectorAll('.av-card-dark');
-      mvCards.forEach(function (card, i) {
-        card.removeAttribute('data-animate');
-
-        gsap.fromTo(card,
-          { x: i === 0 ? 60 : -60, opacity: 0, rotateY: i === 0 ? 8 : -8,
-            scale: 0.92, filter: 'blur(6px)' },
-          { x: 0, opacity: 1, rotateY: 0, scale: 1, filter: 'blur(0px)',
-            duration: 1.8, ease: 'power3.out',
-            scrollTrigger: { trigger: mvSection, start: 'top 75%',
-              toggleActions: 'play none none reverse' },
-            onComplete: function () {
-              var children = card.children;
-              for (var c = 0; c < children.length; c++) {
-                gsap.fromTo(children[c],
-                  { y: 20, opacity: 0 },
-                  { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', delay: c * 0.12 }
-                );
-              }
-            }
-          }
-        );
-      });
-    }
-
     /* ScrollTrigger refresh */
     requestAnimationFrame(function () {
       requestAnimationFrame(function () { ScrollTrigger.refresh(); });
@@ -495,12 +464,125 @@
   }
 
   /* ═══════════════════════════════════════════════
+     MISSION / VISION — Cinematic Scroll-Lock
+     Full-screen phrase reveal → Mission → Vision crossfade
+     ═══════════════════════════════════════════════ */
+  function initMissionVision() {
+    var section = document.getElementById('about-mission-vision');
+    if (!section) return;
+
+    var phraseEl = section.querySelector('[data-mv-phrase]');
+    var missionPanel = section.querySelector('[data-mv="mission"]');
+    var visionPanel = section.querySelector('[data-mv="vision"]');
+    if (!phraseEl || !missionPanel || !visionPanel) return;
+
+    // Mobile: skip pinning, show content stacked
+    if (window.innerWidth < 992) {
+      var phraseLayer = section.querySelector('.mv-phrase-layer');
+      if (phraseLayer) phraseLayer.style.display = 'none';
+      [missionPanel, visionPanel].forEach(function (p) {
+        p.style.position = 'relative';
+        p.style.opacity = '1';
+        p.style.height = 'auto';
+        p.style.padding = '64px 0';
+        var line = p.querySelector('.mv-panel-line');
+        if (line) line.style.width = '60px';
+        var body = p.querySelector('.mv-panel-body');
+        if (body) body.style.opacity = '0.55';
+      });
+      section.style.minHeight = 'auto';
+      return;
+    }
+
+    // Split phrase into words
+    var text = phraseEl.textContent.trim();
+    phraseEl.innerHTML = '';
+    phraseEl.style.display = 'flex';
+    phraseEl.style.flexWrap = 'wrap';
+    phraseEl.style.justifyContent = 'center';
+    phraseEl.style.gap = '0 0.22em';
+    var wordEls = [];
+    text.split(/\s+/).forEach(function (word) {
+      var span = document.createElement('span');
+      span.style.display = 'inline-block';
+      span.textContent = word;
+      phraseEl.appendChild(span);
+      wordEls.push(span);
+    });
+    gsap.set(wordEls, { opacity: 0, scale: 0.8, y: 30 });
+
+    var mLine = missionPanel.querySelector('.mv-panel-line');
+    var mBody = missionPanel.querySelector('.mv-panel-body');
+    var vLine = visionPanel.querySelector('.mv-panel-line');
+    var vBody = visionPanel.querySelector('.mv-panel-body');
+
+    ScrollTrigger.create({
+      trigger: section,
+      start: 'top top',
+      end: '+=400%',
+      pin: true,
+      scrub: 1,
+      onUpdate: function (self) {
+        var p = self.progress;
+
+        // Phase 1 (0–30%): Words scale in
+        if (p < 0.3) {
+          var wp = p / 0.3;
+          phraseEl.parentElement.style.opacity = '1';
+          wordEls.forEach(function (w, i) {
+            var threshold = i / wordEls.length;
+            var wP = Math.max(0, Math.min(1, (wp - threshold) / 0.35));
+            gsap.set(w, { opacity: wP, scale: 0.8 + 0.2 * wP, y: 30 * (1 - wP) });
+          });
+          missionPanel.style.opacity = '0';
+          visionPanel.style.opacity = '0';
+        }
+        // Phase 2 (30–42%): Phrase fades → Mission fades in
+        else if (p < 0.42) {
+          var tp = (p - 0.3) / 0.12;
+          phraseEl.parentElement.style.opacity = String(1 - tp);
+          missionPanel.style.opacity = String(tp);
+          visionPanel.style.opacity = '0';
+          if (mLine) mLine.style.width = (60 * tp) + 'px';
+          if (mBody) mBody.style.opacity = String(tp * 0.55);
+        }
+        // Phase 3 (42–65%): Mission holds
+        else if (p < 0.65) {
+          phraseEl.parentElement.style.opacity = '0';
+          missionPanel.style.opacity = '1';
+          visionPanel.style.opacity = '0';
+          if (mLine) mLine.style.width = '60px';
+          if (mBody) mBody.style.opacity = '0.55';
+        }
+        // Phase 4 (65–78%): Mission → Vision crossfade
+        else if (p < 0.78) {
+          var vp = (p - 0.65) / 0.13;
+          phraseEl.parentElement.style.opacity = '0';
+          missionPanel.style.opacity = String(1 - vp);
+          visionPanel.style.opacity = String(vp);
+          if (vLine) vLine.style.width = (60 * vp) + 'px';
+          if (vBody) vBody.style.opacity = String(vp * 0.55);
+        }
+        // Phase 5 (78–100%): Vision holds
+        else {
+          phraseEl.parentElement.style.opacity = '0';
+          missionPanel.style.opacity = '0';
+          visionPanel.style.opacity = '1';
+          if (vLine) vLine.style.width = '60px';
+          if (vBody) vBody.style.opacity = '0.55';
+        }
+      },
+    });
+  }
+
+  /* ═══════════════════════════════════════════════
      INIT
      ═══════════════════════════════════════════════ */
   window.addEventListener('DOMContentLoaded', function () {
     initHeroEntrance();
     initScrollAnimations();
     initFlipClock();
+    initMissionVision();
     initSectionParallax();
     initSectionTransitions();
     initCTAGlow();
