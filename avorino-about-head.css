@@ -13,15 +13,6 @@ html, body { overflow-x: hidden; }
   box-shadow: 0 8px 32px rgba(200, 34, 42, 0.15);
 }
 
-/* ─── Link Transitions ─── */
-.about-story-link {
-  transition: opacity 0.3s ease, color 0.3s ease;
-}
-.about-story-link:hover {
-  opacity: 1 !important;
-  color: #c8222a;
-}
-
 /* ─── Value Card Hover ─── */
 .av-card-light {
   transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.6s ease;
@@ -41,8 +32,7 @@ html, body { overflow-x: hidden; }
 }
 
 /* ─── Image Placeholder Reveal-Ready ─── */
-.about-story-img,
-.about-comm-img {
+.about-story-img {
   will-change: clip-path, transform;
 }
 
@@ -195,7 +185,7 @@ html, body { overflow-x: hidden; }
   transition: opacity 0.5s ease;
 }
 .about-values-card:hover .about-value-num {
-  opacity: 0.25 !important;
+  opacity: 0.35 !important;
 }
 
 /* ─── Char Cascade Support ─── */
@@ -213,6 +203,11 @@ html, body { overflow-x: hidden; }
 .about-cta-container {
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 .av-cta-subtitle {
   font-family: 'DM Sans', sans-serif;
@@ -438,9 +433,6 @@ html, body { overflow-x: hidden; }
   }
   .about-values-card {
     padding: 28px 20px !important;
-  }
-  .about-card-heading {
-    font-size: 22px !important;
   }
   .about-value-num {
     font-size: 40px !important;

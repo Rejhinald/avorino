@@ -283,7 +283,7 @@
     });
 
     /* Image placeholder reveal — diagonal polygon clip-path */
-    document.querySelectorAll('.about-story-img, .about-comm-img').forEach(function (img) {
+    document.querySelectorAll('.about-story-img').forEach(function (img) {
       gsap.fromTo(img,
         { clipPath: 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)' },
         { clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',

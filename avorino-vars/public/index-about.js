@@ -10,6 +10,7 @@ const PAGE_TITLE = 'About Avorino — Custom Home & ADU Builder in Orange County
 const PAGE_DESC = 'Learn about Avorino, a custom home and ADU builder in Orange County since 2023. Exceptional craftsmanship, innovative design, and unwavering commitment to quality.';
 const HEAD_CODE = [
     '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@3bacd73/avorino-about-head.css">',
+    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@3bacd73/avorino-responsive.css">',
     CALENDLY_CSS,
 ].join('\n');
 const FOOTER_CODE = [
@@ -20,7 +21,6 @@ const FOOTER_CODE = [
     '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@3bacd73/avorino-about-footer.js"><\/script>',
     '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@3bacd73/avorino-about-mv3d.js"><\/script>',
     '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@3bacd73/avorino-about-values3d.js"><\/script>',
-    '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@3bacd73/avorino-animations.js"><\/script>',
     CALENDLY_JS,
 ].join('\n');
 // ── Update panel UI ──
@@ -75,7 +75,7 @@ async function buildAboutPage() {
     // CTA — custom build
     const ctaSubtitle = await getOrCreateStyle('av-cta-subtitle');
     const ctaSection = await getOrCreateStyle('av-cta');
-    const ctaContainer = await getOrCreateStyle('av-cta-container');
+    const ctaContainer = await getOrCreateStyle('about-cta-container');
     const ctaBg = await getOrCreateStyle('av-cta-bg');
     const ctaContent = await getOrCreateStyle('av-cta-content');
     const ctaHeading = await getOrCreateStyle('av-cta-heading');
@@ -211,7 +211,7 @@ async function buildAboutPage() {
             'padding-top': v['av-page-pad'], 'padding-bottom': v['av-page-pad'],
             'padding-left': v['av-page-pad'], 'padding-right': v['av-page-pad'],
         });
-        await clearAndSet(await freshStyle('av-cta-container'), 'av-cta-container', {
+        await clearAndSet(await freshStyle('about-cta-container'), 'about-cta-container', {
             'background-color': v['av-dark'], 'color': v['av-cream'],
             'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
             'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
