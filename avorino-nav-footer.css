@@ -92,6 +92,14 @@ nav.site-nav.nav--dropdown-open {
   background-color: rgba(232, 228, 223, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  transition: background-color 0.35s ease, backdrop-filter 0.35s ease,
+              -webkit-backdrop-filter 0.35s ease, box-shadow 0.35s ease, padding 0.3s ease;
+}
+
+/* Keep blend-mode normal while dropdown is closing to prevent flash */
+nav.site-nav:has(.is-open),
+nav.site-nav:has(.is-closing) {
+  mix-blend-mode: normal;
 }
 
 nav.site-nav.nav--dropdown-open .nav-logo,
@@ -367,7 +375,11 @@ nav.site-nav.nav--dropdown-open .nav-link--has-dropdown {
   color: #c8222a;
 }
 
-/* ── Resources Dropdown — compact ── */
+/* ── Resources Dropdown — compact, positioned relative to its nav-item ── */
+.nav-item:has(.nav-dropdown--resources) {
+  position: relative;
+}
+
 .nav-dropdown--resources {
   left: auto;
   right: 0;

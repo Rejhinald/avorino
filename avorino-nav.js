@@ -8,8 +8,8 @@
   'use strict';
 
   // ── Config ──
-  var HOVER_ENTER  = 120;   // ms before dropdown opens (prevents accidental triggers)
-  var HOVER_LEAVE  = 280;   // ms grace period before closing
+  var HOVER_ENTER  = 80;    // ms before dropdown opens (prevents accidental triggers)
+  var HOVER_LEAVE  = 350;   // ms grace period before closing (prevents flicker between items)
   var SCROLL_TOP   = 10;    // px — add glass bg after this
   var STAGGER_MS   = 35;    // ms between each content item fade-in
 
