@@ -40,6 +40,23 @@ nav.site-nav .nav-logo {
   transition: color 0.4s ease;
 }
 
+/* Support <img> nav logo */
+.nav-logo-img {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+
+/* Support <div> nav logo with background-image (Webflow swap) */
+.nav-logo > div,
+.nav-logo .nav-logo-div {
+  height: 28px;
+  width: 140px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: left center;
+}
+
 .nav-links {
   display: flex;
   align-items: center;
@@ -107,6 +124,12 @@ nav.site-nav:has(.is-closing) {
 nav.site-nav.nav--dropdown-open .nav-logo,
 nav.site-nav.nav--dropdown-open .nav-link {
   color: #111111 !important;
+}
+
+/* Invert div-based nav logo when dropdown opens (cream bg = need dark logo) */
+nav.site-nav.nav--dropdown-open .nav-logo > div,
+nav.site-nav.nav--dropdown-open .nav-logo .nav-logo-div {
+  filter: none;
 }
 
 nav.site-nav.nav--dropdown-open .nav-cta {
