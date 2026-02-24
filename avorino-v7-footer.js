@@ -55,11 +55,14 @@
     });
   }
 
-  // PRELOADER
+  // PRELOADER — Paint Roller Reveal
+  // Splits logo into 3 vertical columns, each revealed by a roller sweep:
+  //   Pass 1: right third ("NO")  — bottom → top
+  //   Pass 2: middle third ("RI") — top → bottom
+  //   Pass 3: left third ("AVO")  — bottom → top
   function initPreloader() {
     const preloader = document.querySelector('.preloader');
     const curtain = document.querySelector('.preloader-curtain');
-    gsap.set('.preloader-char', { opacity: 0, y: 60, rotateX: -90, filter: 'blur(4px)' });
     if (preloader) gsap.set(preloader, { display: 'flex' });
 
     if (!preloader) {
@@ -68,18 +71,89 @@
       return;
     }
 
-    const chars = preloader.querySelectorAll('.preloader-char');
     lenis.stop();
 
-    const tl = gsap.timeline({
-      onComplete: () => { preloader.style.display = 'none'; lenis.start(); initScrollAnimations(); }
+    // Find the logo element (img or div with bg-image)
+    const textWrap = preloader.querySelector('.preloader-text');
+    const logoEl = textWrap.querySelector('img, div');
+    if (!logoEl) { preloader.style.display = 'none'; lenis.start(); initScrollAnimations(); return; }
+
+    // Get the background-image (from div) or src (from img)
+    const isImg = logoEl.tagName === 'IMG';
+    const bgImage = isImg
+      ? 'url(' + logoEl.src + ')'
+      : getComputedStyle(logoEl).backgroundImage;
+
+    // Get logo dimensions
+    const logoW = logoEl.offsetWidth || 200;
+    const logoH = logoEl.offsetHeight || 48;
+
+    // Hide the original logo
+    gsap.set(logoEl, { opacity: 0 });
+
+    // Create 3 column containers + inner image divs
+    const cols = [];
+    const colDefs = [
+      { left: (logoW * 2 / 3) + 'px', width: (logoW / 3) + 'px', imgRight: '0', imgLeft: 'auto' },  // right: "NO"
+      { left: (logoW / 3) + 'px', width: (logoW / 3) + 'px', imgLeft: -(logoW / 3) + 'px' },          // mid: "RI"
+      { left: '0', width: (logoW / 3) + 'px', imgLeft: '0' }                                           // left: "AVO"
+    ];
+
+    colDefs.forEach(function(def) {
+      const col = document.createElement('div');
+      col.style.cssText = 'position:absolute;top:0;height:' + logoH + 'px;overflow:hidden;left:' + def.left + ';width:' + def.width + ';';
+      const inner = document.createElement('div');
+      inner.style.cssText = 'position:absolute;top:0;width:' + logoW + 'px;height:' + logoH + 'px;background-image:' + bgImage + ';background-size:contain;background-repeat:no-repeat;background-position:center;filter:brightness(0) invert(1);';
+      if (def.imgRight) { inner.style.right = def.imgRight; inner.style.left = 'auto'; }
+      else { inner.style.left = def.imgLeft; }
+      col.appendChild(inner);
+      textWrap.appendChild(col);
+      cols.push(col);
     });
 
-    tl.to(chars, { opacity: 1, y: 0, rotateX: 0, filter: 'blur(0px)', duration: 1.2, stagger: 0.025, ease: 'power4.out' }, 0);
-    tl.to({}, { duration: 0.4 });
-    tl.to(chars, { y: -60, opacity: 0, duration: 0.4, stagger: 0.01, ease: 'power3.in' });
+    // Create roller bar
+    const roller = document.createElement('div');
+    roller.style.cssText = 'position:absolute;height:2px;background:rgba(240,237,232,0.7);z-index:10;opacity:0;pointer-events:none;width:' + (logoW / 3) + 'px;';
+    textWrap.appendChild(roller);
+
+    // Initial clip states
+    gsap.set(cols[0], { clipPath: 'inset(0 0 100% 0)' }); // right: hidden, will reveal bottom→top
+    gsap.set(cols[1], { clipPath: 'inset(100% 0 0 0)' }); // mid: hidden, will reveal top→bottom
+    gsap.set(cols[2], { clipPath: 'inset(0 0 100% 0)' }); // left: hidden, will reveal bottom→top
+
+    const tl = gsap.timeline({
+      onComplete: function() {
+        preloader.style.display = 'none';
+        lenis.start();
+        initScrollAnimations();
+      }
+    });
+
+    // Pass 1: Right third ("NO") — roller bottom → top
+    tl.set(roller, { left: (logoW * 2 / 3) + 'px', top: logoH + 'px', opacity: 0.8 }, 0);
+    tl.to(roller, { top: '-2px', duration: 0.55, ease: 'power2.inOut' }, 0);
+    tl.to(cols[0], { clipPath: 'inset(0 0 0% 0)', duration: 0.55, ease: 'power2.inOut' }, 0);
+
+    // Pass 2: Middle third ("RI") — roller top → bottom
+    tl.set(roller, { left: (logoW / 3) + 'px', top: '-2px' }, 0.65);
+    tl.to(roller, { top: logoH + 'px', duration: 0.55, ease: 'power2.inOut' }, 0.65);
+    tl.to(cols[1], { clipPath: 'inset(0% 0 0 0)', duration: 0.55, ease: 'power2.inOut' }, 0.65);
+
+    // Pass 3: Left third ("AVO") — roller bottom → top
+    tl.set(roller, { left: '0px', top: logoH + 'px' }, 1.3);
+    tl.to(roller, { top: '-2px', duration: 0.55, ease: 'power2.inOut' }, 1.3);
+    tl.to(cols[2], { clipPath: 'inset(0 0 0% 0)', duration: 0.55, ease: 'power2.inOut' }, 1.3);
+
+    // Roller fades
+    tl.to(roller, { opacity: 0, duration: 0.25 }, 1.9);
+
+    // Hold full logo
+    tl.to({}, { duration: 0.6 });
+
+    // Exit: fade logo + curtain up
+    tl.to(cols, { opacity: 0, duration: 0.4, ease: 'power2.in' });
     tl.set(preloader, { background: 'transparent' });
-    if (curtain) tl.to(curtain, { yPercent: -100, duration: 1.2, ease: 'power4.inOut' });
+    if (curtain) tl.to(curtain, { yPercent: -100, duration: 1.2, ease: 'power4.inOut' }, '<');
     initHeroContentEntrance();
   }
 
