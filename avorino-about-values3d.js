@@ -13,8 +13,9 @@
      ═══════════════════════════════════════════════ */
   var scene = new THREE.Scene();
 
-  var camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
-  camera.position.set(0, 0, 30);
+  var camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
+  camera.position.set(18, 14, 24);
+  camera.lookAt(0, 3, 0);
 
   var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -25,122 +26,214 @@
   /* ═══════════════════════════════════════════════
      LIGHTS
      ═══════════════════════════════════════════════ */
-  var ambientLight = new THREE.AmbientLight(0xf0ede8, 0.3);
+  var ambientLight = new THREE.AmbientLight(0xf0ede8, 0.4);
   scene.add(ambientLight);
 
-  var pointLight1 = new THREE.PointLight(0xc9a96e, 1.2, 60);
-  pointLight1.position.set(10, 8, 15);
+  var pointLight1 = new THREE.PointLight(0xc9a96e, 1.0, 80);
+  pointLight1.position.set(15, 20, 20);
   scene.add(pointLight1);
 
-  var pointLight2 = new THREE.PointLight(0xc8222a, 0.6, 50);
-  pointLight2.position.set(-12, -6, 10);
+  var pointLight2 = new THREE.PointLight(0xc8222a, 0.3, 60);
+  pointLight2.position.set(-15, 5, 10);
   scene.add(pointLight2);
 
   /* ═══════════════════════════════════════════════
-     NODE NETWORK — Abstract architectural composition
-     Interconnected nodes forming a loose geometric structure.
+     MATERIALS
      ═══════════════════════════════════════════════ */
-  var nodeGroup = new THREE.Group();
-  scene.add(nodeGroup);
+  var goldLine = new THREE.LineBasicMaterial({ color: 0xc9a96e, transparent: true, opacity: 0.5 });
+  var goldLineFaint = new THREE.LineBasicMaterial({ color: 0xc9a96e, transparent: true, opacity: 0.15 });
+  var creamLine = new THREE.LineBasicMaterial({ color: 0xf0ede8, transparent: true, opacity: 0.2 });
+  var creamLineFaint = new THREE.LineBasicMaterial({ color: 0xf0ede8, transparent: true, opacity: 0.08 });
 
-  // Generate node positions — loosely clustered in a spherical arrangement
-  var nodeCount = 24;
-  var nodePositions = [];
-  var nodeMeshes = [];
+  /* ═══════════════════════════════════════════════
+     SCENE GROUP — Everything rotates together
+     ═══════════════════════════════════════════════ */
+  var sceneGroup = new THREE.Group();
+  scene.add(sceneGroup);
 
-  for (var i = 0; i < nodeCount; i++) {
-    // Distribute in a rough sphere with some randomness
-    var phi = Math.acos(2 * Math.random() - 1);
-    var theta = Math.random() * Math.PI * 2;
-    var r = 8 + Math.random() * 6;
-    var x = r * Math.sin(phi) * Math.cos(theta);
-    var y = r * Math.sin(phi) * Math.sin(theta);
-    var z = r * Math.cos(phi) * 0.5; // flatten z slightly
+  /* ═══════════════════════════════════════════════
+     GROUND GRID — Blueprint-style base
+     ═══════════════════════════════════════════════ */
+  var gridSize = 24;
+  var gridDiv = 12;
+  var gridStep = gridSize / gridDiv;
+  var gridPositions = [];
 
-    nodePositions.push(new THREE.Vector3(x, y, z));
+  for (var gi = 0; gi <= gridDiv; gi++) {
+    var pos = -gridSize / 2 + gi * gridStep;
+    // X lines
+    gridPositions.push(-gridSize / 2, 0, pos, gridSize / 2, 0, pos);
+    // Z lines
+    gridPositions.push(pos, 0, -gridSize / 2, pos, 0, gridSize / 2);
+  }
+  var gridGeo = new THREE.BufferGeometry();
+  gridGeo.setAttribute('position', new THREE.Float32BufferAttribute(gridPositions, 3));
+  var gridMesh = new THREE.LineSegments(gridGeo, creamLineFaint);
+  sceneGroup.add(gridMesh);
 
-    // Small icosahedron at each node
-    var size = 0.15 + Math.random() * 0.2;
-    var geo = new THREE.IcosahedronGeometry(size, 0);
-    var mat = new THREE.MeshStandardMaterial({
-      color: i % 3 === 0 ? 0xc9a96e : 0xf0ede8,
-      emissive: i % 3 === 0 ? 0xc9a96e : 0xf0ede8,
-      emissiveIntensity: 0.4,
-      metalness: 0.6,
-      roughness: 0.3,
-      transparent: true,
-      opacity: 0.7 + Math.random() * 0.3,
-    });
-    var mesh = new THREE.Mesh(geo, mat);
-    mesh.position.copy(nodePositions[i]);
-    mesh.userData = {
-      basePos: nodePositions[i].clone(),
-      speed: 0.3 + Math.random() * 0.7,
-      phase: Math.random() * Math.PI * 2,
-      amplitude: 0.3 + Math.random() * 0.4,
-    };
-    nodeGroup.add(mesh);
-    nodeMeshes.push(mesh);
+  /* ═══════════════════════════════════════════════
+     HELPER — Create wireframe building from box
+     ═══════════════════════════════════════════════ */
+  function createBuilding(w, h, d, x, z, material) {
+    var geo = new THREE.BoxGeometry(w, h, d);
+    var edges = new THREE.EdgesGeometry(geo);
+    var line = new THREE.LineSegments(edges, material);
+    line.position.set(x, h / 2, z);
+    return line;
   }
 
   /* ═══════════════════════════════════════════════
-     CONNECTIONS — Gold wireframe lines between nearby nodes
+     BUILDINGS — Architectural wireframe composition
+     Three interlocking volumes (modern home design)
      ═══════════════════════════════════════════════ */
-  var connectionThreshold = 10;
-  var linePositions = [];
 
-  for (var a = 0; a < nodePositions.length; a++) {
-    for (var b = a + 1; b < nodePositions.length; b++) {
-      var dist = nodePositions[a].distanceTo(nodePositions[b]);
-      if (dist < connectionThreshold) {
-        linePositions.push(
-          nodePositions[a].x, nodePositions[a].y, nodePositions[a].z,
-          nodePositions[b].x, nodePositions[b].y, nodePositions[b].z
-        );
-      }
+  // Main volume — central mass
+  var bldg1 = createBuilding(8, 7, 6, 0, 0, goldLine);
+  sceneGroup.add(bldg1);
+
+  // Left wing — lower, wider extension
+  var bldg2 = createBuilding(5, 4.5, 7, -5.5, 0.5, goldLine);
+  sceneGroup.add(bldg2);
+
+  // Right tower — taller accent volume
+  var bldg3 = createBuilding(3.5, 10, 4, 4.5, -1, goldLine);
+  sceneGroup.add(bldg3);
+
+  // Garage / ground extension
+  var bldg4 = createBuilding(4, 3, 5, -3, -4, goldLineFaint);
+  sceneGroup.add(bldg4);
+
+  /* ═══════════════════════════════════════════════
+     ROOF LINES — Flat roof with slight overhang
+     ═══════════════════════════════════════════════ */
+  var roofPositions = [];
+  // Main building roof overhang
+  var overhang = 0.4;
+  roofPositions.push(
+    -4 - overhang, 7.05, -3 - overhang,
+    4 + overhang, 7.05, -3 - overhang,
+    4 + overhang, 7.05, -3 - overhang,
+    4 + overhang, 7.05, 3 + overhang,
+    4 + overhang, 7.05, 3 + overhang,
+    -4 - overhang, 7.05, 3 + overhang,
+    -4 - overhang, 7.05, 3 + overhang,
+    -4 - overhang, 7.05, -3 - overhang
+  );
+  // Tower roof
+  roofPositions.push(
+    2.75 - 0.2, 10.05, -3 - 0.2,
+    6.25 + 0.2, 10.05, -3 - 0.2,
+    6.25 + 0.2, 10.05, -3 - 0.2,
+    6.25 + 0.2, 10.05, 1 + 0.2,
+    6.25 + 0.2, 10.05, 1 + 0.2,
+    2.75 - 0.2, 10.05, 1 + 0.2,
+    2.75 - 0.2, 10.05, 1 + 0.2,
+    2.75 - 0.2, 10.05, -3 - 0.2
+  );
+  var roofGeo = new THREE.BufferGeometry();
+  roofGeo.setAttribute('position', new THREE.Float32BufferAttribute(roofPositions, 3));
+  var roofMesh = new THREE.LineSegments(roofGeo, goldLineFaint);
+  sceneGroup.add(roofMesh);
+
+  /* ═══════════════════════════════════════════════
+     WINDOW FRAMES — Architectural detail
+     ═══════════════════════════════════════════════ */
+  function createWindowFrame(cx, cy, cz, w, h, normal) {
+    var hw = w / 2, hh = h / 2;
+    var pts = [];
+    if (normal === 'x') {
+      pts.push(cx, cy - hh, cz - hw, cx, cy - hh, cz + hw);
+      pts.push(cx, cy - hh, cz + hw, cx, cy + hh, cz + hw);
+      pts.push(cx, cy + hh, cz + hw, cx, cy + hh, cz - hw);
+      pts.push(cx, cy + hh, cz - hw, cx, cy - hh, cz - hw);
+      // Cross
+      pts.push(cx, cy, cz - hw, cx, cy, cz + hw);
+      pts.push(cx, cy - hh, cz, cx, cy + hh, cz);
+    } else {
+      pts.push(cx - hw, cy - hh, cz, cx + hw, cy - hh, cz);
+      pts.push(cx + hw, cy - hh, cz, cx + hw, cy + hh, cz);
+      pts.push(cx + hw, cy + hh, cz, cx - hw, cy + hh, cz);
+      pts.push(cx - hw, cy + hh, cz, cx - hw, cy - hh, cz);
+      // Cross
+      pts.push(cx - hw, cy, cz, cx + hw, cy, cz);
+      pts.push(cx, cy - hh, cz, cx, cy + hh, cz);
     }
+    var geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+    return new THREE.LineSegments(geo, creamLine);
   }
 
-  var lineGeo = new THREE.BufferGeometry();
-  lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
-  var lineMat = new THREE.LineBasicMaterial({
-    color: 0xc9a96e,
-    transparent: true,
-    opacity: 0.12,
-    linewidth: 1,
-  });
-  var linesMesh = new THREE.LineSegments(lineGeo, lineMat);
-  nodeGroup.add(linesMesh);
+  // Main building front windows (z = 3)
+  sceneGroup.add(createWindowFrame(-2, 4.5, 3.01, 1.4, 2, 'z'));
+  sceneGroup.add(createWindowFrame(0.5, 4.5, 3.01, 1.4, 2, 'z'));
+  sceneGroup.add(createWindowFrame(-2, 2, 3.01, 1.4, 1.5, 'z'));
+  sceneGroup.add(createWindowFrame(0.5, 2, 3.01, 1.4, 1.5, 'z'));
+
+  // Tower front windows
+  sceneGroup.add(createWindowFrame(4.5, 7, 1.01, 1.2, 2.5, 'z'));
+  sceneGroup.add(createWindowFrame(4.5, 3.5, 1.01, 1.2, 2, 'z'));
+
+  // Left wing windows (x = -8)
+  sceneGroup.add(createWindowFrame(-8.01, 3, -0.5, 1.2, 1.8, 'x'));
+  sceneGroup.add(createWindowFrame(-8.01, 3, 2, 1.2, 1.8, 'x'));
 
   /* ═══════════════════════════════════════════════
-     PARTICLES — Sparse ambient drift
+     DIMENSION LINES — Blueprint measurement indicators
      ═══════════════════════════════════════════════ */
-  var particleCount = 80;
+  function createDimensionLine(x1, y1, z1, x2, y2, z2, tickSize) {
+    var pts = [];
+    // Main line
+    pts.push(x1, y1, z1, x2, y2, z2);
+    // End ticks (perpendicular)
+    if (Math.abs(x2 - x1) > Math.abs(z2 - z1)) {
+      // Horizontal — ticks in Z
+      pts.push(x1, y1, z1 - tickSize, x1, y1, z1 + tickSize);
+      pts.push(x2, y2, z2 - tickSize, x2, y2, z2 + tickSize);
+    } else {
+      // Depth — ticks in X
+      pts.push(x1 - tickSize, y1, z1, x1 + tickSize, y1, z1);
+      pts.push(x2 - tickSize, y2, z2, x2 + tickSize, y2, z2);
+    }
+    var geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+    return new THREE.LineSegments(geo, goldLineFaint);
+  }
+
+  // Width dimension (below ground)
+  sceneGroup.add(createDimensionLine(-8, -0.5, 5, 6.25, -0.5, 5, 0.3));
+  // Depth dimension
+  sceneGroup.add(createDimensionLine(7.5, -0.5, -4, 7.5, -0.5, 4, 0.3));
+  // Tower height
+  sceneGroup.add(createDimensionLine(7, 0, -1, 7, 10, -1, 0.3));
+
+  /* ═══════════════════════════════════════════════
+     PARTICLES — Rising construction dust / light motes
+     ═══════════════════════════════════════════════ */
+  var particleCount = 60;
   var particlePositions = new Float32Array(particleCount * 3);
-  var particleSpeeds = [];
+  var particleData = [];
 
   for (var p = 0; p < particleCount; p++) {
-    particlePositions[p * 3] = (Math.random() - 0.5) * 40;
-    particlePositions[p * 3 + 1] = (Math.random() - 0.5) * 40;
-    particlePositions[p * 3 + 2] = (Math.random() - 0.5) * 20;
-    particleSpeeds.push({
-      x: (Math.random() - 0.5) * 0.005,
-      y: (Math.random() - 0.5) * 0.005,
-      z: (Math.random() - 0.5) * 0.003,
+    particlePositions[p * 3] = (Math.random() - 0.5) * 30;
+    particlePositions[p * 3 + 1] = Math.random() * 15;
+    particlePositions[p * 3 + 2] = (Math.random() - 0.5) * 30;
+    particleData.push({
+      speed: 0.003 + Math.random() * 0.008,
+      resetY: Math.random() * 15,
     });
   }
 
   var particleGeo = new THREE.BufferGeometry();
   particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
   var particleMat = new THREE.PointsMaterial({
-    color: 0xf0ede8,
-    size: 0.08,
+    color: 0xc9a96e,
+    size: 0.1,
     transparent: true,
-    opacity: 0.35,
+    opacity: 0.3,
     sizeAttenuation: true,
   });
   var particles = new THREE.Points(particleGeo, particleMat);
-  scene.add(particles);
+  sceneGroup.add(particles);
 
   /* ═══════════════════════════════════════════════
      MOUSE TRACKING — Subtle parallax
@@ -168,6 +261,7 @@
      ANIMATION LOOP
      ═══════════════════════════════════════════════ */
   var clock = new THREE.Clock();
+  var baseRotationY = -0.3; // slight initial angle for isometric feel
 
   function animate() {
     requestAnimationFrame(animate);
@@ -175,64 +269,33 @@
 
     var elapsed = clock.getElapsedTime();
 
-    // Slow orbit rotation
-    targetRotation.y = mouse.x * 0.15 + elapsed * 0.08;
-    targetRotation.x = mouse.y * 0.08;
+    // Slow orbit + mouse parallax
+    targetRotation.y = baseRotationY + mouse.x * 0.12 + elapsed * 0.03;
+    targetRotation.x = mouse.y * 0.06;
 
-    nodeGroup.rotation.y += (targetRotation.y - nodeGroup.rotation.y) * 0.02;
-    nodeGroup.rotation.x += (targetRotation.x - nodeGroup.rotation.x) * 0.02;
+    sceneGroup.rotation.y += (targetRotation.y - sceneGroup.rotation.y) * 0.015;
+    sceneGroup.rotation.x += (targetRotation.x - sceneGroup.rotation.x) * 0.015;
 
-    // Breathing — subtle scale pulse
-    var breathe = 1 + Math.sin(elapsed * 0.5) * 0.02;
-    nodeGroup.scale.setScalar(breathe);
+    // Subtle breathing
+    var breathe = 1 + Math.sin(elapsed * 0.4) * 0.008;
+    sceneGroup.scale.setScalar(breathe);
 
-    // Animate individual nodes — gentle floating
-    var posAttr = lineGeo.getAttribute('position');
-    var lineIdx = 0;
-
-    for (var n = 0; n < nodeMeshes.length; n++) {
-      var mesh = nodeMeshes[n];
-      var ud = mesh.userData;
-      var offset = Math.sin(elapsed * ud.speed + ud.phase) * ud.amplitude;
-      mesh.position.x = ud.basePos.x + Math.sin(elapsed * ud.speed * 0.7 + ud.phase) * ud.amplitude * 0.5;
-      mesh.position.y = ud.basePos.y + offset;
-      mesh.position.z = ud.basePos.z + Math.cos(elapsed * ud.speed * 0.4 + ud.phase) * ud.amplitude * 0.3;
-
-      // Update node position reference for line updates
-      nodePositions[n].copy(mesh.position);
-    }
-
-    // Update line positions to follow nodes
-    lineIdx = 0;
-    for (var la = 0; la < nodePositions.length; la++) {
-      for (var lb = la + 1; lb < nodePositions.length; lb++) {
-        var d = nodePositions[la].distanceTo(nodePositions[lb]);
-        if (d < connectionThreshold) {
-          posAttr.array[lineIdx * 6] = nodePositions[la].x;
-          posAttr.array[lineIdx * 6 + 1] = nodePositions[la].y;
-          posAttr.array[lineIdx * 6 + 2] = nodePositions[la].z;
-          posAttr.array[lineIdx * 6 + 3] = nodePositions[lb].x;
-          posAttr.array[lineIdx * 6 + 4] = nodePositions[lb].y;
-          posAttr.array[lineIdx * 6 + 5] = nodePositions[lb].z;
-          lineIdx++;
-        }
+    // Particle rise
+    var pPos = particleGeo.getAttribute('position');
+    for (var pi = 0; pi < particleCount; pi++) {
+      pPos.array[pi * 3 + 1] += particleData[pi].speed;
+      // Reset when too high
+      if (pPos.array[pi * 3 + 1] > 18) {
+        pPos.array[pi * 3 + 1] = -1;
+        pPos.array[pi * 3] = (Math.random() - 0.5) * 30;
+        pPos.array[pi * 3 + 2] = (Math.random() - 0.5) * 30;
       }
     }
-    posAttr.needsUpdate = true;
+    pPos.needsUpdate = true;
 
-    // Particle drift
-    var pPositions = particleGeo.getAttribute('position');
-    for (var pi = 0; pi < particleCount; pi++) {
-      pPositions.array[pi * 3] += particleSpeeds[pi].x;
-      pPositions.array[pi * 3 + 1] += particleSpeeds[pi].y;
-      pPositions.array[pi * 3 + 2] += particleSpeeds[pi].z;
-
-      // Wrap around
-      if (Math.abs(pPositions.array[pi * 3]) > 20) particleSpeeds[pi].x *= -1;
-      if (Math.abs(pPositions.array[pi * 3 + 1]) > 20) particleSpeeds[pi].y *= -1;
-      if (Math.abs(pPositions.array[pi * 3 + 2]) > 10) particleSpeeds[pi].z *= -1;
-    }
-    pPositions.needsUpdate = true;
+    // Gentle light movement
+    pointLight1.position.x = 15 + Math.sin(elapsed * 0.3) * 3;
+    pointLight1.position.z = 20 + Math.cos(elapsed * 0.2) * 3;
 
     renderer.render(scene, camera);
   }

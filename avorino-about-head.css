@@ -56,8 +56,41 @@ html, body { overflow-x: hidden; }
   perspective: 400px;
   border-radius: 6px;
 }
+.about-flip-card-top,
+.about-flip-card-bottom {
+  padding: 0 !important; /* override Webflow 2px padding so halves align */
+}
+.about-flip-card-top span,
+.about-flip-card-bottom span {
+  display: block;
+  line-height: 96px; /* must equal full card height for seamless glyph split */
+  text-align: center;
+}
 .about-flip-card-top {
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ─── Mission/Vision — Gold Accent ─── */
+.about-mv-accent {
+  border-left: 2px solid rgba(201, 169, 110, 0.4) !important;
+  padding-left: 48px !important;
+}
+.about-mv-divider {
+  width: 40px;
+  height: 1px;
+  background: rgba(201, 169, 110, 0.4);
+  margin-top: 8px;
+  margin-bottom: 24px;
+}
+.about-mv-number {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 72px;
+  line-height: 1;
+  opacity: 0.04;
+  position: absolute;
+  top: 32px;
+  right: 32px;
+  pointer-events: none;
 }
 
 /* ─── Values Section — Three.js Canvas + Grid ─── */
@@ -101,6 +134,18 @@ html, body { overflow-x: hidden; }
 .about-cta-container {
   position: relative;
   overflow: hidden;
+}
+.av-cta-subtitle {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.4;
+  margin-bottom: 32px;
+}
+.av-cta-bg {
+  background: radial-gradient(ellipse at 30% 50%, rgba(201,169,110,0.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 50%, rgba(200,34,42,0.05) 0%, transparent 60%);
 }
 
 /* ─── Line Wipe Animation ─── */
@@ -212,6 +257,10 @@ html, body { overflow-x: hidden; }
   .about-flip-card-bottom {
     font-size: 36px !important;
   }
+  .about-flip-card-top span,
+  .about-flip-card-bottom span {
+    line-height: 76px !important;
+  }
   .about-stat-suffix {
     font-size: 28px !important;
   }
@@ -308,6 +357,10 @@ html, body { overflow-x: hidden; }
   .about-flip-card-top,
   .about-flip-card-bottom {
     font-size: 28px !important;
+  }
+  .about-flip-card-top span,
+  .about-flip-card-bottom span {
+    line-height: 64px !important;
   }
   .about-stat-suffix {
     font-size: 22px !important;

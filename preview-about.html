@@ -100,7 +100,7 @@
     position: absolute; width: 100%; height: 50%; overflow: hidden;
     display: flex; justify-content: center; align-items: flex-start;
     font-size: 48px; color: var(--av-cream); background: #1a1a1a;
-    top: 0; padding-top: 2px; border-radius: 6px 6px 0 0;
+    top: 0; border-radius: 6px 6px 0 0;
     border-bottom: 1px solid rgba(255,255,255,0.06);
   }
   .about-flip-card-bottom {
@@ -108,7 +108,13 @@
     position: absolute; width: 100%; height: 50%; overflow: hidden;
     display: flex; justify-content: center; align-items: flex-end;
     font-size: 48px; color: var(--av-cream); background: #1a1a1a;
-    bottom: 0; padding-bottom: 2px; border-radius: 0 0 6px 6px;
+    bottom: 0; border-radius: 0 0 6px 6px;
+  }
+  .about-flip-card-top span,
+  .about-flip-card-bottom span {
+    display: block;
+    line-height: 96px;
+    text-align: center;
   }
   .about-stat-suffix {
     font-family: 'DM Serif Display', Georgia, serif; font-weight: 400;
@@ -123,10 +129,18 @@
     font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.55; text-align: center;
   }
 
-  /* ─── Mission/Vision Card Labels ─── */
+  /* ─── Mission/Vision ─── */
   .about-card-label { font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs); letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.4; margin-bottom: 24px; color: var(--av-cream); }
   .about-card-heading { font-family: 'DM Serif Display', serif; font-size: var(--av-text-h3); line-height: 1.12; font-weight: 400; margin-bottom: 24px; color: var(--av-cream); }
   .about-card-body { font-family: 'DM Sans', sans-serif; font-size: var(--av-text-sm); line-height: 1.9; opacity: 0.6; color: var(--av-cream); }
+  .about-mv-accent {
+    border-left: 2px solid rgba(201,169,110,0.4); padding-left: 48px; position: relative;
+  }
+  .about-mv-divider { width: 40px; height: 1px; background: rgba(201,169,110,0.4); margin-top: 8px; margin-bottom: 24px; }
+  .about-mv-number {
+    font-family: 'DM Serif Display', Georgia, serif; font-size: 72px; line-height: 1;
+    opacity: 0.04; position: absolute; top: 32px; right: 32px; pointer-events: none; color: var(--av-cream);
+  }
 
   /* ─── Values — Grid + Three.js Canvas ─── */
   #about-values { position: relative; overflow: hidden; }
@@ -153,8 +167,16 @@
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     text-align: center; position: relative; overflow: hidden;
   }
-  .av-cta-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.2; }
+  .av-cta-bg {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.2;
+    background: radial-gradient(ellipse at 30% 50%, rgba(201,169,110,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 50%, rgba(200,34,42,0.05) 0%, transparent 60%);
+  }
   .av-cta-content { position: relative; z-index: 2; padding: 64px; }
+  .av-cta-subtitle {
+    font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.3em;
+    text-transform: uppercase; opacity: 0.4; margin-bottom: 32px; color: var(--av-cream);
+  }
   .av-cta-heading {
     font-family: 'DM Serif Display', serif; font-size: var(--av-text-lg);
     line-height: 1.08; letter-spacing: -0.02em; font-weight: 400;
@@ -197,21 +219,26 @@
     .about-stats-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
     .about-flip-card { width: 56px !important; height: 76px !important; }
     .about-flip-card-top, .about-flip-card-bottom { font-size: 36px !important; }
+    .about-flip-card-top span, .about-flip-card-bottom span { line-height: 76px !important; }
     .about-stat-suffix, .about-stat-separator { font-size: 28px !important; }
     .av-heading-xl { font-size: clamp(36px, 8vw, 56px) !important; }
     .av-heading-lg { font-size: clamp(28px, 6vw, 40px) !important; }
     .av-cta { padding: 24px !important; }
+    .about-mv-accent { padding-left: 32px !important; }
   }
   @media (max-width: 478px) {
     .av-section { padding: 48px 16px !important; }
     .about-hero { min-height: 40vh !important; padding: 80px 16px 48px !important; }
     .about-flip-card { width: 48px !important; height: 64px !important; }
     .about-flip-card-top, .about-flip-card-bottom { font-size: 28px !important; }
+    .about-flip-card-top span, .about-flip-card-bottom span { line-height: 64px !important; }
     .about-stat-suffix, .about-stat-separator { font-size: 22px !important; }
     .av-heading-xl { font-size: clamp(28px, 9vw, 42px) !important; }
     .av-heading-lg { font-size: clamp(24px, 6vw, 32px) !important; }
     .av-cta { padding: 16px !important; }
     .av-cta-btn { width: 100% !important; justify-content: center !important; }
+    .about-mv-accent { padding-left: 20px !important; }
+    .about-mv-number { font-size: 48px !important; }
   }
 </style>
 </head>
@@ -340,15 +367,24 @@
 
 <!-- ═══════════ MISSION & VISION ═══════════ -->
 <section class="av-section av-section-warm" id="about-mission-vision">
+  <div class="av-label av-mb-64" data-animate="fade-up">
+    <div>Our Purpose</div>
+    <div class="about-label-line"></div>
+  </div>
+  <h2 class="av-heading-lg av-mb-96" data-animate="line-wipe">What Drives Us</h2>
   <div class="av-grid-2col">
-    <div class="av-card-dark" data-animate="fade-up">
+    <div class="av-card-dark about-mv-accent" data-animate="fade-up">
+      <div class="about-mv-number">01</div>
       <div class="about-card-label">Mission</div>
       <h3 class="about-card-heading">Bringing visionary dreams to life</h3>
+      <div class="about-mv-divider"></div>
       <p class="about-card-body">Our mission is to bring visionary dreams to life through strong communication and transformative construction. As builders, we are committed to delivering exceptional projects that exceed expectations, inspire awe, and leave a lasting impact. With a focus on collaboration and innovation, we strive to create spaces that not only fulfill our clients' visions but also enhance the lives of those who experience them.</p>
     </div>
-    <div class="av-card-dark" data-animate="fade-up">
+    <div class="av-card-dark about-mv-accent" data-animate="fade-up">
+      <div class="about-mv-number">02</div>
       <div class="about-card-label">Vision</div>
       <h3 class="about-card-heading">The catalyst for transformation</h3>
+      <div class="about-mv-divider"></div>
       <p class="about-card-body">Our vision is to be the catalyst for transformation in the construction industry. We aspire to be known as the go-to builders for visionary projects, where dreams become reality. Through our commitment to strong communication, we aim to foster deep understanding and collaboration with our clients, partners, and communities.</p>
     </div>
   </div>
@@ -365,7 +401,7 @@
   <!-- Three.js canvas renders here -->
   <div class="about-values-canvas-wrap" data-values-canvas></div>
 
-  <!-- 2×2 grid of value cards -->
+  <!-- 2x2 grid of value cards -->
   <div class="about-values-grid" data-animate="fade-up-stagger">
     <div class="about-values-card">
       <div class="about-value-num">01</div>
@@ -395,6 +431,7 @@
   <div class="about-cta-container">
     <div class="av-cta-bg" data-animate="parallax-depth"></div>
     <div class="av-cta-content">
+      <div class="av-cta-subtitle" data-animate="fade-up">Ready to Begin?</div>
       <h2 class="av-cta-heading" data-animate="word-stagger-elastic">Let's build something remarkable</h2>
       <a href="/schedule-a-meeting" class="av-cta-btn" data-magnetic data-animate="fade-up">Schedule a Free Call &#8594;</a>
     </div>

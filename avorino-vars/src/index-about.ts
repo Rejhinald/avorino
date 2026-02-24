@@ -87,7 +87,13 @@ async function buildAboutPage() {
   const valueTitle = await getOrCreateStyle('about-value-title');
   const valueDesc = await getOrCreateStyle('about-value-desc');
 
+  // Mission/Vision accent styles
+  const mvAccent = await getOrCreateStyle('about-mv-accent');
+  const mvDivider = await getOrCreateStyle('about-mv-divider');
+  const mvNumber = await getOrCreateStyle('about-mv-number');
+
   // CTA — custom build
+  const ctaSubtitle = await getOrCreateStyle('av-cta-subtitle');
   const ctaSection = await getOrCreateStyle('av-cta');
   const ctaContainer = await getOrCreateStyle('av-cta-container');
   const ctaBg = await getOrCreateStyle('av-cta-bg');
@@ -182,7 +188,6 @@ async function buildAboutPage() {
       'overflow-x': 'hidden', 'overflow-y': 'hidden',
       'display': 'flex', 'justify-content': 'center', 'align-items': 'flex-start',
       'font-size': '48px', 'color': v['av-cream'], 'background-color': '#1a1a1a',
-      'padding-top': '2px',
       'border-top-left-radius': '6px', 'border-top-right-radius': '6px',
       'border-bottom-left-radius': '0px', 'border-bottom-right-radius': '0px',
     });
@@ -192,7 +197,7 @@ async function buildAboutPage() {
       'overflow-x': 'hidden', 'overflow-y': 'hidden',
       'display': 'flex', 'justify-content': 'center', 'align-items': 'flex-end',
       'font-size': '48px', 'color': v['av-cream'], 'background-color': '#1a1a1a',
-      'padding-bottom': '2px', 'bottom': '0px',
+      'bottom': '0px',
       'border-top-left-radius': '0px', 'border-top-right-radius': '0px',
       'border-bottom-left-radius': '6px', 'border-bottom-right-radius': '6px',
     });
@@ -237,6 +242,26 @@ async function buildAboutPage() {
     await clearAndSet(await freshStyle('about-value-desc'), 'about-value-desc', {
       'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
       'line-height': '1.7', 'opacity': '0.5', 'color': v['av-cream'],
+    });
+    await wait(500);
+
+    // Mission/Vision accent styles
+    await clearAndSet(await freshStyle('about-mv-accent'), 'about-mv-accent', {
+      'border-left-width': '2px', 'border-left-style': 'solid', 'border-left-color': 'rgba(201,169,110,0.4)',
+      'padding-left': '48px', 'position': 'relative',
+    });
+    await clearAndSet(await freshStyle('about-mv-divider'), 'about-mv-divider', {
+      'width': '40px', 'height': '1px', 'background-color': 'rgba(201,169,110,0.4)',
+      'margin-top': '8px', 'margin-bottom': '24px',
+    });
+    await clearAndSet(await freshStyle('about-mv-number'), 'about-mv-number', {
+      'font-family': 'DM Serif Display', 'font-size': '72px', 'line-height': '1',
+      'opacity': '0.04', 'position': 'absolute', 'top': '32px', 'right': '32px',
+      'color': v['av-cream'], 'pointer-events': 'none',
+    });
+    await clearAndSet(await freshStyle('av-cta-subtitle'), 'av-cta-subtitle', {
+      'font-family': 'DM Sans', 'font-size': '12px', 'letter-spacing': '0.3em',
+      'text-transform': 'uppercase', 'opacity': '0.4', 'margin-bottom': '32px', 'color': v['av-cream'],
     });
     await wait(500);
 
@@ -390,14 +415,21 @@ async function buildAboutPage() {
   log('Building Mission & Vision...');
   const mv = webflow.elementBuilder(webflow.elementPresets.DOM);
   mv.setTag('section'); mv.setStyles([s.section, s.sectionWarm]); mv.setAttribute('id', 'about-mission-vision');
+  const mvLbl = mv.append(webflow.elementPresets.DOM); mvLbl.setTag('div'); mvLbl.setStyles([s.label, mb64]); mvLbl.setAttribute('data-animate', 'fade-up');
+  const mvLblTxt = mvLbl.append(webflow.elementPresets.DOM); mvLblTxt.setTag('div'); mvLblTxt.setTextContent('Our Purpose');
+  const mvLblLine = mvLbl.append(webflow.elementPresets.DOM); mvLblLine.setTag('div'); mvLblLine.setStyles([labelLine]);
+  const mvH = mv.append(webflow.elementPresets.DOM); mvH.setTag('h2'); mvH.setStyles([s.headingLG, mb96]);
+  mvH.setTextContent('What Drives Us'); mvH.setAttribute('data-animate', 'line-wipe');
   const mvGrid = mv.append(webflow.elementPresets.DOM); mvGrid.setTag('div'); mvGrid.setStyles([s.grid2]);
   [
-    { label: 'Mission', heading: 'Bringing visionary dreams to life', body: 'Our mission is to bring visionary dreams to life through strong communication and transformative construction. As builders, we are committed to delivering exceptional projects that exceed expectations, inspire awe, and leave a lasting impact. With a focus on collaboration and innovation, we strive to create spaces that not only fulfill our clients\' visions but also enhance the lives of those who experience them.' },
-    { label: 'Vision', heading: 'The catalyst for transformation', body: 'Our vision is to be the catalyst for transformation in the construction industry. We aspire to be known as the go-to builders for visionary projects, where dreams become reality. Through our commitment to strong communication, we aim to foster deep understanding and collaboration with our clients, partners, and communities.' },
+    { num: '01', label: 'Mission', heading: 'Bringing visionary dreams to life', body: 'Our mission is to bring visionary dreams to life through strong communication and transformative construction. As builders, we are committed to delivering exceptional projects that exceed expectations, inspire awe, and leave a lasting impact. With a focus on collaboration and innovation, we strive to create spaces that not only fulfill our clients\' visions but also enhance the lives of those who experience them.' },
+    { num: '02', label: 'Vision', heading: 'The catalyst for transformation', body: 'Our vision is to be the catalyst for transformation in the construction industry. We aspire to be known as the go-to builders for visionary projects, where dreams become reality. Through our commitment to strong communication, we aim to foster deep understanding and collaboration with our clients, partners, and communities.' },
   ].forEach(card => {
-    const c = mvGrid.append(webflow.elementPresets.DOM); c.setTag('div'); c.setStyles([s.cardDark]); c.setAttribute('data-animate', 'fade-up');
+    const c = mvGrid.append(webflow.elementPresets.DOM); c.setTag('div'); c.setStyles([s.cardDark, mvAccent]); c.setAttribute('data-animate', 'fade-up');
+    const n = c.append(webflow.elementPresets.DOM); n.setTag('div'); n.setStyles([mvNumber]); n.setTextContent(card.num);
     const l = c.append(webflow.elementPresets.DOM); l.setTag('div'); l.setStyles([cardLabel]); l.setTextContent(card.label);
     const h = c.append(webflow.elementPresets.DOM); h.setTag('h3'); h.setStyles([cardHeading]); h.setTextContent(card.heading);
+    const d = c.append(webflow.elementPresets.DOM); d.setTag('div'); d.setStyles([mvDivider]);
     const p = c.append(webflow.elementPresets.DOM); p.setTag('p'); p.setStyles([cardBody]); p.setTextContent(card.body);
   });
   await safeCall('append:mission-vision', () => body.append(mv));
@@ -452,6 +484,10 @@ async function buildAboutPage() {
 
   const ctaContentEl = ctaC.append(webflow.elementPresets.DOM);
   ctaContentEl.setTag('div'); ctaContentEl.setStyles([ctaContent]);
+
+  const ctaSub = ctaContentEl.append(webflow.elementPresets.DOM);
+  ctaSub.setTag('div'); ctaSub.setStyles([ctaSubtitle]);
+  ctaSub.setTextContent('Ready to Begin?'); ctaSub.setAttribute('data-animate', 'fade-up');
 
   const ctaH = ctaContentEl.append(webflow.elementPresets.DOM);
   ctaH.setTag('h2'); ctaH.setStyles([ctaHeading]);

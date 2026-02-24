@@ -382,8 +382,8 @@
       var nd = steps[stepIndex];
       topSpan.textContent = nd;
       var o = document.createElement('div');
-      o.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:50%;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:2px;font-family:"DM Serif Display",Georgia,serif;font-size:48px;color:#f0ede8;background:#1a1a1a;border-radius:6px 6px 0 0;transform-origin:bottom center;z-index:4;';
-      o.innerHTML = '<span>' + currentDigit + '</span>';
+      o.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:50%;overflow:hidden;display:flex;align-items:flex-start;justify-content:center;font-family:"DM Serif Display",Georgia,serif;font-size:48px;color:#f0ede8;background:#1a1a1a;border-radius:6px 6px 0 0;transform-origin:bottom center;z-index:4;';
+      o.innerHTML = '<span style="display:block;line-height:96px;text-align:center;width:100%;">' + currentDigit + '</span>';
       inner.appendChild(o);
       gsap.set(o, { rotateX: 0, transformPerspective: 400 });
       gsap.to(o, {
