@@ -4,6 +4,27 @@
    ═══════════════════════════════════════════════════════════════ */
 
 /* ═══════════════════════════════════════════
+   PRELOADER — div logo support
+   ═══════════════════════════════════════════ */
+.preloader-logo-img {
+  height: 48px;
+  width: auto;
+  display: block;
+  filter: brightness(0) invert(1);
+}
+
+/* When preloader logo is a div with background-image (Webflow swap) */
+.preloader-text > div,
+.preloader-text .preloader-logo-div {
+  height: 48px;
+  width: 200px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  filter: brightness(0) invert(1);
+}
+
+/* ═══════════════════════════════════════════
    NAVIGATION BAR
    ═══════════════════════════════════════════ */
 .site-nav {
