@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADU Plan Samples — Avorino Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overflow-x: hidden; font-family: 'DM Sans', sans-serif; background: #f0ede8; color: #111; }
+
+  :root {
+    --av-dark: #111111;
+    --av-cream: #f0ede8;
+    --av-warm: #e8e4df;
+    --av-red: #c8222a;
+    --av-gold: #c9a96e;
+    --av-radius: 8px;
+    --av-section-pad-y: 128px;
+    --av-section-pad-x: 80px;
+    --av-text-xl: clamp(48px, 5vw, 96px);
+    --av-text-lg: clamp(36px, 3.5vw, 64px);
+    --av-text-h3: clamp(24px, 2vw, 36px);
+    --av-text-body: clamp(16px, 1.1vw, 18px);
+    --av-text-sm: clamp(14px, 0.9vw, 16px);
+    --av-text-xs: clamp(11px, 0.7vw, 13px);
+  }
+
+  .av-section { padding: var(--av-section-pad-y) var(--av-section-pad-x); }
+  .av-heading-xl { font-family: 'DM Serif Display', serif; font-size: var(--av-text-xl); line-height: 1.05; font-weight: 400; letter-spacing: -0.02em; }
+  .av-heading-lg { font-family: 'DM Serif Display', serif; font-size: var(--av-text-lg); line-height: 1.1; font-weight: 400; }
+  .av-heading-md { font-family: 'DM Serif Display', serif; font-size: var(--av-text-h3); line-height: 1.15; font-weight: 400; }
+  .av-body { font-size: var(--av-text-body); line-height: 1.9; }
+  .av-label { display: flex; align-items: center; gap: 16px; font-size: var(--av-text-xs); letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.4; }
+
+  /* ═══════════════════════════════════════════════
+     HERO — Clean dark with blueprint aesthetic
+     ═══════════════════════════════════════════════ */
+  .pl-hero {
+    min-height: 50vh; display: flex; align-items: flex-end;
+    padding: 160px var(--av-section-pad-x) var(--av-section-pad-y);
+    background: var(--av-dark); color: var(--av-cream);
+    position: relative; overflow: hidden;
+  }
+  .pl-hero-grid-bg {
+    position: absolute; inset: 0; opacity: 0.03;
+    background-image:
+      linear-gradient(rgba(240,237,232,0.3) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(240,237,232,0.3) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  .pl-hero-content { position: relative; z-index: 2; max-width: 700px; }
+  .pl-hero-label { font-size: var(--av-text-xs); letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.4; margin-bottom: 24px; }
+  .pl-hero-gold-line { width: 0; height: 1px; background: var(--av-gold); margin-bottom: 32px; }
+  .pl-hero-subtitle { font-size: var(--av-text-body); line-height: 1.9; opacity: 0.5; margin-top: 20px; max-width: 500px; }
+
+  /* ═══════════════════════════════════════════════
+     FILTERS — Tab bar
+     ═══════════════════════════════════════════════ */
+  .pl-filter-bar {
+    display: flex; gap: 8px; margin-bottom: 64px; flex-wrap: wrap;
+  }
+  .pl-filter-btn {
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+    padding: 10px 24px; border-radius: 100px; border: 1px solid rgba(17,17,17,0.12);
+    background: transparent; color: var(--av-dark); cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .pl-filter-btn:hover { border-color: var(--av-dark); }
+  .pl-filter-btn.is-active { background: var(--av-dark); color: var(--av-cream); border-color: var(--av-dark); }
+
+  /* ═══════════════════════════════════════════════
+     PLAN GALLERY — Cards with hover overlay
+     ═══════════════════════════════════════════════ */
+  .pl-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .pl-card {
+    background: var(--av-dark); color: var(--av-cream);
+    border-radius: var(--av-radius); overflow: hidden;
+    transition: transform 0.5s cubic-bezier(0.23,1,0.32,1), box-shadow 0.5s ease;
+    cursor: pointer; position: relative;
+  }
+  .pl-card:hover { transform: translateY(-8px); box-shadow: 0 24px 64px rgba(0,0,0,0.15); }
+  .pl-card[data-hidden] { display: none; }
+  .pl-card-img {
+    position: relative; height: 260px; overflow: hidden;
+    background: #1a1a1a;
+  }
+  .pl-card-img-inner {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, #1a1a1a 0%, #222 50%, #1a1a1a 100%);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.8s cubic-bezier(0.23,1,0.32,1);
+  }
+  .pl-card:hover .pl-card-img-inner { transform: scale(1.05); }
+  .pl-card-img-blueprint {
+    width: 80%; height: 80%; border: 1px solid rgba(201,169,110,0.15);
+    border-radius: 4px; position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pl-card-img-blueprint::before {
+    content: ''; position: absolute; inset: 10%;
+    border: 1px dashed rgba(201,169,110,0.08);
+  }
+  .pl-card-img-blueprint-text {
+    font-family: 'DM Serif Display', serif; font-size: 14px;
+    color: var(--av-gold); opacity: 0.25; letter-spacing: 0.1em;
+  }
+  .pl-card-badge {
+    position: absolute; top: 16px; right: 16px;
+    font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 6px 14px; border-radius: 100px;
+    background: rgba(201,169,110,0.15); color: var(--av-gold);
+    backdrop-filter: blur(8px);
+  }
+  .pl-card-body { padding: 28px; }
+  .pl-card-name {
+    font-family: 'DM Serif Display', serif; font-size: 22px;
+    font-weight: 400; margin-bottom: 12px;
+  }
+  .pl-card-specs {
+    display: flex; gap: 16px; font-size: 13px; opacity: 0.45;
+  }
+  .pl-card-specs span { display: flex; align-items: center; gap: 6px; }
+  .pl-card-specs .dot { width: 3px; height: 3px; border-radius: 50%; background: currentColor; opacity: 0.4; }
+  .pl-card-hover-overlay {
+    position: absolute; inset: 0; z-index: 3;
+    background: rgba(17,17,17,0.9); display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 16px;
+    opacity: 0; transition: opacity 0.4s ease;
+  }
+  .pl-card:hover .pl-card-hover-overlay { opacity: 1; }
+  .pl-card-hover-btn {
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+    padding: 14px 32px; border-radius: 100px;
+    background: var(--av-red); color: var(--av-cream); text-decoration: none;
+    transition: background 0.3s ease;
+  }
+  .pl-card-hover-btn:hover { background: #a01c22; }
+  .pl-card-hover-text { font-size: 13px; opacity: 0.4; }
+
+  /* ═══════════════════════════════════════════════
+     CUSTOM PLANS — Full-width CTA card
+     ═══════════════════════════════════════════════ */
+  .pl-custom {
+    background: var(--av-dark); color: var(--av-cream);
+    border-radius: var(--av-radius); padding: 80px 64px;
+    display: grid; grid-template-columns: 1.2fr 1fr; gap: 64px; align-items: center;
+    position: relative; overflow: hidden;
+  }
+  .pl-custom-glow {
+    position: absolute; width: 300px; height: 300px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,169,110,0.06) 0%, transparent 60%);
+    right: -100px; top: -100px;
+  }
+  .pl-custom-content { position: relative; z-index: 2; }
+  .pl-custom .av-heading-lg { margin-bottom: 16px; }
+  .pl-custom-body { font-size: var(--av-text-body); line-height: 1.9; opacity: 0.5; margin-bottom: 32px; }
+  .pl-custom-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
+    padding: 16px 32px; border-radius: 100px;
+    background: var(--av-red); color: var(--av-cream); text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  .pl-custom-btn:hover { background: #a01c22; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(200,34,42,0.3); }
+  .pl-custom-stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+    position: relative; z-index: 2;
+  }
+  .pl-custom-stat { text-align: center; }
+  .pl-custom-stat-value {
+    font-family: 'DM Serif Display', serif; font-size: 36px;
+    font-weight: 400; color: var(--av-gold); margin-bottom: 4px;
+  }
+  .pl-custom-stat-label { font-size: 12px; opacity: 0.35; text-transform: uppercase; letter-spacing: 0.15em; }
+
+  /* ═══════════════════════════════════════════════
+     SIZE GUIDE — Quick reference table
+     ═══════════════════════════════════════════════ */
+  .pl-guide-header { margin-bottom: 48px; }
+  .pl-guide-header .av-body { opacity: 0.5; margin-top: 16px; }
+  .pl-guide-table {
+    width: 100%; border-collapse: collapse;
+  }
+  .pl-guide-table th {
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    opacity: 0.3; text-align: left; padding: 12px 20px;
+    border-bottom: 1px solid rgba(17,17,17,0.08);
+  }
+  .pl-guide-table td {
+    font-size: var(--av-text-body); padding: 20px;
+    border-bottom: 1px solid rgba(17,17,17,0.06);
+  }
+  .pl-guide-table td:first-child { font-family: 'DM Serif Display', serif; font-weight: 400; }
+  .pl-guide-table tr:hover td { background: rgba(17,17,17,0.02); }
+  .pl-guide-table .gold { color: var(--av-gold); font-weight: 500; }
+
+  /* ═══════════════════════════════════════════════
+     CTA
+     ═══════════════════════════════════════════════ */
+  .pl-cta {
+    min-height: 45vh; display: flex; align-items: center; justify-content: center;
+    text-align: center; background: var(--av-dark); color: var(--av-cream);
+    position: relative; overflow: hidden;
+  }
+  .pl-cta-glow {
+    position: absolute; width: 400px; height: 400px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,34,42,0.06) 0%, transparent 65%);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    animation: plPulse 4s ease-in-out infinite;
+  }
+  @keyframes plPulse { 0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.4; } 50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; } }
+  .pl-cta-content { position: relative; z-index: 2; max-width: 550px; }
+  .pl-cta .av-heading-lg { margin-bottom: 16px; }
+  .pl-cta-subtitle { font-size: var(--av-text-body); opacity: 0.45; margin-bottom: 36px; line-height: 1.8; }
+  .pl-cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .pl-cta-btn {
+    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
+    padding: 16px 32px; border-radius: 100px; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 10px; transition: all 0.3s ease;
+  }
+  .pl-cta-btn-primary { background: var(--av-red); color: var(--av-cream); }
+  .pl-cta-btn-primary:hover { background: #a01c22; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(200,34,42,0.3); }
+  .pl-cta-btn-ghost { background: transparent; color: var(--av-cream); border: 1px solid rgba(240,237,232,0.2); }
+  .pl-cta-btn-ghost:hover { border-color: var(--av-cream); }
+
+  /* ═══════════════════════════════════════════════
+     RESPONSIVE
+     ═══════════════════════════════════════════════ */
+  @media (max-width: 991px) {
+    :root { --av-section-pad-x: 48px; --av-section-pad-y: 96px; }
+    .pl-grid { grid-template-columns: 1fr 1fr; }
+    .pl-custom { grid-template-columns: 1fr; padding: 56px 40px; }
+    .pl-custom-stats { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (max-width: 767px) {
+    :root { --av-section-pad-x: 24px; --av-section-pad-y: 72px; }
+    .pl-grid { grid-template-columns: 1fr; }
+    .pl-custom { padding: 40px 24px; }
+    .pl-custom-stats { grid-template-columns: 1fr 1fr; }
+    .pl-guide-table { font-size: 14px; }
+    .pl-guide-table th, .pl-guide-table td { padding: 12px; }
+    .pl-cta-btns { flex-direction: column; align-items: center; }
+  }
+  @media (max-width: 478px) {
+    :root { --av-section-pad-x: 16px; --av-section-pad-y: 56px; }
+    .pl-hero { padding: 120px 16px 48px; min-height: 40vh; }
+    .pl-filter-bar { gap: 6px; }
+    .pl-filter-btn { padding: 8px 16px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<section class="pl-hero">
+  <div class="pl-hero-grid-bg"></div>
+  <div class="pl-hero-content">
+    <div class="pl-hero-label">// Floor Plans</div>
+    <div class="pl-hero-gold-line"></div>
+    <h1 class="av-heading-xl">ADU Plan Samples</h1>
+    <p class="pl-hero-subtitle">Browse pre-designed floor plans from studio to 2-bedroom. Every plan is fully customizable to your lot and preferences.</p>
+  </div>
+</section>
+
+<!-- ═══ PLAN GALLERY ═══ -->
+<section class="av-section" style="background: var(--av-warm)">
+  <div class="pl-filter-bar">
+    <button class="pl-filter-btn is-active" data-filter="all">All Plans</button>
+    <button class="pl-filter-btn" data-filter="studio">Studio</button>
+    <button class="pl-filter-btn" data-filter="1bed">1 Bedroom</button>
+    <button class="pl-filter-btn" data-filter="2bed">2 Bedroom</button>
+  </div>
+  <div class="pl-grid">
+    <div class="pl-card" data-type="studio">
+      <div class="pl-card-img">
+        <div class="pl-card-img-inner">
+          <div class="pl-card-img-blueprint"><span class="pl-card-img-blueprint-text">Floor Plan</span></div>
+        </div>
+        <div class="pl-card-badge">Studio</div>
+      </div>
+      <div class="pl-card-body">
+        <div class="pl-card-name">Studio 400</div>
+        <div class="pl-card-specs">
+          <span>400 sqft</span><span class="dot"></span>
+          <span>Studio</span><span class="dot"></span>
+          <span>1 Bath</span>
+        </div>
+      </div>
+      <div class="pl-card-hover-overlay">
+        <a href="/schedule-a-meeting" class="pl-card-hover-btn">Request This Plan</a>
+        <span class="pl-card-hover-text">Fully customizable</span>
+      </div>
+    </div>
+    <div class="pl-card" data-type="studio">
+      <div class="pl-card-img">
+        <div class="pl-card-img-inner">
+          <div class="pl-card-img-blueprint"><span class="pl-card-img-blueprint-text">Floor Plan</span></div>
+        </div>
+        <div class="pl-card-badge">Studio</div>
+      </div>
+      <div class="pl-card-body">
+        <div class="pl-card-name">Studio 500</div>
+        <div class="pl-card-specs">
+          <span>500 sqft</span><span class="dot"></span>
+          <span>Studio</span><span class="dot"></span>
+          <span>1 Bath</span>
+        </div>
+      </div>
+      <div class="pl-card-hover-overlay">
+        <a href="/schedule-a-meeting" class="pl-card-hover-btn">Request This Plan</a>
+        <span class="pl-card-hover-text">Fully customizable</span>
+      </div>
+    </div>
+    <div class="pl-card" data-type="1bed">
+      <div class="pl-card-img">
+        <div class="pl-card-img-inner">
+          <div class="pl-card-img-blueprint"><span class="pl-card-img-blueprint-text">Floor Plan</span></div>
+        </div>
+        <div class="pl-card-badge">1 Bed</div>
+      </div>
+      <div class="pl-card-body">
+        <div class="pl-card-name">1-Bed 600</div>
+        <div class="pl-card-specs">
+          <span>600 sqft</span><span class="dot"></span>
+          <span>1 Bed</span><span class="dot"></span>
+          <span>1 Bath</span>
+        </div>
+      </div>
+      <div class="pl-card-hover-overlay">
+        <a href="/schedule-a-meeting" class="pl-card-hover-btn">Request This Plan</a>
+        <span class="pl-card-hover-text">Fully customizable</span>
+      </div>
+    </div>
+    <div class="pl-card" data-type="1bed">
+      <div class="pl-card-img">
+        <div class="pl-card-img-inner">
+          <div class="pl-card-img-blueprint"><span class="pl-card-img-blueprint-text">Floor Plan</span></div>
+        </div>
+        <div class="pl-card-badge">1 Bed</div>
+      </div>
+      <div class="pl-card-body">
+        <div class="pl-card-name">1-Bed 750</div>
+        <div class="pl-card-specs">
+          <span>750 sqft</span><span class="dot"></span>
+          <span>1 Bed</span><span class="dot"></span>
+          <span>1 Bath</span>
+        </div>
+      </div>
+      <div class="pl-card-hover-overlay">
+        <a href="/schedule-a-meeting" class="pl-card-hover-btn">Request This Plan</a>
+        <span class="pl-card-hover-text">Fully customizable</span>
+      </div>
+    </div>
+    <div class="pl-card" data-type="2bed">
+      <div class="pl-card-img">
+        <div class="pl-card-img-inner">
+          <div class="pl-card-img-blueprint"><span class="pl-card-img-blueprint-text">Floor Plan</span></div>
+        </div>
+        <div class="pl-card-badge">2 Bed</div>
+      </div>
+      <div class="pl-card-body">
+        <div class="pl-card-name">2-Bed 800</div>
+        <div class="pl-card-specs">
+          <span>800 sqft</span><span class="dot"></span>
+          <span>2 Bed</span><span class="dot"></span>
+          <span>1 Bath</span>
+        </div>
+      </div>
+      <div class="pl-card-hover-overlay">
+        <a href="/schedule-a-meeting" class="pl-card-hover-btn">Request This Plan</a>
+        <span class="pl-card-hover-text">Fully customizable</span>
+      </div>
+    </div>
+    <div class="pl-card" data-type="2bed">
+      <div class="pl-card-img">
+        <div class="pl-card-img-inner">
+          <div class="pl-card-img-blueprint"><span class="pl-card-img-blueprint-text">Floor Plan</span></div>
+        </div>
+        <div class="pl-card-badge">2 Bed</div>
+      </div>
+      <div class="pl-card-body">
+        <div class="pl-card-name">2-Bed 1000</div>
+        <div class="pl-card-specs">
+          <span>1,000 sqft</span><span class="dot"></span>
+          <span>2 Bed</span><span class="dot"></span>
+          <span>2 Bath</span>
+        </div>
+      </div>
+      <div class="pl-card-hover-overlay">
+        <a href="/schedule-a-meeting" class="pl-card-hover-btn">Request This Plan</a>
+        <span class="pl-card-hover-text">Fully customizable</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SIZE GUIDE ═══ -->
+<section class="av-section" style="background: var(--av-cream)">
+  <div class="pl-guide-header">
+    <div class="av-label"><span>Quick reference</span></div>
+    <h2 class="av-heading-lg" style="margin-top: 24px">ADU Size Guide</h2>
+    <p class="av-body">California allows ADUs up to 1,200 sqft. Here's what each size typically accommodates.</p>
+  </div>
+  <table class="pl-guide-table">
+    <thead>
+      <tr>
+        <th>Layout</th>
+        <th>Size Range</th>
+        <th>Best For</th>
+        <th>Est. Cost</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Studio</td>
+        <td>400-500 sqft</td>
+        <td>Single occupant, home office, rental income</td>
+        <td class="gold">$150K-$250K</td>
+      </tr>
+      <tr>
+        <td>1 Bedroom</td>
+        <td>600-750 sqft</td>
+        <td>Couple, aging parent, premium rental</td>
+        <td class="gold">$225K-$350K</td>
+      </tr>
+      <tr>
+        <td>2 Bedroom</td>
+        <td>800-1,200 sqft</td>
+        <td>Small family, maximum rental income</td>
+        <td class="gold">$300K-$450K+</td>
+      </tr>
+      <tr>
+        <td>Garage Conversion</td>
+        <td>350-500 sqft</td>
+        <td>Most affordable, fastest build</td>
+        <td class="gold">$75K-$150K</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══ CUSTOM PLANS ═══ -->
+<section class="av-section" style="background: var(--av-warm)">
+  <div class="pl-custom">
+    <div class="pl-custom-glow"></div>
+    <div class="pl-custom-content">
+      <h2 class="av-heading-lg">Need a custom plan?</h2>
+      <p class="pl-custom-body">Our architects design to your exact specifications — lot size, layout, style, and budget. Every plan includes structural engineering, Title 24 energy calculations, and city permit-ready drawings.</p>
+      <a href="/schedule-a-meeting" class="pl-custom-btn">Start Custom Design <span>&rarr;</span></a>
+    </div>
+    <div class="pl-custom-stats">
+      <div class="pl-custom-stat">
+        <div class="pl-custom-stat-value">150+</div>
+        <div class="pl-custom-stat-label">Plans delivered</div>
+      </div>
+      <div class="pl-custom-stat">
+        <div class="pl-custom-stat-value">30+</div>
+        <div class="pl-custom-stat-label">Cities served</div>
+      </div>
+      <div class="pl-custom-stat">
+        <div class="pl-custom-stat-value">100%</div>
+        <div class="pl-custom-stat-label">Permit approved</div>
+      </div>
+      <div class="pl-custom-stat">
+        <div class="pl-custom-stat-value">4-6</div>
+        <div class="pl-custom-stat-label">Months design</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA ═══ -->
+<section class="av-section pl-cta">
+  <div class="pl-cta-glow"></div>
+  <div class="pl-cta-content">
+    <h2 class="av-heading-lg">Ready to start?</h2>
+    <p class="pl-cta-subtitle">Get a free estimate based on your lot, preferred plan, and city requirements.</p>
+    <div class="pl-cta-btns">
+      <a href="/adu-cost-estimator" class="pl-cta-btn pl-cta-btn-primary">ADU Cost Calculator <span>&rarr;</span></a>
+      <a href="/schedule-a-meeting" class="pl-cta-btn pl-cta-btn-ghost">Schedule a Meeting</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SCRIPTS ═══ -->
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  var lenis = new Lenis({ duration: 1.2, easing: function(t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); } });
+  function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+  requestAnimationFrame(raf);
+  gsap.ticker.add(function(time) { lenis.raf(time * 1000); });
+  gsap.ticker.lagSmoothing(0);
+  gsap.registerPlugin(ScrollTrigger);
+
+  // ── Hero ──
+  gsap.to('.pl-hero-gold-line', { width: '64px', duration: 1.2, delay: 0.3, ease: 'power3.out' });
+  gsap.from('.pl-hero-label', { opacity: 0, y: 20, duration: 0.8, delay: 0.2 });
+
+  // Opacity sweep for title
+  var h1 = document.querySelector('.pl-hero .av-heading-xl');
+  if (h1) {
+    var words = h1.textContent.trim().split(/\s+/);
+    h1.innerHTML = words.map(function(w) {
+      return '<span style="display:inline-block;opacity:0;filter:blur(8px);transform:translateY(10px);margin-right:0.25em">' + w + '</span>';
+    }).join('');
+    gsap.to(h1.querySelectorAll('span'), {
+      opacity: 1, filter: 'blur(0px)', y: 0,
+      duration: 0.8, stagger: 0.08, delay: 0.5, ease: 'power3.out'
+    });
+  }
+  gsap.from('.pl-hero-subtitle', { opacity: 0, y: 20, duration: 0.8, delay: 1 });
+
+  // Grid bg animation
+  gsap.to('.pl-hero-grid-bg', {
+    scrollTrigger: { trigger: '.pl-hero', start: 'top top', end: 'bottom top', scrub: 1 },
+    backgroundPositionY: '48px', ease: 'none'
+  });
+
+  // ── Filter tabs ──
+  var filterBtns = document.querySelectorAll('[data-filter]');
+  var cards = document.querySelectorAll('.pl-card');
+  filterBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      filterBtns.forEach(function(b) { b.classList.remove('is-active'); });
+      btn.classList.add('is-active');
+      var filter = btn.dataset.filter;
+      cards.forEach(function(card) {
+        if (filter === 'all' || card.dataset.type === filter) {
+          card.removeAttribute('data-hidden');
+          card.style.display = '';
+        } else {
+          card.setAttribute('data-hidden', '');
+          card.style.display = 'none';
+        }
+      });
+      // Re-animate visible cards
+      var visible = document.querySelectorAll('.pl-card:not([data-hidden])');
+      gsap.from(visible, { opacity: 0, y: 20, duration: 0.4, stagger: 0.06, ease: 'power3.out' });
+    });
+  });
+
+  // ── Card entrance ──
+  gsap.from('.pl-filter-bar', { scrollTrigger: { trigger: '.pl-filter-bar', start: 'top 85%' }, opacity: 0, y: 20, duration: 0.6 });
+  gsap.from('.pl-card', { scrollTrigger: { trigger: '.pl-grid', start: 'top 80%' }, opacity: 0, y: 40, duration: 0.6, stagger: 0.08, ease: 'power3.out' });
+
+  // ── Size guide ──
+  gsap.from('.pl-guide-header > *', { scrollTrigger: { trigger: '.pl-guide-header', start: 'top 85%' }, opacity: 0, y: 30, duration: 0.7, stagger: 0.1 });
+  gsap.from('.pl-guide-table tbody tr', { scrollTrigger: { trigger: '.pl-guide-table', start: 'top 80%' }, opacity: 0, x: -20, duration: 0.5, stagger: 0.08, ease: 'power3.out' });
+
+  // ── Custom card ──
+  gsap.from('.pl-custom', { scrollTrigger: { trigger: '.pl-custom', start: 'top 80%' }, opacity: 0, y: 40, duration: 0.8, ease: 'power3.out' });
+
+  // Custom stats counter
+  document.querySelectorAll('.pl-custom-stat-value').forEach(function(el) {
+    var text = el.textContent;
+    var match = text.match(/(\d+)/);
+    if (match) {
+      var target = parseInt(match[1]);
+      var suffix = text.replace(match[1], '');
+      ScrollTrigger.create({
+        trigger: el, start: 'top 85%',
+        onEnter: function() {
+          gsap.to({ v: 0 }, { v: target, duration: 1.5, ease: 'power2.out',
+            onUpdate: function() { el.textContent = Math.round(this.targets()[0].v) + suffix; }
+          });
+        }
+      });
+    }
+  });
+
+  // ── CTA ──
+  gsap.from('.pl-cta-content > *', { scrollTrigger: { trigger: '.pl-cta', start: 'top 80%' }, opacity: 0, y: 30, duration: 0.7, stagger: 0.1 });
+
+})();
+</script>
+</body>
+</html>

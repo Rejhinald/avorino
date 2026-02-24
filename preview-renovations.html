@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Renovations — Avorino Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  /* ─── Reset ─── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overflow-x: hidden; font-family: 'DM Sans', sans-serif; background: #f0ede8; color: #111; }
+
+  :root {
+    --av-dark: #111111;
+    --av-cream: #f0ede8;
+    --av-warm: #e8e4df;
+    --av-red: #c8222a;
+    --av-gold: #c9a96e;
+    --av-radius: 8px;
+    --av-section-pad-y: 128px;
+    --av-section-pad-x: 80px;
+    --av-text-xl: clamp(48px, 5vw, 96px);
+    --av-text-lg: clamp(36px, 3.5vw, 64px);
+    --av-text-h3: clamp(24px, 2vw, 36px);
+    --av-text-body: clamp(16px, 1.1vw, 18px);
+    --av-text-sm: clamp(14px, 0.9vw, 16px);
+    --av-text-xs: clamp(11px, 0.7vw, 13px);
+  }
+
+  .av-section { padding: var(--av-section-pad-y) var(--av-section-pad-x); }
+  .av-section-warm { background: var(--av-warm); color: var(--av-dark); }
+  .av-section-dark { background: var(--av-dark); color: var(--av-cream); }
+  .av-heading-xl {
+    font-family: 'DM Serif Display', serif;
+    font-size: var(--av-text-xl); line-height: 1.05; font-weight: 400; letter-spacing: -0.02em;
+  }
+  .av-heading-lg {
+    font-family: 'DM Serif Display', serif;
+    font-size: var(--av-text-lg); line-height: 1.1; font-weight: 400;
+  }
+  .av-heading-md {
+    font-family: 'DM Serif Display', serif;
+    font-size: var(--av-text-h3); line-height: 1.15; font-weight: 400;
+  }
+  .av-body { font-size: var(--av-text-body); line-height: 1.9; }
+  .av-label {
+    display: flex; align-items: center; gap: 16px;
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+    letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.4;
+  }
+
+  /* ═══════════════════════════════════════════════
+     SECTION 1: HERO — Split diagonal reveal
+     ═══════════════════════════════════════════════ */
+  .ren-hero {
+    min-height: 85vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    background: var(--av-dark); color: var(--av-cream);
+    position: relative; overflow: hidden;
+  }
+  .ren-hero-text {
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 160px var(--av-section-pad-x) var(--av-section-pad-y);
+    position: relative; z-index: 2;
+  }
+  .ren-hero-label {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+    letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.4;
+    margin-bottom: 32px;
+  }
+  .ren-hero-gold-line { width: 0; height: 1px; background: var(--av-gold); margin-bottom: 24px; }
+  .ren-hero-subtitle {
+    font-size: var(--av-text-body); line-height: 1.9; opacity: 0.5;
+    margin-top: 24px; max-width: 460px;
+  }
+  .ren-hero-meta {
+    display: flex; gap: 48px; margin-top: 40px;
+  }
+  .ren-hero-meta-item { display: flex; flex-direction: column; gap: 4px; }
+  .ren-hero-meta-value {
+    font-family: 'DM Serif Display', serif; font-size: 32px; font-weight: 400;
+    color: var(--av-gold);
+  }
+  .ren-hero-meta-label { font-size: var(--av-text-xs); opacity: 0.35; letter-spacing: 0.15em; text-transform: uppercase; }
+  .ren-hero-image {
+    position: relative; overflow: hidden;
+    background: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80') center/cover;
+  }
+  .ren-hero-image::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to left, transparent 60%, var(--av-dark));
+  }
+  .ren-hero-image-inner {
+    position: absolute; inset: 0;
+    background: inherit; background-size: 115%;
+    background-position: center;
+    will-change: transform;
+  }
+  .ren-hero-diagonal {
+    position: absolute; top: 0; left: -1px; bottom: 0; width: 80px; z-index: 1;
+    background: var(--av-dark);
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+  }
+
+  /* ═══════════════════════════════════════════════
+     SECTION 2: RENOVATION TYPES — Staggered cards
+     ═══════════════════════════════════════════════ */
+  .ren-types { position: relative; }
+  .ren-types-intro {
+    display: grid; grid-template-columns: 1.2fr 1fr; gap: 64px; align-items: end;
+    margin-bottom: 96px;
+  }
+  .ren-types-intro-body { font-size: var(--av-text-body); line-height: 1.9; opacity: 0.55; }
+  .ren-types-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+  }
+  .ren-type-card {
+    position: relative; overflow: hidden; border-radius: var(--av-radius);
+    background: var(--av-dark); color: var(--av-cream);
+    min-height: 420px; cursor: pointer;
+    transition: transform 0.6s cubic-bezier(0.23,1,0.32,1);
+  }
+  .ren-type-card:nth-child(even) { transform: translateY(40px); }
+  .ren-type-card:hover { transform: translateY(-8px); }
+  .ren-type-card:nth-child(even):hover { transform: translateY(32px); }
+  .ren-type-card-bg {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    opacity: 0.4; transition: opacity 0.6s ease, transform 1.2s cubic-bezier(0.23,1,0.32,1);
+  }
+  .ren-type-card:hover .ren-type-card-bg { opacity: 0.6; transform: scale(1.08); }
+  .ren-type-card-content {
+    position: relative; z-index: 2; padding: 36px 28px;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    height: 100%;
+  }
+  .ren-type-card-num {
+    font-family: 'DM Sans', sans-serif; font-size: 11px;
+    letter-spacing: 0.3em; opacity: 0.3; margin-bottom: auto;
+  }
+  .ren-type-card-title {
+    font-family: 'DM Serif Display', serif; font-size: 22px;
+    font-weight: 400; margin-bottom: 12px;
+  }
+  .ren-type-card-desc {
+    font-size: 14px; line-height: 1.7; opacity: 0;
+    max-height: 0; overflow: hidden;
+    transition: opacity 0.4s ease 0.1s, max-height 0.5s cubic-bezier(0.23,1,0.32,1);
+  }
+  .ren-type-card:hover .ren-type-card-desc { opacity: 0.6; max-height: 120px; }
+  .ren-type-card-line {
+    width: 0; height: 2px; background: var(--av-gold);
+    margin-bottom: 16px; transition: width 0.6s cubic-bezier(0.23,1,0.32,1);
+  }
+  .ren-type-card:hover .ren-type-card-line { width: 40px; }
+
+  /* ═══════════════════════════════════════════════
+     SECTION 3: NARRATIVE — Before & After concept
+     ═══════════════════════════════════════════════ */
+  .ren-narrative {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+    min-height: 70vh;
+  }
+  .ren-narrative-text {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 96px 80px;
+    background: var(--av-dark); color: var(--av-cream);
+  }
+  .ren-narrative-eyebrow {
+    font-size: var(--av-text-xs); letter-spacing: 0.3em; text-transform: uppercase;
+    opacity: 0.35; margin-bottom: 32px;
+  }
+  .ren-narrative-body {
+    font-size: var(--av-text-body); line-height: 1.9; opacity: 0.6;
+    margin-top: 20px; max-width: 420px;
+  }
+  .ren-narrative-stats {
+    display: flex; gap: 48px; margin-top: 48px;
+    padding-top: 32px; border-top: 1px solid rgba(240,237,232,0.08);
+  }
+  .ren-narrative-stat-value {
+    font-family: 'DM Serif Display', serif; font-size: 40px;
+    font-weight: 400; color: var(--av-gold);
+  }
+  .ren-narrative-stat-label { font-size: 12px; opacity: 0.35; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.15em; }
+  .ren-narrative-image {
+    position: relative; overflow: hidden;
+    background: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80') center/cover;
+  }
+  .ren-narrative-image-inner {
+    position: absolute; inset: 0;
+    background: inherit; background-size: 110%;
+    background-position: center;
+  }
+
+  /* ═══════════════════════════════════════════════
+     SECTION 4: PROCESS — Horizontal scroll timeline
+     ═══════════════════════════════════════════════ */
+  .ren-process-wrap {
+    position: relative; overflow: hidden;
+  }
+  .ren-process-header {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: end;
+    margin-bottom: 80px;
+  }
+  .ren-process-header-body { font-size: var(--av-text-body); line-height: 1.9; opacity: 0.5; }
+  .ren-process-timeline {
+    display: flex; gap: 0; position: relative;
+  }
+  .ren-process-line {
+    position: absolute; top: 40px; left: 0; right: 0; height: 1px;
+    background: rgba(17,17,17,0.1);
+  }
+  .ren-process-line-fill {
+    height: 100%; width: 0; background: var(--av-gold);
+    transition: width 1.5s cubic-bezier(0.23,1,0.32,1);
+  }
+  .ren-process-step {
+    flex: 1; padding: 0 24px; position: relative;
+  }
+  .ren-process-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    border: 2px solid var(--av-gold); background: var(--av-warm);
+    position: relative; z-index: 2; margin-bottom: 32px;
+    transition: background 0.3s ease;
+  }
+  .ren-process-step.is-active .ren-process-dot { background: var(--av-gold); }
+  .ren-process-step-num {
+    font-family: 'DM Sans', sans-serif; font-size: 11px;
+    letter-spacing: 0.3em; opacity: 0.3; margin-bottom: 12px;
+  }
+  .ren-process-step-title {
+    font-family: 'DM Serif Display', serif; font-size: 22px;
+    font-weight: 400; margin-bottom: 16px;
+  }
+  .ren-process-step-desc {
+    font-size: 14px; line-height: 1.8; opacity: 0.5;
+  }
+
+  /* ═══════════════════════════════════════════════
+     SECTION 5: WHY AVORINO — Trust indicators
+     ═══════════════════════════════════════════════ */
+  .ren-why-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    margin-top: 80px;
+  }
+  .ren-why-card {
+    background: rgba(17,17,17,0.03); border-radius: var(--av-radius);
+    padding: 48px 36px; position: relative; overflow: hidden;
+    border: 1px solid rgba(17,17,17,0.04);
+    transition: transform 0.5s cubic-bezier(0.23,1,0.32,1), box-shadow 0.5s ease;
+  }
+  .ren-why-card:hover { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(0,0,0,0.06); }
+  .ren-why-card-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: var(--av-dark); display: flex; align-items: center; justify-content: center;
+    margin-bottom: 28px;
+  }
+  .ren-why-card-icon svg { width: 22px; height: 22px; color: var(--av-gold); }
+  .ren-why-card-title {
+    font-family: 'DM Serif Display', serif; font-size: 20px;
+    font-weight: 400; margin-bottom: 12px;
+  }
+  .ren-why-card-desc { font-size: 14px; line-height: 1.8; opacity: 0.5; }
+  .ren-why-card-accent {
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--av-gold); transform: scaleX(0); transform-origin: left;
+    transition: transform 0.6s cubic-bezier(0.23,1,0.32,1);
+  }
+  .ren-why-card:hover .ren-why-card-accent { transform: scaleX(1); }
+
+  /* ═══════════════════════════════════════════════
+     SECTION 6: CTA
+     ═══════════════════════════════════════════════ */
+  .ren-cta {
+    min-height: 50vh; display: flex; align-items: center; justify-content: center;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .ren-cta-bg {
+    position: absolute; inset: 0;
+    background: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80') center/cover;
+    opacity: 0.15;
+  }
+  .ren-cta-content { position: relative; z-index: 2; max-width: 600px; }
+  .ren-cta .av-heading-lg { margin-bottom: 40px; }
+  .ren-cta-btn {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 500;
+    color: var(--av-cream); background: var(--av-red);
+    padding: 18px 40px; border-radius: 100px; text-decoration: none;
+    transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .ren-cta-btn:hover {
+    background: #a01c22; transform: translateY(-2px);
+    box-shadow: 0 12px 36px rgba(200,34,42,0.3);
+  }
+  .ren-cta-btn .arrow { transition: transform 0.3s ease; }
+  .ren-cta-btn:hover .arrow { transform: translateX(4px); }
+  .ren-cta-glow {
+    position: absolute; width: 400px; height: 400px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,34,42,0.08) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    animation: ctaPulse 4s ease-in-out infinite;
+  }
+  @keyframes ctaPulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.4; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+  }
+
+  /* ═══════════════════════════════════════════════
+     RESPONSIVE
+     ═══════════════════════════════════════════════ */
+  @media (max-width: 991px) {
+    :root { --av-section-pad-x: 48px; --av-section-pad-y: 96px; }
+    .ren-hero { grid-template-columns: 1fr; min-height: 70vh; }
+    .ren-hero-image { display: none; }
+    .ren-hero-diagonal { display: none; }
+    .ren-types-intro { grid-template-columns: 1fr; gap: 32px; }
+    .ren-types-grid { grid-template-columns: 1fr 1fr; }
+    .ren-type-card:nth-child(even) { transform: none; }
+    .ren-narrative { grid-template-columns: 1fr; }
+    .ren-narrative-image { min-height: 400px; }
+    .ren-process-header { grid-template-columns: 1fr; gap: 32px; }
+    .ren-why-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 767px) {
+    :root { --av-section-pad-x: 24px; --av-section-pad-y: 72px; }
+    .ren-types-grid { grid-template-columns: 1fr; }
+    .ren-type-card { min-height: 320px; }
+    .ren-hero-meta { flex-direction: column; gap: 24px; }
+    .ren-process-timeline { flex-direction: column; gap: 48px; }
+    .ren-process-line { display: none; }
+    .ren-why-grid { grid-template-columns: 1fr; }
+    .ren-narrative-text { padding: 56px 24px; }
+    .ren-narrative-stats { flex-direction: column; gap: 24px; }
+  }
+  @media (max-width: 478px) {
+    :root { --av-section-pad-x: 16px; --av-section-pad-y: 56px; }
+    .ren-hero-text { padding: 120px 16px 48px; }
+  }
+
+  /* ─── Hidden state ─── */
+  [data-anim] { opacity: 0; transform: translateY(40px); }
+  [data-anim="fade-scale"] { transform: scale(0.95); }
+  [data-anim="line-draw"] { width: 0 !important; }
+</style>
+</head>
+<body>
+
+<!-- ═══ SECTION 1: HERO ═══ -->
+<section class="ren-hero">
+  <div class="ren-hero-text">
+    <div class="ren-hero-label" data-anim="fade">// Home Renovations</div>
+    <div class="ren-hero-gold-line" data-anim="line-draw"></div>
+    <h1 class="av-heading-xl" data-anim="char">Renovate with<br>intention</h1>
+    <p class="ren-hero-subtitle" data-anim="fade">Kitchens, bathrooms, full interiors. We transform existing homes into spaces that feel entirely new.</p>
+    <div class="ren-hero-meta" data-anim="fade">
+      <div class="ren-hero-meta-item">
+        <span class="ren-hero-meta-value" data-count="150">0</span>
+        <span class="ren-hero-meta-label">Projects completed</span>
+      </div>
+      <div class="ren-hero-meta-item">
+        <span class="ren-hero-meta-value">4.9</span>
+        <span class="ren-hero-meta-label">Google rating</span>
+      </div>
+      <div class="ren-hero-meta-item">
+        <span class="ren-hero-meta-value">100%</span>
+        <span class="ren-hero-meta-label">Licensed & insured</span>
+      </div>
+    </div>
+  </div>
+  <div class="ren-hero-image">
+    <div class="ren-hero-image-inner"></div>
+    <div class="ren-hero-diagonal"></div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 2: RENOVATION TYPES ═══ -->
+<section class="av-section av-section-warm ren-types">
+  <div class="ren-types-intro">
+    <div>
+      <div class="av-label" data-anim="fade"><span>What we renovate</span></div>
+      <h2 class="av-heading-lg" style="margin-top: 24px" data-anim="fade">Every room,<br>reimagined</h2>
+    </div>
+    <p class="ren-types-intro-body" data-anim="fade">From a single bathroom refresh to a complete interior transformation. We handle design, permits, and construction so you can focus on the vision.</p>
+  </div>
+  <div class="ren-types-grid">
+    <div class="ren-type-card" data-anim="stagger">
+      <div class="ren-type-card-bg" style="background-image: url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80')"></div>
+      <div class="ren-type-card-content">
+        <div class="ren-type-card-num">01</div>
+        <div class="ren-type-card-line"></div>
+        <div class="ren-type-card-title">Kitchen Remodel</div>
+        <div class="ren-type-card-desc">Custom cabinetry, quartz countertops, premium appliances. The kitchen sets the tone for the entire home.</div>
+      </div>
+    </div>
+    <div class="ren-type-card" data-anim="stagger">
+      <div class="ren-type-card-bg" style="background-image: url('https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=600&q=80')"></div>
+      <div class="ren-type-card-content">
+        <div class="ren-type-card-num">02</div>
+        <div class="ren-type-card-line"></div>
+        <div class="ren-type-card-title">Bathroom Renovation</div>
+        <div class="ren-type-card-desc">Walk-in showers, freestanding tubs, heated floors. Spa-level finishes with practical engineering.</div>
+      </div>
+    </div>
+    <div class="ren-type-card" data-anim="stagger">
+      <div class="ren-type-card-bg" style="background-image: url('https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=600&q=80')"></div>
+      <div class="ren-type-card-content">
+        <div class="ren-type-card-num">03</div>
+        <div class="ren-type-card-line"></div>
+        <div class="ren-type-card-title">Whole-Home Interior</div>
+        <div class="ren-type-card-desc">Complete interior transformation. Open floor plans, new flooring, lighting, and finishes throughout every room.</div>
+      </div>
+    </div>
+    <div class="ren-type-card" data-anim="stagger">
+      <div class="ren-type-card-bg" style="background-image: url('https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=600&q=80')"></div>
+      <div class="ren-type-card-content">
+        <div class="ren-type-card-num">04</div>
+        <div class="ren-type-card-line"></div>
+        <div class="ren-type-card-title">Room Additions</div>
+        <div class="ren-type-card-desc">Expand your living space without moving. We match additions seamlessly to your existing home's architecture.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 3: NARRATIVE ═══ -->
+<section class="ren-narrative">
+  <div class="ren-narrative-text">
+    <div class="ren-narrative-eyebrow" data-anim="fade">Why renovate</div>
+    <h2 class="av-heading-lg" data-anim="fade">Your home deserves<br>the investment</h2>
+    <p class="ren-narrative-body" data-anim="fade">A well-executed renovation doesn't just improve your daily life — it significantly increases your property value. We focus on quality materials, smart design, and construction that lasts.</p>
+    <div class="ren-narrative-stats" data-anim="fade">
+      <div>
+        <div class="ren-narrative-stat-value" data-count-up="25">0%</div>
+        <div class="ren-narrative-stat-label">Avg. value increase</div>
+      </div>
+      <div>
+        <div class="ren-narrative-stat-value">$200+</div>
+        <div class="ren-narrative-stat-label">Per sqft ROI</div>
+      </div>
+    </div>
+  </div>
+  <div class="ren-narrative-image">
+    <div class="ren-narrative-image-inner" data-anim="parallax"></div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 4: PROCESS ═══ -->
+<section class="av-section av-section-warm ren-process-wrap">
+  <div class="ren-process-header">
+    <div>
+      <div class="av-label" data-anim="fade"><span>Our process</span></div>
+      <h2 class="av-heading-lg" style="margin-top: 24px" data-anim="fade">Straightforward.<br>Transparent.</h2>
+    </div>
+    <p class="ren-process-header-body" data-anim="fade">No surprises. We start with your vision, develop detailed plans, handle permits, and build with weekly updates through final walkthrough.</p>
+  </div>
+  <div class="ren-process-timeline">
+    <div class="ren-process-line"><div class="ren-process-line-fill"></div></div>
+    <div class="ren-process-step" data-anim="stagger">
+      <div class="ren-process-dot"></div>
+      <div class="ren-process-step-num">01</div>
+      <div class="ren-process-step-title">Design & Planning</div>
+      <div class="ren-process-step-desc">We assess your space, discuss your goals, and create detailed architectural plans with material selections and 3D renderings.</div>
+    </div>
+    <div class="ren-process-step" data-anim="stagger">
+      <div class="ren-process-dot"></div>
+      <div class="ren-process-step-num">02</div>
+      <div class="ren-process-step-title">Permits & Approvals</div>
+      <div class="ren-process-step-desc">We handle all city permit submissions, plan-check corrections, and HOA approvals if required. No work starts until everything is approved.</div>
+    </div>
+    <div class="ren-process-step" data-anim="stagger">
+      <div class="ren-process-dot"></div>
+      <div class="ren-process-step-num">03</div>
+      <div class="ren-process-step-title">Demo & Prep</div>
+      <div class="ren-process-step-desc">Controlled demolition, structural modifications, and rough-in work for electrical, plumbing, and HVAC. We protect your home throughout.</div>
+    </div>
+    <div class="ren-process-step" data-anim="stagger">
+      <div class="ren-process-dot"></div>
+      <div class="ren-process-step-num">04</div>
+      <div class="ren-process-step-title">Build & Finish</div>
+      <div class="ren-process-step-desc">Installation of all finishes, fixtures, and details. Final inspection, walkthrough, and handoff with full warranty documentation.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 5: WHY AVORINO ═══ -->
+<section class="av-section" style="background: var(--av-cream)">
+  <div style="text-align: center; max-width: 600px; margin: 0 auto 0;">
+    <div class="av-label" style="justify-content: center;" data-anim="fade"><span>Why Avorino</span></div>
+    <h2 class="av-heading-lg" style="margin-top: 24px" data-anim="fade">Built on trust</h2>
+  </div>
+  <div class="ren-why-grid">
+    <div class="ren-why-card" data-anim="stagger">
+      <div class="ren-why-card-accent"></div>
+      <div class="ren-why-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <div class="ren-why-card-title">Fully Licensed</div>
+      <div class="ren-why-card-desc">General-B Contractor License #1107538. Fully insured and bonded for every project.</div>
+    </div>
+    <div class="ren-why-card" data-anim="stagger">
+      <div class="ren-why-card-accent"></div>
+      <div class="ren-why-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <div class="ren-why-card-title">On-Time Delivery</div>
+      <div class="ren-why-card-desc">Clear timelines with weekly progress updates. We don't start without a locked schedule.</div>
+    </div>
+    <div class="ren-why-card" data-anim="stagger">
+      <div class="ren-why-card-accent"></div>
+      <div class="ren-why-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 10h18M3 14h18M3 18h18M3 6h18"/></svg>
+      </div>
+      <div class="ren-why-card-title">Transparent Pricing</div>
+      <div class="ren-why-card-desc">Detailed line-item estimates. No hidden fees. Change orders documented and approved before any additional work.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 6: CTA ═══ -->
+<section class="av-section av-section-dark ren-cta">
+  <div class="ren-cta-bg"></div>
+  <div class="ren-cta-glow"></div>
+  <div class="ren-cta-content">
+    <h2 class="av-heading-lg" data-anim="fade">Ready to transform<br>your home?</h2>
+    <a href="/schedule-a-meeting" class="ren-cta-btn">Schedule a Free Consultation <span class="arrow">&rarr;</span></a>
+  </div>
+</section>
+
+<!-- ═══ SCRIPTS ═══ -->
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // Lenis smooth scroll
+  var lenis = new Lenis({ duration: 1.2, easing: function(t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); } });
+  function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+  requestAnimationFrame(raf);
+  gsap.ticker.add(function(time) { lenis.raf(time * 1000); });
+  gsap.ticker.lagSmoothing(0);
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Hero animations
+  gsap.to('.ren-hero-gold-line', { width: '64px', duration: 1.2, delay: 0.3, ease: 'power3.out' });
+
+  // Char-cascade for hero title
+  var heroTitle = document.querySelector('.ren-hero .av-heading-xl');
+  if (heroTitle) {
+    var text = heroTitle.innerHTML;
+    heroTitle.innerHTML = text.split('').map(function(ch) {
+      if (ch === '<') return '<';
+      if (ch === ' ') return ' ';
+      return '<span style="display:inline-block;opacity:0;transform:translateY(30px)">' + ch + '</span>';
+    }).join('');
+    // Fix <br> tags that got broken
+    heroTitle.innerHTML = heroTitle.innerHTML.replace(/&lt;br&gt;/g, '<br>');
+    var chars = heroTitle.querySelectorAll('span');
+    gsap.to(chars, {
+      opacity: 1, y: 0, duration: 0.6, stagger: 0.02, delay: 0.5,
+      ease: 'power3.out'
+    });
+  }
+
+  // Hero label + subtitle
+  gsap.from('.ren-hero-label', { opacity: 0, y: 20, duration: 0.8, delay: 0.2, ease: 'power3.out' });
+  gsap.from('.ren-hero-subtitle', { opacity: 0, y: 20, duration: 0.8, delay: 1.2, ease: 'power3.out' });
+  gsap.from('.ren-hero-meta', { opacity: 0, y: 20, duration: 0.8, delay: 1.4, ease: 'power3.out' });
+
+  // Hero image Ken Burns
+  gsap.to('.ren-hero-image-inner', {
+    backgroundSize: '125%', duration: 20, ease: 'none', repeat: -1, yoyo: true
+  });
+
+  // Count-up for hero stat
+  var countEl = document.querySelector('[data-count]');
+  if (countEl) {
+    var target = parseInt(countEl.dataset.count);
+    gsap.to({ val: 0 }, {
+      val: target, duration: 2, delay: 1.6, ease: 'power2.out',
+      onUpdate: function() { countEl.textContent = Math.round(this.targets()[0].val) + '+'; }
+    });
+  }
+
+  // Scroll-triggered animations
+  function fadeUp(selector, stagger) {
+    gsap.utils.toArray(selector).forEach(function(el) {
+      gsap.from(el, {
+        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' },
+        opacity: 0, y: 40, duration: 0.8, ease: 'power3.out',
+        stagger: stagger || 0
+      });
+    });
+  }
+
+  // Staggered cards
+  document.querySelectorAll('.ren-types-grid, .ren-why-grid, .ren-process-timeline').forEach(function(grid) {
+    var items = grid.children;
+    gsap.from(items, {
+      scrollTrigger: { trigger: grid, start: 'top 80%' },
+      opacity: 0, y: 50, duration: 0.7, stagger: 0.12, ease: 'power3.out'
+    });
+  });
+
+  // Fade-up for other elements
+  document.querySelectorAll('.ren-types-intro > *, .ren-process-header > *, .ren-narrative-text > *').forEach(function(el) {
+    gsap.from(el, {
+      scrollTrigger: { trigger: el, start: 'top 85%' },
+      opacity: 0, y: 30, duration: 0.7, ease: 'power3.out'
+    });
+  });
+
+  // Narrative image parallax
+  gsap.to('.ren-narrative-image-inner', {
+    scrollTrigger: {
+      trigger: '.ren-narrative', start: 'top bottom', end: 'bottom top', scrub: 1
+    },
+    backgroundPositionY: '30%', ease: 'none'
+  });
+
+  // Process timeline fill
+  ScrollTrigger.create({
+    trigger: '.ren-process-timeline',
+    start: 'top 70%',
+    onEnter: function() {
+      gsap.to('.ren-process-line-fill', { width: '100%', duration: 1.5, ease: 'power2.out' });
+      document.querySelectorAll('.ren-process-step').forEach(function(step, i) {
+        setTimeout(function() { step.classList.add('is-active'); }, 300 * i);
+      });
+    }
+  });
+
+  // CTA section
+  fadeUp('.ren-cta-content > *', 0.15);
+
+  // Why Avorino section header
+  document.querySelectorAll('.ren-why-card').forEach(function(card) {
+    gsap.from(card, {
+      scrollTrigger: { trigger: card, start: 'top 85%' },
+      opacity: 0, y: 40, duration: 0.7, ease: 'power3.out'
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
