@@ -181,16 +181,23 @@
     background: rgba(17,17,17,0.85); color: var(--av-cream); border-radius: var(--av-radius);
     padding: 48px 40px; position: relative; z-index: 2;
     will-change: transform, opacity; backface-visibility: hidden;
-    transition: transform 0.6s cubic-bezier(0.23,1,0.32,1), box-shadow 0.6s ease;
+    transition: transform 0.6s cubic-bezier(0.23,1,0.32,1), box-shadow 0.6s ease, border-color 0.6s ease, background-color 0.5s ease;
     border-top: 2px solid rgba(201,169,110,0.3);
     backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   }
-  .about-values-card:hover { transform: translateY(-4px); box-shadow: 0 24px 64px rgba(0,0,0,0.25); border-top-color: rgba(201,169,110,0.6); }
-  .about-value-num {
-    font-family: 'DM Serif Display', serif; font-size: 56px; line-height: 1; opacity: 0.12; margin-bottom: 24px; color: var(--av-cream);
-    transition: transform 0.6s cubic-bezier(0.23,1,0.32,1), opacity 0.6s ease, color 0.6s ease;
+  .about-values-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 32px 80px rgba(0,0,0,0.35), 0 0 0 1px rgba(201,169,110,0.15);
+    border-top-color: rgba(201,169,110,0.8);
+    background-color: rgba(25,25,25,0.92);
   }
-  .about-values-card:hover .about-value-num { transform: scale(1.15); opacity: 0.25 !important; color: #c9a96e; }
+  .about-values-card:hover .about-value-title { color: #c9a96e; }
+  .about-value-title { transition: color 0.5s ease; }
+  .about-value-num {
+    font-family: 'DM Serif Display', serif; font-size: 56px; line-height: 1; opacity: 0.22; margin-bottom: 24px; color: var(--av-cream);
+    transition: opacity 0.5s ease;
+  }
+  .about-values-card:hover .about-value-num { opacity: 0.35 !important; }
   .about-value-title { font-family: 'DM Serif Display', serif; font-size: 24px; line-height: 1.2; font-weight: 400; margin-bottom: 16px; color: var(--av-cream); }
   .about-value-desc { font-family: 'DM Sans', sans-serif; font-size: var(--av-text-sm); line-height: 1.7; opacity: 0.5; color: var(--av-cream); }
 

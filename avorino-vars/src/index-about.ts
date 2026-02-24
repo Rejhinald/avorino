@@ -209,7 +209,7 @@ async function buildAboutPage() {
     });
     await clearAndSet(await freshStyle('about-value-num'), 'about-value-num', {
       'font-family': 'DM Serif Display', 'font-size': '56px',
-      'line-height': '1', 'opacity': '0.12', 'margin-bottom': '24px', 'color': v['av-cream'],
+      'line-height': '1', 'opacity': '0.22', 'margin-bottom': '24px', 'color': v['av-cream'],
     });
     await clearAndSet(await freshStyle('about-value-title'), 'about-value-title', {
       'font-family': 'DM Serif Display', 'font-size': '24px',
