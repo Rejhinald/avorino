@@ -223,8 +223,9 @@ async function buildRenovationsPage() {
   heroLabel.setTag('div');
   heroLabel.setStyles([s.label]);
   heroLabel.setAttribute('data-animate', 'fade-up');
-  heroLabel.append(webflow.elementPresets.DOM).setTag('div');
-  heroLabel.getChildren()[0].setTextContent('// Home Renovations');
+  const heroLabelTxt = heroLabel.append(webflow.elementPresets.DOM);
+  heroLabelTxt.setTag('div');
+  heroLabelTxt.setTextContent('// Home Renovations');
 
   const heroH = heroC.append(webflow.elementPresets.DOM);
   heroH.setTag('h1');
@@ -342,8 +343,9 @@ async function buildRenovationsPage() {
   narrEyebrow.setTag('div');
   narrEyebrow.setStyles([s.label]);
   narrEyebrow.setAttribute('data-animate', 'fade-up');
-  narrEyebrow.append(webflow.elementPresets.DOM).setTag('div');
-  narrEyebrow.getChildren()[0].setTextContent('Why renovate');
+  const narrEyebrowTxt = narrEyebrow.append(webflow.elementPresets.DOM);
+  narrEyebrowTxt.setTag('div');
+  narrEyebrowTxt.setTextContent('Why renovate');
 
   const narrH = narrText.append(webflow.elementPresets.DOM);
   narrH.setTag('h2');

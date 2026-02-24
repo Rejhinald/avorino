@@ -462,7 +462,6 @@ async function buildAboutPage() {
 
   const ctaC = cta.append(webflow.elementPresets.DOM);
   ctaC.setTag('div'); ctaC.setStyles([ctaContainer]);
-  ctaC.setAttribute('class', 'about-cta-container');
 
   const ctaBgEl = ctaC.append(webflow.elementPresets.DOM);
   ctaBgEl.setTag('div'); ctaBgEl.setStyles([ctaBg]);

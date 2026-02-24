@@ -200,8 +200,9 @@ async function buildADUConstructionPage() {
   heroLabel.setTag('div');
   heroLabel.setStyles([s.label]);
   heroLabel.setAttribute('data-animate', 'fade-up');
-  heroLabel.append(webflow.elementPresets.DOM).setTag('div');
-  heroLabel.getChildren()[0].setTextContent('// ADU Construction');
+  const heroLabelTxt = heroLabel.append(webflow.elementPresets.DOM);
+  heroLabelTxt.setTag('div');
+  heroLabelTxt.setTextContent('// ADU Construction');
 
   const heroH = heroC.append(webflow.elementPresets.DOM);
   heroH.setTag('h1');

@@ -188,8 +188,9 @@ async function buildCustomHomesPage() {
     heroLabel.setTag('div');
     heroLabel.setStyles([s.label]);
     heroLabel.setAttribute('data-animate', 'fade-up');
-    heroLabel.append(webflow.elementPresets.DOM).setTag('div');
-    heroLabel.getChildren()[0].setTextContent('// Custom Homes');
+    const heroLabelTxt = heroLabel.append(webflow.elementPresets.DOM);
+    heroLabelTxt.setTag('div');
+    heroLabelTxt.setTextContent('// Custom Homes');
     const heroH = heroC.append(webflow.elementPresets.DOM);
     heroH.setTag('h1');
     heroH.setStyles([s.headingXL]);
@@ -238,8 +239,9 @@ async function buildCustomHomesPage() {
     philoEyebrow.setTag('div');
     philoEyebrow.setStyles([s.label]);
     philoEyebrow.setAttribute('data-animate', 'fade-up');
-    philoEyebrow.append(webflow.elementPresets.DOM).setTag('div');
-    philoEyebrow.getChildren()[0].setTextContent('Our approach');
+    const philoEyebrowTxt = philoEyebrow.append(webflow.elementPresets.DOM);
+    philoEyebrowTxt.setTag('div');
+    philoEyebrowTxt.setTextContent('Our approach');
     const philoH = philoText.append(webflow.elementPresets.DOM);
     philoH.setTag('h2');
     philoH.setStyles([s.headingLG]);
