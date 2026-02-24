@@ -25,13 +25,17 @@
 
 /* ── Default: light text (transparent nav over hero) ── */
 nav.site-nav .nav-logo {
-  font-family: 'DM Serif Display', Georgia, serif;
-  font-weight: 400;
-  font-size: 20px;
-  color: #ffffff !important;
-  letter-spacing: 0.12em;
   text-decoration: none;
-  transition: color 0.4s ease;
+  display: flex;
+  align-items: center;
+}
+
+.nav-logo-img {
+  height: 28px;
+  width: auto;
+  display: block;
+  filter: brightness(0) invert(1);
+  transition: filter 0.4s ease;
 }
 
 .nav-links {
@@ -88,7 +92,10 @@ nav.site-nav.nav--dropdown-open {
   -webkit-backdrop-filter: blur(20px);
 }
 
-nav.site-nav.nav--dropdown-open .nav-logo,
+nav.site-nav.nav--dropdown-open .nav-logo .nav-logo-img {
+  filter: brightness(0);
+}
+
 nav.site-nav.nav--dropdown-open .nav-link {
   color: #111111 !important;
 }

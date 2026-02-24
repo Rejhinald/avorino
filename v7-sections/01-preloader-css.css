@@ -50,18 +50,19 @@
 }
 
 .preloader-text {
-  font-family: 'DM Serif Display', Georgia, serif;
-  font-weight: 400;
-  font-size: 64px;
-  color: #f0ede8;
-  letter-spacing: 0.15em;
   overflow: hidden;
   position: relative;
   z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.preloader-char {
-  display: inline-block;
+.preloader-logo-img {
+  height: 48px;
+  width: auto;
+  display: block;
+  filter: brightness(0) invert(1);
 }
 
 .preloader-curtain {

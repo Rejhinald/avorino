@@ -26,6 +26,7 @@
 .tools-heading > div {
   font-family: 'DM Serif Display', Georgia, serif;
   font-weight: 400;
+  font-size: clamp(36px, 3.5vw, 64px);
   line-height: 1.08;
   letter-spacing: -0.02em;
   color: #f0ede8;
@@ -133,10 +134,10 @@
 .tool-panel-label-text {
   font-family: 'DM Serif Display', Georgia, serif;
   font-weight: 400;
-  font-size: 20px;
+  font-size: 24px;
   letter-spacing: 0.04em;
   color: #f0ede8;
-  opacity: 0.65;
+  opacity: 0.75;
 }
 
 /* Hide label on hover */

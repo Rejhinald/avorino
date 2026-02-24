@@ -20,12 +20,14 @@
 
 /* ── Brand Column ── */
 .footer-brand-name {
-  font-family: 'DM Serif Display', Georgia, serif;
-  font-weight: 400;
-  font-size: 24px;
-  color: #f0ede8;
   margin-bottom: 20px;
-  letter-spacing: 0.08em;
+}
+
+.footer-logo-img {
+  height: 32px;
+  width: auto;
+  display: block;
+  filter: brightness(0) invert(1);
 }
 
 .footer-brand-desc {
@@ -131,15 +133,13 @@ details[open] > .footer-cities-label::after {
   content: '−';
 }
 
-details.footer-cities,
-details.footer-serving {
+details.footer-cities {
   padding-bottom: 40px;
   border-bottom: 1px solid rgba(240, 237, 232, 0.06);
   margin-bottom: 32px;
 }
 
-details.footer-cities > .footer-cities-grid,
-details.footer-serving > .footer-serving-list {
+details.footer-cities > .footer-cities-grid {
   margin-top: 16px;
 }
 
@@ -165,16 +165,13 @@ details.footer-serving > .footer-serving-list {
   color: #c8222a;
 }
 
-/* ═══════════════════════════════════════════
-   ROW 3: Also Serving (plain text)
-   ═══════════════════════════════════════════ */
-.footer-serving-list {
+.footer-cities-grid span {
   font-family: 'DM Sans', system-ui, sans-serif;
-  font-weight: 400;
   font-size: 13px;
-  line-height: 1.9;
+  font-weight: 400;
   color: #f0ede8;
-  opacity: 0.5;
+  opacity: 0.35;
+  padding: 4px 0;
 }
 
 /* ═══════════════════════════════════════════

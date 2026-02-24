@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services — Avorino Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  /* ─── Reset ─── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overflow-x: hidden; font-family: 'DM Sans', sans-serif; background: #f0ede8; color: #111; }
+  html { scroll-behavior: auto; }
+
+  /* ─── Avorino Design Tokens ─── */
+  :root {
+    --av-dark: #111111;
+    --av-cream: #f0ede8;
+    --av-warm: #e8e4df;
+    --av-red: #c8222a;
+    --av-gold: #c9a96e;
+    --av-radius: 8px;
+    --av-section-pad-y: 128px;
+    --av-section-pad-x: 80px;
+    --av-text-xl: clamp(48px, 5vw, 96px);
+    --av-text-lg: clamp(36px, 3.5vw, 64px);
+    --av-text-h3: clamp(24px, 2vw, 36px);
+    --av-text-body: clamp(16px, 1.1vw, 18px);
+    --av-text-sm: clamp(14px, 0.9vw, 16px);
+    --av-text-xs: clamp(11px, 0.7vw, 13px);
+  }
+
+  /* ─── Shared Section Styles ─── */
+  .av-section { padding: var(--av-section-pad-y) var(--av-section-pad-x); }
+  .av-section-warm { background: var(--av-warm); color: var(--av-dark); }
+  .av-section-dark { background: var(--av-dark); color: var(--av-cream); }
+
+  /* ─── Typography ─── */
+  .av-heading-xl {
+    font-family: 'DM Serif Display', serif;
+    font-size: var(--av-text-xl); line-height: 1.05; font-weight: 400; letter-spacing: -0.02em;
+  }
+  .av-heading-lg {
+    font-family: 'DM Serif Display', serif;
+    font-size: var(--av-text-lg); line-height: 1.1; font-weight: 400;
+  }
+  .av-heading-md {
+    font-family: 'DM Serif Display', serif;
+    font-size: var(--av-text-h3); line-height: 1.15; font-weight: 400;
+  }
+  .av-body { font-size: var(--av-text-body); line-height: 1.9; }
+
+  /* ─── Label ─── */
+  .av-label {
+    display: flex; align-items: center; gap: 16px;
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+    letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.4;
+  }
+  .sv-label-line { flex-grow: 1; height: 1px; background: rgba(17,17,17,0.15); transform-origin: left center; }
+
+  /* ─── Utility ─── */
+  .av-mb-48 { margin-bottom: 48px; }
+  .av-mb-64 { margin-bottom: 64px; }
+  .av-mb-96 { margin-bottom: 96px; }
+
+  /* ═══════════════════════════════════════════════
+     SECTION 1: HERO — Full-viewport cinematic
+     ═══════════════════════════════════════════════ */
+  .sv-hero {
+    min-height: 80vh;
+    display: flex; align-items: flex-end;
+    padding: 160px var(--av-section-pad-x) var(--av-section-pad-y);
+    background-color: var(--av-dark); color: var(--av-cream);
+    position: relative; overflow: hidden;
+    background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80');
+    background-size: 110%; background-position: center;
+  }
+  .sv-hero-overlay {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.65) 100%);
+  }
+  .sv-hero-content { position: relative; z-index: 2; max-width: 900px; }
+  .sv-hero-label {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+    letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.45;
+    margin-bottom: 32px; color: var(--av-cream);
+  }
+  .sv-hero-gold-line {
+    width: 0; height: 1px; background: var(--av-gold);
+    margin-bottom: 24px; will-change: width;
+  }
+  .sv-hero-subtitle {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-body);
+    line-height: 1.9; opacity: 0.55; margin-top: 24px; color: var(--av-cream);
+    max-width: 520px;
+  }
+  .sv-hero-scroll-hint {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 8px;
+    opacity: 0.3;
+  }
+  .sv-hero-scroll-hint span {
+    font-family: 'DM Sans', sans-serif; font-size: 10px;
+    letter-spacing: 0.3em; text-transform: uppercase; color: var(--av-cream);
+  }
+  .sv-hero-scroll-line {
+    width: 1px; height: 40px; background: var(--av-gold);
+    transform-origin: top center; animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { transform: scaleY(0.3); opacity: 0.3; }
+    50% { transform: scaleY(1); opacity: 0.8; }
+  }
+
+  /* ═══════════════════════════════════════════════
+     SECTION 2: SERVICES — Immersive card grid
+     ═══════════════════════════════════════════════ */
+  .sv-services-intro {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+    margin-bottom: 96px; align-items: end;
+  }
+  .sv-services-intro-text {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-body);
+    line-height: 1.9; opacity: 0.5; max-width: 480px;
+  }
+
+  .sv-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .sv-card {
+    position: relative; min-height: 480px;
+    border-radius: var(--av-radius); overflow: hidden;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    background: var(--av-dark); text-decoration: none; color: var(--av-cream);
+    cursor: pointer; will-change: transform;
+    transition: transform 0.7s cubic-bezier(0.23,1,0.32,1);
+  }
+  .sv-card:hover { transform: translateY(-8px); }
+  .sv-card-img {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background-size: cover; background-position: center;
+    opacity: 0.25; transition: opacity 0.8s ease, transform 1.2s cubic-bezier(0.23,1,0.32,1);
+    transform: scale(1.05);
+  }
+  .sv-card:hover .sv-card-img { opacity: 0.45; transform: scale(1); }
+  .sv-card-gradient {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to top, rgba(17,17,17,0.95) 0%, rgba(17,17,17,0.4) 50%, transparent 100%);
+    z-index: 1;
+  }
+  .sv-card-content {
+    position: relative; z-index: 2;
+    padding: 48px 40px;
+  }
+  .sv-card-number {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+    letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.35;
+    margin-bottom: 20px;
+  }
+  .sv-card-title {
+    font-family: 'DM Serif Display', serif; font-size: 28px;
+    line-height: 1.15; font-weight: 400; margin-bottom: 14px;
+    transition: color 0.5s ease;
+  }
+  .sv-card:hover .sv-card-title { color: var(--av-gold); }
+  .sv-card-desc {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-sm);
+    line-height: 1.7; opacity: 0.5; margin-bottom: 24px;
+    max-height: 0; overflow: hidden; transition: max-height 0.8s cubic-bezier(0.23,1,0.32,1), opacity 0.5s ease;
+    opacity: 0;
+  }
+  .sv-card:hover .sv-card-desc { max-height: 120px; opacity: 0.5; }
+  .sv-card-cta {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-sm);
+    letter-spacing: 0.08em; display: inline-flex; align-items: center; gap: 10px;
+    color: var(--av-gold); opacity: 0; transform: translateY(8px);
+    transition: opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s;
+  }
+  .sv-card:hover .sv-card-cta { opacity: 1; transform: translateY(0); }
+  .sv-card-cta-arrow {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 1px solid rgba(201,169,110,0.3);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.3s ease, border-color 0.3s ease;
+    font-size: 14px;
+  }
+  .sv-card:hover .sv-card-cta-arrow {
+    background: rgba(201,169,110,0.12); border-color: rgba(201,169,110,0.6);
+  }
+  .sv-card-gold-accent {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    background: var(--av-gold); transform: scaleX(0); transform-origin: left center;
+    transition: transform 0.8s cubic-bezier(0.23,1,0.32,1);
+    z-index: 3;
+  }
+  .sv-card:hover .sv-card-gold-accent { transform: scaleX(1); }
+
+  /* ═══════════════════════════════════════════════
+     SECTION 3: WHY CHOOSE US — Three.js + trust signals
+     ═══════════════════════════════════════════════ */
+  .sv-why { position: relative; overflow: hidden; }
+  .sv-why-canvas-wrap {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 1; pointer-events: none; overflow: hidden;
+  }
+  .sv-why-canvas-wrap canvas { display: block; width: 100%; height: 100%; }
+  .sv-why-content { position: relative; z-index: 2; }
+  .sv-why-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    margin-top: 64px;
+  }
+  .sv-why-card {
+    background: rgba(17,17,17,0.88); color: var(--av-cream);
+    border-radius: var(--av-radius); padding: 48px 40px;
+    border-top: 2px solid rgba(201,169,110,0.25);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    will-change: transform;
+    transition: transform 0.6s cubic-bezier(0.23,1,0.32,1),
+                box-shadow 0.6s ease, border-color 0.6s ease,
+                background-color 0.5s ease;
+  }
+  .sv-why-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 32px 80px rgba(0,0,0,0.35), 0 0 0 1px rgba(201,169,110,0.15);
+    border-top-color: rgba(201,169,110,0.8);
+    background-color: rgba(25,25,25,0.92);
+  }
+  .sv-why-icon {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: rgba(201,169,110,0.08); border: 1px solid rgba(201,169,110,0.2);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 28px; font-size: 20px; color: var(--av-gold);
+    transition: background 0.5s ease, border-color 0.5s ease;
+  }
+  .sv-why-card:hover .sv-why-icon {
+    background: rgba(201,169,110,0.15); border-color: rgba(201,169,110,0.5);
+  }
+  .sv-why-title {
+    font-family: 'DM Serif Display', serif; font-size: 22px;
+    line-height: 1.2; font-weight: 400; margin-bottom: 14px;
+    transition: color 0.5s ease;
+  }
+  .sv-why-card:hover .sv-why-title { color: var(--av-gold); }
+  .sv-why-desc {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-sm);
+    line-height: 1.7; opacity: 0.5;
+  }
+
+  /* ═══════════════════════════════════════════════
+     SECTION 4: PROCESS — Three.js ADU Build (existing)
+     ═══════════════════════════════════════════════ */
+  #about-process { position: relative; }
+  .about-process-pinned {
+    height: 100vh; display: flex; position: relative; overflow: hidden;
+  }
+  .about-process-visual { width: 100%; height: 100%; position: relative; }
+  .about-process-fx { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+  .about-process-cards {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2;
+  }
+  .about-process-card {
+    position: absolute; background: var(--av-dark); color: var(--av-cream);
+    border-radius: var(--av-radius);
+    padding: 56px 48px; max-width: 500px; width: 100%;
+    top: 50%; left: 50%;
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+  }
+  .about-process-card-num {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+    letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.4;
+    margin-bottom: 16px;
+  }
+  .about-process-card-title {
+    font-family: 'DM Serif Display', serif; font-size: 28px;
+    line-height: 1.2; font-weight: 400; margin-bottom: 14px;
+  }
+  .about-process-card-desc {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-sm);
+    line-height: 1.7; opacity: 0.5;
+  }
+  .about-process-nav {
+    position: absolute; bottom: 32px; left: 0; width: 100%;
+    text-align: center;
+  }
+
+  /* ═══════════════════════════════════════════════
+     SECTION 5: CTA — Premium treatment
+     ═══════════════════════════════════════════════ */
+  .av-cta { padding: 48px; }
+  .sv-cta-container {
+    background: var(--av-dark); border-radius: var(--av-radius); min-height: 56vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .av-cta-bg {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.2;
+    background: radial-gradient(ellipse at 30% 50%, rgba(201,169,110,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 50%, rgba(200,34,42,0.05) 0%, transparent 60%);
+  }
+  .av-cta-content { position: relative; z-index: 2; padding: 64px; }
+  .av-cta-subtitle {
+    font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.3em;
+    text-transform: uppercase; opacity: 0.4; margin-bottom: 32px; color: var(--av-cream);
+  }
+  .av-cta-heading {
+    font-family: 'DM Serif Display', serif; font-size: var(--av-text-lg);
+    line-height: 1.08; letter-spacing: -0.02em; font-weight: 400;
+    color: var(--av-cream); margin-bottom: 48px; max-width: 12em;
+    margin-left: auto; margin-right: auto;
+  }
+  .av-cta-btn {
+    display: inline-flex; align-items: center; gap: 12px; padding: 18px 40px;
+    border-radius: 100px; font-family: 'DM Sans', sans-serif;
+    font-size: var(--av-text-sm); font-weight: 500; letter-spacing: 0.04em;
+    text-decoration: none; color: var(--av-dark); background: var(--av-cream);
+    transition: transform 0.5s cubic-bezier(0.23,1,0.32,1), box-shadow 0.3s ease; cursor: pointer;
+  }
+  .av-cta-btn:hover { box-shadow: 0 8px 32px rgba(200,34,42,0.15); }
+
+  /* ─── Animation supports ─── */
+  [data-animate="char-cascade"] span { display: inline-block; will-change: transform, opacity, filter; }
+  [data-animate="line-wipe"] .line { will-change: clip-path; }
+
+  /* ═══════════════════════════════════════════════
+     RESPONSIVE
+     ═══════════════════════════════════════════════ */
+  @media (max-width: 991px) {
+    .av-section { padding: 80px 40px !important; }
+    .sv-hero { min-height: 60vh !important; padding: 120px 40px 80px !important; }
+    .sv-services-intro { grid-template-columns: 1fr !important; gap: 32px !important; }
+    .sv-grid { grid-template-columns: 1fr 1fr !important; }
+    .sv-why-canvas-wrap { display: none !important; }
+    .sv-why-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
+    .av-cta { padding: 40px !important; }
+  }
+  @media (max-width: 767px) {
+    .av-section { padding: 64px 24px !important; }
+    .sv-hero { min-height: 50vh !important; padding: 100px 24px 64px !important; }
+    .sv-grid { grid-template-columns: 1fr !important; }
+    .sv-card { min-height: 380px !important; }
+    .av-heading-xl { font-size: clamp(36px, 8vw, 56px) !important; }
+    .av-heading-lg { font-size: clamp(28px, 6vw, 40px) !important; }
+    .av-cta { padding: 24px !important; }
+  }
+  @media (max-width: 478px) {
+    .av-section { padding: 48px 16px !important; }
+    .sv-hero { min-height: 45vh !important; padding: 80px 16px 48px !important; }
+    .sv-card { min-height: 340px !important; }
+    .sv-card-content { padding: 32px 24px !important; }
+    .av-heading-xl { font-size: clamp(28px, 9vw, 42px) !important; }
+    .av-heading-lg { font-size: clamp(24px, 6vw, 32px) !important; }
+    .av-cta { padding: 16px !important; }
+    .av-cta-btn { width: 100% !important; justify-content: center !important; }
+    .sv-why-card { padding: 36px 24px !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ SECTION 1: HERO ═══════════ -->
+<section class="sv-hero" id="sv-hero">
+  <div class="sv-hero-overlay"></div>
+  <div class="sv-hero-content">
+    <div class="sv-hero-label" data-animate="fade-up">// Our Services</div>
+    <h1 class="av-heading-xl" data-animate="char-cascade">Crafting Exceptional Spaces</h1>
+    <div class="sv-hero-gold-line"></div>
+    <p class="sv-hero-subtitle" data-animate="fade-up">Design, permits, and construction — managed end-to-end in Orange County.</p>
+  </div>
+  <div class="sv-hero-scroll-hint" data-animate="fade-up">
+    <span>Scroll</span>
+    <div class="sv-hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 2: SERVICES ═══════════ -->
+<section class="av-section av-section-warm" id="sv-services">
+  <div class="sv-services-intro">
+    <div>
+      <div class="av-label av-mb-64" data-animate="fade-up">
+        <div>What We Do</div>
+        <div class="sv-label-line"></div>
+      </div>
+      <h2 class="av-heading-lg" data-animate="line-wipe">Building dreams from blueprint to reality</h2>
+    </div>
+    <div>
+      <p class="sv-services-intro-text" data-animate="fade-up">From ADU construction to custom homes, we handle every phase of your project with precision, transparency, and care. Licensed, insured, and fully permitted in Orange County.</p>
+    </div>
+  </div>
+
+  <div class="sv-grid" data-animate="fade-up-stagger">
+    <a href="/adu" class="sv-card" data-animate="fade-up">
+      <div class="sv-card-img" style="background-image:url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80');"></div>
+      <div class="sv-card-gradient"></div>
+      <div class="sv-card-content">
+        <div class="sv-card-number">01 / 06</div>
+        <h3 class="sv-card-title">ADU Construction</h3>
+        <p class="sv-card-desc">Detached, attached, and garage conversion ADUs. Fully permitted, built to maximize property value.</p>
+        <span class="sv-card-cta">Learn more <span class="sv-card-cta-arrow">&#8594;</span></span>
+      </div>
+      <div class="sv-card-gold-accent"></div>
+    </a>
+
+    <a href="/garageconversion" class="sv-card" data-animate="fade-up">
+      <div class="sv-card-img" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&q=80');"></div>
+      <div class="sv-card-gradient"></div>
+      <div class="sv-card-content">
+        <div class="sv-card-number">02 / 06</div>
+        <h3 class="sv-card-title">Garage Conversion</h3>
+        <p class="sv-card-desc">Transform your garage into a functional living space. Most affordable ADU option at $75K-$150K.</p>
+        <span class="sv-card-cta">Learn more <span class="sv-card-cta-arrow">&#8594;</span></span>
+      </div>
+      <div class="sv-card-gold-accent"></div>
+    </a>
+
+    <a href="/buildcustomhome" class="sv-card" data-animate="fade-up">
+      <div class="sv-card-img" style="background-image:url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80');"></div>
+      <div class="sv-card-gradient"></div>
+      <div class="sv-card-content">
+        <div class="sv-card-number">03 / 06</div>
+        <h3 class="sv-card-title">Custom Homes</h3>
+        <p class="sv-card-desc">Ground-up custom residences tailored to your vision. Full design-to-build service.</p>
+        <span class="sv-card-cta">Learn more <span class="sv-card-cta-arrow">&#8594;</span></span>
+      </div>
+      <div class="sv-card-gold-accent"></div>
+    </a>
+
+    <a href="/newconstruction" class="sv-card" data-animate="fade-up">
+      <div class="sv-card-img" style="background-image:url('https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80');"></div>
+      <div class="sv-card-gradient"></div>
+      <div class="sv-card-content">
+        <div class="sv-card-number">04 / 06</div>
+        <h3 class="sv-card-title">New Construction</h3>
+        <p class="sv-card-desc">New builds for landowners. Engineering, permits, and construction managed end-to-end.</p>
+        <span class="sv-card-cta">Learn more <span class="sv-card-cta-arrow">&#8594;</span></span>
+      </div>
+      <div class="sv-card-gold-accent"></div>
+    </a>
+
+    <a href="/addition" class="sv-card" data-animate="fade-up">
+      <div class="sv-card-img" style="background-image:url('https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80');"></div>
+      <div class="sv-card-gradient"></div>
+      <div class="sv-card-content">
+        <div class="sv-card-number">05 / 06</div>
+        <h3 class="sv-card-title">Additions</h3>
+        <p class="sv-card-desc">Expand your living space with room additions, second stories, and extensions.</p>
+        <span class="sv-card-cta">Learn more <span class="sv-card-cta-arrow">&#8594;</span></span>
+      </div>
+      <div class="sv-card-gold-accent"></div>
+    </a>
+
+    <a href="/commercial" class="sv-card" data-animate="fade-up">
+      <div class="sv-card-img" style="background-image:url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80');"></div>
+      <div class="sv-card-gradient"></div>
+      <div class="sv-card-content">
+        <div class="sv-card-number">06 / 06</div>
+        <h3 class="sv-card-title">Commercial</h3>
+        <p class="sv-card-desc">Tenant improvements and commercial renovations in Orange County.</p>
+        <span class="sv-card-cta">Learn more <span class="sv-card-cta-arrow">&#8594;</span></span>
+      </div>
+      <div class="sv-card-gold-accent"></div>
+    </a>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 3: WHY CHOOSE US ═══════════ -->
+<section class="av-section av-section-dark sv-why" id="sv-why">
+  <div class="sv-why-canvas-wrap" data-sv-why-canvas></div>
+  <div class="sv-why-content">
+    <div class="av-label av-mb-64" data-animate="fade-up" style="color:var(--av-cream);">
+      <div>Why Avorino</div>
+      <div class="sv-label-line" style="background:rgba(240,237,232,0.15);"></div>
+    </div>
+    <h2 class="av-heading-lg av-mb-96" data-animate="line-wipe">Built on trust, delivered with precision</h2>
+
+    <div class="sv-why-grid" data-animate="fade-up-stagger">
+      <div class="sv-why-card">
+        <div class="sv-why-icon">&#9670;</div>
+        <h3 class="sv-why-title">Licensed & Insured</h3>
+        <p class="sv-why-desc">Fully licensed California General Contractor (B License). Every project is fully insured and bonded for your complete protection.</p>
+      </div>
+      <div class="sv-why-card">
+        <div class="sv-why-icon">&#9674;</div>
+        <h3 class="sv-why-title">In-House Crew</h3>
+        <p class="sv-why-desc">No subcontractor runaround. Our dedicated in-house team handles every aspect from foundation to finish, ensuring consistent quality.</p>
+      </div>
+      <div class="sv-why-card">
+        <div class="sv-why-icon">&#9651;</div>
+        <h3 class="sv-why-title">Transparent Pricing</h3>
+        <p class="sv-why-desc">No hidden fees, no surprise change orders. You get a detailed quote upfront with clear milestones and payment schedules.</p>
+      </div>
+      <div class="sv-why-card">
+        <div class="sv-why-icon">&#9633;</div>
+        <h3 class="sv-why-title">End-to-End Service</h3>
+        <p class="sv-why-desc">From architectural design and permits to construction and final inspection — one team, one point of contact, zero hassle.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 4: PROCESS — Three.js ADU Build ═══════════ -->
+<section class="av-section av-section-warm" id="about-process">
+  <div class="av-label av-mb-64" data-animate="fade-up">
+    <div>How We Work</div>
+    <div class="sv-label-line"></div>
+  </div>
+  <h2 class="av-heading-lg av-mb-96" data-animate="line-wipe">Avorino's Process</h2>
+
+  <div class="about-process-pinned" data-process-pinned>
+    <div class="about-process-visual" data-process-visual>
+      <div class="about-process-fx" data-process-fx></div>
+    </div>
+    <div class="about-process-cards" data-process-cards>
+      <div class="about-process-card" data-process-card="0">
+        <div class="about-process-card-num">Step 01</div>
+        <h3 class="about-process-card-title">Pre-construction Consultation</h3>
+        <p class="about-process-card-desc">It is essential to plan ahead and setting project goals, identifying future challenges, and creating a solid foundation for a successful construction project.</p>
+      </div>
+      <div class="about-process-card" data-process-card="1">
+        <div class="about-process-card-num">Step 02</div>
+        <h3 class="about-process-card-title">Architectural & Structural Design</h3>
+        <p class="about-process-card-desc">Our engineers and architects will work with you to understand your vision and will design a unique project based on your needs and preferences.</p>
+      </div>
+      <div class="about-process-card" data-process-card="2">
+        <div class="about-process-card-num">Step 03</div>
+        <h3 class="about-process-card-title">Financing</h3>
+        <p class="about-process-card-desc">Our financing partners offer up to 100% financing of your project with up to 30-year terms with the option to re-finance.</p>
+      </div>
+      <div class="about-process-card" data-process-card="3">
+        <div class="about-process-card-num">Step 04</div>
+        <h3 class="about-process-card-title">Permitting</h3>
+        <p class="about-process-card-desc">Permits are crucial for almost all construction projects, ensuring compliance, safety, and legal authorization for the work to proceed successfully.</p>
+      </div>
+      <div class="about-process-card" data-process-card="4">
+        <div class="about-process-card-num">Step 05</div>
+        <h3 class="about-process-card-title">Construction</h3>
+        <p class="about-process-card-desc">The construction phase is the heart of any project. It brings plans to life, involving skilled professionals executing with quality, coordination, and adherence to timelines.</p>
+      </div>
+      <div class="about-process-card" data-process-card="5">
+        <div class="about-process-card-num">Step 06</div>
+        <h3 class="about-process-card-title">Post-construction Relationship</h3>
+        <p class="about-process-card-desc">At Avorino, we value long-lasting client relationships over one-time transactions. We are committed to nurturing and maintaining these connections.</p>
+      </div>
+    </div>
+    <div class="about-process-nav" data-process-nav></div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 5: CTA ═══════════ -->
+<section class="av-cta">
+  <div class="sv-cta-container">
+    <div class="av-cta-bg" data-animate="parallax-depth"></div>
+    <div class="av-cta-content">
+      <div class="av-cta-subtitle" data-animate="fade-up">Ready to Begin?</div>
+      <h2 class="av-cta-heading" data-animate="word-stagger-elastic">Let's talk about your next project</h2>
+      <a href="/schedule-a-meeting" class="av-cta-btn" data-magnetic data-animate="fade-up">Schedule a Free Call &#8594;</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SCRIPTS ═══════════ -->
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+
+<!-- Services page footer animations -->
+<script>
+(function () {
+  'use strict';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ═══════════════════════════════════════════════
+     LENIS SMOOTH SCROLL
+     ═══════════════════════════════════════════════ */
+  var lenis = new Lenis({
+    duration: 1.4,
+    easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+    smooth: true,
+    smoothTouch: false,
+  });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
+  gsap.ticker.lagSmoothing(0);
+  ScrollTrigger.addEventListener('refresh', function () { lenis.resize(); });
+
+  /* ═══════════════════════════════════════════════
+     UTILITY — TEXT SPLITTING
+     ═══════════════════════════════════════════════ */
+  function splitIntoWords(el) {
+    var text = el.textContent.trim();
+    var align = window.getComputedStyle(el).textAlign;
+    el.innerHTML = '';
+    el.style.display = 'flex';
+    el.style.flexWrap = 'wrap';
+    el.style.gap = '0 0.3em';
+    if (align === 'center') el.style.justifyContent = 'center';
+    else if (align === 'right' || align === 'end') el.style.justifyContent = 'flex-end';
+    var wordEls = [];
+    text.split(/\s+/).forEach(function (word) {
+      var wrapper = document.createElement('span');
+      wrapper.style.display = 'inline-block';
+      wrapper.style.overflow = 'hidden';
+      wrapper.style.verticalAlign = 'top';
+      var inner = document.createElement('span');
+      inner.style.display = 'inline-block';
+      inner.textContent = word;
+      wrapper.appendChild(inner);
+      el.appendChild(wrapper);
+      wordEls.push(inner);
+    });
+    return wordEls;
+  }
+
+  function splitIntoChars(el) {
+    var text = el.textContent.trim();
+    el.innerHTML = '';
+    el.style.display = 'flex';
+    el.style.flexWrap = 'wrap';
+    el.style.gap = '0 0.3em';
+    var charEls = [];
+    text.split(/\s+/).forEach(function (word) {
+      var wordWrap = document.createElement('span');
+      wordWrap.style.display = 'inline-flex';
+      wordWrap.style.overflow = 'hidden';
+      for (var i = 0; i < word.length; i++) {
+        var charSpan = document.createElement('span');
+        charSpan.style.display = 'inline-block';
+        charSpan.textContent = word[i];
+        wordWrap.appendChild(charSpan);
+        charEls.push(charSpan);
+      }
+      el.appendChild(wordWrap);
+    });
+    return charEls;
+  }
+
+  /* ═══════════════════════════════════════════════
+     HERO — Character Cascade + Gold Line + Ken Burns
+     ═══════════════════════════════════════════════ */
+  function initHero() {
+    var hero = document.getElementById('sv-hero');
+    if (!hero) return;
+
+    var h1 = hero.querySelector('h1');
+    var goldLine = hero.querySelector('.sv-hero-gold-line');
+    var subtitle = hero.querySelector('.sv-hero-subtitle');
+    var label = hero.querySelector('.sv-hero-label');
+
+    // Label fade-in
+    if (label) {
+      label.removeAttribute('data-animate');
+      gsap.fromTo(label,
+        { opacity: 0, y: 20 },
+        { opacity: 0.45, y: 0, duration: 0.8, delay: 0.2, ease: 'power3.out' }
+      );
+    }
+
+    // Char cascade on h1
+    if (h1) {
+      h1.removeAttribute('data-animate');
+      var chars = splitIntoChars(h1);
+      gsap.set(chars, { yPercent: 120, opacity: 0, rotateX: -90, filter: 'blur(8px)' });
+      gsap.to(chars, {
+        yPercent: 0, opacity: 1, rotateX: 0, filter: 'blur(0px)',
+        duration: 1.2, stagger: 0.025, ease: 'elastic.out(1, 0.6)', delay: 0.4,
+      });
+    }
+
+    // Gold accent line
+    if (goldLine) {
+      gsap.to(goldLine, { width: '80px', duration: 1, delay: 1, ease: 'power3.inOut' });
+    }
+
+    // Subtitle
+    if (subtitle) {
+      subtitle.removeAttribute('data-animate');
+      gsap.fromTo(subtitle,
+        { opacity: 0, y: 20, filter: 'blur(4px)' },
+        { opacity: 0.55, y: 0, filter: 'blur(0px)', duration: 1, delay: 1.2, ease: 'power3.out' }
+      );
+    }
+
+    // Hero content fades out on scroll
+    var heroContent = hero.querySelector('.sv-hero-content');
+    if (heroContent) {
+      gsap.to(heroContent, {
+        opacity: 0, y: -40, filter: 'blur(6px)', ease: 'none',
+        scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 1 },
+      });
+    }
+
+    // Ken Burns zoom
+    gsap.fromTo(hero,
+      { backgroundSize: '110%' },
+      { backgroundSize: '120%', ease: 'none',
+        scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 1 } }
+    );
+
+    // Scroll hint
+    var hint = hero.querySelector('.sv-hero-scroll-hint');
+    if (hint) {
+      hint.removeAttribute('data-animate');
+      gsap.fromTo(hint,
+        { opacity: 0 },
+        { opacity: 0.3, duration: 1, delay: 2, ease: 'power2.out' }
+      );
+      gsap.to(hint, {
+        opacity: 0, ease: 'none',
+        scrollTrigger: { trigger: hero, start: 'top top', end: '30% top', scrub: 1 },
+      });
+    }
+  }
+
+  /* ═══════════════════════════════════════════════
+     SCROLL ANIMATIONS — All data-animate handlers
+     ═══════════════════════════════════════════════ */
+  function initScrollAnimations() {
+
+    /* fade-up */
+    document.querySelectorAll('[data-animate="fade-up"]').forEach(function (el) {
+      gsap.fromTo(el,
+        { y: 50, opacity: 0, filter: 'blur(4px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 88%',
+            toggleActions: 'play none none reverse' } }
+      );
+    });
+
+    /* opacity-sweep */
+    document.querySelectorAll('[data-animate="opacity-sweep"]').forEach(function (el) {
+      var text = el.textContent.trim();
+      var wordParts = text.split(/(\s+)/);
+      el.innerHTML = '';
+      var allSpans = [];
+      wordParts.forEach(function (segment) {
+        if (/^\s+$/.test(segment)) {
+          var s = document.createElement('span');
+          s.textContent = ' '; s.style.opacity = '0.05';
+          el.appendChild(s); allSpans.push(s);
+        } else {
+          var w = document.createElement('span');
+          w.style.whiteSpace = 'nowrap'; w.style.display = 'inline';
+          for (var i = 0; i < segment.length; i++) {
+            var c = document.createElement('span');
+            c.style.opacity = '0.05'; c.style.display = 'inline-block';
+            c.style.transition = 'none'; c.textContent = segment[i];
+            w.appendChild(c); allSpans.push(c);
+          }
+          el.appendChild(w);
+        }
+      });
+      gsap.to(allSpans, {
+        opacity: 0.8, stagger: 0.005, ease: 'none',
+        scrollTrigger: { trigger: el, start: 'top 85%', end: 'top 40%', scrub: 1 }
+      });
+    });
+
+    /* word-stagger-elastic */
+    document.querySelectorAll('[data-animate="word-stagger-elastic"]').forEach(function (el) {
+      var words = splitIntoWords(el);
+      gsap.set(words, { yPercent: 120 });
+      gsap.to(words, {
+        yPercent: 0, duration: 1.4, stagger: 0.06, ease: 'elastic.out(1, 0.4)',
+        scrollTrigger: { trigger: el, start: 'top 82%' }
+      });
+    });
+
+    /* parallax-depth */
+    document.querySelectorAll('[data-animate="parallax-depth"]').forEach(function (el) {
+      gsap.to(el, {
+        yPercent: -15, ease: 'none',
+        scrollTrigger: { trigger: el.closest('section') || el.parentElement,
+          start: 'top bottom', end: 'bottom top', scrub: 1 }
+      });
+    });
+
+    /* fade-up-stagger */
+    document.querySelectorAll('[data-animate="fade-up-stagger"]').forEach(function (el) {
+      var children = el.children;
+      if (!children.length) return;
+      gsap.fromTo(children,
+        { y: 60, opacity: 0, scale: 0.96, filter: 'blur(3px)' },
+        { y: 0, opacity: 1, scale: 1, filter: 'blur(0px)',
+          duration: 0.9, stagger: 0.12, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 85%' } }
+      );
+    });
+
+    /* line-wipe */
+    document.querySelectorAll('[data-animate="line-wipe"]').forEach(function (el) {
+      var lineEls = el.querySelectorAll('.line');
+      if (!lineEls.length) {
+        var html = el.innerHTML;
+        var texts;
+        if (/<br\s*\/?>/i.test(html)) {
+          texts = html.split(/<br\s*\/?>/i).map(function (s) {
+            return s.replace(/<[^>]*>/g, '').trim();
+          }).filter(Boolean);
+        } else {
+          texts = [el.textContent.trim()];
+        }
+        el.innerHTML = '';
+        texts.forEach(function (t) {
+          var d = document.createElement('div');
+          d.className = 'line';
+          d.textContent = t;
+          el.appendChild(d);
+        });
+        lineEls = el.querySelectorAll('.line');
+      }
+      lineEls.forEach(function (line, i) {
+        gsap.set(line, { clipPath: 'inset(0 100% 0 0)' });
+        gsap.to(line, {
+          clipPath: 'inset(0 0% 0 0)', ease: 'power3.inOut',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top ' + (85 - i * 12) + '%',
+            end: 'top ' + (65 - i * 12) + '%',
+            scrub: 1,
+          },
+        });
+      });
+    });
+
+    /* Label line expand */
+    document.querySelectorAll('.sv-label-line').forEach(function (line) {
+      gsap.fromTo(line,
+        { scaleX: 0 },
+        { scaleX: 1, duration: 1.2, ease: 'power3.inOut',
+          scrollTrigger: { trigger: line.parentElement, start: 'top 85%' } }
+      );
+    });
+
+    /* Section transitions */
+    document.querySelectorAll('.av-section-warm, .av-section-dark').forEach(function (sec) {
+      gsap.fromTo(sec,
+        { opacity: 0.92 },
+        { opacity: 1, duration: 0.6, ease: 'power2.out',
+          scrollTrigger: {
+            trigger: sec, start: 'top 95%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+    });
+
+    /* ScrollTrigger refresh */
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { ScrollTrigger.refresh(); });
+    });
+    if (document.readyState !== 'complete') {
+      window.addEventListener('load', function () { ScrollTrigger.refresh(); });
+    }
+  }
+
+  /* ═══════════════════════════════════════════════
+     CTA AMBIENT GLOW
+     ═══════════════════════════════════════════════ */
+  function initCTAGlow() {
+    var ctaSection = document.querySelector('.sv-cta-container');
+    if (!ctaSection) return;
+
+    var glow = document.createElement('div');
+    glow.style.cssText = [
+      'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);',
+      'width:140%;height:140%;border-radius:50%;pointer-events:none;z-index:0;',
+      'background:radial-gradient(ellipse at center, rgba(200,34,42,0.06) 0%, transparent 60%);',
+      'opacity:0;',
+    ].join('');
+    ctaSection.style.position = 'relative';
+    ctaSection.insertBefore(glow, ctaSection.firstChild);
+
+    ScrollTrigger.create({
+      trigger: ctaSection,
+      start: 'top 80%',
+      onEnter: function () {
+        gsap.to(glow, {
+          opacity: 1, duration: 1.5, ease: 'power2.out',
+          onComplete: function () {
+            gsap.to(glow, {
+              opacity: 0.4, duration: 3, yoyo: true, repeat: -1, ease: 'sine.inOut',
+            });
+          },
+        });
+      },
+      onLeaveBack: function () {
+        gsap.to(glow, { opacity: 0, duration: 0.5, overwrite: true });
+      },
+    });
+  }
+
+  /* ═══════════════════════════════════════════════
+     INIT
+     ═══════════════════════════════════════════════ */
+  window.addEventListener('DOMContentLoaded', function () {
+    initHero();
+    initScrollAnimations();
+    initCTAGlow();
+  });
+})();
+</script>
+
+<!-- Three.js: Why Choose Us — Architectural wireframe visualization -->
+<script>
+(function () {
+  'use strict';
+
+  if (window.innerWidth < 992) return;
+  if (typeof THREE === 'undefined') return;
+
+  var container = document.querySelector('[data-sv-why-canvas]');
+  if (!container) return;
+
+  /* ── Setup ── */
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
+  camera.position.set(20, 16, 28);
+  camera.lookAt(0, 2, 0);
+
+  var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.setClearColor(0x000000, 0);
+  container.appendChild(renderer.domElement);
+
+  /* ── Lights ── */
+  scene.add(new THREE.AmbientLight(0xf0ede8, 0.3));
+  var pl1 = new THREE.PointLight(0xc9a96e, 0.8, 80);
+  pl1.position.set(18, 22, 22);
+  scene.add(pl1);
+  var pl2 = new THREE.PointLight(0xc8222a, 0.2, 60);
+  pl2.position.set(-18, 6, 12);
+  scene.add(pl2);
+
+  /* ── Materials ── */
+  var goldLine = new THREE.LineBasicMaterial({ color: 0xc9a96e, transparent: true, opacity: 0.45 });
+  var goldFaint = new THREE.LineBasicMaterial({ color: 0xc9a96e, transparent: true, opacity: 0.12 });
+  var creamLine = new THREE.LineBasicMaterial({ color: 0xf0ede8, transparent: true, opacity: 0.18 });
+  var creamFaint = new THREE.LineBasicMaterial({ color: 0xf0ede8, transparent: true, opacity: 0.06 });
+
+  var sceneGroup = new THREE.Group();
+  scene.add(sceneGroup);
+
+  /* ── Ground Grid ── */
+  var gp = [];
+  for (var i = -14; i <= 14; i += 2) {
+    gp.push(i, 0, -10, i, 0, 10);
+    if (i >= -10 && i <= 10) gp.push(-14, 0, i, 14, 0, i);
+  }
+  var gridGeo = new THREE.BufferGeometry();
+  gridGeo.setAttribute('position', new THREE.Float32BufferAttribute(gp, 3));
+  sceneGroup.add(new THREE.LineSegments(gridGeo, creamFaint));
+
+  /* ── Helper: wireframe box ── */
+  function wireBox(w, h, d, x, z, mat) {
+    var edges = new THREE.EdgesGeometry(new THREE.BoxGeometry(w, h, d));
+    var line = new THREE.LineSegments(edges, mat);
+    line.position.set(x, h / 2, z);
+    return line;
+  }
+
+  /* ── Modern Home Composition — Multiple volumes ── */
+  // Main volume
+  sceneGroup.add(wireBox(10, 8, 7, 0, 0, goldLine));
+  // Left wing — lower
+  sceneGroup.add(wireBox(6, 5, 8, -7, 0.5, goldLine));
+  // Right tower — tall accent
+  sceneGroup.add(wireBox(4, 12, 5, 6, -1, goldLine));
+  // Detached ADU
+  sceneGroup.add(wireBox(5, 4, 5, -4, -7, goldFaint));
+  // Garage
+  sceneGroup.add(wireBox(5, 3.5, 6, 7, 6, goldFaint));
+
+  /* ── Roof Overhangs ── */
+  var rp = [];
+  // Main
+  rp.push(-5.5, 8.1, -4, 5.5, 8.1, -4, 5.5, 8.1, -4, 5.5, 8.1, 4, 5.5, 8.1, 4, -5.5, 8.1, 4, -5.5, 8.1, 4, -5.5, 8.1, -4);
+  // Tower
+  rp.push(3.8, 12.1, -3.7, 8.2, 12.1, -3.7, 8.2, 12.1, -3.7, 8.2, 12.1, 1.7, 8.2, 12.1, 1.7, 3.8, 12.1, 1.7, 3.8, 12.1, 1.7, 3.8, 12.1, -3.7);
+  var roofGeo = new THREE.BufferGeometry();
+  roofGeo.setAttribute('position', new THREE.Float32BufferAttribute(rp, 3));
+  sceneGroup.add(new THREE.LineSegments(roofGeo, goldFaint));
+
+  /* ── Window frames ── */
+  function windowFrame(cx, cy, cz, w, h, normal) {
+    var hw = w / 2, hh = h / 2;
+    var pts = [];
+    if (normal === 'x') {
+      pts.push(cx, cy-hh, cz-hw, cx, cy-hh, cz+hw, cx, cy-hh, cz+hw, cx, cy+hh, cz+hw,
+               cx, cy+hh, cz+hw, cx, cy+hh, cz-hw, cx, cy+hh, cz-hw, cx, cy-hh, cz-hw,
+               cx, cy, cz-hw, cx, cy, cz+hw, cx, cy-hh, cz, cx, cy+hh, cz);
+    } else {
+      pts.push(cx-hw, cy-hh, cz, cx+hw, cy-hh, cz, cx+hw, cy-hh, cz, cx+hw, cy+hh, cz,
+               cx+hw, cy+hh, cz, cx-hw, cy+hh, cz, cx-hw, cy+hh, cz, cx-hw, cy-hh, cz,
+               cx-hw, cy, cz, cx+hw, cy, cz, cx, cy-hh, cz, cx, cy+hh, cz);
+    }
+    var geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+    return new THREE.LineSegments(geo, creamLine);
+  }
+
+  // Main front
+  sceneGroup.add(windowFrame(-2.5, 5, 3.51, 1.5, 2.2, 'z'));
+  sceneGroup.add(windowFrame(1, 5, 3.51, 1.5, 2.2, 'z'));
+  sceneGroup.add(windowFrame(-2.5, 2.2, 3.51, 1.5, 1.6, 'z'));
+  sceneGroup.add(windowFrame(1, 2.2, 3.51, 1.5, 1.6, 'z'));
+  // Tower
+  sceneGroup.add(windowFrame(6, 8.5, 1.51, 1.3, 2.8, 'z'));
+  sceneGroup.add(windowFrame(6, 4, 1.51, 1.3, 2.2, 'z'));
+  // Left wing
+  sceneGroup.add(windowFrame(-10.01, 3.2, -0.5, 1.3, 2, 'x'));
+  sceneGroup.add(windowFrame(-10.01, 3.2, 2.5, 1.3, 2, 'x'));
+
+  /* ── Dimension lines ── */
+  function dimLine(x1, y1, z1, x2, y2, z2, tick) {
+    var pts = [x1,y1,z1, x2,y2,z2];
+    if (Math.abs(x2-x1) > Math.abs(z2-z1)) {
+      pts.push(x1,y1,z1-tick, x1,y1,z1+tick, x2,y2,z2-tick, x2,y2,z2+tick);
+    } else {
+      pts.push(x1-tick,y1,z1, x1+tick,y1,z1, x2-tick,y2,z2, x2+tick,y2,z2);
+    }
+    var geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+    return new THREE.LineSegments(geo, goldFaint);
+  }
+  sceneGroup.add(dimLine(-10, -0.5, 6, 9.5, -0.5, 6, 0.3));
+  sceneGroup.add(dimLine(9, -0.5, -5, 9, -0.5, 5, 0.3));
+  sceneGroup.add(dimLine(8.5, 0, -1.5, 8.5, 12, -1.5, 0.3));
+
+  /* ── Particles ── */
+  var PC = 70;
+  var pPos = new Float32Array(PC * 3);
+  var pData = [];
+  for (var p = 0; p < PC; p++) {
+    pPos[p*3] = (Math.random()-0.5) * 36;
+    pPos[p*3+1] = Math.random() * 18;
+    pPos[p*3+2] = (Math.random()-0.5) * 28;
+    pData.push({ speed: 0.002 + Math.random() * 0.007 });
+  }
+  var pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+  var pMat = new THREE.PointsMaterial({ color: 0xc9a96e, size: 0.08, transparent: true, opacity: 0.25, sizeAttenuation: true });
+  sceneGroup.add(new THREE.Points(pGeo, pMat));
+
+  /* ── Mouse Parallax ── */
+  var mouse = { x: 0, y: 0 };
+  var targetRot = { x: 0, y: 0 };
+  document.addEventListener('mousemove', function (e) {
+    mouse.x = (e.clientX / window.innerWidth - 0.5) * 2;
+    mouse.y = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  /* ── Visibility ── */
+  var isVisible = false;
+  var observer = new IntersectionObserver(function (entries) {
+    isVisible = entries[0].isIntersecting;
+  }, { threshold: 0.05 });
+  var section = document.getElementById('sv-why');
+  if (section) observer.observe(section);
+
+  /* ── Render Loop ── */
+  var clock = new THREE.Clock();
+  var baseRot = -0.3;
+
+  function animate() {
+    requestAnimationFrame(animate);
+    if (!isVisible) return;
+
+    var elapsed = clock.getElapsedTime();
+
+    targetRot.y = baseRot + mouse.x * 0.12 + elapsed * 0.025;
+    targetRot.x = mouse.y * 0.05;
+
+    sceneGroup.rotation.y += (targetRot.y - sceneGroup.rotation.y) * 0.015;
+    sceneGroup.rotation.x += (targetRot.x - sceneGroup.rotation.x) * 0.015;
+
+    var breathe = 1 + Math.sin(elapsed * 0.35) * 0.006;
+    sceneGroup.scale.setScalar(breathe);
+
+    // Particle rise
+    var pa = pGeo.getAttribute('position');
+    for (var i = 0; i < PC; i++) {
+      pa.array[i*3+1] += pData[i].speed;
+      if (pa.array[i*3+1] > 20) {
+        pa.array[i*3+1] = -1;
+        pa.array[i*3] = (Math.random()-0.5) * 36;
+        pa.array[i*3+2] = (Math.random()-0.5) * 28;
+      }
+    }
+    pa.needsUpdate = true;
+
+    pl1.position.x = 18 + Math.sin(elapsed * 0.25) * 3;
+    pl1.position.z = 22 + Math.cos(elapsed * 0.18) * 3;
+
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  /* ── Resize ── */
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      if (window.innerWidth < 992) {
+        renderer.domElement.style.display = 'none';
+        return;
+      }
+      renderer.domElement.style.display = '';
+      var w = container.clientWidth;
+      var h = container.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    }, 150);
+  });
+})();
+</script>
+
+<!-- Process section Three.js (existing ADU build) -->
+<script src="avorino-about-process3d.js"></script>
+
+</body>
+</html>
