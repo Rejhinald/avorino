@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preloader Animation Preview — Avorino</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { font-family: 'DM Sans', sans-serif; background: #111; color: #f0ede8; height: 100vh; overflow: hidden; }
+
+  .stage {
+    position: fixed;
+    inset: 0;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-wrap {
+    position: relative;
+    width: 280px;
+    height: 70px;
+  }
+
+  .col {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+  }
+  .col--right { left: 186.67px; width: 93.33px; }
+  .col--mid   { left: 93.33px;  width: 93.34px; }
+  .col--left  { left: 0;        width: 93.33px; }
+
+  .col-img {
+    position: absolute;
+    top: 0;
+    width: 280px;
+    height: 70px;
+    background-image: url('avorino_Logo-01_edited.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: brightness(0) invert(1);
+  }
+  .col--right .col-img { right: 0; left: auto; }
+  .col--mid .col-img   { left: -93.33px; }
+  .col--left .col-img  { left: 0; }
+
+  .roller-wrap {
+    position: absolute;
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .label {
+    position: fixed;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    opacity: 0.25;
+  }
+
+  .controls {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+  }
+  .controls button {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 12px 28px;
+    border: 1px solid rgba(240,237,232,0.12);
+    background: rgba(240,237,232,0.04);
+    color: #f0ede8;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .controls button:hover { border-color: rgba(240,237,232,0.35); background: rgba(240,237,232,0.08); }
+</style>
+</head>
+<body>
+
+<div class="label">Paint Roller Preloader</div>
+
+<div class="stage">
+  <div class="logo-wrap" id="logoWrap">
+    <div class="col col--left" id="colLeft"><div class="col-img"></div></div>
+    <div class="col col--mid" id="colMid"><div class="col-img"></div></div>
+    <div class="col col--right" id="colRight"><div class="col-img"></div></div>
+
+    <div class="roller-wrap" id="roller">
+      <svg width="78" height="86" viewBox="0 0 78 86" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- ═══ ROLLER DRUM (top — painting surface) ═══ -->
+        <rect x="4" y="2" width="56" height="18" rx="5" fill="rgba(240,237,232,0.12)" stroke="rgba(240,237,232,0.28)" stroke-width="1.2"/>
+        <rect x="8" y="5" width="48" height="12" rx="4" fill="rgba(240,237,232,0.45)"/>
+        <rect x="12" y="8.5" width="40" height="3" rx="1.5" fill="rgba(240,237,232,0.7)" opacity="0.3"/>
+        <!-- ═══ LEFT BRACKET / AXLE ═══ -->
+        <path d="M 5 7 L 1 7 L 1 15 L 5 15" stroke="rgba(240,237,232,0.28)" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+        <!-- ═══ METAL ARM (right from drum, down, then left to handle) ═══ -->
+        <path d="M 58 11 L 64 11 A 5 5 0 0 1 69 16 L 69 40 A 5 5 0 0 1 64 45 L 50 45" stroke="rgba(240,237,232,0.38)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <!-- ═══ STEM (thin rod from arm down to grip) ═══ -->
+        <path d="M 50 45 L 50 58" stroke="rgba(240,237,232,0.38)" stroke-width="3" stroke-linecap="round" fill="none"/>
+        <!-- ═══ HANDLE GRIP (extended) ═══ -->
+        <rect x="42" y="56" width="16" height="30" rx="6" fill="rgba(240,237,232,0.12)" stroke="rgba(240,237,232,0.22)" stroke-width="1.2"/>
+        <rect x="45.5" y="60" width="9" height="22" rx="3.5" fill="rgba(240,237,232,0.38)"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <button id="replayBtn">Replay</button>
+</div>
+
+<script>
+(function() {
+  var colRight = document.getElementById('colRight');
+  var colMid   = document.getElementById('colMid');
+  var colLeft  = document.getElementById('colLeft');
+  var roller   = document.getElementById('roller');
+  var tl       = null;
+
+  var logoH  = 70;
+  var colW   = 93.33;
+  var rH     = 82;       // roller SVG height
+  var headY  = 11;       // vertical center of roller drum in SVG (drum at top)
+  var slant  = 6;
+
+  function play() {
+    if (tl) tl.kill();
+
+    // All cols hidden
+    gsap.set(colRight, { clipPath: 'inset(100% 0 0 0)', opacity: 1 });
+    gsap.set(colMid,   { clipPath: 'inset(0 0 100% 0)', opacity: 1 });
+    gsap.set(colLeft,  { clipPath: 'inset(100% 0 0 0)', opacity: 1 });
+
+    // Proxy objects for each pass (0 = not started, 1 = fully painted)
+    var p1 = { v: 0 };
+    var p2 = { v: 0 };
+    var p3 = { v: 0 };
+
+    tl = gsap.timeline({ repeat: -1, repeatDelay: 2.5 });
+
+    // Roller appears at bottom-right, slanted
+    tl.set(roller, {
+      left: (colW * 2 - 5) + 'px',
+      top: (logoH) + 'px',
+      rotation: -slant,
+      opacity: 0.9
+    }, 0);
+
+    // ── Pass 1: Right col ("NO") — bottom → top ──
+    tl.to(p1, {
+      v: 1,
+      duration: 0.6,
+      ease: 'power2.inOut',
+      onUpdate: function() {
+        // Clip: reveal from bottom. inset(top 0 0 0) where top = (1-progress)*100%
+        var pct = (1 - p1.v) * 100;
+        colRight.style.clipPath = 'inset(' + pct + '% 0 0 0)';
+        // Position roller so the roller head sits at the reveal edge
+        var yPos = logoH * (1 - p1.v) - headY;
+        roller.style.top = yPos + 'px';
+      }
+    }, 0);
+
+    // ── Transition: slide roller left to middle col, flip slant ──
+    tl.to(roller, {
+      left: (colW - 5) + 'px',
+      rotation: slant,
+      duration: 0.12,
+      ease: 'power1.inOut'
+    });
+
+    // ── Pass 2: Middle col ("RI") — top → bottom ──
+    tl.to(p2, {
+      v: 1,
+      duration: 0.6,
+      ease: 'power2.inOut',
+      onUpdate: function() {
+        // Clip: reveal from top. inset(0 0 bottom 0) where bottom = (1-progress)*100%
+        var pct = (1 - p2.v) * 100;
+        colMid.style.clipPath = 'inset(0 0 ' + pct + '% 0)';
+        // Roller head at reveal edge (moving down)
+        var yPos = logoH * p2.v - headY;
+        roller.style.top = yPos + 'px';
+      }
+    });
+
+    // ── Transition: slide roller left to left col, flip slant ──
+    tl.to(roller, {
+      left: '-5px',
+      rotation: -slant,
+      duration: 0.12,
+      ease: 'power1.inOut'
+    });
+
+    // ── Pass 3: Left col ("AVO") — bottom → top ──
+    tl.to(p3, {
+      v: 1,
+      duration: 0.6,
+      ease: 'power2.inOut',
+      onUpdate: function() {
+        var pct = (1 - p3.v) * 100;
+        colLeft.style.clipPath = 'inset(' + pct + '% 0 0 0)';
+        var yPos = logoH * (1 - p3.v) - headY;
+        roller.style.top = yPos + 'px';
+      }
+    });
+
+    // ── Roller fades out ──
+    tl.to(roller, { opacity: 0, duration: 0.3 });
+
+    // Hold
+    tl.to({}, { duration: 2 });
+
+    // Exit
+    tl.to([colRight, colMid, colLeft], { opacity: 0, duration: 0.6, ease: 'power2.in' });
+
+    // Reset
+    tl.add(function() {
+      p1.v = 0; p2.v = 0; p3.v = 0;
+    });
+    tl.set(colRight, { clipPath: 'inset(100% 0 0 0)', opacity: 1 });
+    tl.set(colMid,   { clipPath: 'inset(0 0 100% 0)', opacity: 1 });
+    tl.set(colLeft,  { clipPath: 'inset(100% 0 0 0)', opacity: 1 });
+    tl.set(roller, { opacity: 0 });
+  }
+
+  document.getElementById('replayBtn').addEventListener('click', play);
+  setTimeout(play, 400);
+})();
+</script>
+</body>
+</html>

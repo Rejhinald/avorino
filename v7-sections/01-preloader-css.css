@@ -49,8 +49,9 @@
   overflow: hidden;
 }
 
+/* Container for logo + dynamically created columns & roller */
 .preloader-text {
-  overflow: hidden;
+  overflow: visible;
   position: relative;
   z-index: 2;
   display: flex;

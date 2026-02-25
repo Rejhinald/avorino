@@ -6,6 +6,11 @@
 /* ═══════════════════════════════════════════
    PRELOADER — div logo support
    ═══════════════════════════════════════════ */
+/* Paint roller animation needs overflow visible for roller SVG movement */
+.preloader-text {
+  overflow: visible !important;
+}
+
 .preloader-logo-img {
   height: 48px;
   width: auto;

@@ -2,8 +2,15 @@
 <div class="cursor-ring" data-el="cursor-ring"><span>View</span></div>
 <div class="cursor-dot" data-el="cursor-dot"></div>
 
-<!-- Preloader -->
+<!-- Preloader — Paint Roller Reveal
+     The JS (avorino-v7-footer.js) dynamically creates:
+     - 3 vertical column divs splitting the logo into thirds
+     - SVG paint roller that sweeps each column (right→mid→left)
+     - GSAP timeline with clip-path reveals synced to roller position
+     No extra markup needed beyond this base structure. -->
 <div class="preloader" data-el="preloader">
-  <div class="preloader-text" data-el="preloader-text" data-animate="preloader"><img src="https://placeholder.com/avorino-logo.svg" alt="Avorino" class="preloader-logo-img"></div>
+  <div class="preloader-text" data-el="preloader-text" data-animate="preloader">
+    <img src="https://placeholder.com/avorino-logo.svg" alt="Avorino" class="preloader-logo-img">
+  </div>
   <div class="preloader-curtain" data-el="preloader-curtain"></div>
 </div>

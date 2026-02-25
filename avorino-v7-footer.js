@@ -115,17 +115,19 @@
     const colW = logoW / 3;
     const rollerWrap = document.createElement('div');
     rollerWrap.style.cssText = 'position:absolute;z-index:10;opacity:0;pointer-events:none;';
-    rollerWrap.innerHTML = '<svg width="100" height="56" viewBox="0 0 100 56" fill="none" xmlns="http://www.w3.org/2000/svg">'
-      + '<rect x="4" y="32" width="64" height="20" rx="10" fill="rgba(240,237,232,0.3)" stroke="rgba(240,237,232,0.15)" stroke-width="1"/>'
-      + '<rect x="10" y="36" width="52" height="12" rx="6" fill="rgba(240,237,232,0.65)"/>'
-      + '<rect x="14" y="39" width="44" height="3" rx="1.5" fill="rgba(240,237,232,0.9)" opacity="0.4"/>'
-      + '<path d="M 68 42 C 74 42, 78 34, 80 26" stroke="rgba(240,237,232,0.45)" stroke-width="3" stroke-linecap="round" fill="none"/>'
-      + '<rect x="74" y="6" width="14" height="22" rx="5" fill="rgba(240,237,232,0.3)" stroke="rgba(240,237,232,0.15)" stroke-width="1"/>'
-      + '<rect x="77" y="10" width="8" height="14" rx="3" fill="rgba(240,237,232,0.5)"/>'
+    rollerWrap.innerHTML = '<svg width="78" height="88" viewBox="0 0 78 88" fill="none" xmlns="http://www.w3.org/2000/svg">'
+      + '<rect x="4" y="2" width="56" height="18" rx="5" fill="rgba(240,237,232,0.12)" stroke="rgba(240,237,232,0.28)" stroke-width="1.2"/>'
+      + '<rect x="8" y="5" width="48" height="12" rx="4" fill="rgba(240,237,232,0.45)"/>'
+      + '<rect x="12" y="8.5" width="40" height="3" rx="1.5" fill="rgba(240,237,232,0.7)" opacity="0.3"/>'
+      + '<path d="M 5 7 L 1 7 L 1 15 L 5 15" stroke="rgba(240,237,232,0.28)" stroke-width="1.5" fill="none" stroke-linejoin="round"/>'
+      + '<path d="M 58 11 L 64 11 A 5 5 0 0 1 69 16 L 69 40 A 5 5 0 0 1 64 45 L 50 45" stroke="rgba(240,237,232,0.38)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>'
+      + '<path d="M 50 45 L 50 58" stroke="rgba(240,237,232,0.38)" stroke-width="3" stroke-linecap="round" fill="none"/>'
+      + '<rect x="42" y="56" width="16" height="30" rx="6" fill="rgba(240,237,232,0.12)" stroke="rgba(240,237,232,0.22)" stroke-width="1.2"/>'
+      + '<rect x="45.5" y="60" width="9" height="22" rx="3.5" fill="rgba(240,237,232,0.38)"/>'
       + '</svg>';
     textWrap.appendChild(rollerWrap);
 
-    const headY = 42; // vertical center of roller head in SVG coords
+    const headY = 11; // vertical center of roller drum in SVG (drum at top)
     const slant = 6;
 
     // Initial clip states
