@@ -9,8 +9,8 @@ const PAGE_SLUG = 'about';
 const PAGE_TITLE = 'About Avorino — Custom Home & ADU Builder in Orange County';
 const PAGE_DESC = 'Learn about Avorino, a custom home and ADU builder in Orange County since 2023. Exceptional craftsmanship, innovative design, and unwavering commitment to quality.';
 const HEAD_CODE = [
-    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@6f6b42d/avorino-about-head.css">',
-    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@6f6b42d/avorino-responsive.css">',
+    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@87ee21b/avorino-about-head.css">',
+    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@87ee21b/avorino-responsive.css">',
     CALENDLY_CSS,
 ].join('\n');
 const FOOTER_CODE = [
@@ -18,9 +18,9 @@ const FOOTER_CODE = [
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
     '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
-    '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@6f6b42d/avorino-about-footer.js"><\/script>',
-    '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@6f6b42d/avorino-about-mv3d.js"><\/script>',
-    '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@6f6b42d/avorino-about-values3d.js"><\/script>',
+    '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@87ee21b/avorino-about-footer.js"><\/script>',
+    '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@87ee21b/avorino-about-mv3d.js"><\/script>',
+    '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@87ee21b/avorino-about-values3d.js"><\/script>',
     CALENDLY_JS,
 ].join('\n');
 // ── Update panel UI ──
@@ -508,7 +508,6 @@ async function buildAboutPage() {
     const ctaC = cta.append(webflow.elementPresets.DOM);
     ctaC.setTag('div');
     ctaC.setStyles([ctaContainer]);
-    ctaC.setAttribute('class', 'about-cta-container');
     const ctaBgEl = ctaC.append(webflow.elementPresets.DOM);
     ctaBgEl.setTag('div');
     ctaBgEl.setStyles([ctaBg]);
