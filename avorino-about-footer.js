@@ -518,10 +518,21 @@
     section.addEventListener('mv3d-ready', dismissLoader);
     setTimeout(dismissLoader, 3000);
 
-    // Progress bar — subtle gold line at bottom
+    // Progress bar — track + fill + phase dots
     var progressBar = document.createElement('div');
     progressBar.className = 'mv-progress-bar';
+    progressBar.innerHTML = '<div class="mv-bar-track"></div><div class="mv-bar-fill" data-el="mv-bar-fill"></div>';
+    var phaseLabels = ['Phrase', 'Mission', 'Vision'];
+    var barDots = [];
+    phaseLabels.forEach(function (label) {
+      var dot = document.createElement('div');
+      dot.className = 'mv-bar-dot';
+      dot.innerHTML = '<span>' + label + '</span>';
+      progressBar.appendChild(dot);
+      barDots.push(dot);
+    });
     section.appendChild(progressBar);
+    var barFill = progressBar.querySelector('[data-el="mv-bar-fill"]');
 
     // Split phrase into words
     var text = phraseEl.textContent.trim();
@@ -554,8 +565,12 @@
       onUpdate: function (self) {
         var p = self.progress;
 
-        // Progress bar
-        progressBar.style.transform = 'scaleX(' + p + ')';
+        // Progress bar fill + dots
+        if (barFill) barFill.style.transform = 'translateY(-50%) scaleX(' + p + ')';
+        var phase = p < 0.3 ? 0 : p < 0.65 ? 1 : 2;
+        barDots.forEach(function (dot, i) {
+          dot.classList.toggle('is-active', i <= phase);
+        });
 
         // Phase 1 (0–30%): Words scale in
         if (p < 0.3) {
