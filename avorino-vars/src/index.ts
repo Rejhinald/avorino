@@ -1,6 +1,6 @@
 // ════════════════════════════════════════════════════════════════
-// Avorino Builder — RENOVATIONS PAGE
-// Split hero + renovation types + narrative + process + trust + CTA
+// Avorino Builder — CLIENT REVIEWS PAGE
+// Rename this to index.ts to build the Client Reviews page.
 // ════════════════════════════════════════════════════════════════
 
 import {
@@ -12,39 +12,50 @@ import {
   CALENDLY_CSS, CALENDLY_JS,
 } from './shared.js';
 
-const PAGE_NAME = 'Renovations';
-const PAGE_SLUG = 'renovations';
-const PAGE_TITLE = 'Home Renovations in Orange County — Avorino Construction';
-const PAGE_DESC = 'Kitchen, bathroom, and whole-home renovations in Orange County. Licensed, fully permitted, and built by Avorino.';
-const CDN = '6f6b42d';
+// ── Review data ──
+const REVIEWS = [
+  { quote: 'I am so happy I used Avorino Construction to build and renovate my two custom homes in Santa Ana. Raja and his team were absolutely amazing and made the whole process seamless and streamlined.', author: 'S S.', location: 'Irvine, CA', stars: 5 },
+  { quote: 'Avorino converted our RV garage to a custom ADU. Raja is a great project manager and easy to work with. He is organized and a clear communicator. I highly recommend them.', author: 'Sam W.', location: 'Oakland, CA', stars: 5 },
+  { quote: 'Raja uses technology and shared spreadsheets that really helped me stay on track with ordering finishes and the progress of the overall project. Absolutely amazing and 10/10 experience.', author: 'S S.', location: 'Irvine, CA', stars: 5 },
+  { quote: 'Owner Raja was warm and friendly. Coordinator Jay was a gem. She worked to keep everything going on time. The team worked efficiently to get the work done.', author: 'Peter H.', location: 'Lakewood, CA', stars: 4 },
+  { quote: 'Raja treated my project as if it was his own and I knew I was definitely in good hands. The quality of work was absolutely fantastic and top notch all the way!', author: 'S S.', location: 'Santa Ana, CA', stars: 5 },
+  { quote: 'Avorino built me a custom home. We loved how great they executed our project. The team was incredibly professional throughout the entire build process.', author: 'M. R.', location: 'Newport Beach, CA', stars: 5 },
+  { quote: 'We had Avorino build us an ADU in our property recently. They provided the full design and rendering. Everything came out beautifully and on time.', author: 'L. T.', location: 'Dana Point, CA', stars: 5 },
+  { quote: 'They were professional, courteous, and precise. Could not have asked for a better experience building our dream home addition.', author: 'D. K.', location: 'Mission Viejo, CA', stars: 5 },
+  { quote: 'We\'ve been thrilled with how our project has turned out. This company is VERY communicative, professional and cost friendly. They got the job done in a timely manner.', author: 'K. M.', location: 'Laguna Beach, CA', stars: 5 },
+  { quote: 'Raja was extremely responsive and thorough with helping guide us through our first remodeling project. We couldn\'t be happier with the results.', author: 'J. L.', location: 'Costa Mesa, CA', stars: 5 },
+  { quote: 'Raja is a great project manager and easy to work with. Our architect made mistakes on the plans but Raja and team helped work through all issues expertly.', author: 'R. C.', location: 'Tustin, CA', stars: 5 },
+  { quote: 'The entire team at Avorino was fantastic. From design to final walkthrough, they kept us informed every step of the way. Highly recommend.', author: 'M. P.', location: 'San Clemente, CA', stars: 5 },
+  { quote: 'Best construction company in Orange County. Raja and his team deliver on their promises. Our ADU is exactly what we envisioned.', author: 'T. H.', location: 'Huntington Beach, CA', stars: 5 },
+  { quote: 'Outstanding work on our custom home renovation. The attention to detail was impressive and the project was completed on schedule and within budget.', author: 'J. W.', location: 'Yorba Linda, CA', stars: 5 },
+  { quote: 'Avorino made the ADU building process stress-free. Weekly updates and transparent pricing. Highly recommend to anyone in Orange County.', author: 'S. G.', location: 'Aliso Viejo, CA', stars: 5 },
+];
+
+// 5 featured reviews shown in the scroll section (must match avorino-reviews.js FEATURED selection)
+const FEATURED = [REVIEWS[0], REVIEWS[5], REVIEWS[8], REVIEWS[3], REVIEWS[12]];
+
+// ── Page config ──
+const PAGE_NAME = 'Client Reviews';
+const PAGE_SLUG = 'clientreviews';
+const PAGE_TITLE = 'Client Reviews — Avorino Construction';
+const PAGE_DESC = '4.9 average rating from 35+ reviews. See what Orange County homeowners say about working with Avorino.';
 const HEAD_CODE = [
-  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@0c184a6/avorino-responsive.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@0c184a6/avorino-nav-footer.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@0c184a6/avorino-reviews.css">',
   CALENDLY_CSS,
 ].join('\n');
 const FOOTER_CODE = [
   '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
-  `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-animations.js"><\/script>`,
+  '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@0c184a6/avorino-reviews.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@0c184a6/avorino-reviews-3d.js"><\/script>',
   CALENDLY_JS,
 ].join('\n');
 
-// ── Content data ──
-const RENOVATION_TYPES = [
-  { number: '01', title: 'Kitchen Remodel', desc: 'Custom cabinetry, quartz countertops, premium appliances. The kitchen sets the tone for the entire home.' },
-  { number: '02', title: 'Bathroom Renovation', desc: 'Walk-in showers, freestanding tubs, heated floors. Spa-level finishes with practical engineering.' },
-  { number: '03', title: 'Whole-Home Interior', desc: 'Complete interior transformation. Open floor plans, new flooring, lighting, and finishes throughout every room.' },
-  { number: '04', title: 'Room Additions', desc: 'Expand your living space without moving. We match additions seamlessly to your existing home\'s architecture.' },
-];
-
-const PROCESS_STEPS = [
-  { number: '01', title: 'Design & Planning', desc: 'We assess your space, discuss goals, and create detailed plans with material selections and 3D renderings.' },
-  { number: '02', title: 'Permits & Approvals', desc: 'All city permits, plan-check corrections, and HOA approvals handled. No work starts until everything is approved.' },
-  { number: '03', title: 'Demo & Prep', desc: 'Controlled demolition, structural modifications, and rough-in for electrical, plumbing, and HVAC.' },
-  { number: '04', title: 'Build & Finish', desc: 'Installation of finishes, fixtures, and details. Final inspection, walkthrough, and warranty documentation.' },
-];
-
-// ── Panel UI ──
+// ── Update panel UI ──
 document.getElementById('page-name')!.textContent = PAGE_NAME;
 const headCodeEl = document.getElementById('head-code');
 const footerCodeEl = document.getElementById('footer-code');
@@ -52,403 +63,162 @@ if (headCodeEl) headCodeEl.textContent = HEAD_CODE;
 if (footerCodeEl) footerCodeEl.textContent = FOOTER_CODE;
 
 // ── Build function ──
-async function buildRenovationsPage() {
+async function buildReviewsPage() {
   clearErrorLog();
-  logDetail('Starting Renovations page build...', 'info');
+  logDetail('Starting Reviews page build...', 'info');
   const v = await getAvorinVars();
-
+  logDetail('Loaded Avorino variable collection', 'ok');
   log('Creating shared styles...');
   const s = await createSharedStyles();
+  logDetail('Shared styles done', 'ok');
 
-  // ── Page-specific styles ──
-  log('Creating page-specific styles...');
-  const renHero = await getOrCreateStyle('ren-hero');
-  const renHeroContent = await getOrCreateStyle('ren-hero-content');
-  const renHeroMeta = await getOrCreateStyle('ren-hero-meta');
-  const renHeroMetaItem = await getOrCreateStyle('ren-hero-meta-item');
-  const renHeroMetaValue = await getOrCreateStyle('ren-hero-meta-value');
-  const renHeroMetaLabel = await getOrCreateStyle('ren-hero-meta-label');
-  const renTypeRow = await getOrCreateStyle('ren-type-row');
-  const renTypeText = await getOrCreateStyle('ren-type-text');
-  const renTypeNum = await getOrCreateStyle('ren-type-num');
-  const renTypeTitle = await getOrCreateStyle('ren-type-title');
-  const renTypeDesc = await getOrCreateStyle('ren-type-desc');
-  const renNarrSection = await getOrCreateStyle('ren-narr-section');
-  const renNarrText = await getOrCreateStyle('ren-narr-text');
-  const renNarrBody = await getOrCreateStyle('ren-narr-body');
-  const renStatRow = await getOrCreateStyle('ren-stat-row');
-  const renStatValue = await getOrCreateStyle('ren-stat-value');
-  const renStatLabel = await getOrCreateStyle('ren-stat-label');
-  const renStepRow = await getOrCreateStyle('ren-step-row');
-  const renStepNumCol = await getOrCreateStyle('ren-step-num-col');
-  const renStepNum = await getOrCreateStyle('ren-step-num');
-  const renStepContent = await getOrCreateStyle('ren-step-content');
-  const renStepTitle = await getOrCreateStyle('ren-step-title');
-  const renStepDesc = await getOrCreateStyle('ren-step-desc');
-
+  // Create page
   const { body } = await createPageWithSlug(PAGE_NAME, PAGE_SLUG, PAGE_TITLE, PAGE_DESC);
 
-  async function applyStyleProperties() {
-    log('Setting shared style properties...');
-    await setSharedStyleProps(s, v);
-    await wait(1000);
+  // ═══════════════ BUILD REVIEW WALL ═══════════════
+  log('Building review wall...');
 
-    log('Setting page-specific style properties...');
+  const wall = webflow.elementBuilder(webflow.elementPresets.DOM);
+  wall.setTag('section');
+  wall.setAttribute('class', 'rv-wall');
 
-    // Hero
-    await clearAndSet(await freshStyle('ren-hero'), 'ren-hero', {
-      'min-height': '70vh', 'display': 'flex', 'align-items': 'flex-end',
-      'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
-      'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
-      'background-color': v['av-dark'], 'color': v['av-cream'],
-      'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
-    });
-    await clearAndSet(await freshStyle('ren-hero-content'), 'ren-hero-content', {
-      'position': 'relative', 'z-index': '2', 'max-width': '800px',
-    });
-    await clearAndSet(await freshStyle('ren-hero-meta'), 'ren-hero-meta', {
-      'display': 'flex', 'grid-column-gap': '48px', 'margin-top': '40px',
-      'padding-top': '32px', 'border-top-width': '1px', 'border-top-style': 'solid',
-      'border-top-color': 'rgba(240,237,232,0.1)',
-    });
-    await clearAndSet(await freshStyle('ren-hero-meta-item'), 'ren-hero-meta-item', {
-      'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '4px',
-    });
-    await clearAndSet(await freshStyle('ren-hero-meta-value'), 'ren-hero-meta-value', {
-      'font-family': 'DM Serif Display', 'font-size': '32px',
-      'font-weight': '400', 'color': '#c9a96e',
-    });
-    await clearAndSet(await freshStyle('ren-hero-meta-label'), 'ren-hero-meta-label', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
-      'opacity': '0.35', 'letter-spacing': '0.15em', 'text-transform': 'uppercase',
-    });
-    await wait(500);
+  // Three.js canvas wrapper (populated by avorino-reviews-3d.js at runtime)
+  const canvasWrap = wall.append(webflow.elementPresets.DOM);
+  canvasWrap.setTag('div');
+  canvasWrap.setAttribute('class', 'rv-canvas-wrap');
 
-    // Type rows
-    await clearAndSet(await freshStyle('ren-type-row'), 'ren-type-row', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr',
-      'grid-column-gap': '96px', 'grid-row-gap': '48px', 'align-items': 'center',
-    });
-    await clearAndSet(await freshStyle('ren-type-text'), 'ren-type-text', {
-      'display': 'flex', 'flex-direction': 'column',
-    });
-    await clearAndSet(await freshStyle('ren-type-num'), 'ren-type-num', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-label'],
-      'letter-spacing': '0.3em', 'text-transform': 'uppercase',
-      'opacity': '0.3', 'margin-bottom': '16px',
-    });
-    await clearAndSet(await freshStyle('ren-type-title'), 'ren-type-title', {
-      'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
-      'line-height': '1.12', 'font-weight': '400', 'margin-bottom': '16px',
-    });
-    await clearAndSet(await freshStyle('ren-type-desc'), 'ren-type-desc', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'line-height': '1.9', 'opacity': '0.6',
-    });
-    await wait(500);
+  // Content grid (2-column: header left, reviews right)
+  const content = wall.append(webflow.elementPresets.DOM);
+  content.setTag('div');
+  content.setAttribute('class', 'rv-content');
 
-    // Narrative
-    await clearAndSet(await freshStyle('ren-narr-section'), 'ren-narr-section', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr',
-      'grid-column-gap': '0px', 'min-height': '60vh',
-    });
-    await clearAndSet(await freshStyle('ren-narr-text'), 'ren-narr-text', {
-      'display': 'flex', 'flex-direction': 'column', 'justify-content': 'center',
-      'padding-top': '80px', 'padding-bottom': '80px',
-      'padding-left': '80px', 'padding-right': '80px',
-      'background-color': v['av-dark'], 'color': v['av-cream'],
-    });
-    await clearAndSet(await freshStyle('ren-narr-body'), 'ren-narr-body', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'line-height': '1.9', 'opacity': '0.55', 'margin-top': '20px', 'max-width': '420px',
-    });
-    await clearAndSet(await freshStyle('ren-stat-row'), 'ren-stat-row', {
-      'display': 'flex', 'grid-column-gap': '48px', 'margin-top': '48px',
-      'padding-top': '32px', 'border-top-width': '1px', 'border-top-style': 'solid',
-      'border-top-color': 'rgba(240,237,232,0.08)',
-    });
-    await clearAndSet(await freshStyle('ren-stat-value'), 'ren-stat-value', {
-      'font-family': 'DM Serif Display', 'font-size': '40px',
-      'font-weight': '400', 'color': '#c9a96e',
-    });
-    await clearAndSet(await freshStyle('ren-stat-label'), 'ren-stat-label', {
-      'font-family': 'DM Sans', 'font-size': '12px',
-      'opacity': '0.35', 'margin-top': '4px', 'text-transform': 'uppercase', 'letter-spacing': '0.15em',
-    });
-    await wait(500);
+  // ── Left column: Header ──
+  const header = content.append(webflow.elementPresets.DOM);
+  header.setTag('div');
+  header.setAttribute('class', 'rv-header');
 
-    // Process steps
-    await clearAndSet(await freshStyle('ren-step-row'), 'ren-step-row', {
-      'display': 'grid', 'grid-template-columns': '80px 1fr',
-      'grid-column-gap': '48px', 'align-items': 'start',
-    });
-    await clearAndSet(await freshStyle('ren-step-num-col'), 'ren-step-num-col', {
-      'padding-top': '4px',
-    });
-    await clearAndSet(await freshStyle('ren-step-num'), 'ren-step-num', {
-      'font-family': 'DM Serif Display',
-      'font-size': 'clamp(36px, 4vw, 56px)',
-      'line-height': '1', 'font-weight': '400', 'opacity': '0.15',
-    });
-    await clearAndSet(await freshStyle('ren-step-content'), 'ren-step-content', {
-      'display': 'flex', 'flex-direction': 'column',
-    });
-    await clearAndSet(await freshStyle('ren-step-title'), 'ren-step-title', {
-      'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
-      'line-height': '1.12', 'font-weight': '400', 'margin-bottom': '16px',
-    });
-    await clearAndSet(await freshStyle('ren-step-desc'), 'ren-step-desc', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'line-height': '1.9', 'opacity': '0.6',
-    });
-    await wait(500);
+  const label = header.append(webflow.elementPresets.DOM);
+  label.setTag('div');
+  label.setAttribute('class', 'rv-label');
+  label.setTextContent('Client Reviews');
 
-    await applyCTAStyleProps(v);
-  }
+  const heading = header.append(webflow.elementPresets.DOM);
+  heading.setTag('h2');
+  heading.setAttribute('class', 'rv-heading');
+  heading.setTextContent('What our clients say');
 
-  // ═══════════════ BUILD ELEMENTS ═══════════════
+  const stats = header.append(webflow.elementPresets.DOM);
+  stats.setTag('div');
+  stats.setAttribute('class', 'rv-stats');
 
-  // SECTION 1: HERO
-  log('Building Section 1: Hero...');
-  const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
-  hero.setTag('section');
-  hero.setStyles([renHero]);
-  hero.setAttribute('id', 'ren-hero');
+  const statsStars = stats.append(webflow.elementPresets.DOM);
+  statsStars.setTag('span');
+  statsStars.setAttribute('class', 'rv-stats-stars');
+  statsStars.setTextContent('\u2605\u2605\u2605\u2605\u2605');
 
-  const heroC = hero.append(webflow.elementPresets.DOM);
-  heroC.setTag('div');
-  heroC.setStyles([renHeroContent]);
+  const statsText = stats.append(webflow.elementPresets.DOM);
+  statsText.setTag('span');
+  statsText.setTextContent('4.9 average from 35+ reviews');
 
-  const heroLabel = heroC.append(webflow.elementPresets.DOM);
-  heroLabel.setTag('div');
-  heroLabel.setStyles([s.label]);
-  heroLabel.setAttribute('data-animate', 'fade-up');
-  const heroLabelTxt = heroLabel.append(webflow.elementPresets.DOM);
-  heroLabelTxt.setTag('div');
-  heroLabelTxt.setTextContent('// Home Renovations');
+  const counter = header.append(webflow.elementPresets.DOM);
+  counter.setTag('div');
+  counter.setAttribute('class', 'rv-counter');
+  counter.setAttribute('data-el', 'rv-counter');
+  counter.setTextContent('01');
 
-  const heroH = heroC.append(webflow.elementPresets.DOM);
-  heroH.setTag('h1');
-  heroH.setStyles([s.headingXL]);
-  heroH.setTextContent('Renovate with intention');
-  heroH.setAttribute('data-animate', 'word-stagger-elastic');
+  const nav = header.append(webflow.elementPresets.DOM);
+  nav.setTag('div');
+  nav.setAttribute('class', 'rv-nav');
 
-  const heroSub = heroC.append(webflow.elementPresets.DOM);
-  heroSub.setTag('p');
-  heroSub.setStyles([s.body, s.bodyMuted]);
-  heroSub.setTextContent('Kitchens, bathrooms, full interiors. We transform existing homes into spaces that feel entirely new.');
-  heroSub.setAttribute('data-animate', 'fade-up');
+  const arrowL = nav.append(webflow.elementPresets.DOM);
+  arrowL.setTag('button');
+  arrowL.setAttribute('class', 'rv-arrow');
+  arrowL.setAttribute('aria-label', 'Previous review');
+  arrowL.setTextContent('\u2039');
 
-  // Hero meta row
-  const heroMeta = heroC.append(webflow.elementPresets.DOM);
-  heroMeta.setTag('div');
-  heroMeta.setStyles([renHeroMeta]);
-  heroMeta.setAttribute('data-animate', 'fade-up');
+  const arrowR = nav.append(webflow.elementPresets.DOM);
+  arrowR.setTag('button');
+  arrowR.setAttribute('class', 'rv-arrow');
+  arrowR.setAttribute('aria-label', 'Next review');
+  arrowR.setTextContent('\u203A');
 
-  const metaItems = [
-    { value: '150+', label: 'Projects completed' },
-    { value: '4.9', label: 'Google rating' },
-    { value: '100%', label: 'Licensed & insured' },
-  ];
-  for (const m of metaItems) {
-    const item = heroMeta.append(webflow.elementPresets.DOM);
-    item.setTag('div');
-    item.setStyles([renHeroMetaItem]);
-    const val = item.append(webflow.elementPresets.DOM);
-    val.setTag('span');
-    val.setStyles([renHeroMetaValue]);
-    val.setTextContent(m.value);
-    const lbl = item.append(webflow.elementPresets.DOM);
-    lbl.setTag('span');
-    lbl.setStyles([renHeroMetaLabel]);
-    lbl.setTextContent(m.label);
-  }
+  logDetail('Header built (label, heading, stats, counter, nav)', 'ok');
 
-  await safeCall('append:hero', () => body.append(hero));
-  logDetail('Section 1: Hero appended', 'ok');
+  // ── Right column: Review Area ──
+  const reviewArea = content.append(webflow.elementPresets.DOM);
+  reviewArea.setTag('div');
+  reviewArea.setAttribute('class', 'rv-review-area');
 
-  // SECTION 2: RENOVATION TYPES (alternating rows)
-  log('Building Section 2: Renovation Types...');
-  const typesSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  typesSection.setTag('section');
-  typesSection.setStyles([s.section, s.sectionWarm]);
-  typesSection.setAttribute('id', 'ren-types');
+  FEATURED.forEach((review, i) => {
+    const el = reviewArea.append(webflow.elementPresets.DOM);
+    el.setTag('div');
+    el.setAttribute('class', i === 0 ? 'rv-review is-active' : 'rv-review');
 
-  const typesH = typesSection.append(webflow.elementPresets.DOM);
-  typesH.setTag('h2');
-  typesH.setStyles([s.headingLG]);
-  typesH.setTextContent('Every room, reimagined');
-  typesH.setAttribute('data-animate', 'blur-focus');
+    const rvStars = el.append(webflow.elementPresets.DOM);
+    rvStars.setTag('div');
+    rvStars.setAttribute('class', 'rv-stars');
+    rvStars.setTextContent('\u2605'.repeat(review.stars) + '\u2606'.repeat(5 - review.stars));
 
-  RENOVATION_TYPES.forEach((type, i) => {
-    if (i > 0) {
-      const div = typesSection.append(webflow.elementPresets.DOM);
-      div.setTag('div');
-      div.setStyles([s.divider]);
-    }
-    const row = typesSection.append(webflow.elementPresets.DOM);
-    row.setTag('div');
-    row.setStyles([renTypeRow]);
-    row.setAttribute('data-animate', 'fade-up');
+    const quote = el.append(webflow.elementPresets.DOM);
+    quote.setTag('blockquote');
+    quote.setAttribute('class', 'rv-quote');
+    quote.setTextContent('\u201C' + review.quote + '\u201D');
 
-    if (i % 2 === 0) {
-      const img = row.append(webflow.elementPresets.DOM);
-      img.setTag('div');
-      img.setStyles([s.imgLandscape]);
-      const text = row.append(webflow.elementPresets.DOM);
-      text.setTag('div');
-      text.setStyles([renTypeText]);
-      buildTypeText(text, type);
-    } else {
-      const text = row.append(webflow.elementPresets.DOM);
-      text.setTag('div');
-      text.setStyles([renTypeText]);
-      buildTypeText(text, type);
-      const img = row.append(webflow.elementPresets.DOM);
-      img.setTag('div');
-      img.setStyles([s.imgLandscape]);
-    }
+    const sep = el.append(webflow.elementPresets.DOM);
+    sep.setTag('div');
+    sep.setAttribute('class', 'rv-sep');
+
+    const author = el.append(webflow.elementPresets.DOM);
+    author.setTag('div');
+    author.setAttribute('class', 'rv-author');
+    author.setTextContent(review.author);
+
+    const loc = el.append(webflow.elementPresets.DOM);
+    loc.setTag('div');
+    loc.setAttribute('class', 'rv-location');
+    loc.setTextContent(review.location);
   });
 
-  function buildTypeText(parent: any, type: typeof RENOVATION_TYPES[0]) {
-    const num = parent.append(webflow.elementPresets.DOM);
-    num.setTag('div');
-    num.setStyles([renTypeNum]);
-    num.setTextContent(type.number);
-    const title = parent.append(webflow.elementPresets.DOM);
-    title.setTag('h3');
-    title.setStyles([renTypeTitle]);
-    title.setTextContent(type.title);
-    const desc = parent.append(webflow.elementPresets.DOM);
-    desc.setTag('p');
-    desc.setStyles([renTypeDesc]);
-    desc.setTextContent(type.desc);
-  }
+  logDetail(`Review area built (${FEATURED.length} featured reviews)`, 'ok');
 
-  await safeCall('append:types', () => body.append(typesSection));
-  logDetail('Section 2: Types appended', 'ok');
+  // ── Progress Bar (bottom) ──
+  const progressBar = wall.append(webflow.elementPresets.DOM);
+  progressBar.setTag('div');
+  progressBar.setAttribute('class', 'rv-progress-bar');
 
-  // SECTION 3: NARRATIVE (dark text + image, full-width split)
-  log('Building Section 3: Narrative...');
-  const narrSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  narrSection.setTag('section');
-  narrSection.setStyles([renNarrSection]);
-  narrSection.setAttribute('id', 'ren-narrative');
+  const barTrack = progressBar.append(webflow.elementPresets.DOM);
+  barTrack.setTag('div');
+  barTrack.setAttribute('class', 'rv-bar-track');
 
-  const narrText = narrSection.append(webflow.elementPresets.DOM);
-  narrText.setTag('div');
-  narrText.setStyles([renNarrText]);
+  const barFill = progressBar.append(webflow.elementPresets.DOM);
+  barFill.setTag('div');
+  barFill.setAttribute('class', 'rv-bar-fill');
+  barFill.setAttribute('data-el', 'rv-bar-fill');
 
-  const narrEyebrow = narrText.append(webflow.elementPresets.DOM);
-  narrEyebrow.setTag('div');
-  narrEyebrow.setStyles([s.label]);
-  narrEyebrow.setAttribute('data-animate', 'fade-up');
-  const narrEyebrowTxt = narrEyebrow.append(webflow.elementPresets.DOM);
-  narrEyebrowTxt.setTag('div');
-  narrEyebrowTxt.setTextContent('Why renovate');
-
-  const narrH = narrText.append(webflow.elementPresets.DOM);
-  narrH.setTag('h2');
-  narrH.setStyles([s.headingLG]);
-  narrH.setTextContent('Your home deserves the investment');
-  narrH.setAttribute('data-animate', 'fade-up');
-
-  const narrP = narrText.append(webflow.elementPresets.DOM);
-  narrP.setTag('p');
-  narrP.setStyles([renNarrBody]);
-  narrP.setTextContent('A well-executed renovation doesn\'t just improve your daily life — it significantly increases your property value. We focus on quality materials, smart design, and construction that lasts.');
-  narrP.setAttribute('data-animate', 'fade-up');
-
-  // Stats
-  const statRow = narrText.append(webflow.elementPresets.DOM);
-  statRow.setTag('div');
-  statRow.setStyles([renStatRow]);
-  statRow.setAttribute('data-animate', 'fade-up');
-
-  const stats = [{ value: '25%', label: 'Avg. value increase' }, { value: '$200+', label: 'Per sqft ROI' }];
-  for (const st of stats) {
-    const wrap = statRow.append(webflow.elementPresets.DOM);
-    wrap.setTag('div');
-    const val = wrap.append(webflow.elementPresets.DOM);
-    val.setTag('div');
-    val.setStyles([renStatValue]);
-    val.setTextContent(st.value);
-    const lbl = wrap.append(webflow.elementPresets.DOM);
-    lbl.setTag('div');
-    lbl.setStyles([renStatLabel]);
-    lbl.setTextContent(st.label);
-  }
-
-  // Right image
-  const narrImg = narrSection.append(webflow.elementPresets.DOM);
-  narrImg.setTag('div');
-  narrImg.setStyles([s.imgTall]);
-  narrImg.setAttribute('data-animate', 'parallax-depth');
-
-  await safeCall('append:narrative', () => body.append(narrSection));
-  logDetail('Section 3: Narrative appended', 'ok');
-
-  // SECTION 4: PROCESS
-  log('Building Section 4: Process...');
-  const procSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  procSection.setTag('section');
-  procSection.setStyles([s.section, s.sectionCream]);
-  procSection.setAttribute('id', 'ren-process');
-
-  const procH = procSection.append(webflow.elementPresets.DOM);
-  procH.setTag('h2');
-  procH.setStyles([s.headingLG]);
-  procH.setTextContent('Straightforward. Transparent.');
-  procH.setAttribute('data-animate', 'blur-focus');
-
-  PROCESS_STEPS.forEach((step, i) => {
-    if (i > 0) {
-      const div = procSection.append(webflow.elementPresets.DOM);
-      div.setTag('div');
-      div.setStyles([s.divider]);
-    }
-    const row = procSection.append(webflow.elementPresets.DOM);
-    row.setTag('div');
-    row.setStyles([renStepRow]);
-    row.setAttribute('data-animate', 'fade-up');
-
-    const numCol = row.append(webflow.elementPresets.DOM);
-    numCol.setTag('div');
-    numCol.setStyles([renStepNumCol]);
-    const num = numCol.append(webflow.elementPresets.DOM);
-    num.setTag('div');
-    num.setStyles([renStepNum]);
-    num.setTextContent(step.number);
-
-    const content = row.append(webflow.elementPresets.DOM);
-    content.setTag('div');
-    content.setStyles([renStepContent]);
-    const title = content.append(webflow.elementPresets.DOM);
-    title.setTag('h3');
-    title.setStyles([renStepTitle]);
-    title.setTextContent(step.title);
-    const desc = content.append(webflow.elementPresets.DOM);
-    desc.setTag('p');
-    desc.setStyles([renStepDesc]);
-    desc.setTextContent(step.desc);
+  FEATURED.forEach((_, i) => {
+    const dot = progressBar.append(webflow.elementPresets.DOM);
+    dot.setTag('div');
+    dot.setAttribute('class', i === 0 ? 'rv-bar-dot is-active' : 'rv-bar-dot');
   });
 
-  await safeCall('append:process', () => body.append(procSection));
-  logDetail('Section 4: Process appended', 'ok');
+  logDetail('Progress bar built (track, fill, 5 dots)', 'ok');
 
-  // SECTION 5: CTA
-  log('Building Section 5: CTA...');
-  await buildCTASection(
-    body, v,
-    'Ready to transform your home?',
-    'Schedule a Consultation', '/schedule-a-meeting',
-    'Call Us', 'tel:7149003676',
-  );
+  await safeCall('append:wall', () => body.append(wall));
+  logDetail('Review wall appended to page', 'ok');
 
-  await applyStyleProperties();
+  // CTA
+  log('Building CTA...');
+  await buildCTASection(body, v, 'Share your experience', 'Get a Free Estimate', '/schedule-a-meeting', 'View Our Work', '/projects');
 
-  log('Renovations page built!', 'success');
-  await webflow.notify({ type: 'Success', message: 'Renovations page created!' });
+  // APPLY STYLES
+  log('Setting shared style properties...');
+  await setSharedStyleProps(s, v);
+  logDetail('Shared style properties set', 'ok');
+  await wait(500);
+  await applyCTAStyleProps(v);
+
+  log('Reviews page built! Add custom code manually (see instructions below).', 'success');
+  await webflow.notify({ type: 'Success', message: 'Reviews page created! Now add custom code manually.' });
 }
 
 // ── Event listeners ──
@@ -472,7 +242,7 @@ document.querySelectorAll('.copy-btn').forEach(btn => {
 document.getElementById('build-page')?.addEventListener('click', async () => {
   const btn = document.getElementById('build-page') as HTMLButtonElement;
   btn.disabled = true;
-  try { await buildRenovationsPage(); } catch (err: any) {
+  try { await buildReviewsPage(); } catch (err: any) {
     log(`Error: ${err.message || err}`, 'error');
     await webflow.notify({ type: 'Error', message: `Failed: ${err.message || err}` });
   } finally { btn.disabled = false; }
