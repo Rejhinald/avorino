@@ -47,6 +47,7 @@
     var foundMat  = makeMat(GOLD);
     var structMat = makeMat(SLATE);
     var accentMat = makeMat(GOLD);
+    var craneMat  = makeMat(GOLD);
 
     /* ── Geometry Helpers ── */
     function wireBox(w, h, d, mat) {
@@ -58,6 +59,11 @@
       var g = new THREE.BufferGeometry();
       g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
       return new THREE.LineSegments(g, mat);
+    }
+    function linePath(pts, mat) {
+      var g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+      return new THREE.Line(g, mat);
     }
 
     /* ═══════════════════════════════════════════════
@@ -94,6 +100,24 @@
     var wingVol = wireBox(4, 4, 5, structMat);
     wingVol.position.set(5.5, 2, 0.5);
     gStruct.add(wingVol);
+    /* Interior wall divisions */
+    gStruct.add(lineSegs([
+      -2.5, 0, 0,  -2.5, 7, 0,
+       2, 0, 0,     2, 7, 0,
+      -0.5, 0, -3, -0.5, 7, -3,
+      -0.5, 0, 3,  -0.5, 7, 3,
+    ], structMat));
+    /* Window openings */
+    gStruct.add(lineSegs([
+      -5, 2.5, -3.01,  -3.5, 2.5, -3.01,
+      -3.5, 2.5, -3.01, -3.5, 5, -3.01,
+      -3.5, 5, -3.01, -5, 5, -3.01,
+      -5, 5, -3.01, -5, 2.5, -3.01,
+      1, 2.5, -3.01, 3, 2.5, -3.01,
+      3, 2.5, -3.01, 3, 5, -3.01,
+      3, 5, -3.01, 1, 5, -3.01,
+      1, 5, -3.01, 1, 2.5, -3.01,
+    ], structMat));
     scene.add(gStruct);
 
     /* ═══════════════════════════════════════════════
@@ -114,20 +138,69 @@
     scene.add(gAccent);
 
     /* ═══════════════════════════════════════════════
+       GROUP 5 — Tower Crane
+       ═══════════════════════════════════════════════ */
+    var gCrane = new THREE.Group();
+    /* Mast (vertical tower) */
+    gCrane.add(lineSegs([
+      -7, 0, -4.5,  -7, 15, -4.5,
+    ], craneMat));
+    /* Mast cross-braces */
+    gCrane.add(lineSegs([
+      -7.4, 0, -4.5,  -6.6, 0, -4.5,
+      -7.4, 0, -4.5,  -7.4, 15, -4.5,
+      -6.6, 0, -4.5,  -6.6, 15, -4.5,
+      -7.4, 15, -4.5,  -6.6, 15, -4.5,
+    ], craneMat));
+    /* Lattice bracing on mast */
+    for (i = 0; i < 15; i += 3) {
+      gCrane.add(lineSegs([
+        -7.4, i, -4.5,  -6.6, i + 3, -4.5,
+        -6.6, i, -4.5,  -7.4, i + 3, -4.5,
+      ], craneMat));
+    }
+    /* Jib (horizontal arm) */
+    gCrane.add(lineSegs([
+      -7, 14.5, -4.5,  6, 14.5, -4.5,
+    ], craneMat));
+    /* Counter-jib */
+    gCrane.add(lineSegs([
+      -7, 14.5, -4.5,  -11, 14.5, -4.5,
+    ], craneMat));
+    /* Tie lines from peak to jib ends */
+    gCrane.add(lineSegs([
+      -7, 15, -4.5,  6, 14.5, -4.5,
+      -7, 15, -4.5,  -11, 14.5, -4.5,
+    ], craneMat));
+    /* Hanging cable from jib */
+    gCrane.add(lineSegs([
+      2, 14.5, -4.5,  2, 9, -4.5,
+    ], craneMat));
+    /* Hook */
+    gCrane.add(linePath([
+      2, 9, -4.5,  2, 8.5, -4.5,  1.7, 8.2, -4.5,  2.3, 8.2, -4.5,
+    ], craneMat));
+    /* Counter-weight block */
+    var cwBlock = wireBox(1.2, 0.8, 0.6, craneMat);
+    cwBlock.position.set(-10, 14, -4.5);
+    gCrane.add(cwBlock);
+    scene.add(gCrane);
+
+    /* ═══════════════════════════════════════════════
        PARTICLES — rising gold motes
        ═══════════════════════════════════════════════ */
-    var PC = 40;
+    var PC = 60;
     var pArr = new Float32Array(PC * 3);
     var pVel = [];
     for (i = 0; i < PC; i++) {
-      pArr[i * 3]     = (Math.random() - 0.5) * 18;
-      pArr[i * 3 + 1] = Math.random() * 10;
-      pArr[i * 3 + 2] = (Math.random() - 0.5) * 14;
-      pVel.push(0.003 + Math.random() * 0.006);
+      pArr[i * 3]     = (Math.random() - 0.5) * 20;
+      pArr[i * 3 + 1] = Math.random() * 14;
+      pArr[i * 3 + 2] = (Math.random() - 0.5) * 16;
+      pVel.push(0.003 + Math.random() * 0.007);
     }
     var pGeo = new THREE.BufferGeometry();
     pGeo.setAttribute('position', new THREE.Float32BufferAttribute(pArr, 3));
-    var pMat = new THREE.PointsMaterial({ color: GOLD, size: 0.08, transparent: true, opacity: 0 });
+    var pMat = new THREE.PointsMaterial({ color: GOLD, size: 0.1, transparent: true, opacity: 0 });
     scene.add(new THREE.Points(pGeo, pMat));
 
     /* ═══════════════════════════════════════════════
@@ -183,32 +256,37 @@
       var p = scroll;
 
       /* Grid: 0 → 25% */
-      gridMat.opacity = clamp(p / 0.25) * 0.1;
+      gridMat.opacity = clamp(p / 0.25) * 0.15;
 
       /* Foundation: 10 → 40% */
       var fp = ease(clamp((p - 0.1) / 0.3));
-      foundMat.opacity = fp * 0.45;
+      foundMat.opacity = fp * 0.6;
       gFound.position.y = -1.5 * (1 - fp);
 
-      /* Structure: 25 → 60% */
-      var sp = ease(clamp((p - 0.25) / 0.35));
-      structMat.opacity = sp * 0.3;
+      /* Structure: 20 → 55% */
+      var sp = ease(clamp((p - 0.2) / 0.35));
+      structMat.opacity = sp * 0.45;
       gStruct.position.y = -5 * (1 - sp);
 
-      /* Accents: 50 → 85% */
-      accentMat.opacity = ease(clamp((p - 0.5) / 0.35)) * 0.55;
+      /* Accents: 40 → 70% */
+      accentMat.opacity = ease(clamp((p - 0.4) / 0.3)) * 0.65;
 
-      /* Particles: 40 → 100% */
-      pMat.opacity = clamp((p - 0.4) / 0.6) * 0.3;
+      /* Crane: 30 → 75% */
+      var cp = ease(clamp((p - 0.3) / 0.45));
+      craneMat.opacity = cp * 0.5;
+      gCrane.position.y = -10 * (1 - cp);
+
+      /* Particles: 35 → 100% */
+      pMat.opacity = clamp((p - 0.35) / 0.65) * 0.45;
       var scrollDelta = Math.abs(scrollTarget - scroll);
       if (scrollDelta > 0.0005) {
         var pa = pGeo.attributes.position.array;
         for (var j = 0; j < PC; j++) {
           pa[j * 3 + 1] += pVel[j];
-          if (pa[j * 3 + 1] > 12) {
+          if (pa[j * 3 + 1] > 16) {
             pa[j * 3 + 1] = -1;
-            pa[j * 3]     = (Math.random() - 0.5) * 18;
-            pa[j * 3 + 2] = (Math.random() - 0.5) * 14;
+            pa[j * 3]     = (Math.random() - 0.5) * 20;
+            pa[j * 3 + 2] = (Math.random() - 0.5) * 16;
           }
         }
         pGeo.attributes.position.needsUpdate = true;

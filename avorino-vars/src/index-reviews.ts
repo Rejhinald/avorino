@@ -12,27 +12,38 @@ import {
   CALENDLY_CSS, CALENDLY_JS,
 } from './shared.js';
 
-// ── Review data ──
+// ── Review data (real Yelp reviews) ──
 const REVIEWS = [
-  { quote: 'I am so happy I used Avorino Construction to build and renovate my two custom homes in Santa Ana. Raja and his team were absolutely amazing and made the whole process seamless and streamlined.', author: 'S S.', location: 'Irvine, CA', stars: 5 },
-  { quote: 'Avorino converted our RV garage to a custom ADU. Raja is a great project manager and easy to work with. He is organized and a clear communicator. I highly recommend them.', author: 'Sam W.', location: 'Oakland, CA', stars: 5 },
-  { quote: 'Raja uses technology and shared spreadsheets that really helped me stay on track with ordering finishes and the progress of the overall project. Absolutely amazing and 10/10 experience.', author: 'S S.', location: 'Irvine, CA', stars: 5 },
-  { quote: 'Owner Raja was warm and friendly. Coordinator Jay was a gem. She worked to keep everything going on time. The team worked efficiently to get the work done.', author: 'Peter H.', location: 'Lakewood, CA', stars: 4 },
-  { quote: 'Raja treated my project as if it was his own and I knew I was definitely in good hands. The quality of work was absolutely fantastic and top notch all the way!', author: 'S S.', location: 'Santa Ana, CA', stars: 5 },
-  { quote: 'Avorino built me a custom home. We loved how great they executed our project. The team was incredibly professional throughout the entire build process.', author: 'M. R.', location: 'Newport Beach, CA', stars: 5 },
-  { quote: 'We had Avorino build us an ADU in our property recently. They provided the full design and rendering. Everything came out beautifully and on time.', author: 'L. T.', location: 'Dana Point, CA', stars: 5 },
-  { quote: 'They were professional, courteous, and precise. Could not have asked for a better experience building our dream home addition.', author: 'D. K.', location: 'Mission Viejo, CA', stars: 5 },
-  { quote: 'We\'ve been thrilled with how our project has turned out. This company is VERY communicative, professional and cost friendly. They got the job done in a timely manner.', author: 'K. M.', location: 'Laguna Beach, CA', stars: 5 },
-  { quote: 'Raja was extremely responsive and thorough with helping guide us through our first remodeling project. We couldn\'t be happier with the results.', author: 'J. L.', location: 'Costa Mesa, CA', stars: 5 },
-  { quote: 'Raja is a great project manager and easy to work with. Our architect made mistakes on the plans but Raja and team helped work through all issues expertly.', author: 'R. C.', location: 'Tustin, CA', stars: 5 },
-  { quote: 'The entire team at Avorino was fantastic. From design to final walkthrough, they kept us informed every step of the way. Highly recommend.', author: 'M. P.', location: 'San Clemente, CA', stars: 5 },
-  { quote: 'Best construction company in Orange County. Raja and his team deliver on their promises. Our ADU is exactly what we envisioned.', author: 'T. H.', location: 'Huntington Beach, CA', stars: 5 },
-  { quote: 'Outstanding work on our custom home renovation. The attention to detail was impressive and the project was completed on schedule and within budget.', author: 'J. W.', location: 'Yorba Linda, CA', stars: 5 },
-  { quote: 'Avorino made the ADU building process stress-free. Weekly updates and transparent pricing. Highly recommend to anyone in Orange County.', author: 'S. G.', location: 'Aliso Viejo, CA', stars: 5 },
+  { quote: 'I am so happy I used Avorino Construction to build and renovate my two custom homes in Santa Ana. Raja and his team were absolutely amazing and made the whole process seamless and streamlined. The quality of work was absolutely fantastic and top notch all the way!', author: 'S S.', location: 'Irvine, CA', stars: 5 },
+  { quote: 'Avorino converted our RV garage to a custom ADU. Raja is a great project manager and easy to work with. He is organized and a clear communicator. Our architect made mistakes on the plans but Raja and team helped work through all issues. I highly recommend them.', author: 'Sam W.', location: 'Oakland, CA', stars: 5 },
+  { quote: 'These guys helped us out, converting our one car garage into a junior ADU. The city was difficult to work with, and they took care of everything. Raja was excellent and easy to work with. Their cost was very competitive. I would definitely work with them again.', author: 'Alex D.', location: 'Los Angeles, CA', stars: 5 },
+  { quote: 'We had Avorino build us an ADU in our property recently. They provided the full design and rendering. They pulled permits and built our 1,000 sqft ADU from start to finish. They are really easy to work with and their prices are very competitive.', author: 'Ray W.', location: 'Irvine, CA', stars: 5 },
+  { quote: 'This was my first kitchen remodeling experience and I was very nervous. From the first time I made contact, it was a smooth and professional experience. They executed my vision in every detail. The work was completed in less time than estimated and perfectly within budget.', author: 'Tina C.', location: 'Dana Point, CA', stars: 5 },
+  { quote: 'What a wonderful experience working with Raja and his team! Raja was extremely professional, timely, and had clear communication the entire time. My parents were so happy with how their ADU turned out and I am impressed with the care and service I received!', author: 'Alarah R.', location: 'Orange County, CA', stars: 5 },
+  { quote: 'It\'s so rare to find a contractor that you have a good experience with. They got the work done quickly and made sure every little detail was completed without me having to be on top of them. I highly recommend and will definitely use them again!', author: 'Nikki B.', location: 'Laguna Niguel, CA', stars: 5 },
+  { quote: 'These are the best people in the business. They beat every single price that I got on top of that they did an excellent job finishing it in no time. They are truly the best of the best, highly recommended.', author: 'Shahin S.', location: 'Los Angeles, CA', stars: 5 },
+  { quote: 'Avorino built me a custom home. We loved how great they executed our project. We were impressed that they finished before the estimated timeline. They communicated every step. Love this company.', author: 'Hooman E.', location: 'Irvine, CA', stars: 5 },
+  { quote: 'Raja and William were great to work with. After our consultation they started the work within a week. They were professional, courteous, and precise. The job turned out great. I would totally recommend them.', author: 'Ryan J.', location: 'Brentwood, CA', stars: 5 },
+  { quote: 'They responded very quickly and showed up the next day to give a quote. Always responded and showed up on time. The job was done on time and I love the fine look and clear way of working. I highly recommend this business!', author: 'Pazit B.', location: 'Irvine, CA', stars: 5 },
+  { quote: 'Raja was attentive, responsive and communicative with the entire process. He gave us good ideas throughout and supported us in selecting the various fixtures and tiles. We\'ve been thrilled with how the kitchen has turned out!', author: 'Peeb P.', location: 'Irvine, CA', stars: 5 },
+  { quote: 'William and Raja are hands down the best around! They are with you from start to finish and are incredibly helpful, communicative and understanding. We have used them for multiple projects at home and at our two businesses.', author: 'Kristle J.', location: 'San Clemente, CA', stars: 5 },
+  { quote: 'Did a bathroom remodel. Full service company. Accommodates changes along the way, and fixing anything we point out or that we wanted changed. Fast and things get done, thanks Raja!', author: 'Tony H.', location: 'Irvine, CA', stars: 5 },
+  { quote: 'They did an excellent job and actually at a good price. We did a retile plus new fixtures and it came out looking like a high end resort bathroom.', author: 'Amy D.', location: 'San Clemente, CA', stars: 5 },
+  { quote: 'They were exceptional. The expertise, responsiveness, professionalism, cleanliness, creative and ingenuity is top of the line. Their work is so good and most important, honest.', author: 'Boris B.', location: 'Newport Beach, CA', stars: 5 },
+  { quote: 'Such a professional and creative team! They walked into my house with confidence that they would remodel my horrific 1960s fireplace to a clean cut, modern, cozy and budget friendly replacement. And so they did!', author: 'Teri N.', location: 'Irvine, CA', stars: 5 },
+  { quote: 'William and his team did a spectacular job on our new front porch! I rehired him due to his responsiveness, honesty and speedy, quality work! His team got our porch done in literally a day and a half.', author: 'Courtney C.', location: 'Mission Viejo, CA', stars: 5 },
+  { quote: 'Raja and Amir are easily the most friendly and up front contractors we\'ve worked with. Highly recommend them for being super easy to work with and good quality.', author: 'Allen D.', location: 'San Clemente, CA', stars: 5 },
+  { quote: 'This company is VERY communicative, professional and cost friendly. They got the job done in a timely manner. Every pre-existing issue I had they went over and beyond to fix. 100/100 across the board.', author: 'Jeremy C.', location: 'Long Beach, CA', stars: 5 },
+  { quote: 'Raja and his team came in with a reasonable price and worked after hours to get the job done! His team was respectful, clean, and worked after hours. I cannot recommend them enough.', author: 'Behrooz S.', location: 'Huntington Beach, CA', stars: 5 },
+  { quote: 'We had them complete our media wall and absolutely loved working with their team! They were so professional from the beginning and set very realistic expectations. Our final product was better than I had imagined.', author: 'Srishti P.', location: 'Burbank, CA', stars: 5 },
+  { quote: 'I am very happy with my decision and the final outcome is fabulous! All the workers were on time, professional and respectful. The work is top notch!', author: 'Theresa F.', location: 'Laguna Niguel, CA', stars: 5 },
+  { quote: 'Raja gave me the kitchen of my dreams. I couldn\'t have made a better decision. He was honest and very easy to work with. They were always on time and completed the work in record time.', author: 'Sonia H.', location: 'Irvine, CA', stars: 5 },
+  { quote: 'William was wonderful in relieving my fears and reassuring me they could take care of everything! He was professional as was his crew. I would certainly recommend them!', author: 'Marcia R.', location: 'San Clemente, CA', stars: 5 },
+  { quote: 'Excellent work, reliable \u2014 highly recommend them. They are very tidy and the results speak for themselves.', author: 'Ellen C.', location: 'San Francisco, CA', stars: 5 },
 ];
 
-// 5 featured reviews shown in the scroll section (must match avorino-reviews.js FEATURED selection)
-const FEATURED = [REVIEWS[0], REVIEWS[5], REVIEWS[8], REVIEWS[3], REVIEWS[12]];
+// 10 featured reviews shown in the scroll section (must match avorino-reviews.js FEATURED selection)
+const FEATURED = [REVIEWS[0], REVIEWS[1], REVIEWS[3], REVIEWS[5], REVIEWS[8], REVIEWS[4], REVIEWS[15], REVIEWS[19], REVIEWS[12], REVIEWS[23]];
 
 // ── Page config ──
 const PAGE_NAME = 'Client Reviews';
@@ -201,7 +212,7 @@ async function buildReviewsPage() {
     dot.setAttribute('class', i === 0 ? 'rv-bar-dot is-active' : 'rv-bar-dot');
   });
 
-  logDetail('Progress bar built (track, fill, 5 dots)', 'ok');
+  logDetail(`Progress bar built (track, fill, ${FEATURED.length} dots)`, 'ok');
 
   await safeCall('append:wall', () => body.append(wall));
   logDetail('Review wall appended to page', 'ok');
