@@ -78,6 +78,9 @@
     const logoEl = textWrap.querySelector('img, div');
     if (!logoEl) { preloader.style.display = 'none'; lenis.start(); initScrollAnimations(); return; }
 
+    // Roller SVG moves above/below logo bounds — need visible overflow
+    textWrap.style.overflow = 'visible';
+
     // Get the background-image (from div) or src (from img)
     const isImg = logoEl.tagName === 'IMG';
     const bgImage = isImg
