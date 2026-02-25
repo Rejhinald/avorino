@@ -183,11 +183,32 @@
   }
 
   /* ═══════════════════════════════════════════════
+     FIND EXISTING DOM (built by Webflow builder)
+     ═══════════════════════════════════════════════ */
+  function findExistingDOM() {
+    var wall = document.querySelector('.rv-wall');
+    if (!wall) return null;
+    var reviewEls = Array.prototype.slice.call(wall.querySelectorAll('.rv-review'));
+    var arrows = wall.querySelectorAll('.rv-arrow');
+    if (!reviewEls.length || arrows.length < 2) return null;
+    return {
+      wall: wall,
+      reviewEls: reviewEls,
+      counter: wall.querySelector('.rv-counter'),
+      barFill: wall.querySelector('.rv-bar-fill'),
+      barDots: Array.prototype.slice.call(wall.querySelectorAll('.rv-bar-dot')),
+      arrowL: arrows[0],
+      arrowR: arrows[1],
+    };
+  }
+
+  /* ═══════════════════════════════════════════════
      SCROLL-DRIVEN REVIEW CYCLING
      ═══════════════════════════════════════════════ */
   function initReviews() {
-    var dom = buildReviewSection();
-    var total = FEATURED.length;
+    // Use existing DOM from Webflow builder, fall back to runtime build
+    var dom = findExistingDOM() || buildReviewSection();
+    var total = dom.reviewEls.length;
     var currentStep = 0;
     var nums = [];
     for (var i = 0; i < total; i++) nums.push(String(i + 1).padStart(2, '0'));
