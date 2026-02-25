@@ -236,7 +236,7 @@
     ).observe(section);
 
     /* ═══════════════════════════════════════════════
-       RENDER LOOP
+       RENDER LOOP — fully scroll-driven
        ═══════════════════════════════════════════════ */
     var baseAngle = 0;
 
@@ -248,7 +248,10 @@
       if (!visible) return;
 
       scroll += (scrollTarget - scroll) * 0.06;
-      baseAngle += 0.0006;
+
+      /* Camera orbit driven by scroll progress (half rotation over full scroll) */
+      var targetAngle = scroll * Math.PI * 0.5;
+      baseAngle += (targetAngle - baseAngle) * 0.1;
 
       /* Camera orbit + mouse parallax */
       scene.rotation.y = baseAngle + mx * 0.12;
@@ -276,27 +279,29 @@
       /* Accents: 62 → 90 % */
       accentMat.opacity = ease(clamp((p - 0.62) / 0.28)) * 0.65;
 
-      /* Particles: 50 → 100 % */
+      /* Particles: 50 → 100 % — move only when scrolling */
       pMat.opacity = clamp((p - 0.5) / 0.5) * 0.35;
-      var pa = pGeo.attributes.position.array;
-      for (var j = 0; j < PC; j++) {
-        pa[j * 3 + 1] += pVel[j];
-        if (pa[j * 3 + 1] > 12) {
-          pa[j * 3 + 1] = -1;
-          pa[j * 3]     = (Math.random() - 0.5) * 18;
-          pa[j * 3 + 2] = (Math.random() - 0.5) * 14;
+      var scrollDelta = Math.abs(scrollTarget - scroll);
+      if (scrollDelta > 0.0005) {
+        var pa = pGeo.attributes.position.array;
+        for (var j = 0; j < PC; j++) {
+          pa[j * 3 + 1] += pVel[j];
+          if (pa[j * 3 + 1] > 12) {
+            pa[j * 3 + 1] = -1;
+            pa[j * 3]     = (Math.random() - 0.5) * 18;
+            pa[j * 3 + 2] = (Math.random() - 0.5) * 14;
+          }
         }
+        pGeo.attributes.position.needsUpdate = true;
       }
-      pGeo.attributes.position.needsUpdate = true;
-
-      /* Subtle breathing on completed structure */
-      var breathe = 1 + Math.sin(Date.now() * 0.001) * 0.003;
-      gStruct.scale.setScalar(breathe);
 
       renderer.render(scene, camera);
     }
 
     animate();
+
+    /* Signal that 3D scene is ready */
+    section.dispatchEvent(new CustomEvent('mv3d-ready'));
   }
 
   /* ── Bootstrap ── */

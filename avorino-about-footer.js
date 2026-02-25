@@ -479,6 +479,22 @@
     var visionPanel = section.querySelector('[data-mv="vision"]');
     if (!phraseEl || !missionPanel || !visionPanel) return;
 
+    // Section loader — shows until Three.js + ScrollTrigger are ready
+    var loader = document.createElement('div');
+    loader.className = 'mv-section-loader';
+    loader.innerHTML = '<div class="mv-loader-bar"></div><div class="mv-loader-text">Loading</div>';
+    section.appendChild(loader);
+
+    var loaderDismissed = false;
+    function dismissLoader() {
+      if (loaderDismissed) return;
+      loaderDismissed = true;
+      gsap.to(loader, {
+        opacity: 0, duration: 0.8, ease: 'power2.inOut',
+        onComplete: function () { loader.remove(); }
+      });
+    }
+
     // Mobile: skip pinning, show content stacked
     if (window.innerWidth < 992) {
       var phraseLayer = section.querySelector('.mv-phrase-layer');
@@ -494,8 +510,13 @@
         if (body) body.style.opacity = '0.55';
       });
       section.style.minHeight = 'auto';
+      dismissLoader();
       return;
     }
+
+    // Listen for Three.js scene ready, or dismiss after timeout
+    section.addEventListener('mv3d-ready', dismissLoader);
+    setTimeout(dismissLoader, 3000);
 
     // Progress bar — subtle gold line at bottom
     var progressBar = document.createElement('div');
