@@ -128,19 +128,28 @@ async function buildServicesPage() {
 
     log('Setting page-specific style properties...');
 
+    // Safe wrapper — if one style fails, don't kill the rest
+    async function safeStyle(name: string, props: Record<string, any>) {
+      try {
+        await clearAndSet(await freshStyle(name), name, props);
+      } catch (err: any) {
+        logDetail(`WARN style ${name}: ${err?.message || err}`, 'err');
+      }
+    }
+
     // ── Hero ──
     logDetail('Setting hero props...', 'info');
-    await clearAndSet(await freshStyle('sv-hero'), 'sv-hero', {
+    await safeStyle('sv-hero', {
       'min-height': '60vh', 'display': 'flex', 'align-items': 'flex-end',
       'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
       'background-color': v['av-dark'], 'color': v['av-cream'],
       'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
-    await clearAndSet(await freshStyle('sv-hero-content'), 'sv-hero-content', {
+    await safeStyle('sv-hero-content', {
       'position': 'relative', 'z-index': '2', 'max-width': '800px',
     });
-    await clearAndSet(await freshStyle('sv-hero-subtitle'), 'sv-hero-subtitle', {
+    await safeStyle('sv-hero-subtitle', {
       'font-family': 'DM Sans', 'font-size': v['av-text-body'],
       'line-height': '1.9', 'opacity': '0.6', 'margin-top': '24px', 'color': v['av-cream'],
     });
@@ -148,16 +157,16 @@ async function buildServicesPage() {
 
     // ── Showcase section ──
     logDetail('Setting showcase props...', 'info');
-    await clearAndSet(await freshStyle('sv-showcase'), 'sv-showcase', {
+    await safeStyle('sv-showcase', {
       'width': '100%', 'min-height': '100vh', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
       'position': 'relative', 'background-color': v['av-dark'], 'color': v['av-cream'],
     });
-    await clearAndSet(await freshStyle('sv-canvas-wrap'), 'sv-canvas-wrap', {
+    await safeStyle('sv-canvas-wrap', {
       'position': 'absolute', 'top': '0px', 'right': '0px',
       'width': '50%', 'height': '100%', 'z-index': '1',
       'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
-    await clearAndSet(await freshStyle('sv-showcase-content'), 'sv-showcase-content', {
+    await safeStyle('sv-showcase-content', {
       'position': 'relative', 'z-index': '2',
       'max-width': '1400px', 'margin-left': 'auto', 'margin-right': 'auto',
       'padding-left': '80px', 'padding-right': '80px',
@@ -165,7 +174,7 @@ async function buildServicesPage() {
       'display': 'grid', 'grid-template-columns': '5fr 7fr',
       'grid-column-gap': '96px', 'align-items': 'center',
     });
-    await clearAndSet(await freshStyle('sv-showcase-info'), 'sv-showcase-info', {
+    await safeStyle('sv-showcase-info', {
       'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '24px',
       'position': 'relative', 'min-height': '420px',
     });
@@ -173,35 +182,35 @@ async function buildServicesPage() {
 
     // ── Service panels ──
     logDetail('Setting panel props...', 'info');
-    await clearAndSet(await freshStyle('sv-service-panel'), 'sv-service-panel', {
+    await safeStyle('sv-service-panel', {
       'position': 'absolute', 'top': '0px', 'left': '0px', 'width': '100%', 'height': '100%',
       'display': 'flex', 'flex-direction': 'column', 'justify-content': 'center',
       'grid-row-gap': '24px', 'opacity': '0',
     });
-    await clearAndSet(await freshStyle('sv-service-label'), 'sv-service-label', {
+    await safeStyle('sv-service-label', {
       'font-family': 'DM Sans', 'font-size': '11px',
       'letter-spacing': '0.25em', 'text-transform': 'uppercase',
       'color': '#c9a96e', 'opacity': '0.8',
     });
-    await clearAndSet(await freshStyle('sv-service-title'), 'sv-service-title', {
+    await safeStyle('sv-service-title', {
       'font-family': 'DM Serif Display', 'font-size': '48px',
       'font-weight': '400', 'line-height': '1.08', 'letter-spacing': '-0.02em',
       'color': v['av-cream'],
     });
-    await clearAndSet(await freshStyle('sv-service-desc'), 'sv-service-desc', {
+    await safeStyle('sv-service-desc', {
       'font-family': 'DM Sans', 'font-size': '16px',
       'line-height': '1.9', 'color': v['av-cream'], 'opacity': '0.55',
       'max-width': '480px',
     });
-    await clearAndSet(await freshStyle('sv-service-features'), 'sv-service-features', {
+    await safeStyle('sv-service-features', {
       'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '12px',
       'margin-top': '8px',
     });
-    await clearAndSet(await freshStyle('sv-service-feature'), 'sv-service-feature', {
+    await safeStyle('sv-service-feature', {
       'font-family': 'DM Sans', 'font-size': '14px',
       'color': v['av-cream'], 'opacity': '0.7', 'padding-left': '20px',
     });
-    await clearAndSet(await freshStyle('sv-service-cta'), 'sv-service-cta', {
+    await safeStyle('sv-service-cta', {
       'font-family': 'DM Sans', 'font-size': '14px', 'font-weight': '500',
       'letter-spacing': '0.08em', 'display': 'inline-flex', 'align-items': 'center',
       'grid-column-gap': '8px', 'color': '#c9a96e', 'text-decoration': 'none',
@@ -211,26 +220,26 @@ async function buildServicesPage() {
 
     // ── Counter + Progress bar ──
     logDetail('Setting counter + bar props...', 'info');
-    await clearAndSet(await freshStyle('sv-counter'), 'sv-counter', {
+    await safeStyle('sv-counter', {
       'font-family': 'DM Serif Display', 'font-size': '120px',
       'font-weight': '400', 'line-height': '1', 'color': v['av-cream'],
       'opacity': '0.12', 'position': 'absolute', 'bottom': '80px', 'left': '80px', 'z-index': '2',
     });
-    await clearAndSet(await freshStyle('sv-progress-bar'), 'sv-progress-bar', {
+    await safeStyle('sv-progress-bar', {
       'position': 'absolute', 'bottom': '0px', 'left': '0px', 'right': '0px',
       'height': '48px', 'display': 'flex', 'align-items': 'center',
       'justify-content': 'space-between', 'padding-left': '80px', 'padding-right': '80px',
       'z-index': '10',
     });
-    await clearAndSet(await freshStyle('sv-bar-track'), 'sv-bar-track', {
+    await safeStyle('sv-bar-track', {
       'position': 'absolute', 'top': '50%', 'left': '80px', 'right': '80px',
-      'height': '1px', 'background-color': 'rgba(240, 237, 232, 0.06)',
+      'height': '1px', 'background-color': 'rgba(240,237,232,0.06)',
     });
-    await clearAndSet(await freshStyle('sv-bar-fill'), 'sv-bar-fill', {
+    await safeStyle('sv-bar-fill', {
       'position': 'absolute', 'top': '50%', 'left': '80px', 'right': '80px',
-      'height': '1px', 'background-color': 'rgba(201, 169, 110, 0.5)',
+      'height': '1px', 'background-color': 'rgba(201,169,110,0.5)',
     });
-    await clearAndSet(await freshStyle('sv-bar-dot'), 'sv-bar-dot', {
+    await safeStyle('sv-bar-dot', {
       'position': 'relative', 'width': '8px', 'height': '8px',
       'border-top-left-radius': '50%', 'border-top-right-radius': '50%',
       'border-bottom-left-radius': '50%', 'border-bottom-right-radius': '50%',
@@ -240,38 +249,38 @@ async function buildServicesPage() {
 
     // ── Process (Three.js 3D) ──
     logDetail('Setting process props...', 'info');
-    await clearAndSet(await freshStyle('about-process-pinned'), 'about-process-pinned', {
+    await safeStyle('about-process-pinned', {
       'height': '100vh', 'display': 'flex', 'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
-    await clearAndSet(await freshStyle('about-process-visual'), 'about-process-visual', { 'width': '100%', 'height': '100%', 'position': 'relative' });
-    await clearAndSet(await freshStyle('about-process-fx'), 'about-process-fx', { 'position': 'absolute', 'top': '0px', 'left': '0px', 'width': '100%', 'height': '100%' });
-    await clearAndSet(await freshStyle('about-process-cards'), 'about-process-cards', { 'position': 'absolute', 'top': '0px', 'left': '0px', 'width': '100%', 'height': '100%', 'z-index': '2' });
-    await clearAndSet(await freshStyle('about-process-card'), 'about-process-card', {
+    await safeStyle('about-process-visual', { 'width': '100%', 'height': '100%', 'position': 'relative' });
+    await safeStyle('about-process-fx', { 'position': 'absolute', 'top': '0px', 'left': '0px', 'width': '100%', 'height': '100%' });
+    await safeStyle('about-process-cards', { 'position': 'absolute', 'top': '0px', 'left': '0px', 'width': '100%', 'height': '100%', 'z-index': '2' });
+    await safeStyle('about-process-card', {
       'position': 'absolute', 'background-color': v['av-dark'], 'color': v['av-cream'],
       'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
       'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
       'padding-top': '56px', 'padding-bottom': '56px', 'padding-left': '48px', 'padding-right': '48px',
       'max-width': '500px', 'width': '100%', 'top': '50%', 'left': '50%',
     });
-    await clearAndSet(await freshStyle('about-process-nav'), 'about-process-nav', { 'position': 'absolute', 'bottom': '32px', 'left': '0px', 'width': '100%', 'text-align': 'center' });
-    await clearAndSet(await freshStyle('about-process-card-num'), 'about-process-card-num', {
+    await safeStyle('about-process-nav', { 'position': 'absolute', 'bottom': '32px', 'left': '0px', 'width': '100%', 'text-align': 'center' });
+    await safeStyle('about-process-card-num', {
       'font-family': 'DM Sans', 'font-size': v['av-text-xs'], 'letter-spacing': '0.2em',
       'text-transform': 'uppercase', 'opacity': '0.4', 'margin-bottom': '16px', 'color': v['av-cream'],
     });
-    await clearAndSet(await freshStyle('about-process-card-title'), 'about-process-card-title', {
+    await safeStyle('about-process-card-title', {
       'font-family': 'DM Serif Display', 'font-size': '28px', 'line-height': '1.2',
       'font-weight': '400', 'margin-bottom': '14px', 'color': v['av-cream'],
     });
-    await clearAndSet(await freshStyle('about-process-card-desc'), 'about-process-card-desc', {
+    await safeStyle('about-process-card-desc', {
       'font-family': 'DM Sans', 'font-size': v['av-text-sm'], 'line-height': '1.7',
       'opacity': '0.5', 'color': v['av-cream'],
     });
     await wait(500);
 
     // ── Utility ──
-    await clearAndSet(await freshStyle('sv-mb-64'), 'sv-mb-64', { 'margin-bottom': v['av-gap-md'] });
-    await clearAndSet(await freshStyle('sv-mb-96'), 'sv-mb-96', { 'margin-bottom': v['av-gap-lg'] });
-    await clearAndSet(await freshStyle('sv-label-line'), 'sv-label-line', { 'flex-grow': '1', 'height': '1px', 'background-color': v['av-dark-15'] });
+    await safeStyle('sv-mb-64', { 'margin-bottom': v['av-gap-md'] });
+    await safeStyle('sv-mb-96', { 'margin-bottom': v['av-gap-lg'] });
+    await safeStyle('sv-label-line', { 'flex-grow': '1', 'height': '1px', 'background-color': v['av-dark-15'] });
 
     // CTA
     await applyCTAStyleProps(v);
