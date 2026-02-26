@@ -102,12 +102,47 @@ async function buildServicesPage() {
 
   // ── Page-specific styles ──
   log('Creating page-specific styles...');
+
+  // Hero
   const svHero = await getOrCreateStyle('sv-hero');
   const svHeroContent = await getOrCreateStyle('sv-hero-content');
   const svHeroSubtitle = await getOrCreateStyle('sv-hero-subtitle');
-  const svMb64 = await getOrCreateStyle('sv-mb-64');
-  const svMb96 = await getOrCreateStyle('sv-mb-96');
-  const svLabelLine = await getOrCreateStyle('sv-label-line');
+
+  // Showcase section
+  const svShowcase = await getOrCreateStyle('sv-showcase');
+  const svCanvasWrap = await getOrCreateStyle('sv-canvas-wrap');
+  const svShowcaseContent = await getOrCreateStyle('sv-showcase-content');
+  const svShowcaseInfo = await getOrCreateStyle('sv-showcase-info');
+  const svServicePanel = await getOrCreateStyle('sv-service-panel');
+  const svServiceLabel = await getOrCreateStyle('sv-service-label');
+  const svServiceTitle = await getOrCreateStyle('sv-service-title');
+  const svServiceDesc = await getOrCreateStyle('sv-service-desc');
+  const svServiceFeatures = await getOrCreateStyle('sv-service-features');
+  const svServiceFeature = await getOrCreateStyle('sv-service-feature');
+  const svServiceCta = await getOrCreateStyle('sv-service-cta');
+  const svCounter = await getOrCreateStyle('sv-counter');
+
+  // Progress bar
+  const svProgressBar = await getOrCreateStyle('sv-progress-bar');
+  const svBarTrack = await getOrCreateStyle('sv-bar-track');
+  const svBarFill = await getOrCreateStyle('sv-bar-fill');
+  const svBarDot = await getOrCreateStyle('sv-bar-dot');
+
+  // Process timeline
+  const svProcess = await getOrCreateStyle('sv-process');
+  const svProcessLabel = await getOrCreateStyle('sv-process-label');
+  const svProcessLabelLine = await getOrCreateStyle('sv-process-label-line');
+  const svProcessHeading = await getOrCreateStyle('sv-process-heading');
+  const svTimeline = await getOrCreateStyle('sv-timeline');
+  const svTimelineLine = await getOrCreateStyle('sv-timeline-line');
+  const svTimelineStep = await getOrCreateStyle('sv-timeline-step');
+  const svTimelineMarker = await getOrCreateStyle('sv-timeline-marker');
+  const svTimelineCard = await getOrCreateStyle('sv-timeline-card');
+  const svTimelineNum = await getOrCreateStyle('sv-timeline-num');
+  const svTimelineTitle = await getOrCreateStyle('sv-timeline-title');
+  const svTimelineDesc = await getOrCreateStyle('sv-timeline-desc');
+
+  logDetail('All styles created', 'ok');
 
   // ── Create page ──
   const { body } = await createPageWithSlug(PAGE_NAME, PAGE_SLUG, PAGE_TITLE, PAGE_DESC);
@@ -139,10 +174,166 @@ async function buildServicesPage() {
     });
     await wait(500);
 
-    // Utility
-    await clearAndSet(await freshStyle('sv-mb-64'), 'sv-mb-64', { 'margin-bottom': v['av-gap-md'] });
-    await clearAndSet(await freshStyle('sv-mb-96'), 'sv-mb-96', { 'margin-bottom': v['av-gap-lg'] });
-    await clearAndSet(await freshStyle('sv-label-line'), 'sv-label-line', { 'flex-grow': '1', 'height': '1px', 'background-color': v['av-dark-15'] });
+    // Showcase section
+    logDetail('Setting showcase props...', 'info');
+    await clearAndSet(await freshStyle('sv-showcase'), 'sv-showcase', {
+      'width': '100%', 'min-height': '100vh', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
+      'position': 'relative', 'background-color': v['av-dark'], 'color': v['av-cream'],
+    });
+    await clearAndSet(await freshStyle('sv-canvas-wrap'), 'sv-canvas-wrap', {
+      'position': 'absolute', 'top': '0px', 'right': '0px',
+      'width': '50%', 'height': '100%', 'z-index': '1',
+      'overflow-x': 'hidden', 'overflow-y': 'hidden',
+    });
+    await clearAndSet(await freshStyle('sv-showcase-content'), 'sv-showcase-content', {
+      'position': 'relative', 'z-index': '2',
+      'max-width': '1400px', 'margin-left': 'auto', 'margin-right': 'auto',
+      'padding-left': '80px', 'padding-right': '80px',
+      'width': '100%', 'height': '100vh',
+      'display': 'grid', 'grid-template-columns': '5fr 7fr',
+      'grid-column-gap': '96px', 'align-items': 'center',
+    });
+    await clearAndSet(await freshStyle('sv-showcase-info'), 'sv-showcase-info', {
+      'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '24px',
+      'position': 'relative', 'min-height': '420px',
+    });
+    await wait(500);
+
+    // Service panels
+    logDetail('Setting service panel props...', 'info');
+    await clearAndSet(await freshStyle('sv-service-panel'), 'sv-service-panel', {
+      'position': 'absolute', 'top': '0px', 'left': '0px', 'width': '100%', 'height': '100%',
+      'display': 'flex', 'flex-direction': 'column', 'justify-content': 'center',
+      'grid-row-gap': '24px', 'opacity': '0',
+    });
+    await clearAndSet(await freshStyle('sv-service-label'), 'sv-service-label', {
+      'font-family': 'DM Sans', 'font-size': '11px',
+      'letter-spacing': '0.25em', 'text-transform': 'uppercase',
+      'color': '#c9a96e', 'opacity': '0.8',
+    });
+    await clearAndSet(await freshStyle('sv-service-title'), 'sv-service-title', {
+      'font-family': 'DM Serif Display', 'font-size': '48px',
+      'font-weight': '400', 'line-height': '1.08', 'letter-spacing': '-0.02em',
+      'color': v['av-cream'],
+    });
+    await clearAndSet(await freshStyle('sv-service-desc'), 'sv-service-desc', {
+      'font-family': 'DM Sans', 'font-size': '16px',
+      'line-height': '1.9', 'color': v['av-cream'], 'opacity': '0.55',
+      'max-width': '480px',
+    });
+    await clearAndSet(await freshStyle('sv-service-features'), 'sv-service-features', {
+      'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '12px',
+      'margin-top': '8px',
+    });
+    await clearAndSet(await freshStyle('sv-service-feature'), 'sv-service-feature', {
+      'font-family': 'DM Sans', 'font-size': '14px',
+      'color': v['av-cream'], 'opacity': '0.7', 'padding-left': '20px',
+    });
+    await clearAndSet(await freshStyle('sv-service-cta'), 'sv-service-cta', {
+      'font-family': 'DM Sans', 'font-size': '14px', 'font-weight': '500',
+      'letter-spacing': '0.08em', 'display': 'inline-flex', 'align-items': 'center',
+      'grid-column-gap': '8px', 'color': '#c9a96e', 'text-decoration': 'none',
+      'margin-top': '16px',
+    });
+    await wait(500);
+
+    // Counter
+    await clearAndSet(await freshStyle('sv-counter'), 'sv-counter', {
+      'font-family': 'DM Serif Display', 'font-size': '120px',
+      'font-weight': '400', 'line-height': '1', 'color': v['av-cream'],
+      'opacity': '0.08', 'position': 'absolute', 'bottom': '80px', 'left': '80px', 'z-index': '2',
+    });
+
+    // Progress bar
+    logDetail('Setting progress bar props...', 'info');
+    await clearAndSet(await freshStyle('sv-progress-bar'), 'sv-progress-bar', {
+      'position': 'absolute', 'bottom': '0px', 'left': '0px', 'right': '0px',
+      'height': '48px', 'display': 'flex', 'align-items': 'center',
+      'justify-content': 'space-between', 'padding-left': '80px', 'padding-right': '80px',
+      'z-index': '10',
+    });
+    await clearAndSet(await freshStyle('sv-bar-track'), 'sv-bar-track', {
+      'position': 'absolute', 'top': '50%', 'left': '80px', 'right': '80px',
+      'height': '1px', 'background-color': 'rgba(240, 237, 232, 0.06)',
+    });
+    await clearAndSet(await freshStyle('sv-bar-fill'), 'sv-bar-fill', {
+      'position': 'absolute', 'top': '50%', 'left': '80px', 'right': '80px',
+      'height': '1px', 'background-color': 'rgba(201, 169, 110, 0.5)',
+    });
+    await clearAndSet(await freshStyle('sv-bar-dot'), 'sv-bar-dot', {
+      'position': 'relative', 'width': '8px', 'height': '8px',
+      'border-top-left-radius': '50%', 'border-top-right-radius': '50%',
+      'border-bottom-left-radius': '50%', 'border-bottom-right-radius': '50%',
+      'background-color': 'transparent', 'z-index': '1',
+    });
+    await wait(500);
+
+    // Process section
+    logDetail('Setting process props...', 'info');
+    await clearAndSet(await freshStyle('sv-process'), 'sv-process', {
+      'position': 'relative',
+      'padding-top': '120px', 'padding-bottom': '120px',
+      'padding-left': '80px', 'padding-right': '80px',
+      'background-color': v['av-warm'],
+    });
+    await clearAndSet(await freshStyle('sv-process-label'), 'sv-process-label', {
+      'font-family': 'DM Sans', 'font-size': '11px',
+      'letter-spacing': '0.25em', 'text-transform': 'uppercase',
+      'color': v['av-dark'], 'opacity': '0.4',
+      'margin-bottom': '64px', 'display': 'flex', 'align-items': 'center', 'grid-column-gap': '24px',
+    });
+    await clearAndSet(await freshStyle('sv-process-label-line'), 'sv-process-label-line', {
+      'flex-grow': '1', 'height': '1px', 'background-color': 'rgba(17, 17, 17, 0.15)',
+    });
+    await clearAndSet(await freshStyle('sv-process-heading'), 'sv-process-heading', {
+      'font-family': 'DM Serif Display', 'font-size': '48px',
+      'font-weight': '400', 'line-height': '1.08', 'letter-spacing': '-0.02em',
+      'color': v['av-dark'], 'margin-bottom': '96px',
+    });
+    await wait(500);
+
+    // Timeline
+    logDetail('Setting timeline props...', 'info');
+    await clearAndSet(await freshStyle('sv-timeline'), 'sv-timeline', {
+      'position': 'relative', 'max-width': '900px',
+      'margin-left': 'auto', 'margin-right': 'auto',
+    });
+    await clearAndSet(await freshStyle('sv-timeline-line'), 'sv-timeline-line', {
+      'position': 'absolute', 'left': '50%', 'top': '0px', 'bottom': '0px',
+      'width': '1px', 'background-color': 'rgba(201, 169, 110, 0.3)',
+    });
+    await clearAndSet(await freshStyle('sv-timeline-step'), 'sv-timeline-step', {
+      'display': 'flex', 'align-items': 'flex-start',
+      'margin-bottom': '80px', 'position': 'relative',
+    });
+    await clearAndSet(await freshStyle('sv-timeline-marker'), 'sv-timeline-marker', {
+      'position': 'absolute', 'left': '50%', 'top': '16px',
+      'width': '24px', 'height': '24px',
+      'border-top-left-radius': '50%', 'border-top-right-radius': '50%',
+      'border-bottom-left-radius': '50%', 'border-bottom-right-radius': '50%',
+      'background-color': '#c9a96e', 'z-index': '2', 'flex-shrink': '0',
+    });
+    await clearAndSet(await freshStyle('sv-timeline-card'), 'sv-timeline-card', {
+      'width': '45%', 'background-color': 'rgba(255, 255, 255, 0.7)',
+      'border-top-left-radius': '12px', 'border-top-right-radius': '12px',
+      'border-bottom-left-radius': '12px', 'border-bottom-right-radius': '12px',
+      'padding-top': '40px', 'padding-bottom': '40px',
+      'padding-left': '40px', 'padding-right': '40px',
+    });
+    await clearAndSet(await freshStyle('sv-timeline-num'), 'sv-timeline-num', {
+      'font-family': 'DM Sans', 'font-size': '11px',
+      'letter-spacing': '0.25em', 'text-transform': 'uppercase',
+      'opacity': '0.4', 'margin-bottom': '16px', 'color': v['av-dark'],
+    });
+    await clearAndSet(await freshStyle('sv-timeline-title'), 'sv-timeline-title', {
+      'font-family': 'DM Serif Display', 'font-size': '24px',
+      'font-weight': '400', 'line-height': '1.2',
+      'margin-bottom': '14px', 'color': v['av-dark'],
+    });
+    await clearAndSet(await freshStyle('sv-timeline-desc'), 'sv-timeline-desc', {
+      'font-family': 'DM Sans', 'font-size': '15px',
+      'line-height': '1.7', 'opacity': '0.55', 'color': v['av-dark'],
+    });
 
     // CTA
     await applyCTAStyleProps(v);
@@ -188,59 +379,60 @@ async function buildServicesPage() {
   log('Building Section 2: Service Showcase...');
   const showcase = webflow.elementBuilder(webflow.elementPresets.DOM);
   showcase.setTag('section');
-  showcase.setAttribute('class', 'sv-showcase');
+  showcase.setStyles([svShowcase]);
   showcase.setAttribute('id', 'sv-showcase');
 
   // Canvas wrap (Three.js fills this)
   const canvasWrap = showcase.append(webflow.elementPresets.DOM);
   canvasWrap.setTag('div');
-  canvasWrap.setAttribute('class', 'sv-canvas-wrap');
+  canvasWrap.setStyles([svCanvasWrap]);
 
   // Content grid
   const content = showcase.append(webflow.elementPresets.DOM);
   content.setTag('div');
-  content.setAttribute('class', 'sv-showcase-content');
+  content.setStyles([svShowcaseContent]);
 
   // Left column: service info
   const info = content.append(webflow.elementPresets.DOM);
   info.setTag('div');
-  info.setAttribute('class', 'sv-showcase-info');
+  info.setStyles([svShowcaseInfo]);
 
   // Build 6 service panels
   SERVICES.forEach((svc, i) => {
     const panel = info.append(webflow.elementPresets.DOM);
     panel.setTag('div');
-    panel.setAttribute('class', 'sv-service-panel' + (i === 0 ? ' is-active' : ''));
+    panel.setStyles([svServicePanel]);
+    if (i === 0) panel.setAttribute('data-active', 'true');
 
     const label = panel.append(webflow.elementPresets.DOM);
     label.setTag('div');
-    label.setAttribute('class', 'sv-service-label');
+    label.setStyles([svServiceLabel]);
     label.setTextContent(svc.number);
 
     const title = panel.append(webflow.elementPresets.DOM);
     title.setTag('h3');
-    title.setAttribute('class', 'sv-service-title');
+    title.setStyles([svServiceTitle]);
     title.setTextContent(svc.title);
 
     const desc = panel.append(webflow.elementPresets.DOM);
     desc.setTag('p');
-    desc.setAttribute('class', 'sv-service-desc');
+    desc.setStyles([svServiceDesc]);
     desc.setTextContent(svc.desc);
 
     const features = panel.append(webflow.elementPresets.DOM);
     features.setTag('div');
-    features.setAttribute('class', 'sv-service-features');
+    features.setStyles([svServiceFeatures]);
 
     svc.features.forEach(f => {
       const feat = features.append(webflow.elementPresets.DOM);
       feat.setTag('div');
-      feat.setAttribute('class', 'sv-service-feature');
+      feat.setStyles([svServiceFeature]);
       feat.setTextContent(f);
     });
 
     const cta = panel.append(webflow.elementPresets.DOM);
     cta.setTag('a');
-    cta.setAttribute('class', 'sv-service-cta');
+    cta.setStyles([svServiceCta]);
     cta.setAttribute('href', svc.href);
     cta.setTextContent('Explore ' + svc.title + ' \u2192');
   });
@@ -252,26 +444,26 @@ async function buildServicesPage() {
   // Counter (large faint number)
   const counter = showcase.append(webflow.elementPresets.DOM);
   counter.setTag('div');
-  counter.setAttribute('class', 'sv-counter');
+  counter.setStyles([svCounter]);
   counter.setTextContent('01');
 
   // Progress bar
   const progressBar = showcase.append(webflow.elementPresets.DOM);
   progressBar.setTag('div');
-  progressBar.setAttribute('class', 'sv-progress-bar');
+  progressBar.setStyles([svProgressBar]);
 
   const barTrack = progressBar.append(webflow.elementPresets.DOM);
   barTrack.setTag('div');
-  barTrack.setAttribute('class', 'sv-bar-track');
+  barTrack.setStyles([svBarTrack]);
 
   const barFill = progressBar.append(webflow.elementPresets.DOM);
   barFill.setTag('div');
-  barFill.setAttribute('class', 'sv-bar-fill');
+  barFill.setStyles([svBarFill]);
 
-  SERVICES.forEach((_, i) => {
+  SERVICES.forEach(() => {
     const dot = progressBar.append(webflow.elementPresets.DOM);
     dot.setTag('div');
-    dot.setAttribute('class', 'sv-bar-dot' + (i === 0 ? ' is-active' : ''));
+    dot.setStyles([svBarDot]);
   });
 
   await safeCall('append:showcase', () => body.append(showcase));
@@ -281,66 +473,66 @@ async function buildServicesPage() {
   log('Building Section 3: Process Timeline...');
   const proc = webflow.elementBuilder(webflow.elementPresets.DOM);
   proc.setTag('section');
-  proc.setAttribute('class', 'sv-process');
+  proc.setStyles([svProcess]);
   proc.setAttribute('id', 'sv-process');
 
   // Label
   const procLabel = proc.append(webflow.elementPresets.DOM);
   procLabel.setTag('div');
-  procLabel.setAttribute('class', 'sv-process-label');
+  procLabel.setStyles([svProcessLabel]);
   const procLabelTxt = procLabel.append(webflow.elementPresets.DOM);
   procLabelTxt.setTag('div');
   procLabelTxt.setTextContent('How We Work');
   const procLabelLine = procLabel.append(webflow.elementPresets.DOM);
   procLabelLine.setTag('div');
-  procLabelLine.setAttribute('class', 'sv-process-label-line');
+  procLabelLine.setStyles([svProcessLabelLine]);
 
   // Heading
   const procHeading = proc.append(webflow.elementPresets.DOM);
   procHeading.setTag('h2');
-  procHeading.setAttribute('class', 'sv-process-heading');
+  procHeading.setStyles([svProcessHeading]);
   procHeading.setTextContent("Avorino's Process");
   procHeading.setAttribute('data-animate', 'line-wipe');
 
   // Timeline
   const timeline = proc.append(webflow.elementPresets.DOM);
   timeline.setTag('div');
-  timeline.setAttribute('class', 'sv-timeline');
+  timeline.setStyles([svTimeline]);
 
   // Timeline vertical line
   const timelineLine = timeline.append(webflow.elementPresets.DOM);
   timelineLine.setTag('div');
-  timelineLine.setAttribute('class', 'sv-timeline-line');
+  timelineLine.setStyles([svTimelineLine]);
 
   // Timeline steps
   PROCESS_STEPS.forEach((step) => {
     const stepEl = timeline.append(webflow.elementPresets.DOM);
     stepEl.setTag('div');
-    stepEl.setAttribute('class', 'sv-timeline-step');
+    stepEl.setStyles([svTimelineStep]);
 
     // Marker (gold circle on timeline)
     const marker = stepEl.append(webflow.elementPresets.DOM);
     marker.setTag('div');
-    marker.setAttribute('class', 'sv-timeline-marker');
+    marker.setStyles([svTimelineMarker]);
 
     // Card
     const card = stepEl.append(webflow.elementPresets.DOM);
     card.setTag('div');
-    card.setAttribute('class', 'sv-timeline-card');
+    card.setStyles([svTimelineCard]);
 
     const num = card.append(webflow.elementPresets.DOM);
     num.setTag('div');
-    num.setAttribute('class', 'sv-timeline-num');
+    num.setStyles([svTimelineNum]);
     num.setTextContent(step.step);
 
     const title = card.append(webflow.elementPresets.DOM);
     title.setTag('h3');
-    title.setAttribute('class', 'sv-timeline-title');
+    title.setStyles([svTimelineTitle]);
     title.setTextContent(step.title);
 
     const desc = card.append(webflow.elementPresets.DOM);
     desc.setTag('p');
-    desc.setAttribute('class', 'sv-timeline-desc');
+    desc.setStyles([svTimelineDesc]);
     desc.setTextContent(step.desc);
   });
 

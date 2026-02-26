@@ -303,6 +303,13 @@
     var nums = [];
     for (var i = 0; i < total; i++) nums.push(String(i + 1).padStart(2, '0'));
 
+    // Ensure first panel is active (Webflow builder may not set is-active class)
+    dom.panelEls.forEach(function (el, i) {
+      if (i === 0) { el.classList.add('is-active'); el.style.opacity = '1'; el.style.pointerEvents = 'auto'; }
+      else { el.classList.remove('is-active'); el.style.opacity = '0'; el.style.pointerEvents = 'none'; }
+    });
+    if (dom.barDots.length) dom.barDots[0].classList.add('is-active');
+
     function goToStep(step) {
       if (step === currentStep) return;
       currentStep = step;
@@ -318,7 +325,15 @@
 
       // Panel crossfade
       dom.panelEls.forEach(function (el, i) {
-        el.classList.toggle('is-active', i === step);
+        if (i === step) {
+          el.classList.add('is-active');
+          el.style.opacity = '1';
+          el.style.pointerEvents = 'auto';
+        } else {
+          el.classList.remove('is-active');
+          el.style.opacity = '0';
+          el.style.pointerEvents = 'none';
+        }
       });
 
       // Dots
