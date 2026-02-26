@@ -109,14 +109,22 @@
     },
   ];
 
-  var PROCESS_STEPS = [
-    { step: 'Step 01', title: 'Pre-construction Consultation', desc: 'It is essential to plan ahead and setting project goals, identifying future challenges, and creating a solid foundation for a successful construction project.' },
-    { step: 'Step 02', title: 'Architectural & Structural Design', desc: 'Our engineers and architects will work with you to understand your vision and will design a unique project based on your needs and preferences.' },
-    { step: 'Step 03', title: 'Financing', desc: 'Our financing partners offer up to 100% financing of your project with up to 30-year terms with the option to re-finance.' },
-    { step: 'Step 04', title: 'Permitting', desc: 'Permits are crucial for almost all construction projects, ensuring compliance, safety, and legal authorization for the work to proceed successfully.' },
-    { step: 'Step 05', title: 'Construction', desc: 'The construction phase is the heart of any project. It brings plans to life, involving skilled professionals executing with quality, coordination, and adherence to timelines.' },
-    { step: 'Step 06', title: 'Post-construction Relationship', desc: 'At Avorino, we value long-lasting client relationships over one-time transactions. We are committed to nurturing and maintaining these connections.' },
-  ];
+  /* ═══════════════════════════════════════════════
+     FIND EXISTING DOM (built by Webflow builder)
+     ═══════════════════════════════════════════════ */
+  function findExistingDOM() {
+    var showcase = document.querySelector('.sv-showcase');
+    if (!showcase) return null;
+    var panelEls = Array.prototype.slice.call(showcase.querySelectorAll('.sv-service-panel'));
+    if (!panelEls.length) return null;
+    return {
+      showcase: showcase,
+      panelEls: panelEls,
+      counter: showcase.querySelector('.sv-counter'),
+      barFill: showcase.querySelector('.sv-bar-fill'),
+      barDots: Array.prototype.slice.call(showcase.querySelectorAll('.sv-bar-dot')),
+    };
+  }
 
   /* ═══════════════════════════════════════════════
      BUILD DOM (fallback if not built by Webflow)
@@ -205,15 +213,14 @@
     });
     showcase.appendChild(progressBar);
 
-    // Insert
-    var main = document.querySelector('main') || document.body;
-    var navEl = document.querySelector('.nav');
-    if (navEl && navEl.parentElement === main) {
-      main.insertBefore(showcase, navEl.nextSibling);
-    } else if (main.firstChild) {
-      main.insertBefore(showcase, main.firstChild);
+    // Insert after hero or at start of main
+    var heroEl = document.getElementById('sv-hero');
+    if (heroEl && heroEl.parentElement) {
+      heroEl.parentElement.insertBefore(showcase, heroEl.nextSibling);
     } else {
-      main.appendChild(showcase);
+      var main = document.querySelector('main') || document.body;
+      if (main.firstChild) main.insertBefore(showcase, main.firstChild);
+      else main.appendChild(showcase);
     }
 
     return {
@@ -222,23 +229,6 @@
       counter: counter,
       barFill: showcase.querySelector('.sv-bar-fill'),
       barDots: barDots,
-    };
-  }
-
-  /* ═══════════════════════════════════════════════
-     FIND EXISTING DOM (built by Webflow builder)
-     ═══════════════════════════════════════════════ */
-  function findExistingDOM() {
-    var showcase = document.querySelector('.sv-showcase');
-    if (!showcase) return null;
-    var panelEls = Array.prototype.slice.call(showcase.querySelectorAll('.sv-service-panel'));
-    if (!panelEls.length) return null;
-    return {
-      showcase: showcase,
-      panelEls: panelEls,
-      counter: showcase.querySelector('.sv-counter'),
-      barFill: showcase.querySelector('.sv-bar-fill'),
-      barDots: Array.prototype.slice.call(showcase.querySelectorAll('.sv-bar-dot')),
     };
   }
 
@@ -303,7 +293,7 @@
     var nums = [];
     for (var i = 0; i < total; i++) nums.push(String(i + 1).padStart(2, '0'));
 
-    // Ensure first panel is active (Webflow builder may not set is-active class)
+    // Ensure first panel is active
     dom.panelEls.forEach(function (el, i) {
       if (i === 0) { el.classList.add('is-active'); el.style.opacity = '1'; el.style.pointerEvents = 'auto'; }
       else { el.classList.remove('is-active'); el.style.opacity = '0'; el.style.pointerEvents = 'none'; }
@@ -319,7 +309,7 @@
         opacity: 0, y: -10, duration: 0.2, ease: 'power2.in', overwrite: true,
         onComplete: function () {
           dom.counter.textContent = nums[step];
-          gsap.to(dom.counter, { opacity: 0.08, y: 0, duration: 0.3, ease: 'power2.out', overwrite: true });
+          gsap.to(dom.counter, { opacity: 0.12, y: 0, duration: 0.3, ease: 'power2.out', overwrite: true });
         },
       });
 
@@ -378,48 +368,6 @@
           scrollTrigger: { trigger: dom.showcase, start: 'top 85%' } }
       );
     }
-  }
-
-  /* ═══════════════════════════════════════════════
-     PROCESS TIMELINE ANIMATIONS
-     ═══════════════════════════════════════════════ */
-  function initProcessTimeline() {
-    var timeline = document.querySelector('.sv-timeline');
-    if (!timeline) return;
-
-    // Timeline line reveals on scroll
-    var line = timeline.querySelector('.sv-timeline-line');
-    if (line) {
-      gsap.to(line, {
-        scaleY: 1, ease: 'none',
-        scrollTrigger: {
-          trigger: timeline,
-          start: 'top 80%',
-          end: 'bottom 20%',
-          scrub: 1,
-        },
-      });
-    }
-
-    // Each card fades in
-    var cards = timeline.querySelectorAll('.sv-timeline-card');
-    cards.forEach(function (card) {
-      gsap.fromTo(card,
-        { y: 40, opacity: 0, filter: 'blur(3px)' },
-        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1, ease: 'power3.out',
-          scrollTrigger: { trigger: card, start: 'top 85%' } }
-      );
-    });
-
-    // Markers scale up
-    var markers = timeline.querySelectorAll('.sv-timeline-marker');
-    markers.forEach(function (marker) {
-      gsap.fromTo(marker,
-        { scale: 0 },
-        { scale: 1, duration: 0.6, ease: 'back.out(2)',
-          scrollTrigger: { trigger: marker, start: 'top 85%' } }
-      );
-    });
   }
 
   /* ═══════════════════════════════════════════════
@@ -532,8 +480,8 @@
   function init() {
     initHeroEntrance();
     initShowcase();
-    initProcessTimeline();
     initScrollAnimations();
+    // Note: process section is handled by avorino-about-process3d.js
   }
 
   if (document.readyState === 'loading') {
