@@ -220,15 +220,59 @@
     max-width: 360px !important;
   }
 
-  /* ── Process: grid 2nd column collapses to 0px on mobile,
-     hiding all slide content. Switch to block layout and
-     force slides to take full width. Only show active slide. ── */
+  /* ── Stats: 2-column grid, scale flip cards, readable labels ── */
+  .stats {
+    padding: 80px 24px !important;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 32px 24px !important;
+  }
+  .flip-card {
+    width: 52px !important;
+    height: 72px !important;
+  }
+  .flip-card-top,
+  .flip-card-bottom {
+    font-size: 36px !important;
+  }
+  .stat-suffix {
+    font-size: 28px !important;
+  }
+  .stat-separator {
+    font-size: 28px !important;
+  }
+  .stat-label {
+    font-size: 11px !important;
+    letter-spacing: 0.18em !important;
+  }
+  .stat-digits {
+    gap: 4px !important;
+  }
+
+  /* ── Process: block layout + show progress bar below steps ── */
+  .process {
+    padding: 80px 24px 64px !important;
+  }
+  .process-header {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+    margin-bottom: 40px !important;
+  }
   .process-stage {
     display: block !important;
+    min-height: auto !important;
+  }
+  .process-num {
+    display: none !important;
+  }
+  .process-vis {
+    display: none !important;
   }
   .process-slides {
     width: 100% !important;
     position: relative !important;
+    min-height: 160px !important;
   }
   .process-slide {
     position: relative !important;
@@ -236,6 +280,141 @@
   }
   .process-slide:not(.is-active) {
     display: none !important;
+  }
+  .process-slide-title {
+    font-size: clamp(28px, 5vw, 40px) !important;
+    margin-bottom: 16px !important;
+  }
+  .process-slide-body {
+    font-size: 15px !important;
+    max-width: 100% !important;
+  }
+  /* Show the progress bar below steps */
+  .process-bar {
+    display: flex !important;
+    position: relative !important;
+    width: 100% !important;
+    height: 48px !important;
+    margin-top: 32px !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    /* Reset grid properties for block context */
+    grid-column: unset !important;
+    grid-row: unset !important;
+  }
+  .process-bar-track {
+    position: absolute !important;
+    top: 50% !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 1px !important;
+    transform: translateY(-50%) !important;
+  }
+  .process-bar-fill {
+    position: absolute !important;
+    top: 50% !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 1px !important;
+  }
+  .process-bar-dot {
+    position: relative !important;
+    z-index: 1 !important;
+  }
+
+  /* ── Tools: stack panels vertically as tappable cards ── */
+  .tools {
+    padding: 80px 24px !important;
+  }
+  .tools-header {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+    margin-bottom: 48px !important;
+  }
+  .tools-intro {
+    max-width: 100% !important;
+  }
+  .tools-accordion {
+    flex-direction: column !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    gap: 12px !important;
+  }
+  .tool-panel {
+    flex: none !important;
+    min-height: 120px !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
+    padding: 24px 28px !important;
+    text-align: left !important;
+  }
+  .tool-panel + .tool-panel {
+    border-left: none !important;
+    border-top: 1px solid rgba(201, 169, 110, 0.08) !important;
+  }
+  /* Hide hover-only elements */
+  .tool-panel-num {
+    display: none !important;
+  }
+  .tool-preview {
+    display: none !important;
+  }
+  .tool-visual {
+    display: none !important;
+  }
+  /* Re-orient the label — remove rotation, position static */
+  .tool-panel-label {
+    position: static !important;
+    transform: none !important;
+    white-space: normal !important;
+    opacity: 1 !important;
+    margin-bottom: 8px !important;
+    bottom: auto !important;
+    left: auto !important;
+    display: block !important;
+  }
+  .tool-panel-label-text {
+    font-size: 22px !important;
+    opacity: 1 !important;
+  }
+  /* Show content area directly (Webflow hides it on mobile) */
+  .tool-panel-content {
+    display: block !important;
+    position: static !important;
+    opacity: 1 !important;
+    transform: none !important;
+    padding: 0 !important;
+    pointer-events: auto !important;
+  }
+  .tool-panel-content::before {
+    display: none !important;
+  }
+  .tool-name {
+    display: none !important;
+  }
+  .tool-desc {
+    font-size: 14px !important;
+    opacity: 0.55 !important;
+    margin-bottom: 16px !important;
+    max-width: 100% !important;
+  }
+  .tool-cta {
+    opacity: 1 !important;
+    font-size: 12px !important;
+    color: rgba(201, 169, 110, 0.8) !important;
+  }
+  .tool-arrow {
+    width: 16px !important;
+    height: 16px !important;
+  }
+  /* Gold accent line always visible */
+  .tool-panel::after {
+    transform: scaleX(1) !important;
   }
 }
 
@@ -514,6 +693,65 @@
     width: 82vw !important;
     max-width: 340px !important;
   }
+
+  /* ── Stats: smaller flip cards for mobile ── */
+  .stats {
+    padding: 64px 16px !important;
+  }
+  .stats-grid {
+    gap: 24px 16px !important;
+  }
+  .flip-card {
+    width: 44px !important;
+    height: 60px !important;
+  }
+  .flip-card-top,
+  .flip-card-bottom {
+    font-size: 30px !important;
+  }
+  .stat-suffix {
+    font-size: 22px !important;
+  }
+  .stat-separator {
+    font-size: 22px !important;
+    margin-bottom: 8px !important;
+  }
+  .stat-item {
+    gap: 16px !important;
+  }
+
+  /* ── Process: tighter mobile layout ── */
+  .process {
+    padding: 64px 16px 48px !important;
+  }
+  .process-slide-title {
+    font-size: clamp(24px, 6vw, 34px) !important;
+  }
+  .process-slide-body {
+    font-size: 14px !important;
+  }
+
+  /* ── Tools: compact cards ── */
+  .tools {
+    padding: 64px 16px !important;
+  }
+  .tools-heading > div {
+    font-size: clamp(28px, 7vw, 48px) !important;
+  }
+  .tools-intro {
+    font-size: 15px !important;
+  }
+  .tool-panel {
+    min-height: 100px !important;
+    padding: 20px 24px !important;
+  }
+  .tool-panel-label-text {
+    font-size: 20px !important;
+  }
+  .tool-desc {
+    font-size: 13px !important;
+    margin-bottom: 12px !important;
+  }
 }
 
 
@@ -787,9 +1025,9 @@
      HOMEPAGE — mobile-portrait overrides
      ═══════════════════════════════════════════ */
 
-  /* ── Hero: minimal frame ── */
-  .hero {
-    padding: 0 12px 12px !important;
+  /* ── Hero: balanced frame with breathing room ── */
+  section.hero {
+    padding: 0 14px 14px !important;
   }
   .hero-subtitle {
     font-size: 11px !important;
@@ -808,5 +1046,98 @@
   .service-card {
     width: 85vw !important;
     max-width: none !important;
+  }
+
+  /* ── Stats: compact for small screens ── */
+  .stats {
+    padding: 48px 16px !important;
+  }
+  .stats-grid {
+    gap: 20px 12px !important;
+  }
+  .flip-card {
+    width: 36px !important;
+    height: 52px !important;
+  }
+  .flip-card-top,
+  .flip-card-bottom {
+    font-size: 26px !important;
+    border-radius: 4px !important;
+  }
+  .flip-card {
+    border-radius: 4px !important;
+  }
+  .stat-suffix {
+    font-size: 18px !important;
+    margin-left: 2px !important;
+  }
+  .stat-separator {
+    font-size: 18px !important;
+    margin-bottom: 6px !important;
+  }
+  .stat-label {
+    font-size: 10px !important;
+    letter-spacing: 0.15em !important;
+  }
+  .stat-item {
+    gap: 12px !important;
+  }
+  .stat-digits {
+    gap: 3px !important;
+  }
+
+  /* ── Process: minimal portrait ── */
+  .process {
+    padding: 48px 16px 40px !important;
+  }
+  .process-header {
+    margin-bottom: 28px !important;
+  }
+  .process-slide-title {
+    font-size: clamp(22px, 6vw, 30px) !important;
+    margin-bottom: 12px !important;
+  }
+  .process-slide-body {
+    font-size: 14px !important;
+    line-height: 1.7 !important;
+  }
+  .process-slides {
+    min-height: 140px !important;
+  }
+  .process-bar {
+    margin-top: 24px !important;
+  }
+
+  /* ── Tools: minimal portrait ── */
+  .tools {
+    padding: 48px 16px !important;
+  }
+  .tools-header {
+    margin-bottom: 32px !important;
+  }
+  .tools-heading > div {
+    font-size: clamp(24px, 8vw, 40px) !important;
+  }
+  .tools-intro {
+    font-size: 14px !important;
+  }
+  .tools-accordion {
+    gap: 8px !important;
+  }
+  .tool-panel {
+    min-height: 90px !important;
+    padding: 16px 20px !important;
+    border-radius: 10px !important;
+  }
+  .tool-panel-label-text {
+    font-size: 18px !important;
+  }
+  .tool-desc {
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+    margin-bottom: 10px !important;
+  }
+  .tool-cta {
+    font-size: 11px !important;
   }
 }
