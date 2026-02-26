@@ -162,9 +162,10 @@
      HOMEPAGE — tablet overrides
      ═══════════════════════════════════════════ */
 
-  /* ── Hero: thicker cream frame + readable text ── */
-  .hero {
-    padding: 0 24px 24px !important;
+  /* ── Hero: cream frame with reduced bottom ── */
+  html body .hero,
+  body .hero {
+    padding: 0 24px 10px !important;
   }
   .hero-overlay::after {
     content: '';
@@ -266,8 +267,35 @@
   .process-num {
     display: none !important;
   }
-  .process-vis {
+  .process-stage > .process-vis,
+  section.process .process-vis,
+  .process .process-vis {
+    display: flex !important;
+    position: relative !important;
+    width: 100% !important;
+    min-height: 200px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-top: 24px !important;
+    /* Reset grid positioning for block flow */
+    grid-column: unset !important;
+    grid-row: unset !important;
+  }
+  .process-vis .process-vis-illus {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .process-vis .process-vis-illus:not(.is-active) {
     display: none !important;
+  }
+  .process-vis .process-vis-svg {
+    width: 100% !important;
+    max-width: 200px !important;
+    height: auto !important;
   }
   .process-slides {
     width: 100% !important;
@@ -670,9 +698,10 @@
      HOMEPAGE — mobile-landscape overrides
      ═══════════════════════════════════════════ */
 
-  /* ── Hero: tighter frame ── */
-  .hero {
-    padding: 0 16px 16px !important;
+  /* ── Hero: tighter frame, minimal bottom ── */
+  html body .hero,
+  body .hero {
+    padding: 0 16px 6px !important;
   }
   .hero-subtitle {
     font-size: 11px !important;
@@ -723,6 +752,13 @@
   /* ── Process: tighter mobile layout ── */
   .process {
     padding: 64px 16px 48px !important;
+  }
+  .process-vis {
+    min-height: 180px !important;
+    margin-top: 20px !important;
+  }
+  .process-vis-svg {
+    max-width: 180px !important;
   }
   .process-slide-title {
     font-size: clamp(24px, 6vw, 34px) !important;
@@ -1025,9 +1061,10 @@
      HOMEPAGE — mobile-portrait overrides
      ═══════════════════════════════════════════ */
 
-  /* ── Hero: balanced frame with breathing room ── */
-  section.hero {
-    padding: 0 14px 14px !important;
+  /* ── Hero: balanced frame with minimal bottom ── */
+  html body section.hero,
+  body .hero {
+    padding: 0 14px 4px !important;
   }
   .hero-subtitle {
     font-size: 11px !important;
@@ -1103,6 +1140,13 @@
   }
   .process-slides {
     min-height: 140px !important;
+  }
+  .process-vis {
+    min-height: 160px !important;
+    margin-top: 16px !important;
+  }
+  .process-vis-svg {
+    max-width: 160px !important;
   }
   .process-bar {
     margin-top: 24px !important;
