@@ -72,12 +72,32 @@ async function buildServicesPage() {
   const s = await createSharedStyles();
   logDetail('Shared styles done', 'ok');
 
-  // ── Page-specific styles (Webflow styles for hero + process3d only) ──
+  // ── Page-specific styles ──
   log('Creating page-specific styles...');
+
   // Hero
   const svHero        = await getOrCreateStyle('sv-hero');
   const svHeroContent = await getOrCreateStyle('sv-hero-content');
   const svHeroSubtitle= await getOrCreateStyle('sv-hero-subtitle');
+
+  // Showcase section (Webflow styles for designer preview, CDN CSS for extras)
+  const svShowcase        = await getOrCreateStyle('sv-showcase');
+  const svCanvasWrap      = await getOrCreateStyle('sv-canvas-wrap');
+  const svShowcaseContent = await getOrCreateStyle('sv-showcase-content');
+  const svShowcaseInfo    = await getOrCreateStyle('sv-showcase-info');
+  const svServicePanel    = await getOrCreateStyle('sv-service-panel');
+  const svServiceLabel    = await getOrCreateStyle('sv-service-label');
+  const svServiceTitle    = await getOrCreateStyle('sv-service-title');
+  const svServiceDesc     = await getOrCreateStyle('sv-service-desc');
+  const svServiceFeatures = await getOrCreateStyle('sv-service-features');
+  const svServiceFeature  = await getOrCreateStyle('sv-service-feature');
+  const svServiceCta      = await getOrCreateStyle('sv-service-cta');
+  const svCounter         = await getOrCreateStyle('sv-counter');
+  const svProgressBar     = await getOrCreateStyle('sv-progress-bar');
+  const svBarTrack        = await getOrCreateStyle('sv-bar-track');
+  const svBarFill         = await getOrCreateStyle('sv-bar-fill');
+  const svBarDot          = await getOrCreateStyle('sv-bar-dot');
+
   // Process (Three.js 3D — uses about-process-* names for process3d.js compatibility)
   const processPinned    = await getOrCreateStyle('about-process-pinned');
   const processVisual    = await getOrCreateStyle('about-process-visual');
@@ -88,10 +108,12 @@ async function buildServicesPage() {
   const processCardNum   = await getOrCreateStyle('about-process-card-num');
   const processCardTitle = await getOrCreateStyle('about-process-card-title');
   const processCardDesc  = await getOrCreateStyle('about-process-card-desc');
+
   // Utility
   const svMb64      = await getOrCreateStyle('sv-mb-64');
   const svMb96      = await getOrCreateStyle('sv-mb-96');
   const svLabelLine = await getOrCreateStyle('sv-label-line');
+
   logDetail('All styles created', 'ok');
 
   // ── Create page ──
@@ -106,7 +128,7 @@ async function buildServicesPage() {
 
     log('Setting page-specific style properties...');
 
-    // Hero
+    // ── Hero ──
     logDetail('Setting hero props...', 'info');
     await clearAndSet(await freshStyle('sv-hero'), 'sv-hero', {
       'min-height': '60vh', 'display': 'flex', 'align-items': 'flex-end',
@@ -124,7 +146,99 @@ async function buildServicesPage() {
     });
     await wait(500);
 
-    // Process (Three.js 3D)
+    // ── Showcase section ──
+    logDetail('Setting showcase props...', 'info');
+    await clearAndSet(await freshStyle('sv-showcase'), 'sv-showcase', {
+      'width': '100%', 'min-height': '100vh', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
+      'position': 'relative', 'background-color': v['av-dark'], 'color': v['av-cream'],
+    });
+    await clearAndSet(await freshStyle('sv-canvas-wrap'), 'sv-canvas-wrap', {
+      'position': 'absolute', 'top': '0px', 'right': '0px',
+      'width': '50%', 'height': '100%', 'z-index': '1',
+      'overflow-x': 'hidden', 'overflow-y': 'hidden',
+    });
+    await clearAndSet(await freshStyle('sv-showcase-content'), 'sv-showcase-content', {
+      'position': 'relative', 'z-index': '2',
+      'max-width': '1400px', 'margin-left': 'auto', 'margin-right': 'auto',
+      'padding-left': '80px', 'padding-right': '80px',
+      'width': '100%', 'height': '100vh',
+      'display': 'grid', 'grid-template-columns': '5fr 7fr',
+      'grid-column-gap': '96px', 'align-items': 'center',
+    });
+    await clearAndSet(await freshStyle('sv-showcase-info'), 'sv-showcase-info', {
+      'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '24px',
+      'position': 'relative', 'min-height': '420px',
+    });
+    await wait(500);
+
+    // ── Service panels ──
+    logDetail('Setting panel props...', 'info');
+    await clearAndSet(await freshStyle('sv-service-panel'), 'sv-service-panel', {
+      'position': 'absolute', 'top': '0px', 'left': '0px', 'width': '100%', 'height': '100%',
+      'display': 'flex', 'flex-direction': 'column', 'justify-content': 'center',
+      'grid-row-gap': '24px', 'opacity': '0',
+    });
+    await clearAndSet(await freshStyle('sv-service-label'), 'sv-service-label', {
+      'font-family': 'DM Sans', 'font-size': '11px',
+      'letter-spacing': '0.25em', 'text-transform': 'uppercase',
+      'color': '#c9a96e', 'opacity': '0.8',
+    });
+    await clearAndSet(await freshStyle('sv-service-title'), 'sv-service-title', {
+      'font-family': 'DM Serif Display', 'font-size': '48px',
+      'font-weight': '400', 'line-height': '1.08', 'letter-spacing': '-0.02em',
+      'color': v['av-cream'],
+    });
+    await clearAndSet(await freshStyle('sv-service-desc'), 'sv-service-desc', {
+      'font-family': 'DM Sans', 'font-size': '16px',
+      'line-height': '1.9', 'color': v['av-cream'], 'opacity': '0.55',
+      'max-width': '480px',
+    });
+    await clearAndSet(await freshStyle('sv-service-features'), 'sv-service-features', {
+      'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '12px',
+      'margin-top': '8px',
+    });
+    await clearAndSet(await freshStyle('sv-service-feature'), 'sv-service-feature', {
+      'font-family': 'DM Sans', 'font-size': '14px',
+      'color': v['av-cream'], 'opacity': '0.7', 'padding-left': '20px',
+    });
+    await clearAndSet(await freshStyle('sv-service-cta'), 'sv-service-cta', {
+      'font-family': 'DM Sans', 'font-size': '14px', 'font-weight': '500',
+      'letter-spacing': '0.08em', 'display': 'inline-flex', 'align-items': 'center',
+      'grid-column-gap': '8px', 'color': '#c9a96e', 'text-decoration': 'none',
+      'margin-top': '16px',
+    });
+    await wait(500);
+
+    // ── Counter + Progress bar ──
+    logDetail('Setting counter + bar props...', 'info');
+    await clearAndSet(await freshStyle('sv-counter'), 'sv-counter', {
+      'font-family': 'DM Serif Display', 'font-size': '120px',
+      'font-weight': '400', 'line-height': '1', 'color': v['av-cream'],
+      'opacity': '0.12', 'position': 'absolute', 'bottom': '80px', 'left': '80px', 'z-index': '2',
+    });
+    await clearAndSet(await freshStyle('sv-progress-bar'), 'sv-progress-bar', {
+      'position': 'absolute', 'bottom': '0px', 'left': '0px', 'right': '0px',
+      'height': '48px', 'display': 'flex', 'align-items': 'center',
+      'justify-content': 'space-between', 'padding-left': '80px', 'padding-right': '80px',
+      'z-index': '10',
+    });
+    await clearAndSet(await freshStyle('sv-bar-track'), 'sv-bar-track', {
+      'position': 'absolute', 'top': '50%', 'left': '80px', 'right': '80px',
+      'height': '1px', 'background-color': 'rgba(240, 237, 232, 0.06)',
+    });
+    await clearAndSet(await freshStyle('sv-bar-fill'), 'sv-bar-fill', {
+      'position': 'absolute', 'top': '50%', 'left': '80px', 'right': '80px',
+      'height': '1px', 'background-color': 'rgba(201, 169, 110, 0.5)',
+    });
+    await clearAndSet(await freshStyle('sv-bar-dot'), 'sv-bar-dot', {
+      'position': 'relative', 'width': '8px', 'height': '8px',
+      'border-top-left-radius': '50%', 'border-top-right-radius': '50%',
+      'border-bottom-left-radius': '50%', 'border-bottom-right-radius': '50%',
+      'background-color': 'transparent', 'z-index': '1',
+    });
+    await wait(500);
+
+    // ── Process (Three.js 3D) ──
     logDetail('Setting process props...', 'info');
     await clearAndSet(await freshStyle('about-process-pinned'), 'about-process-pinned', {
       'height': '100vh', 'display': 'flex', 'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
@@ -154,7 +268,7 @@ async function buildServicesPage() {
     });
     await wait(500);
 
-    // Utility
+    // ── Utility ──
     await clearAndSet(await freshStyle('sv-mb-64'), 'sv-mb-64', { 'margin-bottom': v['av-gap-md'] });
     await clearAndSet(await freshStyle('sv-mb-96'), 'sv-mb-96', { 'margin-bottom': v['av-gap-lg'] });
     await clearAndSet(await freshStyle('sv-label-line'), 'sv-label-line', { 'flex-grow': '1', 'height': '1px', 'background-color': v['av-dark-15'] });
@@ -165,7 +279,7 @@ async function buildServicesPage() {
 
   // ═══════════════ BUILD ELEMENTS ═══════════════
 
-  // SECTION 1: HERO (Webflow styles — shows in designer)
+  // SECTION 1: HERO
   log('Building Section 1: Hero...');
   const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
   hero.setTag('section'); hero.setStyles([svHero]); hero.setAttribute('id', 'sv-hero');
@@ -190,66 +304,49 @@ async function buildServicesPage() {
   await safeCall('append:hero', () => body.append(hero));
   logDetail('Section 1: Hero appended', 'ok');
 
-  // SECTION 2: SERVICE SHOWCASE (setAttribute class — CDN CSS handles styling)
-  // Same pattern as reviews page: runtime JS + CDN CSS do all the work
+  // SECTION 2: SERVICE SHOWCASE (Webflow styles for designer, CDN CSS/JS for animations)
   log('Building Section 2: Service Showcase...');
   const showcase = webflow.elementBuilder(webflow.elementPresets.DOM);
-  showcase.setTag('section');
-  showcase.setAttribute('class', 'sv-showcase');
-  showcase.setAttribute('id', 'sv-showcase');
+  showcase.setTag('section'); showcase.setStyles([svShowcase]); showcase.setAttribute('id', 'sv-showcase');
 
   // Canvas wrap (Three.js fills this at runtime)
   const canvasWrap = showcase.append(webflow.elementPresets.DOM);
-  canvasWrap.setTag('div');
-  canvasWrap.setAttribute('class', 'sv-canvas-wrap');
+  canvasWrap.setTag('div'); canvasWrap.setStyles([svCanvasWrap]);
 
   // Content grid
   const content = showcase.append(webflow.elementPresets.DOM);
-  content.setTag('div');
-  content.setAttribute('class', 'sv-showcase-content');
+  content.setTag('div'); content.setStyles([svShowcaseContent]);
 
   // Left column: service info
   const info = content.append(webflow.elementPresets.DOM);
-  info.setTag('div');
-  info.setAttribute('class', 'sv-showcase-info');
+  info.setTag('div'); info.setStyles([svShowcaseInfo]);
 
-  // Build 6 service panels
+  // Build 6 service panels (all opacity:0, JS shows the active one at runtime)
   SERVICES.forEach((svc, i) => {
     const panel = info.append(webflow.elementPresets.DOM);
-    panel.setTag('div');
-    panel.setAttribute('class', i === 0 ? 'sv-service-panel is-active' : 'sv-service-panel');
+    panel.setTag('div'); panel.setStyles([svServicePanel]);
+    if (i === 0) panel.setAttribute('data-active', 'true');
 
     const label = panel.append(webflow.elementPresets.DOM);
-    label.setTag('div');
-    label.setAttribute('class', 'sv-service-label');
-    label.setTextContent(svc.number);
+    label.setTag('div'); label.setStyles([svServiceLabel]); label.setTextContent(svc.number);
 
     const title = panel.append(webflow.elementPresets.DOM);
-    title.setTag('h3');
-    title.setAttribute('class', 'sv-service-title');
-    title.setTextContent(svc.title);
+    title.setTag('h3'); title.setStyles([svServiceTitle]); title.setTextContent(svc.title);
 
     const desc = panel.append(webflow.elementPresets.DOM);
-    desc.setTag('p');
-    desc.setAttribute('class', 'sv-service-desc');
-    desc.setTextContent(svc.desc);
+    desc.setTag('p'); desc.setStyles([svServiceDesc]); desc.setTextContent(svc.desc);
 
     const features = panel.append(webflow.elementPresets.DOM);
-    features.setTag('div');
-    features.setAttribute('class', 'sv-service-features');
+    features.setTag('div'); features.setStyles([svServiceFeatures]);
 
     svc.features.forEach(f => {
       const feat = features.append(webflow.elementPresets.DOM);
-      feat.setTag('div');
-      feat.setAttribute('class', 'sv-service-feature');
-      feat.setTextContent(f);
+      feat.setTag('div'); feat.setStyles([svServiceFeature]); feat.setTextContent(f);
     });
 
     const cta = panel.append(webflow.elementPresets.DOM);
-    cta.setTag('a');
-    cta.setAttribute('class', 'sv-service-cta');
-    cta.setAttribute('href', svc.href);
-    cta.setTextContent('Explore ' + svc.title + ' \u2192');
+    cta.setTag('a'); cta.setStyles([svServiceCta]);
+    cta.setAttribute('href', svc.href); cta.setTextContent('Explore ' + svc.title + ' \u2192');
   });
 
   // Right column (empty — Three.js fills canvas-wrap)
@@ -258,33 +355,27 @@ async function buildServicesPage() {
 
   // Counter (large faint number)
   const counter = showcase.append(webflow.elementPresets.DOM);
-  counter.setTag('div');
-  counter.setAttribute('class', 'sv-counter');
-  counter.setTextContent('01');
+  counter.setTag('div'); counter.setStyles([svCounter]); counter.setTextContent('01');
 
   // Progress bar
   const progressBar = showcase.append(webflow.elementPresets.DOM);
-  progressBar.setTag('div');
-  progressBar.setAttribute('class', 'sv-progress-bar');
+  progressBar.setTag('div'); progressBar.setStyles([svProgressBar]);
 
   const barTrack = progressBar.append(webflow.elementPresets.DOM);
-  barTrack.setTag('div');
-  barTrack.setAttribute('class', 'sv-bar-track');
+  barTrack.setTag('div'); barTrack.setStyles([svBarTrack]);
 
   const barFill = progressBar.append(webflow.elementPresets.DOM);
-  barFill.setTag('div');
-  barFill.setAttribute('class', 'sv-bar-fill');
+  barFill.setTag('div'); barFill.setStyles([svBarFill]);
 
-  SERVICES.forEach((_, i) => {
+  SERVICES.forEach(() => {
     const dot = progressBar.append(webflow.elementPresets.DOM);
-    dot.setTag('div');
-    dot.setAttribute('class', i === 0 ? 'sv-bar-dot is-active' : 'sv-bar-dot');
+    dot.setTag('div'); dot.setStyles([svBarDot]);
   });
 
   await safeCall('append:showcase', () => body.append(showcase));
   logDetail('Section 2: Service Showcase appended', 'ok');
 
-  // SECTION 3: PROCESS — Three.js 3D scroll-locked (Webflow styles, process3d.js compatible)
+  // SECTION 3: PROCESS — Three.js 3D scroll-locked (process3d.js compatible)
   log('Building Section 3: Process...');
   const proc = webflow.elementBuilder(webflow.elementPresets.DOM);
   proc.setTag('section'); proc.setStyles([s.section, s.sectionWarm]); proc.setAttribute('id', 'about-process');
