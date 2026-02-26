@@ -157,6 +157,86 @@
   .inv-overview {
     max-width: 100% !important;
   }
+
+  /* ═══════════════════════════════════════════
+     HOMEPAGE — tablet overrides
+     ═══════════════════════════════════════════ */
+
+  /* ── Hero: thicker cream frame + readable text ── */
+  .hero {
+    padding: 0 24px 24px !important;
+  }
+  .hero-overlay::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+  }
+  .hero-subtitle {
+    font-size: 12px !important;
+    letter-spacing: 0.18em !important;
+  }
+  .hero .btn-pill {
+    font-size: 14px !important;
+    padding: 16px 32px !important;
+  }
+
+  /* ── About: contain heading + body within viewport ── */
+  .about-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .about-heading {
+    font-size: clamp(48px, 7vw, 72px) !important;
+    max-width: 100% !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+  .about-body,
+  .about-body-wrap,
+  .about-link {
+    max-width: 100% !important;
+  }
+
+  /* ── Services: horizontal scroll with snap ── */
+  .services-track {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 16px;
+  }
+  .service-card {
+    scroll-snap-align: start;
+    flex-shrink: 0 !important;
+    width: 75vw !important;
+    max-width: 360px !important;
+  }
+
+  /* ── Process: grid 2nd column collapses to 0px on mobile,
+     hiding all slide content. Switch to block layout and
+     force slides to take full width. Only show active slide. ── */
+  .process-stage {
+    display: block !important;
+  }
+  .process-slides {
+    width: 100% !important;
+    position: relative !important;
+  }
+  .process-slide {
+    position: relative !important;
+    width: 100% !important;
+  }
+  .process-slide:not(.is-active) {
+    display: none !important;
+  }
 }
 
 
@@ -405,6 +485,34 @@
   .av-card-dark,
   .av-card-light {
     padding: 40px 32px !important;
+  }
+
+  /* ═══════════════════════════════════════════
+     HOMEPAGE — mobile-landscape overrides
+     ═══════════════════════════════════════════ */
+
+  /* ── Hero: tighter frame ── */
+  .hero {
+    padding: 0 16px 16px !important;
+  }
+  .hero-subtitle {
+    font-size: 11px !important;
+    letter-spacing: 0.15em !important;
+  }
+  .hero .btn-pill {
+    font-size: 14px !important;
+    padding: 14px 28px !important;
+  }
+
+  /* ── About: scale heading for mobile ── */
+  .about-heading {
+    font-size: clamp(36px, 9vw, 56px) !important;
+  }
+
+  /* ── Services: wider cards on smaller screens ── */
+  .service-card {
+    width: 82vw !important;
+    max-width: 340px !important;
   }
 }
 
@@ -673,5 +781,32 @@
   /* ── Flex column: tighter gap ── */
   .av-flex-col {
     grid-row-gap: 14px !important;
+  }
+
+  /* ═══════════════════════════════════════════
+     HOMEPAGE — mobile-portrait overrides
+     ═══════════════════════════════════════════ */
+
+  /* ── Hero: minimal frame ── */
+  .hero {
+    padding: 0 12px 12px !important;
+  }
+  .hero-subtitle {
+    font-size: 11px !important;
+  }
+  .hero .btn-pill {
+    font-size: 13px !important;
+    padding: 14px 24px !important;
+  }
+
+  /* ── About: tightest heading ── */
+  .about-heading {
+    font-size: clamp(28px, 10vw, 44px) !important;
+  }
+
+  /* ── Services: near full-width cards ── */
+  .service-card {
+    width: 85vw !important;
+    max-width: none !important;
   }
 }

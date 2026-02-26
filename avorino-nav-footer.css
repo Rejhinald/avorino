@@ -7,8 +7,13 @@
    PRELOADER — div logo support
    ═══════════════════════════════════════════ */
 /* Paint roller animation needs overflow visible for roller SVG movement */
+/* width: 200px fixes centering — without it the 0-width flex child anchors
+   at viewport center and the 200px logo content extends rightward, clipping
+   on mobile and appearing off-center on all viewports. */
 .preloader-text {
   overflow: visible !important;
+  width: 200px !important;
+  position: relative;
 }
 
 .preloader-logo-img {
