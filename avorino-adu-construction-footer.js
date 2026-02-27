@@ -1083,7 +1083,7 @@
   /* ═══════════════════════════════════════════════
      INIT — Single DOMContentLoaded
      ═══════════════════════════════════════════════ */
-  document.addEventListener('DOMContentLoaded', function () {
+  window.addEventListener('DOMContentLoaded', function () {
     initHero();
     initTypesShowcase();
     initROI();
