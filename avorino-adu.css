@@ -9,6 +9,26 @@
 
 
 /* ─────────────────────────────────────────────────────────────────
+   DESIGN TOKENS — CSS Custom Properties
+   (mirrors Webflow variable collection for external-CSS usage)
+   ───────────────────────────────────────────────────────────────── */
+:root {
+  --av-dark:  #111111;
+  --av-cream: #f0ede8;
+  --av-warm:  #e8e4df;
+  --av-red:   #c8222a;
+  --av-gold:  #c9a96e;
+  --av-section-pad-y: 128px;
+  --av-section-pad-x: 80px;
+  --av-radius: 8px;
+  --av-text-xs:   10px;
+  --av-text-sm:   14px;
+  --av-text-body: 17px;
+  --av-text-lg:   clamp(40px, 4.5vw, 64px);
+}
+
+
+/* ─────────────────────────────────────────────────────────────────
    SHARED: Scroll-pulse keyframe (hero scroll hints)
    ───────────────────────────────────────────────────────────────── */
 @keyframes scrollPulse {

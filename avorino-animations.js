@@ -73,8 +73,9 @@
     var h1 = hero.querySelector('h1');
     var subtitle = hero.querySelector('p');
 
-    if (h1) {
-      h1.removeAttribute('data-animate');
+    /* Skip elements that have data-animate — a page-specific footer
+       script (adu-footer, construction-footer, etc.) handles those. */
+    if (h1 && !h1.hasAttribute('data-animate')) {
       var words = splitIntoWords(h1);
       gsap.set(words, { yPercent: 110, opacity: 0, filter: 'blur(6px)' });
       gsap.timeline({ delay: 0.4 }).to(words, {
@@ -83,8 +84,7 @@
       });
     }
 
-    if (subtitle) {
-      subtitle.removeAttribute('data-animate');
+    if (subtitle && !subtitle.hasAttribute('data-animate')) {
       gsap.set(subtitle, { opacity: 0, y: 30, filter: 'blur(4px)' });
       gsap.to(subtitle, {
         opacity: 0.6, y: 0, filter: 'blur(0px)',
@@ -100,6 +100,7 @@
 
     /* fade-up */
     document.querySelectorAll('[data-animate="fade-up"]').forEach(function (el) {
+      el.removeAttribute('data-animate');
       gsap.fromTo(el,
         { y: 50, opacity: 0, filter: 'blur(4px)' },
         { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, ease: 'power3.out',
@@ -110,6 +111,7 @@
 
     /* opacity-sweep */
     document.querySelectorAll('[data-animate="opacity-sweep"]').forEach(function (el) {
+      el.removeAttribute('data-animate');
       var text = el.textContent.trim();
       var wordParts = text.split(/(\s+)/);
       el.innerHTML = '';
@@ -140,6 +142,7 @@
 
     /* blur-focus */
     document.querySelectorAll('[data-animate="blur-focus"]').forEach(function (el) {
+      el.removeAttribute('data-animate');
       gsap.fromTo(el,
         { filter: 'blur(14px)', opacity: 0.08, y: 20 },
         { filter: 'blur(0px)', opacity: 1, y: 0, duration: 1, ease: 'power3.out',
@@ -150,6 +153,7 @@
 
     /* word-stagger-elastic */
     document.querySelectorAll('[data-animate="word-stagger-elastic"]').forEach(function (el) {
+      el.removeAttribute('data-animate');
       var words = splitIntoWords(el);
       gsap.set(words, { yPercent: 120 });
       gsap.to(words, {
@@ -160,6 +164,7 @@
 
     /* parallax-depth */
     document.querySelectorAll('[data-animate="parallax-depth"]').forEach(function (el) {
+      el.removeAttribute('data-animate');
       gsap.to(el, {
         yPercent: -15, ease: 'none',
         scrollTrigger: { trigger: el.closest('section') || el.parentElement,
@@ -169,6 +174,7 @@
 
     /* fade-up-stagger */
     document.querySelectorAll('[data-animate="fade-up-stagger"]').forEach(function (el) {
+      el.removeAttribute('data-animate');
       var children = el.children;
       if (!children.length) return;
       gsap.fromTo(children,
@@ -181,6 +187,7 @@
 
     /* line-wipe */
     document.querySelectorAll('[data-animate="line-wipe"]').forEach(function (el) {
+      el.removeAttribute('data-animate');
       var lineEls = el.querySelectorAll('.line');
       if (!lineEls.length) {
         var html = el.innerHTML;
@@ -217,6 +224,7 @@
 
     /* split-text-reveal */
     document.querySelectorAll('[data-animate="split-text-reveal"]').forEach(function (el) {
+      el.removeAttribute('data-animate');
       var words = splitIntoWords(el);
       gsap.set(words, { yPercent: 105, opacity: 0 });
       gsap.to(words, {
