@@ -1,0 +1,797 @@
+/* ═══════════════════════════════════════════════════════════════════
+   AVORINO ADU PAGES — Consolidated Page-Specific CSS
+   Loaded via CDN by all ADU pages (ADU, Construction, Plans, City)
+
+   NOTE: Does NOT include reset, design tokens (:root vars), shared
+   section/typography, labels, or utility classes — those live in
+   Webflow styles and avorino-responsive.css.
+   ═══════════════════════════════════════════════════════════════════ */
+
+
+/* ─────────────────────────────────────────────────────────────────
+   SHARED: Scroll-pulse keyframe (hero scroll hints)
+   ───────────────────────────────────────────────────────────────── */
+@keyframes scrollPulse {
+  0%, 100% { transform: scaleY(0.3); opacity: 0.3; }
+  50% { transform: scaleY(1); opacity: 0.8; }
+}
+
+
+/* ─────────────────────────────────────────────────────────────────
+   SHARED: Canvas wrap positioning (Three.js backdrops)
+   ───────────────────────────────────────────────────────────────── */
+.canvas-wrap {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 1; pointer-events: none; overflow: hidden;
+}
+.canvas-wrap canvas { display: block; width: 100%; height: 100%; }
+.content-overlay { position: relative; z-index: 2; }
+
+
+/* ─────────────────────────────────────────────────────────────────
+   SHARED: Glass card pattern
+   ───────────────────────────────────────────────────────────────── */
+.glass-card {
+  background: rgba(17,17,17,0.88); color: var(--av-cream);
+  border-radius: var(--av-radius); padding: 48px 40px;
+  border-top: 2px solid rgba(201,169,110,0.25);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+}
+.glass-card-num {
+  font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+  letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.4;
+  margin-bottom: 16px;
+}
+.glass-card-title {
+  font-family: 'DM Serif Display', serif; font-size: 28px;
+  line-height: 1.2; font-weight: 400; margin-bottom: 14px;
+}
+.glass-card-desc {
+  font-family: 'DM Sans', sans-serif; font-size: var(--av-text-sm);
+  line-height: 1.7; opacity: 0.5;
+}
+.glass-card-list {
+  list-style: none; padding: 0; margin-top: 16px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.glass-card-list li {
+  font-family: 'DM Sans', sans-serif; font-size: var(--av-text-sm);
+  line-height: 1.6; opacity: 0.6; padding-left: 20px; position: relative;
+}
+.glass-card-list li::before {
+  content: ''; position: absolute; left: 0; top: 8px;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--av-gold); opacity: 0.6;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────
+   SHARED: CTA section
+   ───────────────────────────────────────────────────────────────── */
+.av-cta { padding: 48px; }
+.av-cta-bg {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.2;
+  background: radial-gradient(ellipse at 30% 50%, rgba(201,169,110,0.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 50%, rgba(200,34,42,0.05) 0%, transparent 60%);
+}
+.av-cta-content { position: relative; z-index: 2; padding: 64px; }
+.av-cta-subtitle {
+  font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.3em;
+  text-transform: uppercase; opacity: 0.4; margin-bottom: 32px; color: var(--av-cream);
+}
+.av-cta-heading {
+  font-family: 'DM Serif Display', serif; font-size: var(--av-text-lg);
+  line-height: 1.08; letter-spacing: -0.02em; font-weight: 400;
+  color: var(--av-cream); margin-bottom: 48px; max-width: 12em;
+  margin-left: auto; margin-right: auto;
+}
+.av-cta-btns { display: flex; gap: 16px; justify-content: center; }
+.av-cta-btn {
+  display: inline-flex; align-items: center; gap: 12px; padding: 18px 40px;
+  border-radius: 100px; font-family: 'DM Sans', sans-serif;
+  font-size: var(--av-text-sm); font-weight: 500; letter-spacing: 0.04em;
+  text-decoration: none; cursor: pointer; border: none;
+  transition: transform 0.5s cubic-bezier(0.23,1,0.32,1), box-shadow 0.3s ease;
+}
+.av-cta-btn:hover { transform: translateY(-2px); }
+.av-cta-btn-primary { background: var(--av-red); color: var(--av-cream); }
+.av-cta-btn-primary:hover { box-shadow: 0 8px 32px rgba(200,34,42,0.25); }
+.av-cta-btn-ghost {
+  background: rgba(240,237,232,0.08); color: var(--av-cream);
+  border: 1px solid rgba(240,237,232,0.2);
+}
+.av-cta-btn-ghost:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+.av-cta-btn-gold { background: var(--av-gold); color: var(--av-dark); }
+.av-cta-btn-gold:hover { box-shadow: 0 8px 32px rgba(201,169,110,0.3); }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGE 1: ADU (/adu) — adu-* classes
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* --- ADU Hero --- */
+.adu-hero {
+  min-height: 80vh;
+  display: flex; align-items: flex-end;
+  padding: 160px var(--av-section-pad-x) var(--av-section-pad-y);
+  background-color: var(--av-dark); color: var(--av-cream);
+  position: relative; overflow: hidden;
+}
+.adu-hero-canvas-wrap {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 1; pointer-events: none; overflow: hidden;
+}
+.adu-hero-canvas-wrap canvas { display: block; width: 100%; height: 100%; }
+.adu-hero-content { position: relative; z-index: 2; max-width: 800px; }
+.adu-hero-label {
+  font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+  letter-spacing: 0.3em; text-transform: uppercase; opacity: 0;
+  margin-bottom: 32px; color: var(--av-cream);
+}
+.adu-hero-gold-line {
+  width: 0; height: 1px; background: var(--av-gold);
+  margin-bottom: 24px; will-change: width;
+}
+.adu-hero-subtitle {
+  font-family: 'DM Sans', sans-serif; font-size: var(--av-text-body);
+  line-height: 1.9; opacity: 0; margin-top: 24px; color: var(--av-cream);
+  max-width: 520px; filter: blur(4px);
+}
+.adu-hero-scroll-hint {
+  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  opacity: 0;
+}
+.adu-hero-scroll-hint span {
+  font-family: 'DM Sans', sans-serif; font-size: 10px;
+  letter-spacing: 0.3em; text-transform: uppercase; color: var(--av-cream);
+}
+.adu-hero-scroll-line {
+  width: 1px; height: 40px; background: var(--av-gold);
+  transform-origin: top center; animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* --- ADU Types (scroll-locked cards + Three.js) --- */
+.adu-types { position: relative; overflow: hidden; background: #ffffff; }
+.adu-types-canvas-wrap {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 1; pointer-events: none; overflow: hidden;
+}
+.adu-types-canvas-wrap canvas { display: block; width: 100%; height: 100%; }
+.adu-types-content { position: relative; z-index: 2; }
+.adu-types-pinned {
+  height: 100vh; display: flex; align-items: center;
+  position: relative; padding: 0 var(--av-section-pad-x);
+}
+.adu-types-header {
+  position: absolute; top: 48px; left: var(--av-section-pad-x); right: var(--av-section-pad-x);
+}
+.adu-types-info {
+  margin-left: auto;
+  position: relative; width: 480px; max-width: 100%; min-height: 300px;
+}
+.adu-type-card {
+  background: #ffffff; color: var(--av-dark);
+  border-radius: var(--av-radius); padding: 56px 48px;
+  border-top: 2px solid rgba(201,169,110,0.3);
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+  position: absolute; top: 50%; transform: translateY(-50%); width: 100%;
+  opacity: 0;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.06);
+  will-change: transform, opacity;
+}
+.adu-type-card:first-child { opacity: 1; }
+.adu-type-card-num {
+  font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+  letter-spacing: 0.2em; text-transform: uppercase;
+  margin-bottom: 16px; color: var(--av-gold);
+}
+.adu-type-card-title {
+  font-family: 'DM Serif Display', serif; font-size: 28px;
+  line-height: 1.2; font-weight: 400; margin-bottom: 14px; color: var(--av-dark);
+}
+.adu-type-card-desc {
+  font-family: 'DM Sans', sans-serif; font-size: var(--av-text-sm);
+  line-height: 1.7; opacity: 0.55; color: var(--av-dark);
+}
+.adu-types-progress {
+  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  z-index: 3; display: flex; align-items: center; gap: 32px;
+}
+.adu-types-track {
+  width: 200px; height: 2px; background: rgba(17,17,17,0.08); position: relative;
+}
+.adu-types-fill { height: 100%; background: var(--av-red); width: 0%; transition: width 0.4s ease; }
+.adu-types-dots { display: flex; gap: 24px; }
+.adu-tdot {
+  font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+  opacity: 0.3; transition: all 0.3s ease; color: var(--av-dark);
+}
+.adu-tdot.active { opacity: 1; color: var(--av-red); font-weight: 700; }
+
+/* --- ADU Process (vertical timeline) --- */
+.adu-process { position: relative; }
+.adu-process-header { text-align: center; margin-bottom: 80px; }
+.adu-timeline { position: relative; max-width: 700px; margin: 0 auto; padding-left: 60px; }
+.adu-tl-svg {
+  position: absolute; left: 19px; top: 0; width: 2px; height: 100%; overflow: visible;
+}
+.adu-tl-track { stroke: rgba(17,17,17,0.12); stroke-width: 2; }
+.adu-tl-draw { stroke: var(--av-red); stroke-width: 2; }
+.adu-tl-step { position: relative; padding-bottom: 80px; }
+.adu-tl-step:last-child { padding-bottom: 0; }
+.adu-tl-node {
+  position: absolute; left: -50px; top: 8px; width: 18px; height: 18px;
+  border-radius: 50%; border: 2px solid rgba(17,17,17,0.15);
+  background: var(--av-warm); transition: all 0.5s ease;
+}
+.adu-tl-node.active {
+  background: var(--av-red); border-color: var(--av-red);
+  box-shadow: 0 0 0 6px rgba(200,34,42,0.15);
+}
+.adu-tl-number {
+  font-family: 'DM Serif Display', serif; font-size: 80px; line-height: 1;
+  opacity: 0.15; display: block; margin-bottom: -16px;
+}
+.adu-tl-title {
+  font-family: 'DM Serif Display', serif; font-size: 32px; line-height: 1.2; margin-bottom: 8px;
+}
+.adu-tl-title .word { display: inline-block; opacity: 0; transform: translateY(105%); }
+.adu-tl-time {
+  font-size: 14px; color: var(--av-red); display: block; margin-bottom: 12px; opacity: 0;
+}
+.adu-tl-desc {
+  font-size: var(--av-text-sm); line-height: 1.7; opacity: 0; max-width: 480px;
+  filter: blur(6px); transform: translateY(20px);
+}
+
+/* --- ADU CTA container --- */
+.adu-cta-container {
+  background: var(--av-dark); border-radius: var(--av-radius); min-height: 56vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; position: relative; overflow: hidden;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGE 2: CONSTRUCTION (/adu-construction) — aduc-* classes
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* --- Construction Hero --- */
+.aduc-hero {
+  min-height: 80vh;
+  display: flex; align-items: flex-end;
+  padding: 160px var(--av-section-pad-x) var(--av-section-pad-y);
+  background-color: var(--av-dark); color: var(--av-cream);
+  position: relative; overflow: hidden;
+}
+.aduc-hero-canvas-wrap {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 1; pointer-events: none; overflow: hidden;
+}
+.aduc-hero-canvas-wrap canvas { display: block; width: 100%; height: 100%; }
+.aduc-hero-content { position: relative; z-index: 2; max-width: 800px; }
+.aduc-hero-label {
+  font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+  letter-spacing: 0.3em; text-transform: uppercase; opacity: 0;
+  margin-bottom: 32px; color: var(--av-cream);
+}
+.aduc-hero-gold-line {
+  width: 0; height: 1px; background: var(--av-gold);
+  margin-bottom: 24px; will-change: width;
+}
+.aduc-hero-subtitle {
+  font-family: 'DM Sans', sans-serif; font-size: var(--av-text-body);
+  line-height: 1.9; opacity: 0; margin-top: 24px; color: var(--av-cream);
+  max-width: 520px; filter: blur(4px);
+}
+.aduc-hero-scroll-hint {
+  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  opacity: 0;
+}
+.aduc-hero-scroll-hint span {
+  font-family: 'DM Sans', sans-serif; font-size: 10px;
+  letter-spacing: 0.3em; text-transform: uppercase; color: var(--av-cream);
+}
+.aduc-hero-scroll-line {
+  width: 1px; height: 40px; background: var(--av-gold);
+  transform-origin: top center; animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* --- Construction Types (scroll-locked cards + Three.js) --- */
+.aduc-types { position: relative; overflow: hidden; background: #ffffff; }
+.aduc-types-canvas-wrap {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 1; pointer-events: none; overflow: hidden;
+}
+.aduc-types-canvas-wrap canvas { display: block; width: 100%; height: 100%; }
+.aduc-types-content { position: relative; z-index: 2; }
+.aduc-types-pinned {
+  height: 100vh; display: flex; align-items: center;
+  position: relative; padding: 0 var(--av-section-pad-x);
+}
+.aduc-types-header {
+  position: absolute; top: 48px; left: var(--av-section-pad-x); right: var(--av-section-pad-x);
+}
+.aduc-types-info {
+  margin-left: auto;
+  position: relative; width: 480px; max-width: 100%; min-height: 300px;
+}
+.aduc-type-card {
+  background: #ffffff; color: var(--av-dark);
+  border-radius: var(--av-radius); padding: 56px 48px;
+  border-top: 2px solid rgba(201,169,110,0.3);
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+  position: absolute; top: 50%; transform: translateY(-50%); width: 100%;
+  opacity: 0;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.06);
+  will-change: transform, opacity;
+}
+.aduc-type-card:first-child { opacity: 1; }
+.aduc-type-card-num {
+  font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--av-gold);
+  margin-bottom: 16px;
+}
+.aduc-type-card-title {
+  font-family: 'DM Serif Display', serif; font-size: 28px;
+  line-height: 1.2; font-weight: 400; margin-bottom: 14px; color: var(--av-dark);
+}
+.aduc-type-card-desc {
+  font-family: 'DM Sans', sans-serif; font-size: var(--av-text-sm);
+  line-height: 1.7; opacity: 0.55; color: var(--av-dark);
+}
+.aduc-types-progress {
+  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  z-index: 3; display: flex; align-items: center; gap: 32px;
+}
+.aduc-types-track {
+  width: 200px; height: 2px; background: rgba(17,17,17,0.08); position: relative;
+}
+.aduc-types-fill { height: 100%; background: var(--av-red); width: 0%; transition: width 0.4s ease; }
+.aduc-types-dots { display: flex; gap: 24px; }
+.aduc-tdot {
+  font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+  opacity: 0.3; transition: all 0.3s ease; color: var(--av-dark);
+}
+.aduc-tdot.active { opacity: 1; color: var(--av-red); font-weight: 700; }
+
+/* --- Construction ROI / Cost --- */
+.aduc-roi { position: relative; }
+.aduc-roi-header { text-align: center; margin-bottom: 80px; }
+.aduc-roi-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+  max-width: 1000px; margin: 0 auto;
+}
+.aduc-roi-card {
+  background: var(--av-dark); color: var(--av-cream);
+  border-radius: var(--av-radius); padding: 40px 24px;
+  text-align: center; opacity: 0; transform: translateY(40px);
+}
+.aduc-roi-value {
+  font-family: 'DM Serif Display', serif; font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 400; color: var(--av-gold); margin-bottom: 12px; line-height: 1.1;
+}
+.aduc-roi-label {
+  font-family: 'DM Sans', sans-serif; font-size: 12px;
+  text-transform: uppercase; letter-spacing: 0.15em; opacity: 0.4;
+}
+
+/* --- Construction Process (horizontal timeline) --- */
+.aduc-process { position: relative; }
+.aduc-process-header { text-align: center; margin-bottom: 80px; }
+.aduc-htl-wrap {
+  position: relative; max-width: 900px; margin: 0 auto;
+  padding-top: 60px;
+}
+.aduc-htl-track-wrap {
+  position: absolute; top: 18px; left: 0; right: 0; height: 4px;
+}
+.aduc-htl-track-bg {
+  width: 100%; height: 100%; background: rgba(17,17,17,0.08); border-radius: 2px;
+}
+.aduc-htl-track-fill {
+  position: absolute; top: 0; left: 0; height: 100%; width: 0%;
+  background: var(--av-red); border-radius: 2px;
+}
+.aduc-htl-steps {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px;
+}
+.aduc-htl-step { text-align: center; position: relative; }
+.aduc-htl-node {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid rgba(17,17,17,0.15); background: var(--av-warm);
+  position: absolute; top: -51px; left: 50%; transform: translateX(-50%);
+  transition: all 0.5s ease; z-index: 2;
+}
+.aduc-htl-node.active {
+  background: var(--av-red); border-color: var(--av-red);
+  box-shadow: 0 0 0 6px rgba(200,34,42,0.15);
+}
+.aduc-htl-number {
+  font-family: 'DM Serif Display', serif; font-size: 64px; line-height: 1;
+  opacity: 0.15; display: block; margin-bottom: 4px;
+}
+.aduc-htl-title {
+  font-family: 'DM Serif Display', serif; font-size: 28px; line-height: 1.2;
+  margin-bottom: 8px;
+}
+.aduc-htl-title .word {
+  display: inline-block; opacity: 0; transform: translateY(105%);
+}
+.aduc-htl-time {
+  font-size: 14px; color: var(--av-red); display: block; margin-bottom: 12px; opacity: 0;
+}
+.aduc-htl-desc {
+  font-size: var(--av-text-sm); line-height: 1.7; opacity: 0; max-width: 280px; margin: 0 auto;
+  filter: blur(6px); transform: translateY(20px);
+}
+.aduc-htl-note {
+  text-align: center; margin-top: 48px; font-size: 14px; opacity: 0.4;
+}
+
+/* --- Construction CTA container --- */
+.aduc-cta-container {
+  background: var(--av-dark); border-radius: var(--av-radius); min-height: 56vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; position: relative; overflow: hidden;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGE 3: PLANS (/adu-plans) — plans-* classes
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* --- Plans Hero --- */
+.plans-hero {
+  min-height: 80vh;
+  display: flex; align-items: flex-end;
+  padding: 160px var(--av-section-pad-x) var(--av-section-pad-y);
+  background-color: var(--av-dark); color: var(--av-cream);
+  position: relative; overflow: hidden;
+}
+.plans-hero-content { max-width: 800px; }
+.plans-hero-label {
+  font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+  letter-spacing: 0.3em; text-transform: uppercase; opacity: 0;
+  margin-bottom: 32px; color: var(--av-cream);
+}
+.plans-hero-gold-line {
+  width: 0; height: 1px; background: var(--av-gold);
+  margin-bottom: 24px; will-change: width;
+}
+.plans-hero-subtitle {
+  font-family: 'DM Sans', sans-serif; font-size: var(--av-text-body);
+  line-height: 1.9; opacity: 0; margin-top: 24px; color: var(--av-cream);
+  max-width: 520px; filter: blur(4px);
+}
+.plans-hero-scroll-hint {
+  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  opacity: 0;
+}
+.plans-hero-scroll-hint span {
+  font-family: 'DM Sans', sans-serif; font-size: 10px;
+  letter-spacing: 0.3em; text-transform: uppercase; color: var(--av-cream);
+}
+.plans-hero-scroll-line {
+  width: 1px; height: 40px; background: var(--av-gold);
+  transform-origin: top center; animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* --- Plans Gallery --- */
+.plans-gallery-header { text-align: center; margin-bottom: 80px; }
+.plans-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px; max-width: 1200px; margin: 0 auto;
+}
+.plan-card {
+  background: var(--av-dark); color: var(--av-cream);
+  border-radius: var(--av-radius); overflow: hidden;
+  border-top: 2px solid rgba(201,169,110,0.25);
+  transition: transform 0.4s cubic-bezier(0.23,1,0.32,1), box-shadow 0.4s ease;
+}
+.plan-card-img {
+  background: #1a1a1a; min-height: 200px; position: relative; overflow: hidden;
+}
+.plan-card-img::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(201,169,110,0.06) 0%, transparent 60%);
+}
+.plan-card-body { padding: 24px 28px; }
+.plan-card-name {
+  font-family: 'DM Serif Display', serif; font-size: 24px; line-height: 1.2;
+  margin-bottom: 8px; font-weight: 400;
+}
+.plan-card-specs {
+  font-size: var(--av-text-sm); opacity: 0.5; line-height: 1.6;
+  margin-bottom: 12px;
+}
+.plan-card-tag {
+  display: inline-block; font-size: var(--av-text-xs); text-transform: uppercase;
+  letter-spacing: 0.06em; padding: 4px 12px; border-radius: 20px;
+  background: rgba(201,169,110,0.12); color: var(--av-gold);
+}
+
+/* --- Plans Custom (dark + Three.js) --- */
+.plans-custom { position: relative; overflow: hidden; }
+.custom-inner {
+  max-width: 700px; margin: 0 auto; text-align: center;
+}
+.custom-inner h2 { margin-bottom: 16px; }
+.custom-inner p { margin-bottom: 32px; opacity: 0.6; }
+.custom-features {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  text-align: left; margin-top: 32px;
+}
+.custom-feature {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: var(--av-text-sm); opacity: 0.5; line-height: 1.5;
+}
+.custom-feature-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--av-gold);
+  flex-shrink: 0; margin-top: 7px;
+}
+
+/* --- Plans CTA container --- */
+.plans-cta-container {
+  background: var(--av-dark); border-radius: var(--av-radius); min-height: 56vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; position: relative; overflow: hidden;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   PAGE 4: CITY ADU (/[city]-adu) — city-* classes
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* --- City Hero --- */
+.city-hero {
+  min-height: 80vh;
+  display: flex; align-items: flex-end;
+  padding: 160px var(--av-section-pad-x) var(--av-section-pad-y);
+  background-color: var(--av-dark); color: var(--av-cream);
+  position: relative; overflow: hidden;
+}
+.city-hero-content { max-width: 800px; }
+.city-hero-label {
+  font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+  letter-spacing: 0.3em; text-transform: uppercase; opacity: 0;
+  margin-bottom: 32px; color: var(--av-cream);
+}
+.city-hero-gold-line {
+  width: 0; height: 1px; background: var(--av-gold);
+  margin-bottom: 24px; will-change: width;
+}
+.city-hero-subtitle {
+  font-family: 'DM Sans', sans-serif; font-size: var(--av-text-body);
+  line-height: 1.9; opacity: 0; margin-top: 24px; color: var(--av-cream);
+  max-width: 560px; filter: blur(4px);
+}
+.city-hero-scroll-hint {
+  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  opacity: 0;
+}
+.city-hero-scroll-hint span {
+  font-family: 'DM Sans', sans-serif; font-size: 10px;
+  letter-spacing: 0.3em; text-transform: uppercase; color: var(--av-cream);
+}
+.city-hero-scroll-line {
+  width: 1px; height: 40px; background: var(--av-gold);
+  transform-origin: top center; animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* --- City Regulations (2-col card grid) --- */
+.city-regs-header { text-align: center; margin-bottom: 80px; }
+.city-regs-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+  max-width: 1100px; margin: 0 auto;
+}
+.city-reg-card {
+  background: var(--av-dark); color: var(--av-cream);
+  border-radius: var(--av-radius); padding: 48px 40px;
+  border-top: 2px solid rgba(201,169,110,0.25);
+  display: flex; flex-direction: column; gap: 12px;
+  opacity: 0; transform: translateY(40px);
+}
+.city-reg-card-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: rgba(201,169,110,0.12); display: flex;
+  align-items: center; justify-content: center; margin-bottom: 8px;
+}
+.city-reg-card-icon svg { width: 24px; height: 24px; }
+.city-reg-card-label {
+  font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+  letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.4;
+  margin-bottom: 4px;
+}
+.city-reg-card-title {
+  font-family: 'DM Serif Display', serif; font-size: 28px;
+  line-height: 1.2; margin-bottom: 4px;
+}
+.city-reg-card-desc {
+  font-family: 'DM Sans', sans-serif; font-size: var(--av-text-sm);
+  line-height: 1.7; opacity: 0.5;
+}
+
+/* --- City Showcase (full-width image + overlay) --- */
+.city-showcase {
+  position: relative; overflow: hidden;
+  min-height: 70vh; display: flex; align-items: flex-end;
+}
+.city-showcase-img {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+}
+.city-showcase-placeholder {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(135deg, var(--av-warm) 0%, #d4cfc8 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 16px;
+}
+.city-showcase-placeholder-icon {
+  width: 64px; height: 64px; opacity: 0.3;
+}
+.city-showcase-placeholder-text {
+  font-family: 'DM Sans', sans-serif; font-size: 14px;
+  letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.35;
+}
+.city-showcase-overlay {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(to top, rgba(17,17,17,0.85) 0%, rgba(17,17,17,0.2) 50%, transparent 100%);
+  pointer-events: none;
+}
+.city-showcase-content {
+  position: relative; z-index: 2; padding: 64px var(--av-section-pad-x);
+  width: 100%; max-width: 700px;
+}
+.city-showcase-label {
+  font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+  letter-spacing: 0.25em; text-transform: uppercase; color: var(--av-gold);
+  margin-bottom: 16px; opacity: 0;
+}
+.city-showcase-title {
+  font-family: 'DM Serif Display', serif; font-size: var(--av-text-lg);
+  line-height: 1.08; color: var(--av-cream); margin-bottom: 16px;
+  font-weight: 400;
+}
+.city-showcase-desc {
+  font-family: 'DM Sans', sans-serif; font-size: var(--av-text-body);
+  line-height: 1.8; color: rgba(240,237,232,0.65); max-width: 520px;
+}
+
+/* --- City Requirements (dark + Three.js + glass cards) --- */
+.city-reqs {
+  position: relative; overflow: hidden;
+  min-height: 80vh;
+}
+.city-reqs-content { max-width: 1100px; margin: 0 auto; }
+.city-reqs-header { margin-bottom: 64px; }
+.city-reqs-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+}
+
+/* --- City CTA container --- */
+.city-cta-container {
+  background: var(--av-dark); border-radius: var(--av-radius); min-height: 56vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; position: relative; overflow: hidden;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   RESPONSIVE — 991px (Tablet)
+   ═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 991px) {
+
+  /* --- ADU page --- */
+  .adu-hero { min-height: 60vh !important; padding: 120px 40px 80px !important; }
+  .adu-types-canvas-wrap { display: none !important; }
+  .adu-types-pinned { padding: 0 40px !important; }
+  .adu-types-info { width: 100% !important; margin-left: 0 !important; }
+  .adu-type-card { position: relative !important; top: auto !important; transform: none !important; }
+  .adu-type-card:first-child { opacity: 1 !important; }
+  .adu-process-header { margin-bottom: 48px !important; }
+
+  /* --- Construction page --- */
+  .aduc-hero { min-height: 60vh !important; padding: 120px 40px 80px !important; }
+  .aduc-hero-canvas-wrap { display: none !important; }
+  .aduc-types-canvas-wrap { display: none !important; }
+  .aduc-types-pinned { padding: 0 40px !important; }
+  .aduc-types-info { width: 100% !important; margin-left: 0 !important; }
+  .aduc-type-card { position: relative !important; top: auto !important; transform: none !important; opacity: 1 !important; margin-bottom: 24px; }
+  .aduc-roi-grid { grid-template-columns: 1fr 1fr !important; }
+  .aduc-process-header { margin-bottom: 48px !important; }
+  .aduc-htl-steps { grid-template-columns: 1fr !important; gap: 64px !important; }
+  .aduc-htl-track-wrap { display: none !important; }
+  .aduc-htl-node { position: relative !important; top: auto !important; left: auto !important; transform: none !important; margin: 0 auto 16px !important; }
+
+  /* --- Plans page --- */
+  .plans-hero { min-height: 60vh !important; padding: 120px 40px 80px !important; }
+  .canvas-wrap { display: none !important; }
+  .plans-grid { grid-template-columns: 1fr 1fr !important; }
+  .custom-features { grid-template-columns: 1fr !important; }
+
+  /* --- City page --- */
+  .city-hero { min-height: 60vh !important; padding: 120px 40px 80px !important; }
+  .city-hero .canvas-wrap { display: none !important; }
+  .city-reqs .canvas-wrap { display: none !important; }
+  .city-regs-grid { grid-template-columns: 1fr !important; }
+  .city-reqs-grid { grid-template-columns: 1fr !important; }
+  .city-reqs { min-height: auto !important; }
+  .city-showcase { min-height: 50vh !important; }
+  .city-showcase-content { padding: 48px 40px !important; }
+  .city-reg-card { padding: 40px 32px !important; }
+  .glass-card { padding: 40px 32px !important; }
+
+  /* --- Shared CTA --- */
+  .av-cta { padding: 40px !important; }
+  .av-cta-btns { flex-direction: column !important; align-items: center !important; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   RESPONSIVE — 767px (Mobile)
+   ═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+
+  /* --- ADU page --- */
+  .adu-hero { min-height: 50vh !important; padding: 100px 24px 64px !important; }
+  .adu-types-pinned { padding: 0 24px !important; }
+  .adu-timeline { padding-left: 40px !important; }
+  .adu-tl-svg { left: 12px !important; }
+  .adu-tl-node { left: -36px !important; width: 14px !important; height: 14px !important; }
+
+  /* --- Construction page --- */
+  .aduc-hero { min-height: 50vh !important; padding: 100px 24px 64px !important; }
+  .aduc-types-pinned { padding: 0 24px !important; }
+
+  /* --- Plans page --- */
+  .plans-hero { min-height: 50vh !important; padding: 100px 24px 64px !important; }
+  .plans-grid { grid-template-columns: 1fr !important; }
+  .glass-card { padding: 32px 24px !important; }
+
+  /* --- City page --- */
+  .city-hero { min-height: 50vh !important; padding: 100px 24px 64px !important; }
+  .city-regs-grid { gap: 24px !important; }
+  .city-reg-card { padding: 32px 24px !important; }
+  .city-showcase { min-height: 40vh !important; }
+  .city-showcase-content { padding: 40px 24px !important; }
+  .city-showcase-title { font-size: clamp(28px, 6vw, 40px) !important; }
+
+  /* --- Shared CTA --- */
+  .av-cta { padding: 24px !important; }
+  .av-cta-btns { flex-direction: column !important; align-items: center !important; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   RESPONSIVE — 478px (Small mobile)
+   ═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 478px) {
+
+  /* --- ADU page --- */
+  .adu-hero { min-height: 45vh !important; padding: 80px 16px 48px !important; }
+  .adu-type-card { padding: 36px 24px !important; }
+
+  /* --- Construction page --- */
+  .aduc-hero { min-height: 45vh !important; padding: 80px 16px 48px !important; }
+  .aduc-type-card { padding: 36px 24px !important; }
+  .aduc-roi-grid { grid-template-columns: 1fr !important; max-width: 320px !important; }
+  .aduc-roi-card { padding: 32px 16px !important; }
+
+  /* --- Plans page --- */
+  .plans-hero { min-height: 45vh !important; padding: 80px 16px 48px !important; }
+  .glass-card { padding: 24px 16px !important; }
+
+  /* --- City page --- */
+  .city-hero { min-height: 45vh !important; padding: 80px 16px 48px !important; }
+  .city-reg-card { padding: 28px 20px !important; }
+
+  /* --- Shared CTA --- */
+  .av-cta { padding: 16px !important; }
+  .av-cta-btn { width: 100% !important; justify-content: center !important; }
+}

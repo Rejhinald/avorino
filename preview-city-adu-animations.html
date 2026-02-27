@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anaheim ADU Regulations & Construction | Avorino</title>
+<meta name="description" content="Build a permitted ADU in Anaheim, CA. Local regulations, setbacks, max size, and permit timeline. Detached, attached, and garage conversions by Avorino.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.avorino.com/anaheim-adu">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Avorino">
+<meta property="og:title" content="Anaheim ADU Regulations & Construction | Avorino">
+<meta property="og:description" content="Build a permitted ADU in Anaheim, CA. Local regulations, setbacks, max size, and permit timeline. Detached, attached, and garage conversions by Avorino.">
+<meta property="og:url" content="https://www.avorino.com/anaheim-adu">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Anaheim ADU Regulations & Construction | Avorino">
+<meta name="twitter:description" content="Build a permitted ADU in Anaheim, CA. Local regulations, setbacks, max size, and permit timeline.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  /* ─── Reset ─── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overflow-x: hidden; font-family: 'DM Sans', sans-serif; background: #f0ede8; color: #111; }
+  html { scroll-behavior: auto; }
+
+  /* ─── Avorino Design Tokens ─── */
+  :root {
+    --av-dark: #111111;
+    --av-cream: #f0ede8;
+    --av-warm: #e8e4df;
+    --av-red: #c8222a;
+    --av-gold: #c9a96e;
+    --av-radius: 8px;
+    --av-section-pad-y: 128px;
+    --av-section-pad-x: 80px;
+    --av-text-xl: clamp(48px, 5vw, 96px);
+    --av-text-lg: clamp(36px, 3.5vw, 64px);
+    --av-text-h3: clamp(24px, 2vw, 36px);
+    --av-text-body: clamp(16px, 1.1vw, 18px);
+    --av-text-sm: clamp(14px, 0.9vw, 16px);
+    --av-text-xs: clamp(11px, 0.7vw, 13px);
+  }
+
+  /* ─── Shared Section Styles ─── */
+  .av-section { padding: var(--av-section-pad-y) var(--av-section-pad-x); }
+  .av-section-warm { background: var(--av-warm); color: var(--av-dark); }
+  .av-section-dark { background: var(--av-dark); color: var(--av-cream); }
+
+  /* ─── Typography ─── */
+  .av-heading-xl {
+    font-family: 'DM Serif Display', serif;
+    font-size: var(--av-text-xl); line-height: 1.05; font-weight: 400; letter-spacing: -0.02em;
+  }
+  .av-heading-lg {
+    font-family: 'DM Serif Display', serif;
+    font-size: var(--av-text-lg); line-height: 1.1; font-weight: 400;
+  }
+  .av-heading-md {
+    font-family: 'DM Serif Display', serif;
+    font-size: var(--av-text-h3); line-height: 1.15; font-weight: 400;
+  }
+  .av-body { font-size: var(--av-text-body); line-height: 1.9; }
+
+  /* ─── Label ─── */
+  .av-label {
+    display: flex; align-items: center; gap: 16px;
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+    letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.4;
+  }
+  .av-label-line { flex-grow: 1; height: 1px; background: rgba(17,17,17,0.15); transform-origin: left center; }
+
+  /* ─── Utility ─── */
+  .av-mb-48 { margin-bottom: 48px; }
+  .av-mb-64 { margin-bottom: 64px; }
+  .av-mb-96 { margin-bottom: 96px; }
+
+  /* ─── Animation supports ─── */
+  [data-animate="char-cascade"] span { display: inline-block; will-change: transform, opacity, filter; }
+  [data-animate="line-wipe"] .line { will-change: clip-path; }
+
+  /* ═══════════════════════════════════════════════
+     SECTION 1: HERO — Full-viewport with Three.js zoning grid
+     ═══════════════════════════════════════════════ */
+  .city-hero {
+    min-height: 80vh;
+    display: flex; align-items: flex-end;
+    padding: 160px var(--av-section-pad-x) var(--av-section-pad-y);
+    background-color: var(--av-dark); color: var(--av-cream);
+    position: relative; overflow: hidden;
+  }
+  .canvas-wrap {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 1; pointer-events: none; overflow: hidden;
+  }
+  .canvas-wrap canvas { display: block; width: 100%; height: 100%; }
+  .content-overlay { position: relative; z-index: 2; }
+
+  .city-hero-content { max-width: 800px; }
+  .city-hero-label {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+    letter-spacing: 0.3em; text-transform: uppercase; opacity: 0;
+    margin-bottom: 32px; color: var(--av-cream);
+  }
+  .city-hero-gold-line {
+    width: 0; height: 1px; background: var(--av-gold);
+    margin-bottom: 24px; will-change: width;
+  }
+  .city-hero-subtitle {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-body);
+    line-height: 1.9; opacity: 0; margin-top: 24px; color: var(--av-cream);
+    max-width: 560px; filter: blur(4px);
+  }
+  .city-hero-scroll-hint {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 8px;
+    opacity: 0;
+  }
+  .city-hero-scroll-hint span {
+    font-family: 'DM Sans', sans-serif; font-size: 10px;
+    letter-spacing: 0.3em; text-transform: uppercase; color: var(--av-cream);
+  }
+  .city-hero-scroll-line {
+    width: 1px; height: 40px; background: var(--av-gold);
+    transform-origin: top center; animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { transform: scaleY(0.3); opacity: 0.3; }
+    50% { transform: scaleY(1); opacity: 0.8; }
+  }
+
+  /* ═══════════════════════════════════════════════
+     SECTION 2: REGULATIONS — Warm 2-col card grid
+     ═══════════════════════════════════════════════ */
+  .city-regs-header { text-align: center; margin-bottom: 80px; }
+  .city-regs-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .city-reg-card {
+    background: var(--av-dark); color: var(--av-cream);
+    border-radius: var(--av-radius); padding: 48px 40px;
+    border-top: 2px solid rgba(201,169,110,0.25);
+    display: flex; flex-direction: column; gap: 12px;
+    opacity: 0; transform: translateY(40px);
+  }
+  .city-reg-card-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: rgba(201,169,110,0.12); display: flex;
+    align-items: center; justify-content: center; margin-bottom: 8px;
+  }
+  .city-reg-card-icon svg { width: 24px; height: 24px; }
+  .city-reg-card-label {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+    letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.4;
+    margin-bottom: 4px;
+  }
+  .city-reg-card-title {
+    font-family: 'DM Serif Display', serif; font-size: 28px;
+    line-height: 1.2; margin-bottom: 4px;
+  }
+  .city-reg-card-desc {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-sm);
+    line-height: 1.7; opacity: 0.5;
+  }
+
+  /* ═══════════════════════════════════════════════
+     SECTION 3: CITY SHOWCASE — Full-width image + overlay text
+     ═══════════════════════════════════════════════ */
+  .city-showcase {
+    position: relative; overflow: hidden;
+    min-height: 70vh; display: flex; align-items: flex-end;
+  }
+  .city-showcase-img {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    object-fit: cover; object-position: center;
+  }
+  .city-showcase-placeholder {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, var(--av-warm) 0%, #d4cfc8 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 16px;
+  }
+  .city-showcase-placeholder-icon {
+    width: 64px; height: 64px; opacity: 0.3;
+  }
+  .city-showcase-placeholder-text {
+    font-family: 'DM Sans', sans-serif; font-size: 14px;
+    letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.35;
+  }
+  .city-showcase-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to top, rgba(17,17,17,0.85) 0%, rgba(17,17,17,0.2) 50%, transparent 100%);
+    pointer-events: none;
+  }
+  .city-showcase-content {
+    position: relative; z-index: 2; padding: 64px var(--av-section-pad-x);
+    width: 100%; max-width: 700px;
+  }
+  .city-showcase-label {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+    letter-spacing: 0.25em; text-transform: uppercase; color: var(--av-gold);
+    margin-bottom: 16px; opacity: 0;
+  }
+  .city-showcase-title {
+    font-family: 'DM Serif Display', serif; font-size: var(--av-text-lg);
+    line-height: 1.08; color: var(--av-cream); margin-bottom: 16px;
+    font-weight: 400;
+  }
+  .city-showcase-desc {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-body);
+    line-height: 1.8; color: rgba(240,237,232,0.65); max-width: 520px;
+  }
+
+  /* ═══════════════════════════════════════════════
+     SECTION 4: REQUIREMENTS — Dark with Three.js backdrop + glass cards
+     ═══════════════════════════════════════════════ */
+  .city-reqs {
+    position: relative; overflow: hidden;
+    min-height: 80vh;
+  }
+  .city-reqs-content { max-width: 1100px; margin: 0 auto; }
+  .city-reqs-header { margin-bottom: 64px; }
+  .city-reqs-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+  }
+  .glass-card {
+    background: rgba(17,17,17,0.88); color: var(--av-cream);
+    border-radius: var(--av-radius); padding: 48px 40px;
+    border-top: 2px solid rgba(201,169,110,0.25);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+  }
+  .glass-card-num {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+    letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.4;
+    margin-bottom: 16px;
+  }
+  .glass-card-title {
+    font-family: 'DM Serif Display', serif; font-size: 28px;
+    line-height: 1.2; font-weight: 400; margin-bottom: 14px;
+  }
+  .glass-card-desc {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-sm);
+    line-height: 1.7; opacity: 0.5;
+  }
+  .glass-card-list {
+    list-style: none; padding: 0; margin-top: 16px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .glass-card-list li {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-sm);
+    line-height: 1.6; opacity: 0.6; padding-left: 20px; position: relative;
+  }
+  .glass-card-list li::before {
+    content: ''; position: absolute; left: 0; top: 8px;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--av-gold); opacity: 0.6;
+  }
+
+  /* ═══════════════════════════════════════════════
+     SECTION 5: CTA — Dark container with radial glow
+     ═══════════════════════════════════════════════ */
+  .av-cta { padding: 48px; }
+  .city-cta-container {
+    background: var(--av-dark); border-radius: var(--av-radius); min-height: 56vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .av-cta-bg {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.2;
+    background: radial-gradient(ellipse at 30% 50%, rgba(201,169,110,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 50%, rgba(200,34,42,0.05) 0%, transparent 60%);
+  }
+  .av-cta-content { position: relative; z-index: 2; padding: 64px; }
+  .av-cta-subtitle {
+    font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.3em;
+    text-transform: uppercase; opacity: 0.4; margin-bottom: 32px; color: var(--av-cream);
+  }
+  .av-cta-heading {
+    font-family: 'DM Serif Display', serif; font-size: var(--av-text-lg);
+    line-height: 1.08; letter-spacing: -0.02em; font-weight: 400;
+    color: var(--av-cream); margin-bottom: 48px; max-width: 12em;
+    margin-left: auto; margin-right: auto;
+  }
+  .av-cta-btns { display: flex; gap: 16px; justify-content: center; }
+  .av-cta-btn {
+    display: inline-flex; align-items: center; gap: 12px; padding: 18px 40px;
+    border-radius: 100px; font-family: 'DM Sans', sans-serif;
+    font-size: var(--av-text-sm); font-weight: 500; letter-spacing: 0.04em;
+    text-decoration: none; cursor: pointer; border: none;
+    transition: transform 0.5s cubic-bezier(0.23,1,0.32,1), box-shadow 0.3s ease;
+  }
+  .av-cta-btn:hover { transform: translateY(-2px); }
+  .av-cta-btn-primary { background: var(--av-red); color: var(--av-cream); }
+  .av-cta-btn-primary:hover { box-shadow: 0 8px 32px rgba(200,34,42,0.25); }
+  .av-cta-btn-ghost {
+    background: rgba(240,237,232,0.08); color: var(--av-cream);
+    border: 1px solid rgba(240,237,232,0.2);
+  }
+  .av-cta-btn-ghost:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+
+  /* ═══════════════════════════════════════════════
+     RESPONSIVE
+     ═══════════════════════════════════════════════ */
+  @media (max-width: 991px) {
+    .av-section { padding: 80px 40px !important; }
+    .city-hero { min-height: 60vh !important; padding: 120px 40px 80px !important; }
+    .city-hero .canvas-wrap { display: none !important; }
+    .city-reqs .canvas-wrap { display: none !important; }
+    .city-regs-grid { grid-template-columns: 1fr !important; }
+    .city-reqs-grid { grid-template-columns: 1fr !important; }
+    .city-reqs { min-height: auto !important; }
+    .city-showcase { min-height: 50vh !important; }
+    .city-showcase-content { padding: 48px 40px !important; }
+    .av-cta { padding: 40px !important; }
+  }
+  @media (max-width: 767px) {
+    .av-section { padding: 64px 24px !important; }
+    .city-hero { min-height: 50vh !important; padding: 100px 24px 64px !important; }
+    .city-regs-grid { gap: 24px !important; }
+    .city-reg-card { padding: 32px 24px !important; }
+    .glass-card { padding: 32px 24px !important; }
+    .av-heading-xl { font-size: clamp(36px, 8vw, 56px) !important; }
+    .av-heading-lg { font-size: clamp(28px, 6vw, 40px) !important; }
+    .city-showcase { min-height: 40vh !important; }
+    .city-showcase-content { padding: 40px 24px !important; }
+    .city-showcase-title { font-size: clamp(28px, 6vw, 40px) !important; }
+    .av-cta { padding: 24px !important; }
+    .av-cta-btns { flex-direction: column !important; align-items: center !important; }
+  }
+  @media (max-width: 478px) {
+    .av-section { padding: 48px 16px !important; }
+    .city-hero { min-height: 45vh !important; padding: 80px 16px 48px !important; }
+    .av-heading-xl { font-size: clamp(28px, 9vw, 42px) !important; }
+    .av-heading-lg { font-size: clamp(24px, 6vw, 32px) !important; }
+    .av-cta { padding: 16px !important; }
+    .av-cta-btn { width: 100% !important; justify-content: center !important; }
+    .city-reg-card { padding: 28px 20px !important; }
+    .glass-card { padding: 28px 20px !important; }
+  }
+</style>
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Anaheim ADU Construction",
+  "provider": {
+    "@type": "LocalBusiness",
+    "name": "Avorino",
+    "url": "https://www.avorino.com",
+    "areaServed": {
+      "@type": "City",
+      "name": "Anaheim",
+      "containedInPlace": {
+        "@type": "State",
+        "name": "California"
+      }
+    }
+  },
+  "description": "ADU design, permitting, and construction in Anaheim, CA. Detached, attached, and garage conversions. Licensed Orange County contractor.",
+  "serviceType": "ADU Construction",
+  "areaServed": "Anaheim, CA"
+}
+</script>
+</head>
+<body>
+
+<!-- ═══════════ SECTION 1: HERO — Neighborhood Zoning Grid ═══════════ -->
+<main>
+<section class="city-hero" id="city-hero">
+  <div class="canvas-wrap" id="hero-canvas"></div>
+  <div class="content-overlay city-hero-content">
+    <div class="city-hero-label" data-animate="fade-up">// Anaheim</div>
+    <h1 class="av-heading-xl" data-animate="char-cascade">Anaheim ADU Regulations</h1>
+    <div class="city-hero-gold-line"></div>
+    <p class="city-hero-subtitle" data-animate="fade-up">Everything you need to know about building an ADU in Anaheim. Larger lot sizes (7K&ndash;10K sqft) make Anaheim ideal for both attached and detached ADUs.</p>
+  </div>
+  <div class="city-hero-scroll-hint" data-animate="fade-up">
+    <span>Scroll</span>
+    <div class="city-hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 2: REGULATIONS — Warm 2-col info cards ═══════════ -->
+<section class="av-section av-section-warm" id="city-regs">
+  <div class="city-regs-header">
+    <div class="av-label av-mb-64" data-animate="fade-up">
+      <div>Anaheim ADU Regulations</div>
+      <div class="av-label-line"></div>
+    </div>
+    <h2 class="av-heading-lg" data-animate="line-wipe">What You Need<br>to Know</h2>
+  </div>
+  <div class="city-regs-grid">
+
+    <!-- Card 1: Max Size -->
+    <div class="city-reg-card" data-card="0">
+      <div class="city-reg-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#c9a96e" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+      </div>
+      <div class="city-reg-card-label">Max ADU Size</div>
+      <div class="city-reg-card-title">600 &ndash; 1,200 sqft</div>
+      <p class="city-reg-card-desc">State law permits ADUs up to 1,200 sqft for detached units. Attached ADUs may be up to 50% of the primary dwelling floor area.</p>
+    </div>
+
+    <!-- Card 2: Max Height -->
+    <div class="city-reg-card" data-card="1">
+      <div class="city-reg-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#c9a96e" stroke-width="1.5"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><rect x="9" y="13" width="6" height="8"/></svg>
+      </div>
+      <div class="city-reg-card-label">Max Height</div>
+      <div class="city-reg-card-title">16 ft Detached</div>
+      <p class="city-reg-card-desc">Detached ADUs are limited to 16 feet in height per state guidelines. Attached ADUs follow the primary structure height limit.</p>
+    </div>
+
+    <!-- Card 3: Setbacks -->
+    <div class="city-reg-card" data-card="2">
+      <div class="city-reg-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#c9a96e" stroke-width="1.5"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+      </div>
+      <div class="city-reg-card-label">Setbacks</div>
+      <div class="city-reg-card-title">4 ft Rear &amp; Side</div>
+      <p class="city-reg-card-desc">Standard state ADU setbacks apply. No additional local restrictions. 4-foot rear and side setbacks for detached ADUs.</p>
+    </div>
+
+    <!-- Card 4: Parking -->
+    <div class="city-reg-card" data-card="3">
+      <div class="city-reg-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#c9a96e" stroke-width="1.5"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="7" cy="18" r="1.5"/><circle cx="17" cy="18" r="1.5"/><path d="M5 6l2-3h10l2 3"/></svg>
+      </div>
+      <div class="city-reg-card-label">Parking</div>
+      <div class="city-reg-card-title">No Extra Required</div>
+      <p class="city-reg-card-desc">No additional parking spaces required for ADUs within half mile of public transit. Replacement parking not required for garage conversions.</p>
+    </div>
+
+    <!-- Card 5: Owner Occupancy -->
+    <div class="city-reg-card" data-card="4">
+      <div class="city-reg-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#c9a96e" stroke-width="1.5"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg>
+      </div>
+      <div class="city-reg-card-label">Owner Occupancy</div>
+      <div class="city-reg-card-title">Not Required</div>
+      <p class="city-reg-card-desc">No owner-occupancy requirement for ADUs permitted after January 1, 2020 through December 31, 2029 per state law.</p>
+    </div>
+
+    <!-- Card 6: Fees & Timeline -->
+    <div class="city-reg-card" data-card="5">
+      <div class="city-reg-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#c9a96e" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div class="city-reg-card-label">Fees &amp; Timeline</div>
+      <div class="city-reg-card-title">10 &ndash; 14 Months</div>
+      <p class="city-reg-card-desc">Estimated cost $250K&ndash;$400K. Plan check typically 4&ndash;6 weeks. Full build timeline includes 4&ndash;6 months design/permitting and 6&ndash;8 months construction.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 3: CITY SHOWCASE — Image Attachment ═══════════ -->
+<section class="city-showcase" id="city-showcase">
+  <!-- Replace with actual city image: <img class="city-showcase-img" src="anaheim-adu.jpg" alt="ADU in Anaheim"> -->
+  <div class="city-showcase-placeholder">
+    <svg class="city-showcase-placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+      <rect x="3" y="3" width="18" height="18" rx="2"/>
+      <circle cx="8.5" cy="8.5" r="1.5"/>
+      <path d="M21 15l-5-5L5 21"/>
+    </svg>
+    <div class="city-showcase-placeholder-text">City Image — Replace per city</div>
+  </div>
+  <div class="city-showcase-overlay"></div>
+  <div class="city-showcase-content">
+    <div class="city-showcase-label" data-animate="fade-up">Anaheim, California</div>
+    <h2 class="city-showcase-title" data-animate="line-wipe">Building ADUs<br>in Anaheim</h2>
+    <p class="city-showcase-desc" data-animate="fade-up">Anaheim offers strong ADU opportunities with progressive local regulations. From downtown neighborhoods to suburban lots near Disneyland, homeowners are adding value and rental income with custom accessory dwelling units.</p>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 4: REQUIREMENTS — Dark with Three.js + glass cards ═══════════ -->
+<section class="av-section av-section-dark city-reqs" id="city-reqs">
+  <div class="canvas-wrap" id="reqs-canvas"></div>
+  <div class="content-overlay city-reqs-content">
+    <div class="city-reqs-header">
+      <div class="av-label av-mb-48" style="color:var(--av-cream);" data-animate="fade-up">
+        <div>Permit Requirements</div>
+        <div class="av-label-line" style="background:rgba(240,237,232,0.15);"></div>
+      </div>
+      <h2 class="av-heading-lg" data-animate="line-wipe" style="color:var(--av-cream);">Anaheim Permit<br>Requirements</h2>
+    </div>
+    <div class="city-reqs-grid">
+
+      <!-- Glass Card 1: Permit Process -->
+      <div class="glass-card" data-animate="fade-up">
+        <div class="glass-card-num">01 / Permitting</div>
+        <h3 class="glass-card-title">Anaheim Building Department</h3>
+        <p class="glass-card-desc">Four printed plan copies required. We handle all submissions, plan-check corrections, and approvals on your behalf.</p>
+        <ul class="glass-card-list">
+          <li>Architectural plans and structural engineering</li>
+          <li>Title 24 energy calculations</li>
+          <li>Soils report and foundation design</li>
+          <li>All plan-check corrections managed by Avorino</li>
+        </ul>
+      </div>
+
+      <!-- Glass Card 2: Timeline -->
+      <div class="glass-card" data-animate="fade-up">
+        <div class="glass-card-num">02 / Timeline</div>
+        <h3 class="glass-card-title">Design to Move-In</h3>
+        <p class="glass-card-desc">From initial consultation to a fully finished, move-in ready ADU in your backyard.</p>
+        <ul class="glass-card-list">
+          <li>Consultation and site assessment &mdash; 1&ndash;2 weeks</li>
+          <li>Custom design and engineering &mdash; 6&ndash;8 weeks</li>
+          <li>City plan check &mdash; 4&ndash;6 weeks</li>
+          <li>Construction &mdash; 6&ndash;8 months</li>
+          <li>Final inspection and certificate of occupancy</li>
+        </ul>
+      </div>
+
+      <!-- Glass Card 3: Zoning -->
+      <div class="glass-card" data-animate="fade-up">
+        <div class="glass-card-num">03 / Zoning</div>
+        <h3 class="glass-card-title">Standard State Setbacks</h3>
+        <p class="glass-card-desc">Anaheim follows California state ADU guidelines with no additional local restrictions.</p>
+        <ul class="glass-card-list">
+          <li>4-foot rear and side setbacks for detached ADUs</li>
+          <li>No additional front setback requirements</li>
+          <li>Minimum lot sizes: 7,000&ndash;10,000 sqft</li>
+          <li>Both attached and detached configurations permitted</li>
+        </ul>
+      </div>
+
+      <!-- Glass Card 4: Cost -->
+      <div class="glass-card" data-animate="fade-up">
+        <div class="glass-card-num">04 / Investment</div>
+        <h3 class="glass-card-title">$250K &ndash; $400K</h3>
+        <p class="glass-card-desc">Full design-build cost including all architecture, engineering, permits, and turnkey construction.</p>
+        <ul class="glass-card-list">
+          <li>No hidden fees &mdash; fixed-price contracts</li>
+          <li>ADU financing options available</li>
+          <li>Strong ROI &mdash; Anaheim rental rates support investment</li>
+          <li>Property value increase of 20&ndash;35%</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 5: CTA ═══════════ -->
+<section class="av-cta">
+  <div class="city-cta-container" id="city-cta">
+    <div class="av-cta-bg" data-animate="parallax-depth"></div>
+    <div class="av-cta-content">
+      <div class="av-cta-subtitle" data-animate="fade-up">Ready to Begin?</div>
+      <h2 class="av-cta-heading" data-animate="word-stagger-elastic">Start your Anaheim ADU</h2>
+      <div class="av-cta-btns">
+        <a href="#" class="av-cta-btn av-cta-btn-primary" data-magnetic data-animate="fade-up">Schedule a Meeting &#8594;</a>
+        <a href="#" class="av-cta-btn av-cta-btn-ghost" data-magnetic data-animate="fade-up">ADU Cost Calculator</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ═══════════ SCRIPTS (bottom of body — correct CDN order) ═══════════ -->
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+
+<!-- City ADU page animations -->
+<script>
+(function () {
+  'use strict';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ═══════════════════════════════════════════════
+     LENIS SMOOTH SCROLL
+     ═══════════════════════════════════════════════ */
+  var lenis = new Lenis({
+    duration: 1.4,
+    easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+    smooth: true,
+    smoothTouch: false,
+  });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
+  gsap.ticker.lagSmoothing(0);
+  ScrollTrigger.addEventListener('refresh', function () { lenis.resize(); });
+
+  /* ═══════════════════════════════════════════════
+     UTILITY — TEXT SPLITTING
+     ═══════════════════════════════════════════════ */
+  function splitIntoWords(el) {
+    var text = el.textContent.trim();
+    var align = window.getComputedStyle(el).textAlign;
+    el.innerHTML = '';
+    el.style.display = 'flex';
+    el.style.flexWrap = 'wrap';
+    el.style.gap = '0 0.3em';
+    if (align === 'center') el.style.justifyContent = 'center';
+    var wordEls = [];
+    text.split(/\s+/).forEach(function (word) {
+      var wrapper = document.createElement('span');
+      wrapper.style.display = 'inline-block';
+      wrapper.style.overflow = 'hidden';
+      wrapper.style.verticalAlign = 'top';
+      var inner = document.createElement('span');
+      inner.style.display = 'inline-block';
+      inner.textContent = word;
+      wrapper.appendChild(inner);
+      el.appendChild(wrapper);
+      wordEls.push(inner);
+    });
+    return wordEls;
+  }
+
+  function splitIntoChars(el) {
+    var text = el.textContent.trim();
+    el.innerHTML = '';
+    el.style.display = 'flex';
+    el.style.flexWrap = 'wrap';
+    el.style.gap = '0 0.3em';
+    var charEls = [];
+    text.split(/\s+/).forEach(function (word) {
+      var wordWrap = document.createElement('span');
+      wordWrap.style.display = 'inline-flex';
+      wordWrap.style.overflow = 'hidden';
+      for (var i = 0; i < word.length; i++) {
+        var charSpan = document.createElement('span');
+        charSpan.style.display = 'inline-block';
+        charSpan.textContent = word[i];
+        wordWrap.appendChild(charSpan);
+        charEls.push(charSpan);
+      }
+      el.appendChild(wordWrap);
+    });
+    return charEls;
+  }
+
+  /* ═══════════════════════════════════════════════
+     HERO — Char Cascade + Gold Line
+     ═══════════════════════════════════════════════ */
+  function initHero() {
+    var hero = document.getElementById('city-hero');
+    if (!hero) return;
+
+    var h1 = hero.querySelector('h1');
+    var goldLine = hero.querySelector('.city-hero-gold-line');
+    var subtitle = hero.querySelector('.city-hero-subtitle');
+    var label = hero.querySelector('.city-hero-label');
+
+    if (label) {
+      label.removeAttribute('data-animate');
+      gsap.fromTo(label,
+        { opacity: 0, y: 20 },
+        { opacity: 0.45, y: 0, duration: 0.8, delay: 0.2, ease: 'power3.out' }
+      );
+    }
+
+    if (h1) {
+      h1.removeAttribute('data-animate');
+      var chars = splitIntoChars(h1);
+      gsap.set(chars, { yPercent: 120, opacity: 0, rotateX: -90, filter: 'blur(8px)' });
+      gsap.to(chars, {
+        yPercent: 0, opacity: 1, rotateX: 0, filter: 'blur(0px)',
+        duration: 1.2, stagger: 0.025, ease: 'elastic.out(1, 0.6)', delay: 0.4,
+      });
+    }
+
+    if (goldLine) {
+      gsap.to(goldLine, { width: '80px', duration: 1, delay: 1, ease: 'power3.inOut' });
+    }
+
+    if (subtitle) {
+      subtitle.removeAttribute('data-animate');
+      gsap.fromTo(subtitle,
+        { opacity: 0, y: 20, filter: 'blur(4px)' },
+        { opacity: 0.55, y: 0, filter: 'blur(0px)', duration: 1, delay: 1.2, ease: 'power3.out' }
+      );
+    }
+
+    var heroContent = hero.querySelector('.city-hero-content');
+    if (heroContent) {
+      gsap.to(heroContent, {
+        opacity: 0, y: -40, filter: 'blur(6px)', ease: 'none',
+        scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 1 },
+      });
+    }
+
+    var hint = hero.querySelector('.city-hero-scroll-hint');
+    if (hint) {
+      hint.removeAttribute('data-animate');
+      gsap.fromTo(hint, { opacity: 0 }, { opacity: 0.3, duration: 1, delay: 2, ease: 'power2.out' });
+      gsap.to(hint, {
+        opacity: 0, ease: 'none',
+        scrollTrigger: { trigger: hero, start: 'top top', end: '30% top', scrub: 1 },
+      });
+    }
+  }
+
+  /* ═══════════════════════════════════════════════
+     REGULATIONS — Staggered card fade-up
+     ═══════════════════════════════════════════════ */
+  function initRegulations() {
+    var cards = document.querySelectorAll('.city-reg-card');
+    if (!cards.length) return;
+
+    cards.forEach(function (card, i) {
+      ScrollTrigger.create({
+        trigger: card,
+        start: 'top 85%',
+        once: true,
+        onEnter: function () {
+          gsap.to(card, {
+            opacity: 1, y: 0,
+            duration: 0.9,
+            delay: (i % 2) * 0.15,
+            ease: 'power3.out',
+          });
+        },
+      });
+    });
+  }
+
+  /* ═══════════════════════════════════════════════
+     CITY SHOWCASE — fade-in animations
+     ═══════════════════════════════════════════════ */
+  function initCityShowcase() {
+    /* ── City Showcase fade-in ── */
+    var showcaseEl = document.getElementById('city-showcase');
+    if (showcaseEl) {
+      gsap.from('.city-showcase-label', {
+        opacity: 0, y: 30, duration: 0.8,
+        scrollTrigger: { trigger: showcaseEl, start: 'top 75%' }
+      });
+      gsap.from('.city-showcase-title', {
+        opacity: 0, y: 40, duration: 1, delay: 0.15,
+        scrollTrigger: { trigger: showcaseEl, start: 'top 75%' }
+      });
+      gsap.from('.city-showcase-desc', {
+        opacity: 0, y: 30, filter: 'blur(6px)', duration: 0.8, delay: 0.3,
+        scrollTrigger: { trigger: showcaseEl, start: 'top 75%' }
+      });
+    }
+  }
+
+  /* ═══════════════════════════════════════════════
+     SCROLL ANIMATIONS — data-animate handlers
+     ═══════════════════════════════════════════════ */
+  function initScrollAnimations() {
+
+    /* fade-up */
+    document.querySelectorAll('[data-animate="fade-up"]').forEach(function (el) {
+      gsap.fromTo(el,
+        { y: 50, opacity: 0, filter: 'blur(4px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' } }
+      );
+    });
+
+    /* fade-up-stagger */
+    document.querySelectorAll('[data-animate="fade-up-stagger"]').forEach(function (el) {
+      var children = el.children;
+      if (!children.length) return;
+      gsap.fromTo(children,
+        { y: 40, opacity: 0, filter: 'blur(4px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1, stagger: 0.12, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 85%' } }
+      );
+    });
+
+    /* word-stagger-elastic */
+    document.querySelectorAll('[data-animate="word-stagger-elastic"]').forEach(function (el) {
+      var words = splitIntoWords(el);
+      gsap.set(words, { yPercent: 120 });
+      gsap.to(words, {
+        yPercent: 0, duration: 1.4, stagger: 0.06, ease: 'elastic.out(1, 0.4)',
+        scrollTrigger: { trigger: el, start: 'top 82%' },
+      });
+    });
+
+    /* parallax-depth */
+    document.querySelectorAll('[data-animate="parallax-depth"]').forEach(function (el) {
+      gsap.to(el, {
+        yPercent: -15, ease: 'none',
+        scrollTrigger: { trigger: el.closest('section') || el.parentElement,
+          start: 'top bottom', end: 'bottom top', scrub: 1 },
+      });
+    });
+
+    /* line-wipe */
+    document.querySelectorAll('[data-animate="line-wipe"]').forEach(function (el) {
+      var lineEls = el.querySelectorAll('.line');
+      if (!lineEls.length) {
+        var html = el.innerHTML;
+        var texts;
+        if (/<br\s*\/?>/i.test(html)) {
+          texts = html.split(/<br\s*\/?>/i).map(function (s) {
+            return s.replace(/<[^>]*>/g, '').trim();
+          }).filter(Boolean);
+        } else {
+          texts = [el.textContent.trim()];
+        }
+        el.innerHTML = '';
+        texts.forEach(function (t) {
+          var d = document.createElement('div');
+          d.className = 'line';
+          d.textContent = t;
+          el.appendChild(d);
+        });
+        lineEls = el.querySelectorAll('.line');
+      }
+      lineEls.forEach(function (line, i) {
+        gsap.set(line, { clipPath: 'inset(0 100% 0 0)' });
+        gsap.to(line, {
+          clipPath: 'inset(0 0% 0 0)', ease: 'power3.inOut',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top ' + (85 - i * 12) + '%',
+            end: 'top ' + (65 - i * 12) + '%',
+            scrub: 1,
+          },
+        });
+      });
+    });
+
+    /* Label line expand */
+    document.querySelectorAll('.av-label-line').forEach(function (line) {
+      gsap.fromTo(line,
+        { scaleX: 0 },
+        { scaleX: 1, duration: 1.2, ease: 'power3.inOut',
+          scrollTrigger: { trigger: line.parentElement, start: 'top 85%' } }
+      );
+    });
+
+    /* Magnetic buttons (desktop) */
+    if (window.innerWidth >= 992) {
+      document.querySelectorAll('[data-magnetic]').forEach(function (btn) {
+        btn.addEventListener('mousemove', function (e) {
+          var r = btn.getBoundingClientRect();
+          var x = (e.clientX - r.left - r.width / 2) * 0.15;
+          var y = (e.clientY - r.top - r.height / 2) * 0.15;
+          gsap.to(btn, { x: x, y: y, duration: 0.3, ease: 'power2.out' });
+        });
+        btn.addEventListener('mouseleave', function () {
+          gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.4)' });
+        });
+      });
+    }
+
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { ScrollTrigger.refresh(); });
+    });
+    if (document.readyState !== 'complete') {
+      window.addEventListener('load', function () { ScrollTrigger.refresh(); });
+    }
+  }
+
+  /* ═══════════════════════════════════════════════
+     CTA AMBIENT GLOW
+     ═══════════════════════════════════════════════ */
+  function initCTAGlow() {
+    var ctaSection = document.querySelector('.city-cta-container');
+    if (!ctaSection) return;
+
+    var glow = document.createElement('div');
+    glow.style.cssText = [
+      'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);',
+      'width:140%;height:140%;border-radius:50%;pointer-events:none;z-index:0;',
+      'background:radial-gradient(ellipse at center, rgba(200,34,42,0.06) 0%, transparent 60%);',
+      'opacity:0;',
+    ].join('');
+    ctaSection.style.position = 'relative';
+    ctaSection.insertBefore(glow, ctaSection.firstChild);
+
+    ScrollTrigger.create({
+      trigger: ctaSection,
+      start: 'top 80%',
+      onEnter: function () {
+        gsap.to(glow, {
+          opacity: 1, duration: 1.5, ease: 'power2.out',
+          onComplete: function () {
+            gsap.to(glow, { opacity: 0.4, duration: 3, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+          },
+        });
+      },
+      onLeaveBack: function () {
+        gsap.to(glow, { opacity: 0, duration: 0.5, overwrite: true });
+      },
+    });
+  }
+
+  /* ═══════════════════════════════════════════════
+     INIT
+     ═══════════════════════════════════════════════ */
+  window.addEventListener('DOMContentLoaded', function () {
+    initHero();
+    initRegulations();
+    initCityShowcase();
+    initScrollAnimations();
+    initCTAGlow();
+  });
+})();
+</script>
+
+<!-- Three.js: Hero — Neighborhood Zoning Grid (pattern: avorino-about-values3d.js) -->
+<script>
+(function () {
+  'use strict';
+
+  /* Desktop only — matches production pattern */
+  if (window.innerWidth < 992 || typeof THREE === 'undefined') return;
+
+  var wrap = document.getElementById('hero-canvas');
+  if (!wrap) return;
+
+  /* ── Renderer ── */
+  var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
+  renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+  wrap.appendChild(renderer.domElement);
+
+  /* ── Scene & Camera ── */
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(50, wrap.clientWidth / wrap.clientHeight, 0.1, 200);
+  camera.position.set(22, 18, 28);
+  camera.lookAt(0, 1, 0);
+
+  /* ── Lights (values3d.js pattern) ── */
+  scene.add(new THREE.AmbientLight(0xf0ede8, 0.4));
+  var pl1 = new THREE.PointLight(0xc9a96e, 1.0, 80);
+  pl1.position.set(15, 20, 20);
+  scene.add(pl1);
+  var pl2 = new THREE.PointLight(0xc8222a, 0.3, 60);
+  pl2.position.set(-15, 5, 10);
+  scene.add(pl2);
+
+  /* ── Colors (exact production values) ── */
+  var GOLD = 0xc9a96e, CREAM = 0xf0ede8, SLATE = 0x555555;
+
+  /* ── Materials — one ref per reveal group for opacity control ── */
+  function makeMat(c) { return new THREE.LineBasicMaterial({ color: c, transparent: true, opacity: 0 }); }
+  var gridMat      = makeMat(CREAM);   /* Group 1: ground grid */
+  var lotMat       = makeMat(GOLD);    /* Group 2: lot lines + setbacks */
+  var houseMat     = makeMat(SLATE);   /* Group 3: neighborhood houses */
+  var highlightMat = makeMat(GOLD);    /* Group 4: highlighted property */
+  var aduMat       = makeMat(GOLD);    /* Group 5: ADU wireframe */
+
+  /* Setback dashed material */
+  var setbackMat = new THREE.LineDashedMaterial({
+    color: 0xc8222a, transparent: true, opacity: 0,
+    dashSize: 0.4, gapSize: 0.25,
+  });
+
+  /* ── Geometry helpers (EXACT patterns from values3d.js) ── */
+  function wireBox(w, h, d, mat) {
+    return new THREE.LineSegments(
+      new THREE.EdgesGeometry(new THREE.BoxGeometry(w, h, d)), mat
+    );
+  }
+  function lineSegs(pts, mat) {
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+    return new THREE.LineSegments(g, mat);
+  }
+  function createWindowFrame(cx, cy, cz, w, h, normal, mat) {
+    var hw = w / 2, hh = h / 2, pts = [];
+    if (normal === 'x') {
+      pts.push(cx, cy-hh, cz-hw, cx, cy-hh, cz+hw);
+      pts.push(cx, cy-hh, cz+hw, cx, cy+hh, cz+hw);
+      pts.push(cx, cy+hh, cz+hw, cx, cy+hh, cz-hw);
+      pts.push(cx, cy+hh, cz-hw, cx, cy-hh, cz-hw);
+      /* Cross panes */
+      pts.push(cx, cy, cz-hw, cx, cy, cz+hw);
+      pts.push(cx, cy-hh, cz, cx, cy+hh, cz);
+    } else {
+      pts.push(cx-hw, cy-hh, cz, cx+hw, cy-hh, cz);
+      pts.push(cx+hw, cy-hh, cz, cx+hw, cy+hh, cz);
+      pts.push(cx+hw, cy+hh, cz, cx-hw, cy+hh, cz);
+      pts.push(cx-hw, cy+hh, cz, cx-hw, cy-hh, cz);
+      /* Cross panes */
+      pts.push(cx-hw, cy, cz, cx+hw, cy, cz);
+      pts.push(cx, cy-hh, cz, cx, cy+hh, cz);
+    }
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+    return new THREE.LineSegments(g, mat);
+  }
+  function createRoofOverhang(x, z, w, d, roofH, mat) {
+    var hw = w / 2, hd = d / 2, ov = 0.35;
+    return lineSegs([
+      x-hw-ov, roofH, z-hd-ov, x+hw+ov, roofH, z-hd-ov,
+      x+hw+ov, roofH, z-hd-ov, x+hw+ov, roofH, z+hd+ov,
+      x+hw+ov, roofH, z+hd+ov, x-hw-ov, roofH, z+hd+ov,
+      x-hw-ov, roofH, z+hd+ov, x-hw-ov, roofH, z-hd-ov,
+    ], mat);
+  }
+  function createHouse(x, z, w, h, d, mat) {
+    var g = new THREE.Group();
+    var hw = w / 2, hd = d / 2, ov = 0.35, roofH = h + 0.08;
+    var box = wireBox(w, h, d, mat);
+    box.position.set(x, h / 2, z);
+    g.add(box);
+    g.add(createRoofOverhang(x, z, w, d, roofH, mat));
+    /* Eave returns — overhang corners down to wall top corners */
+    g.add(lineSegs([
+      x-hw-ov, roofH, z-hd-ov,  x-hw, h, z-hd,
+      x+hw+ov, roofH, z-hd-ov,  x+hw, h, z-hd,
+      x-hw-ov, roofH, z+hd+ov,  x-hw, h, z+hd,
+      x+hw+ov, roofH, z+hd+ov,  x+hw, h, z+hd,
+    ], mat));
+    return g;
+  }
+
+  /* ── Scene group — everything rotates together ── */
+  var sg = new THREE.Group();
+  scene.add(sg);
+
+  /* ═══════════════════════════════════════════════
+     GROUP 1 — City Block Ground Grid (Blueprint-style)
+     ═══════════════════════════════════════════════ */
+  var gGrid = new THREE.Group();
+  var gp = [];
+  var gridSize = 30, gridDiv = 15, gridStep = gridSize / gridDiv;
+  for (var gi = 0; gi <= gridDiv; gi++) {
+    var pos = -gridSize / 2 + gi * gridStep;
+    gp.push(-gridSize / 2, 0, pos, gridSize / 2, 0, pos);
+    gp.push(pos, 0, -gridSize / 2, pos, 0, gridSize / 2);
+  }
+  gGrid.add(lineSegs(gp, gridMat));
+  sg.add(gGrid);
+
+  /* ═══════════════════════════════════════════════
+     GROUP 2 — Lot Lines / Property Boundaries + Setbacks
+     ═══════════════════════════════════════════════ */
+  var gLots = new THREE.Group();
+  var lp = [];
+
+  /* 3x3 grid of property lots */
+  lp.push(-12, 0.04, -12, 12, 0.04, -12);
+  lp.push(-12, 0.04, -4, 12, 0.04, -4);
+  lp.push(-12, 0.04, 4, 12, 0.04, 4);
+  lp.push(-12, 0.04, 12, 12, 0.04, 12);
+  lp.push(-12, 0.04, -12, -12, 0.04, 12);
+  lp.push(-4, 0.04, -12, -4, 0.04, 12);
+  lp.push(4, 0.04, -12, 4, 0.04, 12);
+  lp.push(12, 0.04, -12, 12, 0.04, 12);
+  gLots.add(lineSegs(lp, lotMat));
+
+  /* Setback / zoning dashed boundary around center lot */
+  var sbPts = [
+    -3.5, 0.08, -3.5, 3.5, 0.08, -3.5,
+    3.5, 0.08, -3.5, 3.5, 0.08, 3.5,
+    3.5, 0.08, 3.5, -3.5, 0.08, 3.5,
+    -3.5, 0.08, 3.5, -3.5, 0.08, -3.5,
+  ];
+  var sbGeo = new THREE.BufferGeometry();
+  sbGeo.setAttribute('position', new THREE.Float32BufferAttribute(sbPts, 3));
+  var sbLine = new THREE.LineSegments(sbGeo, setbackMat);
+  sbLine.computeLineDistances();
+  gLots.add(sbLine);
+
+  /* Street labels (cross-hatch marks on lot boundary) */
+  for (var si = -12; si <= 12; si += 8) {
+    gLots.add(lineSegs([
+      si, 0.04, -12.4, si, 0.04, -11.6,
+      si, 0.04, 12.4, si, 0.04, 11.6,
+    ], lotMat));
+    gLots.add(lineSegs([
+      -12.4, 0.04, si, -11.6, 0.04, si,
+      12.4, 0.04, si, 11.6, 0.04, si,
+    ], lotMat));
+  }
+  sg.add(gLots);
+
+  /* ═══════════════════════════════════════════════
+     GROUP 3 — Neighborhood Houses (8 surrounding lots)
+     ═══════════════════════════════════════════════ */
+  var gHouses = new THREE.Group();
+
+  /* Top row (z = -8) */
+  gHouses.add(createHouse(-8, -8, 5, 4.5, 4, houseMat));
+  gHouses.add(createHouse(0, -8, 4.5, 3.8, 3.5, houseMat));
+  gHouses.add(createHouse(8, -8, 5.5, 5, 4.5, houseMat));
+
+  /* Middle row sides (z = 0) — center lot is highlighted property */
+  gHouses.add(createHouse(-8, 0, 4.5, 4, 5, houseMat));
+  gHouses.add(createHouse(8, 0, 5, 4.5, 4, houseMat));
+
+  /* Bottom row (z = 8) */
+  gHouses.add(createHouse(-8, 8, 4, 3.5, 3.5, houseMat));
+  gHouses.add(createHouse(0, 8, 5, 4, 4.5, houseMat));
+  gHouses.add(createHouse(8, 8, 4.5, 5.5, 4, houseMat));
+
+  /* Detail windows on neighbor houses (front faces) */
+  gHouses.add(createWindowFrame(-9, 2.5, -6.01, 1.0, 1.4, 'z', houseMat));
+  gHouses.add(createWindowFrame(-7, 2.5, -6.01, 1.0, 1.4, 'z', houseMat));
+  gHouses.add(createWindowFrame(7.5, 2.5, -2.01, 1.0, 1.4, 'z', houseMat));
+  gHouses.add(createWindowFrame(9, 2.5, -2.01, 1.0, 1.4, 'z', houseMat));
+  gHouses.add(createWindowFrame(0, 2, -9.76, 1.0, 1.2, 'z', houseMat));
+  gHouses.add(createWindowFrame(-1.5, 2, -9.76, 1.0, 1.2, 'z', houseMat));
+  gHouses.add(createWindowFrame(-8, 2, 6.01, 1.0, 1.2, 'z', houseMat));
+  gHouses.add(createWindowFrame(8, 3, 6.01, 1.2, 1.6, 'z', houseMat));
+  sg.add(gHouses);
+
+  /* ═══════════════════════════════════════════════
+     GROUP 4 — Highlighted Property (center lot, gold)
+     Multi-volume main house + windows + door + roof details
+     ═══════════════════════════════════════════════ */
+  var gHighlight = new THREE.Group();
+
+  /* Main volume — 2-story center mass */
+  var mainW = 6, mainH = 5.5, mainD = 5;
+  var mainHouse = wireBox(mainW, mainH, mainD, highlightMat);
+  mainHouse.position.set(0, mainH / 2, -0.5);
+  gHighlight.add(mainHouse);
+
+  /* Garage wing — lower extension to the right */
+  var garW = 3, garH = 3, garD = 3.5;
+  var garage = wireBox(garW, garH, garD, highlightMat);
+  garage.position.set(3.8, garH / 2, -0.25);
+  gHighlight.add(garage);
+
+  /* Roof overhangs (values3d.js pattern) */
+  gHighlight.add(createRoofOverhang(0, -0.5, mainW, mainD, mainH + 0.1, highlightMat));
+  gHighlight.add(createRoofOverhang(3.8, -0.25, garW, garD, garH + 0.06, highlightMat));
+
+  /* Second story floor line */
+  gHighlight.add(lineSegs([
+    -mainW/2, mainH*0.55, -0.5-mainD/2, mainW/2, mainH*0.55, -0.5-mainD/2,
+    mainW/2, mainH*0.55, -0.5-mainD/2, mainW/2, mainH*0.55, -0.5+mainD/2,
+    mainW/2, mainH*0.55, -0.5+mainD/2, -mainW/2, mainH*0.55, -0.5+mainD/2,
+    -mainW/2, mainH*0.55, -0.5+mainD/2, -mainW/2, mainH*0.55, -0.5-mainD/2,
+  ], highlightMat));
+
+  /* Interior wall division */
+  gHighlight.add(lineSegs([
+    -1, 0, -3, -1, mainH, -3,
+    -1, 0, 2, -1, mainH, 2,
+    2, 0, -3, 2, mainH, -3,
+  ], highlightMat));
+
+  /* Front windows (z = -3.01) — upper floor */
+  gHighlight.add(createWindowFrame(-1.8, 4.2, -3.01, 1.4, 1.8, 'z', highlightMat));
+  gHighlight.add(createWindowFrame(1.2, 4.2, -3.01, 1.4, 1.8, 'z', highlightMat));
+  /* Front windows — ground floor */
+  gHighlight.add(createWindowFrame(-1.8, 1.8, -3.01, 1.2, 1.4, 'z', highlightMat));
+  gHighlight.add(createWindowFrame(1.5, 1.8, -3.01, 1.2, 1.4, 'z', highlightMat));
+  /* Side windows (x = -3.01) */
+  gHighlight.add(createWindowFrame(-3.01, 4.2, -0.5, 1.2, 1.6, 'x', highlightMat));
+  gHighlight.add(createWindowFrame(-3.01, 1.8, 0.5, 1.2, 1.4, 'x', highlightMat));
+  /* Garage front window */
+  gHighlight.add(createWindowFrame(3.8, 1.6, -2.01, 1.8, 1.8, 'z', highlightMat));
+  /* Front door */
+  gHighlight.add(createWindowFrame(0, 1.3, -3.02, 1.2, 2.6, 'z', highlightMat));
+
+  /* Ridge beam — main house (roof peak, front to back, connected to overhang) */
+  gHighlight.add(lineSegs([
+    0, mainH + 0.45, -0.5 - mainD/2,  0, mainH + 0.45, -0.5 + mainD/2,
+  ], highlightMat));
+  /* Rafters — main house (overhang edges up to ridge beam) */
+  gHighlight.add(lineSegs([
+    -mainW/2 - 0.35, mainH + 0.1, -0.5 - mainD/2 - 0.35,  0, mainH + 0.45, -0.5 - mainD/2,
+     mainW/2 + 0.35, mainH + 0.1, -0.5 - mainD/2 - 0.35,  0, mainH + 0.45, -0.5 - mainD/2,
+    -mainW/2 - 0.35, mainH + 0.1, -0.5 + mainD/2 + 0.35,  0, mainH + 0.45, -0.5 + mainD/2,
+     mainW/2 + 0.35, mainH + 0.1, -0.5 + mainD/2 + 0.35,  0, mainH + 0.45, -0.5 + mainD/2,
+  ], highlightMat));
+  /* Eave returns — main house (overhang corners down to wall top corners) */
+  gHighlight.add(lineSegs([
+    -mainW/2 - 0.35, mainH + 0.1, -0.5 - mainD/2 - 0.35,  -mainW/2, mainH, -0.5 - mainD/2,
+     mainW/2 + 0.35, mainH + 0.1, -0.5 - mainD/2 - 0.35,   mainW/2, mainH, -0.5 - mainD/2,
+    -mainW/2 - 0.35, mainH + 0.1, -0.5 + mainD/2 + 0.35,  -mainW/2, mainH, -0.5 + mainD/2,
+     mainW/2 + 0.35, mainH + 0.1, -0.5 + mainD/2 + 0.35,   mainW/2, mainH, -0.5 + mainD/2,
+  ], highlightMat));
+  /* Ridge beam — garage (roof peak, connected to overhang) */
+  gHighlight.add(lineSegs([
+    3.8, garH + 0.3, -0.25 - garD/2,  3.8, garH + 0.3, -0.25 + garD/2,
+  ], highlightMat));
+  /* Rafters — garage (overhang edges up to ridge) */
+  gHighlight.add(lineSegs([
+    3.8 - garW/2 - 0.35, garH + 0.06, -0.25 - garD/2 - 0.35,  3.8, garH + 0.3, -0.25 - garD/2,
+    3.8 + garW/2 + 0.35, garH + 0.06, -0.25 - garD/2 - 0.35,  3.8, garH + 0.3, -0.25 - garD/2,
+    3.8 - garW/2 - 0.35, garH + 0.06, -0.25 + garD/2 + 0.35,  3.8, garH + 0.3, -0.25 + garD/2,
+    3.8 + garW/2 + 0.35, garH + 0.06, -0.25 + garD/2 + 0.35,  3.8, garH + 0.3, -0.25 + garD/2,
+  ], highlightMat));
+  sg.add(gHighlight);
+
+  /* ═══════════════════════════════════════════════
+     GROUP 5 — ADU Wireframe in backyard + pathway
+     ═══════════════════════════════════════════════ */
+  var gADU = new THREE.Group();
+
+  /* ADU body */
+  var aduW = 3.5, aduH = 3.2, aduD = 3;
+  var aduBox = wireBox(aduW, aduH, aduD, aduMat);
+  aduBox.position.set(0, aduH / 2, 2.8);
+  gADU.add(aduBox);
+
+  /* ADU roof overhang */
+  gADU.add(createRoofOverhang(0, 2.8, aduW, aduD, aduH + 0.06, aduMat));
+
+  /* ADU interior wall */
+  gADU.add(lineSegs([
+    0.5, 0, 1.3, 0.5, aduH, 1.3,
+    0.5, 0, 4.3, 0.5, aduH, 4.3,
+  ], aduMat));
+
+  /* ADU front windows (z = 1.31) */
+  gADU.add(createWindowFrame(-0.7, 1.6, 1.31, 0.9, 1.2, 'z', aduMat));
+  gADU.add(createWindowFrame(0.9, 1.6, 1.31, 0.9, 1.2, 'z', aduMat));
+  /* ADU front door */
+  gADU.add(createWindowFrame(0.1, 1.2, 1.3, 0.8, 2.2, 'z', aduMat));
+  /* ADU side windows */
+  gADU.add(createWindowFrame(-1.76, 1.6, 2.8, 0.8, 1.0, 'x', aduMat));
+  gADU.add(createWindowFrame(1.76, 1.6, 2.8, 0.8, 1.0, 'x', aduMat));
+  /* ADU back window */
+  gADU.add(createWindowFrame(0, 1.6, 4.31, 1.2, 1.0, 'z', aduMat));
+
+  /* ADU ridge beam (roof peak, front to back, connected to overhang) */
+  gADU.add(lineSegs([
+    0, aduH + 0.35, 1.3,  0, aduH + 0.35, 4.3,
+  ], aduMat));
+  /* ADU rafters (overhang edges up to ridge beam) */
+  gADU.add(lineSegs([
+    -aduW/2 - 0.35, aduH + 0.06, 2.8 - aduD/2 - 0.35,  0, aduH + 0.35, 1.3,
+     aduW/2 + 0.35, aduH + 0.06, 2.8 - aduD/2 - 0.35,  0, aduH + 0.35, 1.3,
+    -aduW/2 - 0.35, aduH + 0.06, 2.8 + aduD/2 + 0.35,  0, aduH + 0.35, 4.3,
+     aduW/2 + 0.35, aduH + 0.06, 2.8 + aduD/2 + 0.35,  0, aduH + 0.35, 4.3,
+  ], aduMat));
+  /* ADU eave returns (overhang corners down to wall top corners) */
+  gADU.add(lineSegs([
+    -aduW/2 - 0.35, aduH + 0.06, 2.8 - aduD/2 - 0.35,  -aduW/2, aduH, 2.8 - aduD/2,
+     aduW/2 + 0.35, aduH + 0.06, 2.8 - aduD/2 - 0.35,   aduW/2, aduH, 2.8 - aduD/2,
+    -aduW/2 - 0.35, aduH + 0.06, 2.8 + aduD/2 + 0.35,  -aduW/2, aduH, 2.8 + aduD/2,
+     aduW/2 + 0.35, aduH + 0.06, 2.8 + aduD/2 + 0.35,   aduW/2, aduH, 2.8 + aduD/2,
+  ], aduMat));
+
+  /* Pathway from main house to ADU */
+  gADU.add(lineSegs([
+    -0.3, 0.02, 2, -0.3, 0.02, 1.3,
+    0.3, 0.02, 2, 0.3, 0.02, 1.3,
+    -0.3, 0.02, 1.3, 0.3, 0.02, 1.3,
+  ], aduMat));
+
+  /* Small fence line along rear setback */
+  gADU.add(lineSegs([
+    -3.5, 0, 3.5, -1.75, 0, 3.5,
+    1.75, 0, 3.5, 3.5, 0, 3.5,
+    -3.5, 0.8, 3.5, -1.75, 0.8, 3.5,
+    1.75, 0.8, 3.5, 3.5, 0.8, 3.5,
+    -3.5, 0, 3.5, -3.5, 0.8, 3.5,
+    3.5, 0, 3.5, 3.5, 0.8, 3.5,
+    -1.75, 0, 3.5, -1.75, 0.8, 3.5,
+    1.75, 0, 3.5, 1.75, 0.8, 3.5,
+  ], aduMat));
+
+  sg.add(gADU);
+
+  /* ═══════════════════════════════════════════════
+     PARTICLES — 50 rising gold motes (values3d.js pattern)
+     ═══════════════════════════════════════════════ */
+  var PC = 50;
+  var pArr = new Float32Array(PC * 3);
+  var pVel = [];
+  for (var pi = 0; pi < PC; pi++) {
+    pArr[pi * 3]     = (Math.random() - 0.5) * 32;
+    pArr[pi * 3 + 1] = Math.random() * 18;
+    pArr[pi * 3 + 2] = (Math.random() - 0.5) * 32;
+    pVel.push(0.003 + Math.random() * 0.008);
+  }
+  var pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', new THREE.Float32BufferAttribute(pArr, 3));
+  var pMat = new THREE.PointsMaterial({
+    color: GOLD, size: 0.1, transparent: true, opacity: 0, sizeAttenuation: true,
+  });
+  sg.add(new THREE.Points(pGeo, pMat));
+
+  /* ── Mouse tracking — subtle parallax (values3d.js pattern) ── */
+  var mx = 0, my = 0;
+  document.addEventListener('mousemove', function (e) {
+    mx = (e.clientX / window.innerWidth - 0.5) * 2;
+    my = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  /* ── Hero scroll progress (camera parallax on scroll-out) ── */
+  var scrollP = 0;
+  ScrollTrigger.create({
+    trigger: '#city-hero', start: 'top top', end: 'bottom top',
+    onUpdate: function (s) { scrollP = s.progress; },
+  });
+
+  /* ── Visibility gate (values3d.js pattern) ── */
+  var visible = true;
+  new IntersectionObserver(function (e) {
+    visible = e[0].isIntersecting;
+  }, { threshold: 0.01 }).observe(wrap);
+
+  /* ═══════════════════════════════════════════════
+     RENDER LOOP — Progressive timed reveal on load
+     5 groups staggered with cubic ease-out
+     + slow orbit + mouse parallax + breathing
+     ═══════════════════════════════════════════════ */
+  var clock = new THREE.Clock();
+  var baseRotY = -0.35;
+
+  function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+  function ease(t) { return 1 - Math.pow(1 - t, 3); } /* cubic ease-out */
+
+  function animate() {
+    requestAnimationFrame(animate);
+    if (!visible) return;
+    var t = clock.getElapsedTime();
+
+    /* GROUP 1: Grid — 0s to 0.8s */
+    gridMat.opacity = clamp(t / 0.8) * 0.12;
+
+    /* GROUP 2: Lot lines — 0.4s to 1.2s */
+    var lotP = ease(clamp((t - 0.4) / 0.8));
+    lotMat.opacity = lotP * 0.35;
+    setbackMat.opacity = lotP * 0.5;
+    gLots.position.y = -0.5 * (1 - lotP);
+
+    /* GROUP 3: Neighbor houses — 0.8s to 1.8s */
+    var houseP = ease(clamp((t - 0.8) / 1.0));
+    houseMat.opacity = houseP * 0.22;
+    gHouses.position.y = -3 * (1 - houseP);
+
+    /* GROUP 4: Highlighted property — 1.5s to 2.5s */
+    var highP = ease(clamp((t - 1.5) / 1.0));
+    highlightMat.opacity = highP * 0.6;
+    gHighlight.position.y = -4 * (1 - highP);
+
+    /* GROUP 5: ADU — 2.2s to 3.2s */
+    var aduP = ease(clamp((t - 2.2) / 1.0));
+    aduMat.opacity = aduP * 0.7;
+    gADU.position.y = -2 * (1 - aduP);
+
+    /* Particles: 2.8s to 3.8s */
+    pMat.opacity = clamp((t - 2.8) / 1.0) * 0.35;
+
+    /* Slow orbit + mouse parallax (values3d.js pattern) */
+    var targetY = baseRotY + t * 0.03 + scrollP * 0.5;
+    sg.rotation.y += (targetY + mx * 0.12 - sg.rotation.y) * 0.015;
+    sg.rotation.x += (my * 0.04 - sg.rotation.x) * 0.015;
+
+    /* Breathing animation (values3d.js: sin(t*0.4)*0.008) */
+    var breathe = 1 + Math.sin(t * 0.4) * 0.008;
+    sg.scale.setScalar(breathe);
+
+    /* Camera scroll parallax */
+    camera.position.y = 18 - scrollP * 8;
+    camera.lookAt(0, 1, 0);
+
+    /* Particle rise (values3d.js pattern) */
+    var pa = pGeo.attributes.position.array;
+    for (var j = 0; j < PC; j++) {
+      pa[j * 3 + 1] += pVel[j];
+      if (pa[j * 3 + 1] > 20) {
+        pa[j * 3 + 1] = -1;
+        pa[j * 3]     = (Math.random() - 0.5) * 32;
+        pa[j * 3 + 2] = (Math.random() - 0.5) * 32;
+      }
+    }
+    pGeo.attributes.position.needsUpdate = true;
+
+    /* Gentle light movement (values3d.js pattern) */
+    pl1.position.x = 15 + Math.sin(t * 0.3) * 3;
+    pl1.position.z = 20 + Math.cos(t * 0.2) * 3;
+
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  /* ── Debounced resize handler ── */
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      if (window.innerWidth < 992) { renderer.domElement.style.display = 'none'; return; }
+      renderer.domElement.style.display = '';
+      var w = wrap.clientWidth, h = wrap.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    }, 150);
+  });
+})();
+</script>
+
+<!-- Three.js: Requirements — Architectural Wireframe (pattern: avorino-about-values3d.js) -->
+<script>
+(function () {
+  'use strict';
+
+  /* Desktop only */
+  if (window.innerWidth < 992 || typeof THREE === 'undefined') return;
+
+  var wrap = document.getElementById('reqs-canvas');
+  if (!wrap) return;
+
+  /* ── Renderer ── */
+  var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
+  renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+  wrap.appendChild(renderer.domElement);
+
+  /* ── Scene & Camera ── */
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(50, wrap.clientWidth / wrap.clientHeight, 0.1, 1000);
+  camera.position.set(18, 14, 24);
+  camera.lookAt(0, 3, 0);
+
+  /* ── Lights ── */
+  scene.add(new THREE.AmbientLight(0xf0ede8, 0.4));
+  var pl1 = new THREE.PointLight(0xc9a96e, 1.0, 80);
+  pl1.position.set(15, 20, 20);
+  scene.add(pl1);
+  var pl2 = new THREE.PointLight(0xc8222a, 0.3, 60);
+  pl2.position.set(-15, 5, 10);
+  scene.add(pl2);
+
+  /* ── Colors / Materials (values3d.js exact) ── */
+  var GOLD = 0xc9a96e, CREAM = 0xf0ede8;
+  var goldLine = new THREE.LineBasicMaterial({ color: GOLD, transparent: true, opacity: 0.5 });
+  var goldLineFaint = new THREE.LineBasicMaterial({ color: GOLD, transparent: true, opacity: 0.15 });
+  var creamLine = new THREE.LineBasicMaterial({ color: CREAM, transparent: true, opacity: 0.2 });
+  var creamLineFaint = new THREE.LineBasicMaterial({ color: CREAM, transparent: true, opacity: 0.08 });
+
+  /* ── Scene Group — everything rotates together ── */
+  var sceneGroup = new THREE.Group();
+  scene.add(sceneGroup);
+
+  /* ── Geometry helpers ── */
+  function lineSegs(pts, mat) {
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+    return new THREE.LineSegments(g, mat);
+  }
+  function createBuilding(w, h, d, x, z, material) {
+    var geo = new THREE.BoxGeometry(w, h, d);
+    var edges = new THREE.EdgesGeometry(geo);
+    var line = new THREE.LineSegments(edges, material);
+    line.position.set(x, h / 2, z);
+    return line;
+  }
+  function createWindowFrame(cx, cy, cz, w, h, normal) {
+    var hw = w / 2, hh = h / 2, pts = [];
+    if (normal === 'x') {
+      pts.push(cx, cy-hh, cz-hw, cx, cy-hh, cz+hw);
+      pts.push(cx, cy-hh, cz+hw, cx, cy+hh, cz+hw);
+      pts.push(cx, cy+hh, cz+hw, cx, cy+hh, cz-hw);
+      pts.push(cx, cy+hh, cz-hw, cx, cy-hh, cz-hw);
+      pts.push(cx, cy, cz-hw, cx, cy, cz+hw);
+      pts.push(cx, cy-hh, cz, cx, cy+hh, cz);
+    } else {
+      pts.push(cx-hw, cy-hh, cz, cx+hw, cy-hh, cz);
+      pts.push(cx+hw, cy-hh, cz, cx+hw, cy+hh, cz);
+      pts.push(cx+hw, cy+hh, cz, cx-hw, cy+hh, cz);
+      pts.push(cx-hw, cy+hh, cz, cx-hw, cy-hh, cz);
+      pts.push(cx-hw, cy, cz, cx+hw, cy, cz);
+      pts.push(cx, cy-hh, cz, cx, cy+hh, cz);
+    }
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+    return new THREE.LineSegments(g, creamLine);
+  }
+  /* ═══ GROUND GRID ═══ */
+  var gridSize = 24, gridDiv = 12, gridStep = gridSize / gridDiv;
+  var gridPositions = [];
+  for (var gi = 0; gi <= gridDiv; gi++) {
+    var pos = -gridSize / 2 + gi * gridStep;
+    gridPositions.push(-gridSize / 2, 0, pos, gridSize / 2, 0, pos);
+    gridPositions.push(pos, 0, -gridSize / 2, pos, 0, gridSize / 2);
+  }
+  sceneGroup.add(lineSegs(gridPositions, creamLineFaint));
+
+  /* ═══ BUILDINGS — 4 volumes (values3d.js composition) ═══ */
+  sceneGroup.add(createBuilding(8, 7, 6, 0, 0, goldLine));
+  sceneGroup.add(createBuilding(5, 4.5, 7, -5.5, 0.5, goldLine));
+  sceneGroup.add(createBuilding(3.5, 10, 4, 4.5, -1, goldLine));
+  sceneGroup.add(createBuilding(4, 3, 5, -3, -4, goldLineFaint));
+
+  /* ═══ ROOF OVERHANGS ═══ */
+  var overhang = 0.4;
+  var roofPositions = [];
+  roofPositions.push(
+    -4-overhang, 7.05, -3-overhang, 4+overhang, 7.05, -3-overhang,
+    4+overhang, 7.05, -3-overhang, 4+overhang, 7.05, 3+overhang,
+    4+overhang, 7.05, 3+overhang, -4-overhang, 7.05, 3+overhang,
+    -4-overhang, 7.05, 3+overhang, -4-overhang, 7.05, -3-overhang
+  );
+  roofPositions.push(
+    2.75-0.2, 10.05, -3-0.2, 6.25+0.2, 10.05, -3-0.2,
+    6.25+0.2, 10.05, -3-0.2, 6.25+0.2, 10.05, 1+0.2,
+    6.25+0.2, 10.05, 1+0.2, 2.75-0.2, 10.05, 1+0.2,
+    2.75-0.2, 10.05, 1+0.2, 2.75-0.2, 10.05, -3-0.2
+  );
+  sceneGroup.add(lineSegs(roofPositions, goldLineFaint));
+
+  /* ═══ WINDOW FRAMES (cross-pane detail) ═══ */
+  sceneGroup.add(createWindowFrame(-2, 4.5, 3.01, 1.4, 2, 'z'));
+  sceneGroup.add(createWindowFrame(0.5, 4.5, 3.01, 1.4, 2, 'z'));
+  sceneGroup.add(createWindowFrame(-2, 2, 3.01, 1.4, 1.5, 'z'));
+  sceneGroup.add(createWindowFrame(0.5, 2, 3.01, 1.4, 1.5, 'z'));
+  sceneGroup.add(createWindowFrame(4.5, 7, 1.01, 1.2, 2.5, 'z'));
+  sceneGroup.add(createWindowFrame(4.5, 3.5, 1.01, 1.2, 2, 'z'));
+  sceneGroup.add(createWindowFrame(-8.01, 3, -0.5, 1.2, 1.8, 'x'));
+  sceneGroup.add(createWindowFrame(-8.01, 3, 2, 1.2, 1.8, 'x'));
+
+  /* ═══ RIDGE BEAMS + RAFTERS + EAVE RETURNS (connected to roofs) ═══ */
+  /* Main building (8x7x6 at 0,0) — ridge beam along roof peak */
+  sceneGroup.add(lineSegs([
+    0, 7.5, -3-overhang,  0, 7.5, 3+overhang,
+  ], goldLineFaint));
+  /* Main building — rafters (overhang edges up to ridge) */
+  sceneGroup.add(lineSegs([
+    -4-overhang, 7.05, -3-overhang,  0, 7.5, -3-overhang,
+     4+overhang, 7.05, -3-overhang,  0, 7.5, -3-overhang,
+    -4-overhang, 7.05, 3+overhang,   0, 7.5, 3+overhang,
+     4+overhang, 7.05, 3+overhang,   0, 7.5, 3+overhang,
+  ], goldLineFaint));
+  /* Main building — eave returns (overhang corners to wall top corners) */
+  sceneGroup.add(lineSegs([
+    -4-overhang, 7.05, -3-overhang,  -4, 7, -3,
+     4+overhang, 7.05, -3-overhang,   4, 7, -3,
+    -4-overhang, 7.05, 3+overhang,   -4, 7, 3,
+     4+overhang, 7.05, 3+overhang,    4, 7, 3,
+  ], goldLineFaint));
+  /* Tall building (3.5x10x4 at 4.5,-1) — ridge beam */
+  sceneGroup.add(lineSegs([
+    4.5, 10.4, -3-0.2,  4.5, 10.4, 1+0.2,
+  ], goldLineFaint));
+  /* Tall building — rafters (overhang edges up to ridge) */
+  sceneGroup.add(lineSegs([
+    2.75-0.2, 10.05, -3-0.2,  4.5, 10.4, -3-0.2,
+    6.25+0.2, 10.05, -3-0.2,  4.5, 10.4, -3-0.2,
+    2.75-0.2, 10.05, 1+0.2,   4.5, 10.4, 1+0.2,
+    6.25+0.2, 10.05, 1+0.2,   4.5, 10.4, 1+0.2,
+  ], goldLineFaint));
+  /* Tall building — eave returns (overhang corners to wall top corners) */
+  sceneGroup.add(lineSegs([
+    2.75-0.2, 10.05, -3-0.2,  2.75, 10, -3,
+    6.25+0.2, 10.05, -3-0.2,  6.25, 10, -3,
+    2.75-0.2, 10.05, 1+0.2,   2.75, 10, 1,
+    6.25+0.2, 10.05, 1+0.2,   6.25, 10, 1,
+  ], goldLineFaint));
+
+  /* ═══ PARTICLES — 60 rising gold motes ═══ */
+  var particleCount = 60;
+  var particlePositions = new Float32Array(particleCount * 3);
+  var particleData = [];
+  for (var p = 0; p < particleCount; p++) {
+    particlePositions[p * 3]     = (Math.random() - 0.5) * 30;
+    particlePositions[p * 3 + 1] = Math.random() * 15;
+    particlePositions[p * 3 + 2] = (Math.random() - 0.5) * 30;
+    particleData.push({ speed: 0.003 + Math.random() * 0.008 });
+  }
+  var particleGeo = new THREE.BufferGeometry();
+  particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+  var particleMat = new THREE.PointsMaterial({
+    color: GOLD, size: 0.1, transparent: true, opacity: 0.3, sizeAttenuation: true,
+  });
+  sceneGroup.add(new THREE.Points(particleGeo, particleMat));
+
+  /* ── Mouse tracking ── */
+  var mouse = { x: 0, y: 0 };
+  var targetRotation = { x: 0, y: 0 };
+  document.addEventListener('mousemove', function (e) {
+    mouse.x = (e.clientX / window.innerWidth - 0.5) * 2;
+    mouse.y = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  /* ── Visibility gate ── */
+  var isVisible = false;
+  var section = document.getElementById('city-reqs');
+  if (section) {
+    new IntersectionObserver(function (entries) {
+      isVisible = entries[0].isIntersecting;
+    }, { threshold: 0.05 }).observe(section);
+  }
+
+  /* ── Animation Loop ── */
+  var clock = new THREE.Clock();
+  var baseRotationY = -0.3;
+
+  function animate() {
+    requestAnimationFrame(animate);
+    if (!isVisible) return;
+
+    var elapsed = clock.getElapsedTime();
+
+    /* Slow orbit + mouse parallax */
+    targetRotation.y = baseRotationY + mouse.x * 0.12 + elapsed * 0.03;
+    targetRotation.x = mouse.y * 0.06;
+    sceneGroup.rotation.y += (targetRotation.y - sceneGroup.rotation.y) * 0.015;
+    sceneGroup.rotation.x += (targetRotation.x - sceneGroup.rotation.x) * 0.015;
+
+    /* Subtle breathing */
+    var breathe = 1 + Math.sin(elapsed * 0.4) * 0.008;
+    sceneGroup.scale.setScalar(breathe);
+
+    /* Particle rise */
+    var pPos = particleGeo.getAttribute('position');
+    for (var pi = 0; pi < particleCount; pi++) {
+      pPos.array[pi * 3 + 1] += particleData[pi].speed;
+      if (pPos.array[pi * 3 + 1] > 18) {
+        pPos.array[pi * 3 + 1] = -1;
+        pPos.array[pi * 3]     = (Math.random() - 0.5) * 30;
+        pPos.array[pi * 3 + 2] = (Math.random() - 0.5) * 30;
+      }
+    }
+    pPos.needsUpdate = true;
+
+    /* Gentle light movement */
+    pl1.position.x = 15 + Math.sin(elapsed * 0.3) * 3;
+    pl1.position.z = 20 + Math.cos(elapsed * 0.2) * 3;
+
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  /* ── Debounced resize handler ── */
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      if (window.innerWidth < 992) { renderer.domElement.style.display = 'none'; return; }
+      renderer.domElement.style.display = '';
+      var w = wrap.clientWidth, h = wrap.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    }, 150);
+  });
+})();
+</script>
+
+</body>
+</html>

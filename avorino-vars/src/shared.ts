@@ -779,6 +779,7 @@ export interface CityData {
   costs: CityCosts;
   rental: CityRental;
   guide: { title: string; desc: string }[];
+  showcaseDesc?: string;
 }
 
 export async function buildCityPage(data: CityData) {
@@ -788,21 +789,45 @@ export async function buildCityPage(data: CityData) {
   log('Creating shared styles...');
   const s = await createSharedStyles();
 
-  // ── City page styles (v2: reduced from ~25 to ~15 styles) ──
+  // ── City page styles (v3: animated city pages with Three.js) ──
   log('Creating city page styles...');
-  const cyHero = await getOrCreateStyle('cy-hero');
-  const cyHeroContent = await getOrCreateStyle('cy-hero-content');
-  const cyOverview = await getOrCreateStyle('cy-overview');
-  const cyRegRow = await getOrCreateStyle('cy-reg-row');
-  const cyRegLabel = await getOrCreateStyle('cy-reg-label');
-  const cyRegValue = await getOrCreateStyle('cy-reg-value');
-  const cyStepRow = await getOrCreateStyle('cy-step-row');
-  const cyStepNumCol = await getOrCreateStyle('cy-step-num-col');
-  const cyStepNum = await getOrCreateStyle('cy-step-num');
-  const cyStepContent = await getOrCreateStyle('cy-step-content');
-  const cyStepTitle = await getOrCreateStyle('cy-step-title');
-  const cyStepDesc = await getOrCreateStyle('cy-step-desc');
-  const cyPermitMeta = await getOrCreateStyle('cy-permit-meta');
+
+  // Hero
+  const cyHero = await getOrCreateStyle('city-hero');
+  const cyHeroContent = await getOrCreateStyle('city-hero-content');
+  const cyHeroLabel = await getOrCreateStyle('city-hero-label');
+  const cyHeroGoldLine = await getOrCreateStyle('city-hero-gold-line');
+  const cyHeroSubtitle = await getOrCreateStyle('city-hero-subtitle');
+  const cyHeroScrollHint = await getOrCreateStyle('city-hero-scroll-hint');
+  const cyCanvasWrap = await getOrCreateStyle('canvas-wrap');
+  const cyContentOverlay = await getOrCreateStyle('content-overlay');
+
+  // Regulations (2-col card grid)
+  const cyRegsHeader = await getOrCreateStyle('city-regs-header');
+  const cyRegsGrid = await getOrCreateStyle('city-regs-grid');
+  const cyRegCard = await getOrCreateStyle('city-reg-card');
+  const cyRegCardLabel = await getOrCreateStyle('city-reg-card-label');
+  const cyRegCardTitle = await getOrCreateStyle('city-reg-card-title');
+  const cyRegCardDesc = await getOrCreateStyle('city-reg-card-desc');
+
+  // City Showcase (full-width image section)
+  const cyShowcase = await getOrCreateStyle('city-showcase');
+  const cyShowcasePlaceholder = await getOrCreateStyle('city-showcase-placeholder');
+  const cyShowcaseOverlay = await getOrCreateStyle('city-showcase-overlay');
+  const cyShowcaseContent = await getOrCreateStyle('city-showcase-content');
+  const cyShowcaseLabel = await getOrCreateStyle('city-showcase-label');
+  const cyShowcaseTitle = await getOrCreateStyle('city-showcase-title');
+  const cyShowcaseDesc = await getOrCreateStyle('city-showcase-desc');
+
+  // Requirements (dark + Three.js + glass cards)
+  const cyReqs = await getOrCreateStyle('city-reqs');
+  const cyReqsContent = await getOrCreateStyle('city-reqs-content');
+  const cyReqsHeader = await getOrCreateStyle('city-reqs-header');
+  const cyReqsGrid = await getOrCreateStyle('city-reqs-grid');
+  const cyGlassCard = await getOrCreateStyle('glass-card');
+  const cyGlassCardNum = await getOrCreateStyle('glass-card-num');
+  const cyGlassCardTitle = await getOrCreateStyle('glass-card-title');
+  const cyGlassCardDesc = await getOrCreateStyle('glass-card-desc');
 
   // ── Create page ──
   const { body } = await createPageWithSlug(
@@ -817,73 +842,151 @@ export async function buildCityPage(data: CityData) {
 
     log('Setting city page style properties...');
 
-    // Hero: split layout (text left, image right)
-    await clearAndSet(await freshStyle('cy-hero'), 'cy-hero', {
-      'display': 'grid', 'grid-template-columns': '1.5fr 1fr',
-      'grid-column-gap': '96px', 'grid-row-gap': '64px', 'align-items': 'center',
-      'min-height': '70vh',
+    // Hero: full-viewport dark with position relative for Three.js canvas
+    await clearAndSet(await freshStyle('city-hero'), 'city-hero', {
+      'min-height': '80vh',
+      'display': 'flex', 'align-items': 'flex-end',
       'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
       'background-color': v['av-dark'], 'color': v['av-cream'],
+      'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
-    await clearAndSet(await freshStyle('cy-hero-content'), 'cy-hero-content', {
-      'max-width': '640px',
+    await clearAndSet(await freshStyle('canvas-wrap'), 'canvas-wrap', {
+      'position': 'absolute', 'top': '0px', 'left': '0px',
+      'width': '100%', 'height': '100%',
+      'z-index': '1', 'pointer-events': 'none',
+      'overflow-x': 'hidden', 'overflow-y': 'hidden',
+    });
+    await clearAndSet(await freshStyle('content-overlay'), 'content-overlay', {
+      'position': 'relative', 'z-index': '2',
+    });
+    await clearAndSet(await freshStyle('city-hero-content'), 'city-hero-content', {
+      'max-width': '800px',
+    });
+    await clearAndSet(await freshStyle('city-hero-label'), 'city-hero-label', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
+      'letter-spacing': '0.3em', 'text-transform': 'uppercase',
+      'opacity': '0', 'margin-bottom': '32px', 'color': v['av-cream'],
+    });
+    await clearAndSet(await freshStyle('city-hero-gold-line'), 'city-hero-gold-line', {
+      'width': '0px', 'height': '1px',
+      'background-color': '#c9a96e', 'margin-bottom': '24px',
+    });
+    await clearAndSet(await freshStyle('city-hero-subtitle'), 'city-hero-subtitle', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
+      'line-height': '1.9', 'opacity': '0', 'margin-top': '24px',
+      'color': v['av-cream'], 'max-width': '560px',
+    });
+    await clearAndSet(await freshStyle('city-hero-scroll-hint'), 'city-hero-scroll-hint', {
+      'position': 'absolute', 'bottom': '40px', 'left': '50%',
+      'z-index': '3', 'display': 'flex', 'flex-direction': 'column',
+      'align-items': 'center', 'grid-row-gap': '8px', 'opacity': '0',
     });
     await wait(500);
 
-    // Overview paragraph (centered, max-width)
-    await clearAndSet(await freshStyle('cy-overview'), 'cy-overview', {
+    // Regulations: warm bg, 2-col card grid
+    await clearAndSet(await freshStyle('city-regs-header'), 'city-regs-header', {
+      'text-align': 'center', 'margin-bottom': '80px',
+    });
+    await clearAndSet(await freshStyle('city-regs-grid'), 'city-regs-grid', {
+      'display': 'grid', 'grid-template-columns': '1fr 1fr',
+      'grid-column-gap': '32px', 'grid-row-gap': '32px',
+      'max-width': '1100px', 'margin-left': 'auto', 'margin-right': 'auto',
+    });
+    await clearAndSet(await freshStyle('city-reg-card'), 'city-reg-card', {
+      'background-color': v['av-dark'], 'color': v['av-cream'],
+      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
+      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
+      'padding-top': '48px', 'padding-bottom': '48px',
+      'padding-left': '40px', 'padding-right': '40px',
+      'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '12px',
+    });
+    await clearAndSet(await freshStyle('city-reg-card-label'), 'city-reg-card-label', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
+      'letter-spacing': '0.3em', 'text-transform': 'uppercase',
+      'opacity': '0.4', 'margin-bottom': '4px',
+    });
+    await clearAndSet(await freshStyle('city-reg-card-title'), 'city-reg-card-title', {
+      'font-family': 'DM Serif Display', 'font-size': '28px',
+      'line-height': '1.2', 'margin-bottom': '4px',
+    });
+    await clearAndSet(await freshStyle('city-reg-card-desc'), 'city-reg-card-desc', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
+      'line-height': '1.7', 'opacity': '0.5',
+    });
+    await wait(500);
+
+    // City Showcase: full-width image with gradient overlay
+    await clearAndSet(await freshStyle('city-showcase'), 'city-showcase', {
+      'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
+      'min-height': '70vh', 'display': 'flex', 'align-items': 'flex-end',
+    });
+    await clearAndSet(await freshStyle('city-showcase-placeholder'), 'city-showcase-placeholder', {
+      'position': 'absolute', 'top': '0px', 'left': '0px',
+      'width': '100%', 'height': '100%',
+      'display': 'flex', 'flex-direction': 'column',
+      'align-items': 'center', 'justify-content': 'center', 'grid-row-gap': '16px',
+    });
+    await clearAndSet(await freshStyle('city-showcase-overlay'), 'city-showcase-overlay', {
+      'position': 'absolute', 'top': '0px', 'left': '0px',
+      'width': '100%', 'height': '100%', 'pointer-events': 'none',
+    });
+    await clearAndSet(await freshStyle('city-showcase-content'), 'city-showcase-content', {
+      'position': 'relative', 'z-index': '2',
+      'padding-top': '64px', 'padding-bottom': '64px',
+      'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
+      'width': '100%', 'max-width': '700px',
+    });
+    await clearAndSet(await freshStyle('city-showcase-label'), 'city-showcase-label', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
+      'letter-spacing': '0.25em', 'text-transform': 'uppercase',
+      'opacity': '0', 'margin-bottom': '16px',
+    });
+    await clearAndSet(await freshStyle('city-showcase-title'), 'city-showcase-title', {
+      'font-family': 'DM Serif Display', 'font-size': v['av-text-h2'],
+      'line-height': '1.08', 'color': v['av-cream'],
+      'margin-bottom': '16px', 'font-weight': '400',
+    });
+    await clearAndSet(await freshStyle('city-showcase-desc'), 'city-showcase-desc', {
       'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'line-height': '1.9', 'opacity': '0.6', 'max-width': '800px',
+      'line-height': '1.8', 'max-width': '520px',
+    });
+    await wait(500);
+
+    // Requirements: dark with glass cards + Three.js backdrop
+    await clearAndSet(await freshStyle('city-reqs'), 'city-reqs', {
+      'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
+      'min-height': '80vh',
+    });
+    await clearAndSet(await freshStyle('city-reqs-content'), 'city-reqs-content', {
+      'max-width': '1100px', 'margin-left': 'auto', 'margin-right': 'auto',
+    });
+    await clearAndSet(await freshStyle('city-reqs-header'), 'city-reqs-header', {
       'margin-bottom': '64px',
     });
-
-    // Regulation definition rows (label left, value right)
-    await clearAndSet(await freshStyle('cy-reg-row'), 'cy-reg-row', {
-      'display': 'grid', 'grid-template-columns': '200px 1fr',
-      'grid-column-gap': '48px', 'align-items': 'baseline',
-      'padding-top': '24px', 'padding-bottom': '24px',
+    await clearAndSet(await freshStyle('city-reqs-grid'), 'city-reqs-grid', {
+      'display': 'grid', 'grid-template-columns': '1fr 1fr',
+      'grid-column-gap': '32px', 'grid-row-gap': '32px',
     });
-    await clearAndSet(await freshStyle('cy-reg-label'), 'cy-reg-label', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-label'],
-      'letter-spacing': '0.3em', 'text-transform': 'uppercase',
-      'opacity': '0.3',
+    await clearAndSet(await freshStyle('glass-card'), 'glass-card', {
+      'color': v['av-cream'],
+      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
+      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
+      'padding-top': '48px', 'padding-bottom': '48px',
+      'padding-left': '40px', 'padding-right': '40px',
     });
-    await clearAndSet(await freshStyle('cy-reg-value'), 'cy-reg-value', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'line-height': '1.7',
+    await clearAndSet(await freshStyle('glass-card-num'), 'glass-card-num', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
+      'letter-spacing': '0.2em', 'text-transform': 'uppercase',
+      'opacity': '0.4', 'margin-bottom': '16px',
     });
-    await wait(500);
-
-    // Permitting steps (vertical numbered list)
-    await clearAndSet(await freshStyle('cy-step-row'), 'cy-step-row', {
-      'display': 'grid', 'grid-template-columns': '80px 1fr',
-      'grid-column-gap': '24px',
-      'padding-top': '32px', 'padding-bottom': '32px',
+    await clearAndSet(await freshStyle('glass-card-title'), 'glass-card-title', {
+      'font-family': 'DM Serif Display', 'font-size': '28px',
+      'line-height': '1.2', 'font-weight': '400', 'margin-bottom': '14px',
     });
-    await clearAndSet(await freshStyle('cy-step-num-col'), 'cy-step-num-col', {
-      'display': 'flex', 'align-items': 'flex-start', 'justify-content': 'center',
-    });
-    await clearAndSet(await freshStyle('cy-step-num'), 'cy-step-num', {
-      'font-family': 'DM Serif Display',
-      'font-size': 'clamp(40px, 4vw, 56px)',
-      'line-height': '1', 'font-weight': '400', 'opacity': '0.15',
-    });
-    await clearAndSet(await freshStyle('cy-step-content'), 'cy-step-content', {
-      'display': 'flex', 'flex-direction': 'column',
-    });
-    await clearAndSet(await freshStyle('cy-step-title'), 'cy-step-title', {
-      'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
-      'line-height': '1.12', 'font-weight': '400', 'margin-bottom': '12px',
-    });
-    await clearAndSet(await freshStyle('cy-step-desc'), 'cy-step-desc', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'line-height': '1.9', 'opacity': '0.6',
-    });
-    // Permit metadata (inline, muted)
-    await clearAndSet(await freshStyle('cy-permit-meta'), 'cy-permit-meta', {
+    await clearAndSet(await freshStyle('glass-card-desc'), 'glass-card-desc', {
       'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
-      'opacity': '0.4', 'text-align': 'center', 'margin-top': '24px',
+      'line-height': '1.7', 'opacity': '0.5',
     });
     await wait(500);
 
@@ -892,178 +995,265 @@ export async function buildCityPage(data: CityData) {
 
   // ═══════════════ BUILD ELEMENTS ═══════════════
 
-  // SECTION 1: HERO (dark, split: text left + image right)
+  // SECTION 1: HERO — Full-viewport dark with Three.js zoning grid
   log('Building Section 1: Hero...');
   const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
   hero.setTag('section');
   hero.setStyles([cyHero]);
-  hero.setAttribute('id', 'cy-hero');
+  hero.setAttribute('id', 'city-hero');
 
-  // Left: text
-  const heroC = hero.append(webflow.elementPresets.DOM);
-  heroC.setTag('div');
-  heroC.setStyles([cyHeroContent]);
+  // Canvas wrap (Three.js renders neighborhood grid into this)
+  const heroCanvasWrap = hero.append(webflow.elementPresets.DOM);
+  heroCanvasWrap.setTag('div');
+  heroCanvasWrap.setStyles([cyCanvasWrap]);
+  heroCanvasWrap.setAttribute('id', 'hero-canvas');
 
-  const heroLabel = heroC.append(webflow.elementPresets.DOM);
+  // Content overlay
+  const heroOverlay = hero.append(webflow.elementPresets.DOM);
+  heroOverlay.setTag('div');
+  heroOverlay.setStyles([cyContentOverlay, cyHeroContent]);
+
+  // Label
+  const heroLabel = heroOverlay.append(webflow.elementPresets.DOM);
   heroLabel.setTag('div');
-  heroLabel.setStyles([s.label]);
+  heroLabel.setStyles([cyHeroLabel]);
+  heroLabel.setTextContent(`// ${data.city}`);
   heroLabel.setAttribute('data-animate', 'fade-up');
-  const heroLabelTxt = heroLabel.append(webflow.elementPresets.DOM);
-  heroLabelTxt.setTag('div');
-  heroLabelTxt.setTextContent(`// ${data.city}`);
 
-  const heroH = heroC.append(webflow.elementPresets.DOM);
+  // H1 with char-cascade animation
+  const heroH = heroOverlay.append(webflow.elementPresets.DOM);
   heroH.setTag('h1');
   heroH.setStyles([s.headingXL]);
-  heroH.setTextContent(`ADU Construction in ${data.city}`);
-  heroH.setAttribute('data-animate', 'word-stagger-elastic');
+  heroH.setTextContent(`${data.city} ADU Regulations`);
+  heroH.setAttribute('data-animate', 'char-cascade');
 
-  const heroSub = heroC.append(webflow.elementPresets.DOM);
+  // Gold decorative line
+  const heroGoldLine = heroOverlay.append(webflow.elementPresets.DOM);
+  heroGoldLine.setTag('div');
+  heroGoldLine.setStyles([cyHeroGoldLine]);
+
+  // Subtitle
+  const heroSub = heroOverlay.append(webflow.elementPresets.DOM);
   heroSub.setTag('p');
-  heroSub.setStyles([s.body, s.bodyMuted]);
+  heroSub.setStyles([cyHeroSubtitle]);
   heroSub.setTextContent(data.whyBuild);
   heroSub.setAttribute('data-animate', 'fade-up');
 
-  // Right: tall image placeholder
-  const heroImg = hero.append(webflow.elementPresets.DOM);
-  heroImg.setTag('div');
-  heroImg.setStyles([s.imgTall]);
-  heroImg.setAttribute('data-animate', 'parallax-depth');
+  // Scroll hint
+  const scrollHint = hero.append(webflow.elementPresets.DOM);
+  scrollHint.setTag('div');
+  scrollHint.setStyles([cyHeroScrollHint]);
+  scrollHint.setAttribute('data-animate', 'fade-up');
 
   await safeCall('append:hero', () => body.append(hero));
   logDetail('Section 1: Hero appended', 'ok');
 
-  // SECTION 2: OVERVIEW + REGULATIONS (cream bg, definition-list rows)
-  log('Building Section 2: Overview + Regulations...');
+  // SECTION 2: REGULATIONS — Warm bg, 2-col info card grid
+  log('Building Section 2: Regulations...');
   const regsSection = webflow.elementBuilder(webflow.elementPresets.DOM);
   regsSection.setTag('section');
-  regsSection.setStyles([s.section, s.sectionCream]);
-  regsSection.setAttribute('id', 'cy-regulations');
+  regsSection.setStyles([s.section, s.sectionWarm]);
+  regsSection.setAttribute('id', 'city-regs');
 
-  // Overview paragraph
-  const overP = regsSection.append(webflow.elementPresets.DOM);
-  overP.setTag('p');
-  overP.setStyles([cyOverview]);
-  overP.setTextContent(data.overview);
-  overP.setAttribute('data-animate', 'fade-up');
+  // Header: label + heading (centered)
+  const regsHeaderDiv = regsSection.append(webflow.elementPresets.DOM);
+  regsHeaderDiv.setTag('div');
+  regsHeaderDiv.setStyles([cyRegsHeader]);
 
-  // Section heading
-  const regsH = regsSection.append(webflow.elementPresets.DOM);
+  const regsLabel = regsHeaderDiv.append(webflow.elementPresets.DOM);
+  regsLabel.setTag('div');
+  regsLabel.setStyles([s.label]);
+  regsLabel.setAttribute('data-animate', 'fade-up');
+  const regsLabelTxt = regsLabel.append(webflow.elementPresets.DOM);
+  regsLabelTxt.setTag('div');
+  regsLabelTxt.setTextContent(`${data.city} ADU Regulations`);
+
+  const regsH = regsHeaderDiv.append(webflow.elementPresets.DOM);
   regsH.setTag('h2');
   regsH.setStyles([s.headingLG]);
-  regsH.setTextContent('Zoning & requirements');
-  regsH.setAttribute('data-animate', 'fade-up');
+  regsH.setTextContent('What You Need to Know');
+  regsH.setAttribute('data-animate', 'line-wipe');
 
-  // Regulation definition rows with dividers
-  const regItems = [
-    { label: 'Setbacks', value: data.regulations.setbacks },
-    { label: 'Height', value: data.regulations.height },
-    { label: 'Parking', value: data.regulations.parking },
-    { label: 'Lot Size', value: data.regulations.lotSize },
-    { label: 'Owner Occupancy', value: data.regulations.ownerOccupancy },
+  // 6-card regulation grid
+  const regsGrid = regsSection.append(webflow.elementPresets.DOM);
+  regsGrid.setTag('div');
+  regsGrid.setStyles([cyRegsGrid]);
+
+  const regCards = [
+    { label: 'Max ADU Size', title: data.costs.typicalSize, desc: `State law permits ADUs up to 1,200 sqft for detached units. ${data.regulations.lotSize}` },
+    { label: 'Height Limit', title: data.regulations.height.split('.')[0], desc: data.regulations.height },
+    { label: 'Setbacks', title: data.regulations.setbacks.split('.')[0], desc: data.regulations.setbacks },
+    { label: 'Parking', title: data.regulations.parking.split('.')[0], desc: data.regulations.parking },
+    { label: 'Owner Occupancy', title: data.regulations.ownerOccupancy.split('.')[0], desc: data.regulations.ownerOccupancy },
+    { label: 'Fees & Timeline', title: data.permitting.timeline, desc: `Estimated cost ${data.costs.constructionRange}. Permit fees ${data.costs.permitFees}. Impact fees: ${data.costs.impactFees}.` },
   ];
-  if (data.regulations.additionalNotes) {
-    regItems.push({ label: 'Additional Notes', value: data.regulations.additionalNotes });
-  }
 
-  regItems.forEach((reg, i) => {
-    // Divider between rows
-    if (i > 0) {
-      const div = regsSection.append(webflow.elementPresets.DOM);
-      div.setTag('div');
-      div.setStyles([s.divider]);
-    }
+  regCards.forEach((card, i) => {
+    const cardEl = regsGrid.append(webflow.elementPresets.DOM);
+    cardEl.setTag('div');
+    cardEl.setStyles([cyRegCard]);
+    cardEl.setAttribute('data-card', String(i));
 
-    const row = regsSection.append(webflow.elementPresets.DOM);
-    row.setTag('div');
-    row.setStyles([cyRegRow]);
-    row.setAttribute('data-animate', 'fade-up');
-
-    const lbl = row.append(webflow.elementPresets.DOM);
+    const lbl = cardEl.append(webflow.elementPresets.DOM);
     lbl.setTag('div');
-    lbl.setStyles([cyRegLabel]);
-    lbl.setTextContent(reg.label);
+    lbl.setStyles([cyRegCardLabel]);
+    lbl.setTextContent(card.label);
 
-    const val = row.append(webflow.elementPresets.DOM);
-    val.setTag('div');
-    val.setStyles([cyRegValue]);
-    val.setTextContent(reg.value);
+    const ttl = cardEl.append(webflow.elementPresets.DOM);
+    ttl.setTag('div');
+    ttl.setStyles([cyRegCardTitle]);
+    ttl.setTextContent(card.title);
+
+    const desc = cardEl.append(webflow.elementPresets.DOM);
+    desc.setTag('p');
+    desc.setStyles([cyRegCardDesc]);
+    desc.setTextContent(card.desc);
   });
 
   await safeCall('append:regulations', () => body.append(regsSection));
-  logDetail('Section 2: Overview + Regulations appended', 'ok');
+  logDetail('Section 2: Regulations appended', 'ok');
 
-  // SECTION 3: PERMITTING (warm bg, vertical numbered list)
-  log('Building Section 3: Permitting...');
-  const permitSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  permitSection.setTag('section');
-  permitSection.setStyles([s.section, s.sectionWarm]);
-  permitSection.setAttribute('id', 'cy-permitting');
+  // SECTION 3: CITY SHOWCASE — Full-width image with gradient overlay
+  log('Building Section 3: City Showcase...');
+  const showcase = webflow.elementBuilder(webflow.elementPresets.DOM);
+  showcase.setTag('section');
+  showcase.setStyles([cyShowcase]);
+  showcase.setAttribute('id', 'city-showcase');
 
-  const permitH = permitSection.append(webflow.elementPresets.DOM);
-  permitH.setTag('h2');
-  permitH.setStyles([s.headingLG]);
-  permitH.setTextContent(`How to permit your ADU in ${data.city}`);
-  permitH.setAttribute('data-animate', 'fade-up');
+  // Image placeholder (replace with actual city image in Webflow Designer)
+  const showcasePlaceholder = showcase.append(webflow.elementPresets.DOM);
+  showcasePlaceholder.setTag('div');
+  showcasePlaceholder.setStyles([cyShowcasePlaceholder]);
 
-  // Steps as vertical numbered list (large number left, content right)
-  data.permitting.steps.forEach((step, i) => {
-    if (i > 0) {
-      const div = permitSection.append(webflow.elementPresets.DOM);
-      div.setTag('div');
-      div.setStyles([s.divider]);
-    }
+  // Gradient overlay
+  const showcaseOverlay = showcase.append(webflow.elementPresets.DOM);
+  showcaseOverlay.setTag('div');
+  showcaseOverlay.setStyles([cyShowcaseOverlay]);
 
-    const row = permitSection.append(webflow.elementPresets.DOM);
-    row.setTag('div');
-    row.setStyles([cyStepRow]);
-    row.setAttribute('data-animate', 'fade-up');
+  // Text content
+  const showcaseContent = showcase.append(webflow.elementPresets.DOM);
+  showcaseContent.setTag('div');
+  showcaseContent.setStyles([cyShowcaseContent]);
 
-    const numCol = row.append(webflow.elementPresets.DOM);
-    numCol.setTag('div');
-    numCol.setStyles([cyStepNumCol]);
-    const num = numCol.append(webflow.elementPresets.DOM);
-    num.setTag('div');
-    num.setStyles([cyStepNum]);
-    num.setTextContent(String(i + 1).padStart(2, '0'));
+  const showcaseLbl = showcaseContent.append(webflow.elementPresets.DOM);
+  showcaseLbl.setTag('div');
+  showcaseLbl.setStyles([cyShowcaseLabel]);
+  showcaseLbl.setTextContent(`${data.city}, California`);
+  showcaseLbl.setAttribute('data-animate', 'fade-up');
 
-    const content = row.append(webflow.elementPresets.DOM);
-    content.setTag('div');
-    content.setStyles([cyStepContent]);
+  const showcaseH = showcaseContent.append(webflow.elementPresets.DOM);
+  showcaseH.setTag('h2');
+  showcaseH.setStyles([cyShowcaseTitle]);
+  showcaseH.setTextContent(`Building ADUs in ${data.city}`);
+  showcaseH.setAttribute('data-animate', 'line-wipe');
 
-    const title = content.append(webflow.elementPresets.DOM);
-    title.setTag('h3');
-    title.setStyles([cyStepTitle]);
-    title.setTextContent(step.title);
+  const showcaseDescEl = showcaseContent.append(webflow.elementPresets.DOM);
+  showcaseDescEl.setTag('p');
+  showcaseDescEl.setStyles([cyShowcaseDesc]);
+  showcaseDescEl.setTextContent(data.showcaseDesc || data.overview);
+  showcaseDescEl.setAttribute('data-animate', 'fade-up');
 
-    const desc = content.append(webflow.elementPresets.DOM);
-    desc.setTag('p');
-    desc.setStyles([cyStepDesc]);
-    desc.setTextContent(step.desc);
+  await safeCall('append:showcase', () => body.append(showcase));
+  logDetail('Section 3: City Showcase appended', 'ok');
+
+  // SECTION 4: REQUIREMENTS — Dark with Three.js backdrop + glass cards
+  log('Building Section 4: Requirements...');
+  const reqsSection = webflow.elementBuilder(webflow.elementPresets.DOM);
+  reqsSection.setTag('section');
+  reqsSection.setStyles([s.section, s.sectionDark, cyReqs]);
+  reqsSection.setAttribute('id', 'city-reqs');
+
+  // Canvas wrap (Three.js wireframe backdrop)
+  const reqsCanvasWrap = reqsSection.append(webflow.elementPresets.DOM);
+  reqsCanvasWrap.setTag('div');
+  reqsCanvasWrap.setStyles([cyCanvasWrap]);
+  reqsCanvasWrap.setAttribute('id', 'reqs-canvas');
+
+  // Content overlay
+  const reqsOverlay = reqsSection.append(webflow.elementPresets.DOM);
+  reqsOverlay.setTag('div');
+  reqsOverlay.setStyles([cyContentOverlay, cyReqsContent]);
+
+  // Header
+  const reqsHeaderDiv = reqsOverlay.append(webflow.elementPresets.DOM);
+  reqsHeaderDiv.setTag('div');
+  reqsHeaderDiv.setStyles([cyReqsHeader]);
+
+  const reqsLabel = reqsHeaderDiv.append(webflow.elementPresets.DOM);
+  reqsLabel.setTag('div');
+  reqsLabel.setStyles([s.label]);
+  reqsLabel.setAttribute('data-animate', 'fade-up');
+  const reqsLabelTxt = reqsLabel.append(webflow.elementPresets.DOM);
+  reqsLabelTxt.setTag('div');
+  reqsLabelTxt.setTextContent('Permit Requirements');
+
+  const reqsH = reqsHeaderDiv.append(webflow.elementPresets.DOM);
+  reqsH.setTag('h2');
+  reqsH.setStyles([s.headingLG]);
+  reqsH.setTextContent(`${data.city} Permit Requirements`);
+  reqsH.setAttribute('data-animate', 'line-wipe');
+
+  // 2x2 glass card grid
+  const reqsGrid = reqsOverlay.append(webflow.elementPresets.DOM);
+  reqsGrid.setTag('div');
+  reqsGrid.setStyles([cyReqsGrid]);
+
+  // Build 4 glass cards from permitting + cost data
+  const glassCards = [
+    {
+      num: '01 / Permitting',
+      title: data.permitting.department,
+      desc: `${data.permitting.steps.length} steps from application to certificate of occupancy. We handle all submissions and plan-check corrections on your behalf.`,
+    },
+    {
+      num: '02 / Timeline',
+      title: 'Design to Move-In',
+      desc: `Plan check: ${data.permitting.timeline}. Fees: ${data.permitting.fees}. Contact: ${data.permitting.contact || data.permitting.department}.`,
+    },
+    {
+      num: '03 / Zoning',
+      title: data.regulations.setbacks.split('.')[0],
+      desc: `${data.regulations.setbacks} Height: ${data.regulations.height}`,
+    },
+    {
+      num: '04 / Investment',
+      title: data.costs.constructionRange,
+      desc: `Full design-build cost including architecture, engineering, permits, and construction. Typical size: ${data.costs.typicalSize}. Rental: ${data.rental.monthlyRange}.`,
+    },
+  ];
+
+  glassCards.forEach(card => {
+    const cardEl = reqsGrid.append(webflow.elementPresets.DOM);
+    cardEl.setTag('div');
+    cardEl.setStyles([cyGlassCard]);
+    cardEl.setAttribute('data-animate', 'fade-up');
+
+    const numEl = cardEl.append(webflow.elementPresets.DOM);
+    numEl.setTag('div');
+    numEl.setStyles([cyGlassCardNum]);
+    numEl.setTextContent(card.num);
+
+    const titleEl = cardEl.append(webflow.elementPresets.DOM);
+    titleEl.setTag('h3');
+    titleEl.setStyles([cyGlassCardTitle]);
+    titleEl.setTextContent(card.title);
+
+    const descEl = cardEl.append(webflow.elementPresets.DOM);
+    descEl.setTag('p');
+    descEl.setStyles([cyGlassCardDesc]);
+    descEl.setTextContent(card.desc);
   });
 
-  // Permit details as inline metadata
-  const metaParts = [
-    data.permitting.department,
-    `Fees: ${data.permitting.fees}`,
-    `Timeline: ${data.permitting.timeline}`,
-  ];
-  const permitMeta = permitSection.append(webflow.elementPresets.DOM);
-  permitMeta.setTag('p');
-  permitMeta.setStyles([cyPermitMeta]);
-  permitMeta.setTextContent(metaParts.join(' \u2022 '));
-  permitMeta.setAttribute('data-animate', 'fade-up');
+  await safeCall('append:requirements', () => body.append(reqsSection));
+  logDetail('Section 4: Requirements appended', 'ok');
 
-  await safeCall('append:permitting', () => body.append(permitSection));
-  logDetail('Section 3: Permitting appended', 'ok');
-
-  // SECTION 4: CTA
-  log('Building Section 4: CTA...');
+  // SECTION 5: CTA
+  log('Building Section 5: CTA...');
   await buildCTASection(
     body, v,
-    `Get your ${data.city} ADU estimate`,
-    'ADU Cost Calculator', '/adu-cost-estimator',
+    `Start your ${data.city} ADU`,
     'Schedule a Meeting', '/schedule-a-meeting',
+    'ADU Cost Calculator', '/adu-cost-estimator',
   );
 
   // ═══════════════ APPLY STYLES ═══════════════

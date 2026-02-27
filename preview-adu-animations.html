@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom ADU Builder in Orange County | Avorino</title>
+<meta name="description" content="Build a custom accessory dwelling unit in Orange County. Detached, attached, garage conversion, and above-garage ADUs. Design, permits, and construction by Avorino.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.avorino.com/adu">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Avorino">
+<meta property="og:title" content="Custom ADU Builder in Orange County | Avorino">
+<meta property="og:description" content="Build a custom accessory dwelling unit in Orange County. Detached, attached, garage conversion, and above-garage ADUs. Design, permits, and construction by Avorino.">
+<meta property="og:url" content="https://www.avorino.com/adu">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Custom ADU Builder in Orange County | Avorino">
+<meta name="twitter:description" content="Build a custom accessory dwelling unit in Orange County. Detached, attached, garage conversion, and above-garage ADUs.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  /* ─── Reset ─── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overflow-x: hidden; font-family: 'DM Sans', sans-serif; background: #f0ede8; color: #111; }
+  html { scroll-behavior: auto; }
+
+  /* ─── Avorino Design Tokens ─── */
+  :root {
+    --av-dark: #111111;
+    --av-cream: #f0ede8;
+    --av-warm: #e8e4df;
+    --av-red: #c8222a;
+    --av-gold: #c9a96e;
+    --av-radius: 8px;
+    --av-section-pad-y: 128px;
+    --av-section-pad-x: 80px;
+    --av-text-xl: clamp(48px, 5vw, 96px);
+    --av-text-lg: clamp(36px, 3.5vw, 64px);
+    --av-text-h3: clamp(24px, 2vw, 36px);
+    --av-text-body: clamp(16px, 1.1vw, 18px);
+    --av-text-sm: clamp(14px, 0.9vw, 16px);
+    --av-text-xs: clamp(11px, 0.7vw, 13px);
+  }
+
+  /* ─── Shared Section Styles ─── */
+  .av-section { padding: var(--av-section-pad-y) var(--av-section-pad-x); }
+  .av-section-warm { background: var(--av-warm); color: var(--av-dark); }
+  .av-section-dark { background: var(--av-dark); color: var(--av-cream); }
+
+  /* ─── Typography ─── */
+  .av-heading-xl {
+    font-family: 'DM Serif Display', serif;
+    font-size: var(--av-text-xl); line-height: 1.05; font-weight: 400; letter-spacing: -0.02em;
+  }
+  .av-heading-lg {
+    font-family: 'DM Serif Display', serif;
+    font-size: var(--av-text-lg); line-height: 1.1; font-weight: 400;
+  }
+  .av-heading-md {
+    font-family: 'DM Serif Display', serif;
+    font-size: var(--av-text-h3); line-height: 1.15; font-weight: 400;
+  }
+  .av-body { font-size: var(--av-text-body); line-height: 1.9; }
+
+  /* ─── Label ─── */
+  .av-label {
+    display: flex; align-items: center; gap: 16px;
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+    letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.4;
+  }
+  .av-label-line { flex-grow: 1; height: 1px; background: rgba(17,17,17,0.15); transform-origin: left center; }
+
+  /* ─── Utility ─── */
+  .av-mb-48 { margin-bottom: 48px; }
+  .av-mb-64 { margin-bottom: 64px; }
+  .av-mb-96 { margin-bottom: 96px; }
+
+  /* ─── Animation supports ─── */
+  [data-animate="char-cascade"] span { display: inline-block; will-change: transform, opacity, filter; }
+  [data-animate="line-wipe"] .line { will-change: clip-path; }
+
+  /* ═══════════════════════════════════════════════
+     SECTION 1: HERO — Full-viewport cinematic
+     ═══════════════════════════════════════════════ */
+  .adu-hero {
+    min-height: 80vh;
+    display: flex; align-items: flex-end;
+    padding: 160px var(--av-section-pad-x) var(--av-section-pad-y);
+    background-color: var(--av-dark); color: var(--av-cream);
+    position: relative; overflow: hidden;
+  }
+  .adu-hero-canvas-wrap {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 1; pointer-events: none; overflow: hidden;
+  }
+  .adu-hero-canvas-wrap canvas { display: block; width: 100%; height: 100%; }
+  .adu-hero-content { position: relative; z-index: 2; max-width: 800px; }
+  .adu-hero-label {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+    letter-spacing: 0.3em; text-transform: uppercase; opacity: 0;
+    margin-bottom: 32px; color: var(--av-cream);
+  }
+  .adu-hero-gold-line {
+    width: 0; height: 1px; background: var(--av-gold);
+    margin-bottom: 24px; will-change: width;
+  }
+  .adu-hero-subtitle {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-body);
+    line-height: 1.9; opacity: 0; margin-top: 24px; color: var(--av-cream);
+    max-width: 520px; filter: blur(4px);
+  }
+  .adu-hero-scroll-hint {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 8px;
+    opacity: 0;
+  }
+  .adu-hero-scroll-hint span {
+    font-family: 'DM Sans', sans-serif; font-size: 10px;
+    letter-spacing: 0.3em; text-transform: uppercase; color: var(--av-cream);
+  }
+  .adu-hero-scroll-line {
+    width: 1px; height: 40px; background: var(--av-gold);
+    transform-origin: top center; animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { transform: scaleY(0.3); opacity: 0.3; }
+    50% { transform: scaleY(1); opacity: 0.8; }
+  }
+
+  /* ═══════════════════════════════════════════════
+     SECTION 2: ADU TYPES — Three.js backdrop + scroll-locked cards
+     ═══════════════════════════════════════════════ */
+  .adu-types { position: relative; overflow: hidden; background: #ffffff; }
+  .adu-types-canvas-wrap {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 1; pointer-events: none; overflow: hidden;
+  }
+  .adu-types-canvas-wrap canvas { display: block; width: 100%; height: 100%; }
+  .adu-types-content { position: relative; z-index: 2; }
+  .adu-types-pinned {
+    height: 100vh; display: flex; align-items: center;
+    position: relative; padding: 0 var(--av-section-pad-x);
+  }
+  .adu-types-header {
+    position: absolute; top: 48px; left: var(--av-section-pad-x); right: var(--av-section-pad-x);
+  }
+  .adu-types-info {
+    margin-left: auto;
+    position: relative; width: 480px; max-width: 100%; min-height: 300px;
+  }
+  .adu-type-card {
+    background: #ffffff; color: var(--av-dark);
+    border-radius: var(--av-radius); padding: 56px 48px;
+    border-top: 2px solid rgba(201,169,110,0.3);
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+    position: absolute; top: 50%; transform: translateY(-50%); width: 100%;
+    opacity: 0;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.06);
+    will-change: transform, opacity;
+  }
+  .adu-type-card:first-child { opacity: 1; }
+  .adu-type-card-num {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-xs);
+    letter-spacing: 0.2em; text-transform: uppercase;
+    margin-bottom: 16px; color: var(--av-gold);
+  }
+  .adu-type-card-title {
+    font-family: 'DM Serif Display', serif; font-size: 28px;
+    line-height: 1.2; font-weight: 400; margin-bottom: 14px; color: var(--av-dark);
+  }
+  .adu-type-card-desc {
+    font-family: 'DM Sans', sans-serif; font-size: var(--av-text-sm);
+    line-height: 1.7; opacity: 0.55; color: var(--av-dark);
+  }
+  .adu-types-progress {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    z-index: 3; display: flex; align-items: center; gap: 32px;
+  }
+  .adu-types-track {
+    width: 200px; height: 2px; background: rgba(17,17,17,0.08); position: relative;
+  }
+  .adu-types-fill { height: 100%; background: var(--av-red); width: 0%; transition: width 0.4s ease; }
+  .adu-types-dots { display: flex; gap: 24px; }
+  .adu-tdot {
+    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+    opacity: 0.3; transition: all 0.3s ease; color: var(--av-dark);
+  }
+  .adu-tdot.active { opacity: 1; color: var(--av-red); font-weight: 700; }
+
+  /* ═══════════════════════════════════════════════
+     SECTION 3: PROCESS — Vertical Timeline Draw
+     ═══════════════════════════════════════════════ */
+  .adu-process { position: relative; }
+  .adu-process-header { text-align: center; margin-bottom: 80px; }
+  .adu-timeline { position: relative; max-width: 700px; margin: 0 auto; padding-left: 60px; }
+  .adu-tl-svg {
+    position: absolute; left: 19px; top: 0; width: 2px; height: 100%; overflow: visible;
+  }
+  .adu-tl-track { stroke: rgba(17,17,17,0.12); stroke-width: 2; }
+  .adu-tl-draw { stroke: var(--av-red); stroke-width: 2; }
+  .adu-tl-step { position: relative; padding-bottom: 80px; }
+  .adu-tl-step:last-child { padding-bottom: 0; }
+  .adu-tl-node {
+    position: absolute; left: -50px; top: 8px; width: 18px; height: 18px;
+    border-radius: 50%; border: 2px solid rgba(17,17,17,0.15);
+    background: var(--av-warm); transition: all 0.5s ease;
+  }
+  .adu-tl-node.active {
+    background: var(--av-red); border-color: var(--av-red);
+    box-shadow: 0 0 0 6px rgba(200,34,42,0.15);
+  }
+  .adu-tl-number {
+    font-family: 'DM Serif Display', serif; font-size: 80px; line-height: 1;
+    opacity: 0.15; display: block; margin-bottom: -16px;
+  }
+  .adu-tl-title {
+    font-family: 'DM Serif Display', serif; font-size: 32px; line-height: 1.2; margin-bottom: 8px;
+  }
+  .adu-tl-title .word { display: inline-block; opacity: 0; transform: translateY(105%); }
+  .adu-tl-time {
+    font-size: 14px; color: var(--av-red); display: block; margin-bottom: 12px; opacity: 0;
+  }
+  .adu-tl-desc {
+    font-size: var(--av-text-sm); line-height: 1.7; opacity: 0; max-width: 480px;
+    filter: blur(6px); transform: translateY(20px);
+  }
+
+  /* ═══════════════════════════════════════════════
+     SECTION 4: CTA
+     ═══════════════════════════════════════════════ */
+  .av-cta { padding: 48px; }
+  .adu-cta-container {
+    background: var(--av-dark); border-radius: var(--av-radius); min-height: 56vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .av-cta-bg {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.2;
+    background: radial-gradient(ellipse at 30% 50%, rgba(201,169,110,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 50%, rgba(200,34,42,0.05) 0%, transparent 60%);
+  }
+  .av-cta-content { position: relative; z-index: 2; padding: 64px; }
+  .av-cta-subtitle {
+    font-family: 'DM Sans', sans-serif; font-size: 12px; letter-spacing: 0.3em;
+    text-transform: uppercase; opacity: 0.4; margin-bottom: 32px; color: var(--av-cream);
+  }
+  .av-cta-heading {
+    font-family: 'DM Serif Display', serif; font-size: var(--av-text-lg);
+    line-height: 1.08; letter-spacing: -0.02em; font-weight: 400;
+    color: var(--av-cream); margin-bottom: 48px; max-width: 12em;
+    margin-left: auto; margin-right: auto;
+  }
+  .av-cta-btns { display: flex; gap: 16px; justify-content: center; }
+  .av-cta-btn {
+    display: inline-flex; align-items: center; gap: 12px; padding: 18px 40px;
+    border-radius: 100px; font-family: 'DM Sans', sans-serif;
+    font-size: var(--av-text-sm); font-weight: 500; letter-spacing: 0.04em;
+    text-decoration: none; cursor: pointer; border: none;
+    transition: transform 0.5s cubic-bezier(0.23,1,0.32,1), box-shadow 0.3s ease;
+  }
+  .av-cta-btn:hover { transform: translateY(-2px); }
+  .av-cta-btn-primary { background: var(--av-red); color: var(--av-cream); }
+  .av-cta-btn-primary:hover { box-shadow: 0 8px 32px rgba(200,34,42,0.25); }
+  .av-cta-btn-ghost {
+    background: rgba(240,237,232,0.08); color: var(--av-cream);
+    border: 1px solid rgba(240,237,232,0.2);
+  }
+  .av-cta-btn-ghost:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+
+  /* ═══════════════════════════════════════════════
+     RESPONSIVE
+     ═══════════════════════════════════════════════ */
+  @media (max-width: 991px) {
+    .av-section { padding: 80px 40px !important; }
+    .adu-hero { min-height: 60vh !important; padding: 120px 40px 80px !important; }
+    .adu-types-canvas-wrap { display: none !important; }
+    .adu-types-pinned { padding: 0 40px !important; }
+    .adu-types-info { width: 100% !important; margin-left: 0 !important; }
+    .adu-type-card { position: relative !important; top: auto !important; transform: none !important; }
+    .adu-type-card:first-child { opacity: 1 !important; }
+    .adu-process-header { margin-bottom: 48px !important; }
+    .av-cta { padding: 40px !important; }
+  }
+  @media (max-width: 767px) {
+    .av-section { padding: 64px 24px !important; }
+    .adu-hero { min-height: 50vh !important; padding: 100px 24px 64px !important; }
+    .adu-types-pinned { padding: 0 24px !important; }
+    .adu-timeline { padding-left: 40px !important; }
+    .adu-tl-svg { left: 12px !important; }
+    .adu-tl-node { left: -36px !important; width: 14px !important; height: 14px !important; }
+    .av-heading-xl { font-size: clamp(36px, 8vw, 56px) !important; }
+    .av-heading-lg { font-size: clamp(28px, 6vw, 40px) !important; }
+    .av-cta { padding: 24px !important; }
+    .av-cta-btns { flex-direction: column !important; align-items: center !important; }
+  }
+  @media (max-width: 478px) {
+    .av-section { padding: 48px 16px !important; }
+    .adu-hero { min-height: 45vh !important; padding: 80px 16px 48px !important; }
+    .av-heading-xl { font-size: clamp(28px, 9vw, 42px) !important; }
+    .av-heading-lg { font-size: clamp(24px, 6vw, 32px) !important; }
+    .av-cta { padding: 16px !important; }
+    .av-cta-btn { width: 100% !important; justify-content: center !important; }
+    .adu-type-card { padding: 36px 24px !important; }
+  }
+</style>
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "ADU Construction",
+  "provider": {
+    "@type": "LocalBusiness",
+    "name": "Avorino",
+    "url": "https://www.avorino.com",
+    "areaServed": {
+      "@type": "State",
+      "name": "California"
+    }
+  },
+  "description": "Custom accessory dwelling unit design, permitting, and construction in Orange County, CA.",
+  "serviceType": "ADU Construction",
+  "areaServed": "Orange County, CA"
+}
+</script>
+</head>
+<body>
+
+<main>
+<!-- ═══════════ SECTION 1: HERO ═══════════ -->
+<section class="adu-hero" id="adu-hero">
+  <div class="adu-hero-canvas-wrap" id="hero-canvas"></div>
+  <div class="adu-hero-content">
+    <div class="adu-hero-label" data-animate="fade-up">// Avorino ADU</div>
+    <h1 class="av-heading-xl" data-animate="char-cascade">Accessory Dwelling Units</h1>
+    <div class="adu-hero-gold-line"></div>
+    <p class="adu-hero-subtitle" data-animate="fade-up">Custom-designed ADUs for Orange County homeowners. Maximize your property value with a premium backyard home.</p>
+  </div>
+  <div class="adu-hero-scroll-hint" data-animate="fade-up">
+    <span>Scroll</span>
+    <div class="adu-hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 2: ADU TYPES — Scroll-locked + Three.js ═══════════ -->
+<section class="adu-types" id="adu-types">
+  <div class="adu-types-canvas-wrap" id="types-canvas"></div>
+  <div class="adu-types-content">
+    <div class="adu-types-pinned" data-types-pinned>
+      <div class="adu-types-header">
+        <div class="av-label av-mb-48">
+          <div>ADU Types</div>
+          <div class="av-label-line"></div>
+        </div>
+      </div>
+      <div class="adu-types-info">
+        <div class="adu-type-card" data-step="0">
+          <div class="adu-type-card-num">01 / 04</div>
+          <h3 class="adu-type-card-title">Detached ADU</h3>
+          <p class="adu-type-card-desc">Standalone unit in your backyard — maximum privacy and design flexibility. Popular for rental income or multigenerational living.</p>
+        </div>
+        <div class="adu-type-card" data-step="1">
+          <div class="adu-type-card-num">02 / 04</div>
+          <h3 class="adu-type-card-title">Attached ADU</h3>
+          <p class="adu-type-card-desc">Extension connected to your home with its own private entrance. Shares a wall for cost savings while maintaining complete independence.</p>
+        </div>
+        <div class="adu-type-card" data-step="2">
+          <div class="adu-type-card-num">03 / 04</div>
+          <h3 class="adu-type-card-title">Garage Conversion</h3>
+          <p class="adu-type-card-desc">Convert your existing garage into a fully permitted living space. The most affordable option — starting at $75K with the fastest turnaround.</p>
+        </div>
+        <div class="adu-type-card" data-step="3">
+          <div class="adu-type-card-num">04 / 04</div>
+          <h3 class="adu-type-card-title">Above-Garage ADU</h3>
+          <p class="adu-type-card-desc">Second story above your garage. Keeps parking, adds living space, and maximizes your lot without sacrificing yard area.</p>
+        </div>
+      </div>
+      <div class="adu-types-progress">
+        <div class="adu-types-track"><div class="adu-types-fill"></div></div>
+        <div class="adu-types-dots">
+          <span class="adu-tdot active">01</span>
+          <span class="adu-tdot">02</span>
+          <span class="adu-tdot">03</span>
+          <span class="adu-tdot">04</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 3: PROCESS — Vertical Timeline ═══════════ -->
+<section class="av-section av-section-warm adu-process" id="adu-process">
+  <div class="adu-process-header">
+    <div class="av-label av-mb-64" data-animate="fade-up">
+      <div>Our Process</div>
+      <div class="av-label-line"></div>
+    </div>
+    <h2 class="av-heading-lg" data-animate="line-wipe">How We Build<br>Your ADU</h2>
+  </div>
+  <div class="adu-timeline" id="adu-timeline">
+    <svg class="adu-tl-svg" preserveAspectRatio="none">
+      <line class="adu-tl-track" x1="1" y1="0" x2="1" y2="100%"/>
+      <line class="adu-tl-draw" x1="1" y1="0" x2="1" y2="100%"/>
+    </svg>
+    <div class="adu-tl-step" data-step="0">
+      <div class="adu-tl-node"></div>
+      <div class="adu-tl-content">
+        <span class="adu-tl-number">01</span>
+        <h3 class="adu-tl-title"><span class="word">Design</span></h3>
+        <span class="adu-tl-time">4–6 months</span>
+        <p class="adu-tl-desc">Custom architectural plans, structural engineering, and Title 24 energy calculations — all included.</p>
+      </div>
+    </div>
+    <div class="adu-tl-step" data-step="1">
+      <div class="adu-tl-node"></div>
+      <div class="adu-tl-content">
+        <span class="adu-tl-number">02</span>
+        <h3 class="adu-tl-title"><span class="word">Permits</span></h3>
+        <span class="adu-tl-time">Included in design</span>
+        <p class="adu-tl-desc">We submit to your city and manage all plan-check corrections and approvals.</p>
+      </div>
+    </div>
+    <div class="adu-tl-step" data-step="2">
+      <div class="adu-tl-node"></div>
+      <div class="adu-tl-content">
+        <span class="adu-tl-number">03</span>
+        <h3 class="adu-tl-title"><span class="word">Build</span></h3>
+        <span class="adu-tl-time">6–8 months</span>
+        <p class="adu-tl-desc">Licensed crew, weekly progress updates, and on-budget delivery from foundation to final inspection.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SECTION 4: CTA ═══════════ -->
+<section class="av-cta">
+  <div class="adu-cta-container">
+    <div class="av-cta-bg" data-animate="parallax-depth"></div>
+    <div class="av-cta-content">
+      <div class="av-cta-subtitle" data-animate="fade-up">Ready to Begin?</div>
+      <h2 class="av-cta-heading" data-animate="word-stagger-elastic">Get your ADU estimate</h2>
+      <div class="av-cta-btns">
+        <a href="#" class="av-cta-btn av-cta-btn-primary" data-magnetic data-animate="fade-up">Schedule a Meeting &#8594;</a>
+        <a href="#" class="av-cta-btn av-cta-btn-ghost" data-magnetic data-animate="fade-up">ADU Cost Calculator</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ═══════════ SCRIPTS (bottom of body — correct CDN order) ═══════════ -->
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+
+<!-- ADU page animations -->
+<script>
+(function () {
+  'use strict';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ═══════════════════════════════════════════════
+     LENIS SMOOTH SCROLL
+     ═══════════════════════════════════════════════ */
+  var lenis = new Lenis({
+    duration: 1.4,
+    easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+    smooth: true,
+    smoothTouch: false,
+  });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
+  gsap.ticker.lagSmoothing(0);
+  ScrollTrigger.addEventListener('refresh', function () { lenis.resize(); });
+
+  /* ═══════════════════════════════════════════════
+     UTILITY — TEXT SPLITTING
+     ═══════════════════════════════════════════════ */
+  function splitIntoWords(el) {
+    var text = el.textContent.trim();
+    var align = window.getComputedStyle(el).textAlign;
+    el.innerHTML = '';
+    el.style.display = 'flex';
+    el.style.flexWrap = 'wrap';
+    el.style.gap = '0 0.3em';
+    if (align === 'center') el.style.justifyContent = 'center';
+    var wordEls = [];
+    text.split(/\s+/).forEach(function (word) {
+      var wrapper = document.createElement('span');
+      wrapper.style.display = 'inline-block';
+      wrapper.style.overflow = 'hidden';
+      wrapper.style.verticalAlign = 'top';
+      var inner = document.createElement('span');
+      inner.style.display = 'inline-block';
+      inner.textContent = word;
+      wrapper.appendChild(inner);
+      el.appendChild(wrapper);
+      wordEls.push(inner);
+    });
+    return wordEls;
+  }
+
+  function splitIntoChars(el) {
+    var text = el.textContent.trim();
+    el.innerHTML = '';
+    el.style.display = 'flex';
+    el.style.flexWrap = 'wrap';
+    el.style.gap = '0 0.3em';
+    var charEls = [];
+    text.split(/\s+/).forEach(function (word) {
+      var wordWrap = document.createElement('span');
+      wordWrap.style.display = 'inline-flex';
+      wordWrap.style.overflow = 'hidden';
+      for (var i = 0; i < word.length; i++) {
+        var charSpan = document.createElement('span');
+        charSpan.style.display = 'inline-block';
+        charSpan.textContent = word[i];
+        wordWrap.appendChild(charSpan);
+        charEls.push(charSpan);
+      }
+      el.appendChild(wordWrap);
+    });
+    return charEls;
+  }
+
+  /* ═══════════════════════════════════════════════
+     HERO — Char Cascade + Gold Line
+     ═══════════════════════════════════════════════ */
+  function initHero() {
+    var hero = document.getElementById('adu-hero');
+    if (!hero) return;
+
+    var h1 = hero.querySelector('h1');
+    var goldLine = hero.querySelector('.adu-hero-gold-line');
+    var subtitle = hero.querySelector('.adu-hero-subtitle');
+    var label = hero.querySelector('.adu-hero-label');
+
+    if (label) {
+      label.removeAttribute('data-animate');
+      gsap.fromTo(label,
+        { opacity: 0, y: 20 },
+        { opacity: 0.45, y: 0, duration: 0.8, delay: 0.2, ease: 'power3.out' }
+      );
+    }
+
+    if (h1) {
+      h1.removeAttribute('data-animate');
+      var chars = splitIntoChars(h1);
+      gsap.set(chars, { yPercent: 120, opacity: 0, rotateX: -90, filter: 'blur(8px)' });
+      gsap.to(chars, {
+        yPercent: 0, opacity: 1, rotateX: 0, filter: 'blur(0px)',
+        duration: 1.2, stagger: 0.025, ease: 'elastic.out(1, 0.6)', delay: 0.4,
+      });
+    }
+
+    if (goldLine) {
+      gsap.to(goldLine, { width: '80px', duration: 1, delay: 1, ease: 'power3.inOut' });
+    }
+
+    if (subtitle) {
+      subtitle.removeAttribute('data-animate');
+      gsap.fromTo(subtitle,
+        { opacity: 0, y: 20, filter: 'blur(4px)' },
+        { opacity: 0.55, y: 0, filter: 'blur(0px)', duration: 1, delay: 1.2, ease: 'power3.out' }
+      );
+    }
+
+    var heroContent = hero.querySelector('.adu-hero-content');
+    if (heroContent) {
+      gsap.to(heroContent, {
+        opacity: 0, y: -40, filter: 'blur(6px)', ease: 'none',
+        scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 1 },
+      });
+    }
+
+    var hint = hero.querySelector('.adu-hero-scroll-hint');
+    if (hint) {
+      hint.removeAttribute('data-animate');
+      gsap.fromTo(hint, { opacity: 0 }, { opacity: 0.3, duration: 1, delay: 2, ease: 'power2.out' });
+      gsap.to(hint, {
+        opacity: 0, ease: 'none',
+        scrollTrigger: { trigger: hero, start: 'top top', end: '30% top', scrub: 1 },
+      });
+    }
+  }
+
+  /* ═══════════════════════════════════════════════
+     TYPES — Scroll-Locked Card Showcase
+     ═══════════════════════════════════════════════ */
+  function initTypesShowcase() {
+    var cards = document.querySelectorAll('.adu-type-card');
+    var dots = document.querySelectorAll('.adu-tdot');
+    var fill = document.querySelector('.adu-types-fill');
+    var typesEl = document.getElementById('adu-types');
+    if (!typesEl || !cards.length) return;
+
+    var lastStep = 0;
+
+    function setTypeStep(step) {
+      if (step === lastStep) return;
+      cards.forEach(function (card, i) {
+        gsap.to(card, {
+          opacity: i === step ? 1 : 0,
+          y: i === step ? '-50%' : (i < step ? '-80%' : '-20%'),
+          duration: 0.5, ease: 'power2.out', overwrite: true,
+        });
+      });
+      dots.forEach(function (d, i) { d.classList.toggle('active', i <= step); });
+      if (fill) fill.style.width = (step / 3 * 100) + '%';
+      typesEl.dispatchEvent(new CustomEvent('type-change', { detail: { step: step } }));
+      lastStep = step;
+    }
+
+    ScrollTrigger.create({
+      trigger: '#adu-types',
+      start: 'top top',
+      end: '+=' + (window.innerHeight * 4),
+      pin: true,
+      scrub: 0.6,
+      onUpdate: function (self) {
+        var p = self.progress;
+        var step = Math.min(Math.floor(p * 4), 3);
+        setTypeStep(step);
+      },
+    });
+  }
+
+  /* ═══════════════════════════════════════════════
+     PROCESS — Vertical Timeline Draw
+     ═══════════════════════════════════════════════ */
+  function initTimeline() {
+    var drawLine = document.querySelector('.adu-tl-draw');
+    var tlSteps = document.querySelectorAll('.adu-tl-step');
+    if (!drawLine || !tlSteps.length) return;
+
+    var lineLen = 1000;
+    gsap.set(drawLine, { attr: { 'stroke-dasharray': lineLen, 'stroke-dashoffset': lineLen } });
+
+    var activated = [false, false, false];
+    ScrollTrigger.create({
+      trigger: '#adu-timeline',
+      start: 'top 75%',
+      end: 'bottom 70%',
+      scrub: 0.5,
+      onUpdate: function (self) {
+        var p = self.progress;
+        gsap.set(drawLine, { attr: { 'stroke-dashoffset': lineLen * (1 - p) } });
+
+        tlSteps.forEach(function (step, i) {
+          var threshold = i / tlSteps.length;
+          var node = step.querySelector('.adu-tl-node');
+          if (p >= threshold + 0.05 && !activated[i]) {
+            activated[i] = true;
+            node.classList.add('active');
+            gsap.to(step.querySelectorAll('.adu-tl-title .word'), {
+              opacity: 1, y: 0, duration: 0.8, stagger: 0.04, ease: 'power3.out',
+            });
+            gsap.to(step.querySelector('.adu-tl-time'), {
+              opacity: 1, duration: 0.6, delay: 0.2, ease: 'power2.out',
+            });
+            gsap.to(step.querySelector('.adu-tl-desc'), {
+              opacity: 0.6, filter: 'blur(0px)', y: 0, duration: 0.8, delay: 0.3, ease: 'power2.out',
+            });
+          }
+        });
+      },
+    });
+  }
+
+  /* ═══════════════════════════════════════════════
+     SCROLL ANIMATIONS — data-animate handlers
+     ═══════════════════════════════════════════════ */
+  function initScrollAnimations() {
+
+    /* fade-up */
+    document.querySelectorAll('[data-animate="fade-up"]').forEach(function (el) {
+      gsap.fromTo(el,
+        { y: 50, opacity: 0, filter: 'blur(4px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' } }
+      );
+    });
+
+    /* word-stagger-elastic */
+    document.querySelectorAll('[data-animate="word-stagger-elastic"]').forEach(function (el) {
+      var words = splitIntoWords(el);
+      gsap.set(words, { yPercent: 120 });
+      gsap.to(words, {
+        yPercent: 0, duration: 1.4, stagger: 0.06, ease: 'elastic.out(1, 0.4)',
+        scrollTrigger: { trigger: el, start: 'top 82%' },
+      });
+    });
+
+    /* parallax-depth */
+    document.querySelectorAll('[data-animate="parallax-depth"]').forEach(function (el) {
+      gsap.to(el, {
+        yPercent: -15, ease: 'none',
+        scrollTrigger: { trigger: el.closest('section') || el.parentElement,
+          start: 'top bottom', end: 'bottom top', scrub: 1 },
+      });
+    });
+
+    /* line-wipe */
+    document.querySelectorAll('[data-animate="line-wipe"]').forEach(function (el) {
+      var lineEls = el.querySelectorAll('.line');
+      if (!lineEls.length) {
+        var html = el.innerHTML;
+        var texts;
+        if (/<br\s*\/?>/i.test(html)) {
+          texts = html.split(/<br\s*\/?>/i).map(function (s) {
+            return s.replace(/<[^>]*>/g, '').trim();
+          }).filter(Boolean);
+        } else {
+          texts = [el.textContent.trim()];
+        }
+        el.innerHTML = '';
+        texts.forEach(function (t) {
+          var d = document.createElement('div');
+          d.className = 'line';
+          d.textContent = t;
+          el.appendChild(d);
+        });
+        lineEls = el.querySelectorAll('.line');
+      }
+      lineEls.forEach(function (line, i) {
+        gsap.set(line, { clipPath: 'inset(0 100% 0 0)' });
+        gsap.to(line, {
+          clipPath: 'inset(0 0% 0 0)', ease: 'power3.inOut',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top ' + (85 - i * 12) + '%',
+            end: 'top ' + (65 - i * 12) + '%',
+            scrub: 1,
+          },
+        });
+      });
+    });
+
+    /* Label line expand */
+    document.querySelectorAll('.av-label-line').forEach(function (line) {
+      gsap.fromTo(line,
+        { scaleX: 0 },
+        { scaleX: 1, duration: 1.2, ease: 'power3.inOut',
+          scrollTrigger: { trigger: line.parentElement, start: 'top 85%' } }
+      );
+    });
+
+    /* Magnetic buttons (desktop) */
+    if (window.innerWidth >= 992) {
+      document.querySelectorAll('[data-magnetic]').forEach(function (btn) {
+        btn.addEventListener('mousemove', function (e) {
+          var r = btn.getBoundingClientRect();
+          var x = (e.clientX - r.left - r.width / 2) * 0.15;
+          var y = (e.clientY - r.top - r.height / 2) * 0.15;
+          gsap.to(btn, { x: x, y: y, duration: 0.3, ease: 'power2.out' });
+        });
+        btn.addEventListener('mouseleave', function () {
+          gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.4)' });
+        });
+      });
+    }
+
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { ScrollTrigger.refresh(); });
+    });
+    if (document.readyState !== 'complete') {
+      window.addEventListener('load', function () { ScrollTrigger.refresh(); });
+    }
+  }
+
+  /* ═══════════════════════════════════════════════
+     CTA AMBIENT GLOW
+     ═══════════════════════════════════════════════ */
+  function initCTAGlow() {
+    var ctaSection = document.querySelector('.adu-cta-container');
+    if (!ctaSection) return;
+
+    var glow = document.createElement('div');
+    glow.style.cssText = [
+      'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);',
+      'width:140%;height:140%;border-radius:50%;pointer-events:none;z-index:0;',
+      'background:radial-gradient(ellipse at center, rgba(200,34,42,0.06) 0%, transparent 60%);',
+      'opacity:0;',
+    ].join('');
+    ctaSection.style.position = 'relative';
+    ctaSection.insertBefore(glow, ctaSection.firstChild);
+
+    ScrollTrigger.create({
+      trigger: ctaSection,
+      start: 'top 80%',
+      onEnter: function () {
+        gsap.to(glow, {
+          opacity: 1, duration: 1.5, ease: 'power2.out',
+          onComplete: function () {
+            gsap.to(glow, { opacity: 0.4, duration: 3, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+          },
+        });
+      },
+      onLeaveBack: function () {
+        gsap.to(glow, { opacity: 0, duration: 0.5, overwrite: true });
+      },
+    });
+  }
+
+  /* ═══════════════════════════════════════════════
+     INIT
+     ═══════════════════════════════════════════════ */
+  window.addEventListener('DOMContentLoaded', function () {
+    initHero();
+    initTypesShowcase();
+    initTimeline();
+    initScrollAnimations();
+    initCTAGlow();
+  });
+})();
+</script>
+
+<!-- Three.js: Hero — Architectural wireframe (pattern: avorino-about-mv3d.js) -->
+<script>
+(function () {
+  'use strict';
+
+  if (window.innerWidth < 992 || typeof THREE === 'undefined') return;
+
+  var wrap = document.getElementById('hero-canvas');
+  if (!wrap) return;
+
+  /* ── Setup ── */
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(50, wrap.clientWidth / wrap.clientHeight, 0.1, 1000);
+  camera.position.set(18, 14, 24);
+  camera.lookAt(0, 3, 0);
+
+  var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+  renderer.setClearColor(0x000000, 0);
+  wrap.appendChild(renderer.domElement);
+
+  /* ── Lights ── */
+  scene.add(new THREE.AmbientLight(0xf0ede8, 0.3));
+  var pl1 = new THREE.PointLight(0xc9a96e, 0.8, 80);
+  pl1.position.set(18, 22, 22);
+  scene.add(pl1);
+  var pl2 = new THREE.PointLight(0xc8222a, 0.2, 60);
+  pl2.position.set(-18, 6, 12);
+  scene.add(pl2);
+
+  /* ── Colors / Materials ── */
+  var GOLD = 0xc9a96e, CREAM = 0xf0ede8, SLATE = 0x555555;
+
+  function makeMat(c) { return new THREE.LineBasicMaterial({ color: c, transparent: true, opacity: 0 }); }
+  var gridMat = makeMat(CREAM);
+  var foundMat = makeMat(GOLD);
+  var structMat = makeMat(SLATE);
+  var detailMat = makeMat(SLATE);
+  var accentMat = makeMat(GOLD);
+
+  /* ── Geometry Helpers ── */
+  function wireBox(w, h, d, mat) {
+    return new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(w, h, d)), mat);
+  }
+  function wirePlane(w, h, mat) {
+    return new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(w, h)), mat);
+  }
+  function lineSegs(pts, mat) {
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+    return new THREE.LineSegments(g, mat);
+  }
+  function windowFrame(cx, cy, cz, w, h, axis) {
+    var hw = w / 2, hh = h / 2, pts = [];
+    if (axis === 'x') {
+      pts.push(cx,cy-hh,cz-hw, cx,cy-hh,cz+hw, cx,cy-hh,cz+hw, cx,cy+hh,cz+hw,
+        cx,cy+hh,cz+hw, cx,cy+hh,cz-hw, cx,cy+hh,cz-hw, cx,cy-hh,cz-hw,
+        cx,cy,cz-hw, cx,cy,cz+hw, cx,cy-hh,cz, cx,cy+hh,cz);
+    } else {
+      pts.push(cx-hw,cy-hh,cz, cx+hw,cy-hh,cz, cx+hw,cy-hh,cz, cx+hw,cy+hh,cz,
+        cx+hw,cy+hh,cz, cx-hw,cy+hh,cz, cx-hw,cy+hh,cz, cx-hw,cy-hh,cz,
+        cx-hw,cy,cz, cx+hw,cy,cz, cx,cy-hh,cz, cx,cy+hh,cz);
+    }
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+    return new THREE.LineSegments(g, detailMat);
+  }
+
+  var sg = new THREE.Group();
+  scene.add(sg);
+
+  /* GROUP 1: Blueprint Grid */
+  var gGrid = new THREE.Group(), gp = [];
+  for (var i = -10; i <= 10; i += 2) { gp.push(i, 0, -8, i, 0, 8); }
+  for (var i = -8; i <= 8; i += 2) { gp.push(-10, 0, i, 10, 0, i); }
+  gGrid.add(lineSegs(gp, gridMat));
+  sg.add(gGrid);
+
+  /* GROUP 2: Foundation */
+  var gFound = new THREE.Group();
+  var mf = wireBox(10, 0.12, 7, foundMat); mf.position.set(0, 0.06, 0); gFound.add(mf);
+  /* Entry slab — butts against front wall (z=-3.5 to z=-4.5) */
+  var df = wireBox(3, 0.08, 1, foundMat); df.position.set(1, 0.04, -4); gFound.add(df);
+  gFound.add(lineSegs([0, 0.08, -3.5, 0, 0.08, 3.5, -3, 0.08, -3.5, -3, 0.08, 3.5], foundMat));
+  sg.add(gFound);
+
+  /* GROUP 3: Structure */
+  var gStruct = new THREE.Group();
+  var mv = wireBox(10, 7, 7, structMat); mv.position.set(0, 3.5, 0); gStruct.add(mv);
+  gStruct.add(lineSegs([
+    -3,0,-3.5, -3,7,-3.5, -3,0,3.5, -3,7,3.5,
+    2,0,-3.5, 2,7,-3.5, 2,0,3.5, 2,7,3.5,
+    0,0,-3.5, 0,7,-3.5,
+    -5,0,0, -5,7,0, -3,0,0, -3,7,0,
+    -5,0,-1.5, -3,0,-1.5, -5,7,-1.5, -3,7,-1.5
+  ], structMat));
+  var flp = wirePlane(10, 7, structMat);
+  flp.rotation.x = -Math.PI / 2; flp.position.set(0, 3.5, 0); gStruct.add(flp);
+  sg.add(gStruct);
+
+  /* GROUP 4: Windows + Door */
+  var gDetail = new THREE.Group();
+  gDetail.add(windowFrame(-3.5, 2.5, -3.51, 1.6, 2, 'z'));
+  gDetail.add(windowFrame(-1, 2.5, -3.51, 1.6, 2, 'z'));
+  gDetail.add(windowFrame(2.5, 2.5, -3.51, 1.6, 2, 'z'));
+  gDetail.add(windowFrame(-2.5, 5.5, -3.51, 2.4, 1.8, 'z'));
+  gDetail.add(windowFrame(2, 5.5, -3.51, 2.4, 1.8, 'z'));
+  gDetail.add(windowFrame(-5.01, 2.5, -1, 1.4, 1.8, 'x'));
+  gDetail.add(windowFrame(-5.01, 5.5, -1, 1.4, 1.8, 'x'));
+  gDetail.add(windowFrame(-5.01, 2.5, 2, 1.4, 1.8, 'x'));
+  gDetail.add(windowFrame(-1, 2.5, 3.51, 2, 1.8, 'z'));
+  gDetail.add(windowFrame(3, 2.5, 3.51, 1.4, 1.8, 'z'));
+  var door = wirePlane(1.4, 2.8, detailMat); door.position.set(1, 1.4, -3.52); gDetail.add(door);
+  sg.add(gDetail);
+
+  /* GROUP 5: Gold Accents — all connected to structure */
+  var gAccent = new THREE.Group();
+  /* Roof overhang outline (rests on wall top y=7) */
+  gAccent.add(lineSegs([
+    -5.5,7.15,-4, 5.5,7.15,-4, 5.5,7.15,-4, 5.5,7.15,4,
+    5.5,7.15,4, -5.5,7.15,4, -5.5,7.15,4, -5.5,7.15,-4
+  ], accentMat));
+  /* Eave returns — overhang corners down to wall top corners */
+  gAccent.add(lineSegs([
+    -5.5,7.15,-4, -5,7,-3.5, 5.5,7.15,-4, 5,7,-3.5,
+    -5.5,7.15,4, -5,7,3.5, 5.5,7.15,4, 5,7,3.5
+  ], accentMat));
+  /* Ridge beam + rafters (connected to overhang edges) */
+  gAccent.add(lineSegs([
+    0,7.8,-4, 0,7.8,4,
+    -5.5,7.15,-4, 0,7.8,-4, 5.5,7.15,-4, 0,7.8,-4,
+    -5.5,7.15,4, 0,7.8,4, 5.5,7.15,4, 0,7.8,4
+  ], accentMat));
+  /* Entry canopy — brackets attached to front wall above door */
+  gAccent.add(lineSegs([
+    -0.5,2.8,-3.51, -0.5,2.8,-4.5, 2.5,2.8,-3.51, 2.5,2.8,-4.5,
+    -0.5,2.8,-4.5, 2.5,2.8,-4.5,
+    -0.5,2.8,-4.5, -0.5,0,-3.51, 2.5,2.8,-4.5, 2.5,0,-3.51
+  ], accentMat));
+  sg.add(gAccent);
+
+  /* PARTICLES */
+  var PC = 40, pArr = new Float32Array(PC * 3), pVel = [];
+  for (var i = 0; i < PC; i++) {
+    pArr[i * 3] = (Math.random() - 0.5) * 22;
+    pArr[i * 3 + 1] = Math.random() * 14;
+    pArr[i * 3 + 2] = (Math.random() - 0.5) * 18;
+    pVel.push(0.003 + Math.random() * 0.007);
+  }
+  var pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', new THREE.Float32BufferAttribute(pArr, 3));
+  var pMat = new THREE.PointsMaterial({ color: GOLD, size: 0.1, transparent: true, opacity: 0, sizeAttenuation: true });
+  sg.add(new THREE.Points(pGeo, pMat));
+
+  /* ── Mouse Parallax ── */
+  var mouse = { x: 0, y: 0 };
+  var targetRot = { x: 0, y: 0 };
+  document.addEventListener('mousemove', function (e) {
+    mouse.x = (e.clientX / window.innerWidth - 0.5) * 2;
+    mouse.y = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  /* ── Scroll progress ── */
+  var scrollP = 0;
+  ScrollTrigger.create({
+    trigger: '#adu-hero', start: 'top top', end: 'bottom top',
+    onUpdate: function (s) { scrollP = s.progress; },
+  });
+
+  /* ── Visibility ── */
+  var isVisible = true;
+  new IntersectionObserver(function (e) { isVisible = e[0].isIntersecting; }, { threshold: 0.01 }).observe(wrap);
+
+  /* ── Render Loop — Timed progressive reveal (pattern: avorino-about-mv3d.js) ── */
+  var clock = new THREE.Clock();
+  var baseRot = -0.3;
+
+  function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+  function ease(t) { return 1 - Math.pow(1 - t, 3); }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    if (!isVisible) return;
+    var t = clock.getElapsedTime();
+
+    /* Timed reveal — groups fade in sequentially */
+    gridMat.opacity = clamp(t / 0.8) * 0.15;
+    var fv = ease(clamp((t - 0.4) / 0.8));
+    foundMat.opacity = fv * 0.5; gFound.position.y = -1.5 * (1 - fv);
+    var sv = ease(clamp((t - 1.0) / 1.0));
+    structMat.opacity = sv * 0.35; gStruct.position.y = -5 * (1 - sv);
+    detailMat.opacity = ease(clamp((t - 1.8) / 0.8)) * 0.4;
+    accentMat.opacity = ease(clamp((t - 2.3) / 0.8)) * 0.65;
+    pMat.opacity = clamp((t - 2.8) / 1.0) * 0.35;
+
+    /* Slow orbit + mouse parallax */
+    targetRot.y = baseRot + t * 0.03 + scrollP * 0.5;
+    targetRot.x = mouse.y * 0.04;
+    sg.rotation.y += (targetRot.y + mouse.x * 0.12 - sg.rotation.y) * 0.015;
+    sg.rotation.x += (targetRot.x - sg.rotation.x) * 0.015;
+
+    var breathe = 1 + Math.sin(t * 0.4) * 0.008;
+    sg.scale.setScalar(breathe);
+
+    camera.position.y = 14 - scrollP * 6;
+    camera.lookAt(0, 3, 0);
+
+    /* Particles */
+    var pa = pGeo.attributes.position.array;
+    for (var j = 0; j < PC; j++) {
+      pa[j * 3 + 1] += pVel[j];
+      if (pa[j * 3 + 1] > 16) {
+        pa[j * 3 + 1] = -1;
+        pa[j * 3] = (Math.random() - 0.5) * 22;
+        pa[j * 3 + 2] = (Math.random() - 0.5) * 18;
+      }
+    }
+    pGeo.attributes.position.needsUpdate = true;
+
+    /* Lights */
+    pl1.position.x = 18 + Math.sin(t * 0.25) * 3;
+    pl1.position.z = 22 + Math.cos(t * 0.18) * 3;
+
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  /* ── Resize ── */
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      if (window.innerWidth < 992) { renderer.domElement.style.display = 'none'; return; }
+      renderer.domElement.style.display = '';
+      var w = wrap.clientWidth, h = wrap.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    }, 150);
+  });
+})();
+</script>
+
+<!-- Three.js: ADU Types — Morphing wireframe (pattern: avorino-services-3d.js) -->
+<script>
+(function () {
+  'use strict';
+
+  if (window.innerWidth < 992 || typeof THREE === 'undefined') return;
+
+  var wrap = document.getElementById('types-canvas');
+  if (!wrap) return;
+
+  /* ── Setup ── */
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(50, wrap.clientWidth / wrap.clientHeight, 0.1, 1000);
+  camera.position.set(20, 16, 28);
+  camera.lookAt(0, 2, 0);
+
+  var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+  renderer.setClearColor(0x000000, 0);
+  wrap.appendChild(renderer.domElement);
+
+  /* ── Lights ── */
+  scene.add(new THREE.AmbientLight(0xf0ede8, 0.3));
+  var pl1 = new THREE.PointLight(0xc9a96e, 0.8, 80);
+  pl1.position.set(18, 22, 22);
+  scene.add(pl1);
+
+  /* ── Materials ── */
+  var GOLD = 0xc9a96e, DARK = 0x222222, LIGHT_GRAY = 0xbbbbbb;
+  var gridMat = new THREE.LineBasicMaterial({ color: LIGHT_GRAY, transparent: true, opacity: 0.15 });
+  var buildMat = new THREE.LineBasicMaterial({ color: DARK, transparent: true, opacity: 0.35 });
+  var accentMat = new THREE.LineBasicMaterial({ color: GOLD, transparent: true, opacity: 0.4 });
+
+  var sceneGroup = new THREE.Group();
+  scene.add(sceneGroup);
+
+  function lineSegs(pts, mat) {
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+    return new THREE.LineSegments(g, mat);
+  }
+
+  /* Ground Grid */
+  var gp = [];
+  for (var i = -10; i <= 10; i += 2) { gp.push(i, 0, -8, i, 0, 8); }
+  for (var i = -8; i <= 8; i += 2) { gp.push(-10, 0, i, 10, 0, i); }
+  sceneGroup.add(lineSegs(gp, gridMat));
+
+  /* ═══ MORPH INFRASTRUCTURE ═══ */
+  var SEG = 120, FC = SEG * 6;
+  function pad(a) { var r = new Float32Array(FC); for (var j = 0; j < a.length && j < FC; j++) r[j] = a[j]; return r; }
+  function bx(cx, cy, cz, w, h, d) {
+    var hw = w/2, hh = h/2, hd = d/2, x0 = cx-hw, x1 = cx+hw, y0 = cy-hh, y1 = cy+hh, z0 = cz-hd, z1 = cz+hd;
+    return [x0,y0,z0,x1,y0,z0, x1,y0,z0,x1,y0,z1, x1,y0,z1,x0,y0,z1, x0,y0,z1,x0,y0,z0,
+      x0,y1,z0,x1,y1,z0, x1,y1,z0,x1,y1,z1, x1,y1,z1,x0,y1,z1, x0,y1,z1,x0,y1,z0,
+      x0,y0,z0,x0,y1,z0, x1,y0,z0,x1,y1,z0, x1,y0,z1,x1,y1,z1, x0,y0,z1,x0,y1,z1];
+  }
+  function ws(x0, y0, z, x1, y1) { return [x0,y0,z,x1,y0,z, x1,y0,z,x1,y1,z, x1,y1,z,x0,y1,z, x0,y1,z,x0,y0,z]; }
+  function wx(x, y0, z0, y1, z1) { return [x,y0,z0,x,y0,z1, x,y0,z1,x,y1,z1, x,y1,z1,x,y1,z0, x,y1,z0,x,y0,z0]; }
+  function vl(x, y0, y1, z) { return [x,y0,z,x,y1,z]; }
+  function hl(x0, x1, y, z) { return [x0,y,z,x1,y,z]; }
+  function flat(a) { var r = []; for (var j = 0; j < a.length; j++) { if (Array.isArray(a[j])) for (var k = 0; k < a[j].length; k++) r.push(a[j][k]); else r.push(a[j]); } return r; }
+
+  /* T0: Detached ADU — simple gable house */
+  var t0 = flat([].concat(
+    bx(0, 3.5, 0, 8, 7, 6),
+    /* Gable roof: ridge beam front-to-back */
+    [0, 8, -3, 0, 8, 3],
+    /* Rafters: 4 corners up to ridge */
+    [-4, 7, -3, 0, 8, -3], [4, 7, -3, 0, 8, -3],
+    [-4, 7, 3, 0, 8, 3], [4, 7, 3, 0, 8, 3],
+    /* Gable triangles: close the ends */
+    [-4, 7, -3, 0, 8, -3], [0, 8, -3, 4, 7, -3],
+    [-4, 7, 3, 0, 8, 3], [0, 8, 3, 4, 7, 3]
+  ));
+
+  /* T1: Attached ADU — main house + wing */
+  var t1 = flat([].concat(
+    bx(-2, 4, 0, 10, 8, 7),
+    bx(6, 3, 0, 5, 6, 6),
+    /* Main house gable roof */
+    [-2, 8.5, -3.5, -2, 8.5, 3.5],
+    [-7, 8, -3.5, -2, 8.5, -3.5], [3, 8, -3.5, -2, 8.5, -3.5],
+    [-7, 8, 3.5, -2, 8.5, 3.5], [3, 8, 3.5, -2, 8.5, 3.5],
+    /* Wing flat roof edge */
+    [3.5, 6, -3, 8.5, 6, -3], [8.5, 6, -3, 8.5, 6, 3],
+    [8.5, 6, 3, 3.5, 6, 3], [3.5, 6, 3, 3.5, 6, -3]
+  ));
+
+  /* T2: Garage Conversion — wide low box */
+  var t2 = flat([].concat(
+    bx(0, 2.5, 0, 10, 5, 7),
+    /* Flat roof edge (slight overhang) */
+    [-5.3, 5.1, -3.8, 5.3, 5.1, -3.8],
+    [5.3, 5.1, -3.8, 5.3, 5.1, 3.8],
+    [5.3, 5.1, 3.8, -5.3, 5.1, 3.8],
+    [-5.3, 5.1, 3.8, -5.3, 5.1, -3.8],
+    /* Garage door opening on front wall */
+    [-2.5, 0, -3.51, -2.5, 4, -3.51],
+    [2.5, 0, -3.51, 2.5, 4, -3.51],
+    [-2.5, 4, -3.51, 2.5, 4, -3.51]
+  ));
+
+  /* T3: Above-Garage ADU — two-story box */
+  var t3 = flat([].concat(
+    bx(0, 2.5, 0, 10, 5, 7),
+    bx(0, 7.5, 0, 10, 5, 7),
+    /* Floor division line at y=5 */
+    [-5, 5, -3.5, 5, 5, -3.5], [-5, 5, 3.5, 5, 5, 3.5],
+    /* Gable roof */
+    [0, 10.8, -3.5, 0, 10.8, 3.5],
+    [-5, 10, -3.5, 0, 10.8, -3.5], [5, 10, -3.5, 0, 10.8, -3.5],
+    [-5, 10, 3.5, 0, 10.8, 3.5], [5, 10, 3.5, 0, 10.8, 3.5]
+  ));
+
+  var morphTargets = [pad(t0), pad(t1), pad(t2), pad(t3)];
+
+  /* Building geometry (morphable) */
+  var buildPos = new Float32Array(FC), accentPos = new Float32Array(FC);
+  for (var i = 0; i < FC; i++) { buildPos[i] = morphTargets[0][i]; accentPos[i] = morphTargets[0][i]; }
+
+  var buildGeo = new THREE.BufferGeometry();
+  buildGeo.setAttribute('position', new THREE.Float32BufferAttribute(buildPos, 3));
+  sceneGroup.add(new THREE.LineSegments(buildGeo, buildMat));
+
+  var accentGeo = new THREE.BufferGeometry();
+  accentGeo.setAttribute('position', new THREE.Float32BufferAttribute(accentPos, 3));
+  sceneGroup.add(new THREE.LineSegments(accentGeo, accentMat));
+
+  /* Particles */
+  var PC = 25, pArr = new Float32Array(PC * 3), pVel = [];
+  for (var i = 0; i < PC; i++) {
+    pArr[i * 3] = (Math.random() - 0.5) * 24;
+    pArr[i * 3 + 1] = Math.random() * 14;
+    pArr[i * 3 + 2] = (Math.random() - 0.5) * 20;
+    pVel.push(0.002 + Math.random() * 0.006);
+  }
+  var pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', new THREE.Float32BufferAttribute(pArr, 3));
+  var pMat = new THREE.PointsMaterial({ color: GOLD, size: 0.06, transparent: true, opacity: 0.15, sizeAttenuation: true });
+  sceneGroup.add(new THREE.Points(pGeo, pMat));
+
+  /* Morph state */
+  var currentTarget = 0;
+  var typesEl = document.getElementById('adu-types');
+  typesEl.addEventListener('type-change', function (e) { currentTarget = e.detail.step; });
+
+  /* ── Mouse Parallax ── */
+  var mouse = { x: 0, y: 0 };
+  var targetRot = { x: 0, y: 0 };
+  document.addEventListener('mousemove', function (e) {
+    mouse.x = (e.clientX / window.innerWidth - 0.5) * 2;
+    mouse.y = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  /* ── Visibility ── */
+  var isVisible = false;
+  new IntersectionObserver(function (e) { isVisible = e[0].isIntersecting; }, { threshold: 0.01 }).observe(typesEl);
+
+  /* ── Render Loop ── */
+  var clock = new THREE.Clock();
+  var baseRot = -0.3;
+
+  function animate() {
+    requestAnimationFrame(animate);
+    if (!isVisible) return;
+    var t = clock.getElapsedTime();
+
+    /* Slow orbit + mouse parallax */
+    targetRot.y = baseRot + mouse.x * 0.12 + t * 0.025;
+    targetRot.x = mouse.y * 0.05;
+    sceneGroup.rotation.y += (targetRot.y - sceneGroup.rotation.y) * 0.015;
+    sceneGroup.rotation.x += (targetRot.x - sceneGroup.rotation.x) * 0.015;
+
+    var breathe = 1 + Math.sin(t * 0.35) * 0.006;
+    sceneGroup.scale.setScalar(breathe);
+
+    /* Morph */
+    var target = morphTargets[currentTarget];
+    var bArr = buildGeo.attributes.position.array;
+    var aArr = accentGeo.attributes.position.array;
+    var morphing = false;
+    for (var j = 0; j < FC; j++) {
+      var diff = target[j] - bArr[j];
+      if (Math.abs(diff) > 0.01) { morphing = true; bArr[j] += diff * 0.04; aArr[j] += diff * 0.04; }
+    }
+    if (morphing) { buildGeo.attributes.position.needsUpdate = true; accentGeo.attributes.position.needsUpdate = true; }
+    accentMat.opacity = morphing ? 0.2 : 0.5;
+    buildMat.opacity = morphing ? 0.25 : 0.4;
+
+    /* Particles */
+    var pa = pGeo.attributes.position.array;
+    for (var k = 0; k < PC; k++) {
+      pa[k * 3 + 1] += pVel[k];
+      if (pa[k * 3 + 1] > 18) {
+        pa[k * 3 + 1] = -1;
+        pa[k * 3] = (Math.random() - 0.5) * 24;
+        pa[k * 3 + 2] = (Math.random() - 0.5) * 20;
+      }
+    }
+    pGeo.attributes.position.needsUpdate = true;
+
+    /* Lights */
+    pl1.position.x = 18 + Math.sin(t * 0.25) * 3;
+    pl1.position.z = 22 + Math.cos(t * 0.18) * 3;
+
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  /* ── Resize ── */
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      if (window.innerWidth < 992) { renderer.domElement.style.display = 'none'; return; }
+      renderer.domElement.style.display = '';
+      var w = wrap.clientWidth, h = wrap.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    }, 150);
+  });
+})();
+</script>
+
+</body>
+</html>
