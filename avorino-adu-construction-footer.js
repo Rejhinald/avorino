@@ -128,8 +128,7 @@
       });
     }
 
-    /* ── Three.js construction crane scene (desktop only) ── */
-    if (window.innerWidth < 992) return;
+    /* ── Three.js construction crane scene ── */
     if (typeof THREE === 'undefined') return;
 
     var wrap = document.getElementById('hero-canvas');
@@ -142,7 +141,7 @@
     camera.lookAt(0, 3, 0);
 
     var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(window.innerWidth < 768 ? Math.min(window.devicePixelRatio, 1.5) : Math.min(window.devicePixelRatio, 2));
     renderer.setSize(wrap.clientWidth, wrap.clientHeight);
     renderer.setClearColor(0x000000, 0);
     wrap.appendChild(renderer.domElement);
@@ -556,8 +555,7 @@
     window.addEventListener('resize', function () {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function () {
-        if (window.innerWidth < 992) { renderer.domElement.style.display = 'none'; return; }
-        renderer.domElement.style.display = '';
+        /* Canvas stays visible on all viewports */
         var w = wrap.clientWidth, h = wrap.clientHeight;
         camera.aspect = w / h;
         camera.updateProjectionMatrix();
@@ -606,8 +604,7 @@
       },
     });
 
-    /* ── Three.js morphing buildings (desktop only) ── */
-    if (window.innerWidth < 992) return;
+    /* ── Three.js morphing buildings ── */
     if (typeof THREE === 'undefined') return;
 
     var wrap = document.getElementById('types-canvas');
@@ -620,7 +617,7 @@
     camera.lookAt(0, 2, 0);
 
     var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(window.innerWidth < 768 ? Math.min(window.devicePixelRatio, 1.5) : Math.min(window.devicePixelRatio, 2));
     renderer.setSize(wrap.clientWidth, wrap.clientHeight);
     renderer.setClearColor(0x000000, 0);
     wrap.appendChild(renderer.domElement);
@@ -836,8 +833,7 @@
     window.addEventListener('resize', function () {
       clearTimeout(tResizeTimer);
       tResizeTimer = setTimeout(function () {
-        if (window.innerWidth < 992) { renderer.domElement.style.display = 'none'; return; }
-        renderer.domElement.style.display = '';
+        /* Canvas stays visible on all viewports */
         var w = wrap.clientWidth, h = wrap.clientHeight;
         camera.aspect = w / h;
         camera.updateProjectionMatrix();

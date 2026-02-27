@@ -704,41 +704,104 @@
 
 /* ═══════════════════════════════════════════════════════════════════
    RESPONSIVE — 991px (Tablet)
+   Canvas wraps STAY VISIBLE — animations render on all viewports.
+   Scroll-lock sections use vertical flex layout:
+     header (top) → canvas visible in gap → cards (bottom) → progress
    ═══════════════════════════════════════════════════════════════════ */
 @media (max-width: 991px) {
 
-  /* --- ADU page --- */
-  .adu-hero { min-height: 60vh !important; padding: 120px 40px 80px !important; }
-  .adu-types-canvas-wrap { display: none !important; }
-  .adu-types-pinned { padding: 0 40px !important; }
-  .adu-types-info { width: 100% !important; margin-left: 0 !important; }
-  .adu-type-card { position: relative !important; top: auto !important; transform: none !important; }
-  .adu-type-card:first-child { opacity: 1 !important; }
+  :root {
+    --av-section-pad-y: 80px;
+    --av-section-pad-x: 40px;
+  }
+
+  /* ── ADU page ── */
+  .adu-hero { min-height: 70vh !important; }
+  .adu-hero-content { max-width: 100% !important; }
+
+  /* Scroll-lock → vertical column: header top, cards bottom, canvas visible in gap */
+  .adu-types-pinned {
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    padding: 48px var(--av-section-pad-x) 32px !important;
+  }
+  .adu-types-header {
+    position: relative !important;
+    top: auto !important; left: auto !important; right: auto !important;
+    flex: 0 0 auto !important;
+    margin-bottom: 0 !important;
+  }
+  .adu-types-info {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-top: auto !important;
+    min-height: 200px !important;
+  }
+  .adu-type-card { padding: 40px 32px !important; }
+  .adu-types-progress {
+    position: relative !important;
+    bottom: auto !important; left: auto !important;
+    transform: none !important;
+    flex: 0 0 auto !important;
+    justify-content: center !important;
+    width: 100% !important;
+    margin-top: 16px !important;
+  }
   .adu-process-header { margin-bottom: 48px !important; }
 
-  /* --- Construction page --- */
-  .aduc-hero { min-height: 60vh !important; padding: 120px 40px 80px !important; }
-  .aduc-hero-canvas-wrap { display: none !important; }
-  .aduc-types-canvas-wrap { display: none !important; }
-  .aduc-types-pinned { padding: 0 40px !important; }
-  .aduc-types-info { width: 100% !important; margin-left: 0 !important; }
-  .aduc-type-card { position: relative !important; top: auto !important; transform: none !important; opacity: 1 !important; margin-bottom: 24px; }
+  /* ── Construction page ── */
+  .aduc-hero { min-height: 70vh !important; }
+  .aduc-hero-content { max-width: 100% !important; }
+
+  /* Scroll-lock → vertical column (same pattern as ADU) */
+  .aduc-types-pinned {
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    padding: 48px var(--av-section-pad-x) 32px !important;
+  }
+  .aduc-types-header {
+    position: relative !important;
+    top: auto !important; left: auto !important; right: auto !important;
+    flex: 0 0 auto !important;
+    margin-bottom: 0 !important;
+  }
+  .aduc-types-info {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-top: auto !important;
+    min-height: 200px !important;
+  }
+  .aduc-type-card { padding: 40px 32px !important; }
+  .aduc-types-progress {
+    position: relative !important;
+    bottom: auto !important; left: auto !important;
+    transform: none !important;
+    flex: 0 0 auto !important;
+    justify-content: center !important;
+    width: 100% !important;
+    margin-top: 16px !important;
+  }
   .aduc-roi-grid { grid-template-columns: 1fr 1fr !important; }
   .aduc-process-header { margin-bottom: 48px !important; }
   .aduc-htl-steps { grid-template-columns: 1fr !important; gap: 64px !important; }
   .aduc-htl-track-wrap { display: none !important; }
-  .aduc-htl-node { position: relative !important; top: auto !important; left: auto !important; transform: none !important; margin: 0 auto 16px !important; }
+  .aduc-htl-node {
+    position: relative !important; top: auto !important;
+    left: auto !important; transform: none !important;
+    margin: 0 auto 16px !important;
+  }
 
-  /* --- Plans page --- */
-  .plans-hero { min-height: 60vh !important; padding: 120px 40px 80px !important; }
-  .canvas-wrap { display: none !important; }
+  /* ── Plans page ── */
+  .plans-hero { min-height: 70vh !important; }
+  .plans-hero-content { max-width: 100% !important; }
   .plans-grid { grid-template-columns: 1fr 1fr !important; }
   .custom-features { grid-template-columns: 1fr !important; }
 
-  /* --- City page --- */
-  .city-hero { min-height: 60vh !important; padding: 120px 40px 80px !important; }
-  .city-hero .canvas-wrap { display: none !important; }
-  .city-reqs .canvas-wrap { display: none !important; }
+  /* ── City page ── */
+  .city-hero { min-height: 70vh !important; }
+  .city-hero-content { max-width: 100% !important; }
   .city-regs-grid { grid-template-columns: 1fr !important; }
   .city-reqs-grid { grid-template-columns: 1fr !important; }
   .city-reqs { min-height: auto !important; }
@@ -747,8 +810,9 @@
   .city-reg-card { padding: 40px 32px !important; }
   .glass-card { padding: 40px 32px !important; }
 
-  /* --- Shared CTA --- */
+  /* ── Shared CTA ── */
   .av-cta { padding: 40px !important; }
+  .av-cta-content { padding: 48px 32px !important; }
   .av-cta-btns { flex-direction: column !important; align-items: center !important; }
 }
 
@@ -758,32 +822,51 @@
    ═══════════════════════════════════════════════════════════════════ */
 @media (max-width: 767px) {
 
-  /* --- ADU page --- */
-  .adu-hero { min-height: 50vh !important; padding: 100px 24px 64px !important; }
-  .adu-types-pinned { padding: 0 24px !important; }
+  :root {
+    --av-section-pad-y: 64px;
+    --av-section-pad-x: 24px;
+  }
+
+  /* ── ADU page ── */
+  .adu-hero { min-height: 65vh !important; padding-top: 100px !important; }
+  .adu-types-pinned { padding: 40px var(--av-section-pad-x) 24px !important; }
+  .adu-types-info { min-height: 180px !important; }
+  .adu-type-card { padding: 32px 24px !important; }
   .adu-timeline { padding-left: 40px !important; }
   .adu-tl-svg { left: 12px !important; }
   .adu-tl-node { left: -36px !important; width: 14px !important; height: 14px !important; }
+  .adu-tl-number { font-size: 56px !important; }
+  .adu-tl-title { font-size: 26px !important; }
 
-  /* --- Construction page --- */
-  .aduc-hero { min-height: 50vh !important; padding: 100px 24px 64px !important; }
-  .aduc-types-pinned { padding: 0 24px !important; }
+  /* ── Construction page ── */
+  .aduc-hero { min-height: 65vh !important; padding-top: 100px !important; }
+  .aduc-types-pinned { padding: 40px var(--av-section-pad-x) 24px !important; }
+  .aduc-types-info { min-height: 180px !important; }
+  .aduc-type-card { padding: 32px 24px !important; }
+  .aduc-roi-grid { grid-template-columns: 1fr 1fr !important; }
+  .aduc-htl-number { font-size: 48px !important; }
+  .aduc-htl-title { font-size: 22px !important; }
 
-  /* --- Plans page --- */
-  .plans-hero { min-height: 50vh !important; padding: 100px 24px 64px !important; }
-  .plans-grid { grid-template-columns: 1fr !important; }
+  /* ── Plans page ── */
+  .plans-hero { min-height: 65vh !important; padding-top: 100px !important; }
+  .plans-grid { grid-template-columns: 1fr !important; max-width: 400px !important; margin: 0 auto !important; }
   .glass-card { padding: 32px 24px !important; }
+  .custom-inner h2 { font-size: clamp(24px, 5vw, 28px) !important; }
 
-  /* --- City page --- */
-  .city-hero { min-height: 50vh !important; padding: 100px 24px 64px !important; }
+  /* ── City page ── */
+  .city-hero { min-height: 65vh !important; padding-top: 100px !important; }
+  .city-hero h1 { font-size: clamp(36px, 8vw, 56px) !important; }
   .city-regs-grid { gap: 24px !important; }
   .city-reg-card { padding: 32px 24px !important; }
+  .city-reg-card-title { font-size: 22px !important; }
   .city-showcase { min-height: 40vh !important; }
   .city-showcase-content { padding: 40px 24px !important; }
   .city-showcase-title { font-size: clamp(28px, 6vw, 40px) !important; }
 
-  /* --- Shared CTA --- */
+  /* ── Shared CTA ── */
   .av-cta { padding: 24px !important; }
+  .av-cta-content { padding: 40px 24px !important; }
+  .av-cta-heading { font-size: clamp(28px, 7vw, 40px) !important; }
   .av-cta-btns { flex-direction: column !important; align-items: center !important; }
 }
 
@@ -793,25 +876,39 @@
    ═══════════════════════════════════════════════════════════════════ */
 @media (max-width: 478px) {
 
-  /* --- ADU page --- */
-  .adu-hero { min-height: 45vh !important; padding: 80px 16px 48px !important; }
-  .adu-type-card { padding: 36px 24px !important; }
+  :root {
+    --av-section-pad-y: 48px;
+    --av-section-pad-x: 16px;
+  }
 
-  /* --- Construction page --- */
-  .aduc-hero { min-height: 45vh !important; padding: 80px 16px 48px !important; }
-  .aduc-type-card { padding: 36px 24px !important; }
+  /* ── ADU page ── */
+  .adu-hero { min-height: 60vh !important; }
+  .adu-type-card { padding: 28px 20px !important; }
+  .adu-tl-number { font-size: 44px !important; }
+  .adu-tl-title { font-size: 22px !important; }
+  .adu-tl-desc { font-size: 13px !important; }
+
+  /* ── Construction page ── */
+  .aduc-hero { min-height: 60vh !important; }
+  .aduc-type-card { padding: 28px 20px !important; }
   .aduc-roi-grid { grid-template-columns: 1fr !important; max-width: 320px !important; }
   .aduc-roi-card { padding: 32px 16px !important; }
+  .aduc-htl-number { font-size: 40px !important; }
+  .aduc-htl-title { font-size: 20px !important; }
 
-  /* --- Plans page --- */
-  .plans-hero { min-height: 45vh !important; padding: 80px 16px 48px !important; }
+  /* ── Plans page ── */
+  .plans-hero { min-height: 60vh !important; }
   .glass-card { padding: 24px 16px !important; }
 
-  /* --- City page --- */
-  .city-hero { min-height: 45vh !important; padding: 80px 16px 48px !important; }
+  /* ── City page ── */
+  .city-hero { min-height: 60vh !important; }
+  .city-hero h1 { font-size: clamp(28px, 9vw, 42px) !important; }
   .city-reg-card { padding: 28px 20px !important; }
+  .city-reg-card-title { font-size: 20px !important; }
 
-  /* --- Shared CTA --- */
+  /* ── Shared CTA ── */
   .av-cta { padding: 16px !important; }
-  .av-cta-btn { width: 100% !important; justify-content: center !important; }
+  .av-cta-content { padding: 32px 16px !important; }
+  .av-cta-heading { font-size: clamp(24px, 7vw, 32px) !important; }
+  .av-cta-btn { width: 100% !important; justify-content: center !important; padding: 16px 32px !important; }
 }

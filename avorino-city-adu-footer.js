@@ -134,7 +134,6 @@
      HERO 3D — Neighborhood Zoning Grid
      ═══════════════════════════════════════════════ */
   function initHero3D() {
-    if (window.innerWidth < 992) return;
     if (typeof THREE === 'undefined') return;
 
     var wrap = document.getElementById('hero-canvas');
@@ -142,7 +141,7 @@
 
     /* ── Renderer ── */
     var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(window.innerWidth < 768 ? Math.min(window.devicePixelRatio, 1.5) : Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
     renderer.setSize(wrap.clientWidth, wrap.clientHeight);
     wrap.appendChild(renderer.domElement);
@@ -569,8 +568,7 @@
     window.addEventListener('resize', function () {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function () {
-        if (window.innerWidth < 992) { renderer.domElement.style.display = 'none'; return; }
-        renderer.domElement.style.display = '';
+        /* Canvas stays visible on all viewports */
         var w = wrap.clientWidth, h = wrap.clientHeight;
         camera.aspect = w / h;
         camera.updateProjectionMatrix();
@@ -635,7 +633,6 @@
      REQUIREMENTS 3D — Architectural Wireframe Backdrop
      ═══════════════════════════════════════════════ */
   function initRequirements3D() {
-    if (window.innerWidth < 992) return;
     if (typeof THREE === 'undefined') return;
 
     var wrap = document.getElementById('reqs-canvas');
@@ -643,7 +640,7 @@
 
     /* ── Renderer ── */
     var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(window.innerWidth < 768 ? Math.min(window.devicePixelRatio, 1.5) : Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
     renderer.setSize(wrap.clientWidth, wrap.clientHeight);
     wrap.appendChild(renderer.domElement);
@@ -869,8 +866,7 @@
     window.addEventListener('resize', function () {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function () {
-        if (window.innerWidth < 992) { renderer.domElement.style.display = 'none'; return; }
-        renderer.domElement.style.display = '';
+        /* Canvas stays visible on all viewports */
         var w = wrap.clientWidth, h = wrap.clientHeight;
         camera.aspect = w / h;
         camera.updateProjectionMatrix();
