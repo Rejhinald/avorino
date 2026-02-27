@@ -57,9 +57,9 @@ const CITIES = [
 const CITY = CITIES[CITY_INDEX];
 
 const HEAD_CODE = [
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@3cf6b06/avorino-responsive.css">',
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@3cf6b06/avorino-nav-footer.css">',
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@3cf6b06/avorino-adu.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@51ce355/avorino-responsive.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@51ce355/avorino-nav-footer.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@51ce355/avorino-adu.css">',
   CALENDLY_CSS,
 ].join('\n');
 const FOOTER_CODE = [
@@ -67,8 +67,8 @@ const FOOTER_CODE = [
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
   '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
-  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@3cf6b06/avorino-animations.js"><\/script>',
-  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@3cf6b06/avorino-city-adu-footer.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@51ce355/avorino-animations.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@51ce355/avorino-city-adu-footer.js"><\/script>',
   CALENDLY_JS,
 ].join('\n');
 
