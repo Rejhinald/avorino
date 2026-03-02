@@ -799,6 +799,7 @@ export async function buildCityPage(data: CityData) {
   const cyHeroGoldLine = await getOrCreateStyle('city-hero-gold-line');
   const cyHeroSubtitle = await getOrCreateStyle('city-hero-subtitle');
   const cyHeroScrollHint = await getOrCreateStyle('city-hero-scroll-hint');
+  const cyHeroScrollLine = await getOrCreateStyle('city-hero-scroll-line');
   const cyCanvasWrap = await getOrCreateStyle('canvas-wrap');
   const cyContentOverlay = await getOrCreateStyle('content-overlay');
 
@@ -828,6 +829,7 @@ export async function buildCityPage(data: CityData) {
   const cyGlassCardNum = await getOrCreateStyle('glass-card-num');
   const cyGlassCardTitle = await getOrCreateStyle('glass-card-title');
   const cyGlassCardDesc = await getOrCreateStyle('glass-card-desc');
+  const cyGlassCardList = await getOrCreateStyle('glass-card-list');
 
   // ── Create page ──
   const { body } = await createPageWithSlug(
@@ -881,6 +883,9 @@ export async function buildCityPage(data: CityData) {
       'position': 'absolute', 'bottom': '40px', 'left': '50%',
       'z-index': '3', 'display': 'flex', 'flex-direction': 'column',
       'align-items': 'center', 'grid-row-gap': '8px', 'opacity': '0',
+    });
+    await clearAndSet(await freshStyle('city-hero-scroll-line'), 'city-hero-scroll-line', {
+      'width': '1px', 'height': '40px', 'background-color': '#c9a96e',
     });
     await wait(500);
 
@@ -988,6 +993,10 @@ export async function buildCityPage(data: CityData) {
       'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
       'line-height': '1.7', 'opacity': '0.5',
     });
+    await clearAndSet(await freshStyle('glass-card-list'), 'glass-card-list', {
+      'padding-left': '0px', 'margin-top': '16px',
+      'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '12px',
+    });
     await wait(500);
 
     await applyCTAStyleProps(v);
@@ -1044,6 +1053,14 @@ export async function buildCityPage(data: CityData) {
   scrollHint.setTag('div');
   scrollHint.setStyles([cyHeroScrollHint]);
   scrollHint.setAttribute('data-animate', 'fade-up');
+
+  const scrollHintText = scrollHint.append(webflow.elementPresets.DOM);
+  scrollHintText.setTag('span');
+  scrollHintText.setTextContent('Scroll');
+
+  const scrollHintLine = scrollHint.append(webflow.elementPresets.DOM);
+  scrollHintLine.setTag('div');
+  scrollHintLine.setStyles([cyHeroScrollLine]);
 
   await safeCall('append:hero', () => body.append(hero));
   logDetail('Section 1: Hero appended', 'ok');
@@ -1198,27 +1215,47 @@ export async function buildCityPage(data: CityData) {
   reqsGrid.setTag('div');
   reqsGrid.setStyles([cyReqsGrid]);
 
-  // Build 4 glass cards from permitting + cost data
-  const glassCards = [
+  // Build 4 glass cards from permitting + cost data (with bullet lists)
+  const glassCards: { num: string; title: string; desc: string; items: string[] }[] = [
     {
       num: '01 / Permitting',
       title: data.permitting.department,
-      desc: `${data.permitting.steps.length} steps from application to certificate of occupancy. We handle all submissions and plan-check corrections on your behalf.`,
+      desc: `We handle all submissions, plan-check corrections, and approvals on your behalf.`,
+      items: data.permitting.steps.slice(0, 4).map(s => s.title),
     },
     {
       num: '02 / Timeline',
       title: 'Design to Move-In',
-      desc: `Plan check: ${data.permitting.timeline}. Fees: ${data.permitting.fees}. Contact: ${data.permitting.contact || data.permitting.department}.`,
+      desc: `From initial consultation to a fully finished, move-in ready ADU in your backyard.`,
+      items: [
+        `Consultation and site assessment`,
+        `Custom design and engineering`,
+        `City plan check — ${data.permitting.timeline}`,
+        `Construction — 6–8 months`,
+        `Final inspection and certificate of occupancy`,
+      ],
     },
     {
       num: '03 / Zoning',
-      title: data.regulations.setbacks.split('.')[0],
-      desc: `${data.regulations.setbacks} Height: ${data.regulations.height}`,
+      title: `${data.city} Zoning & Setbacks`,
+      desc: `${data.city} follows California state ADU guidelines${data.regulations.additionalNotes ? '.' : ' with standard setbacks.'}`,
+      items: [
+        data.regulations.setbacks.split('.')[0],
+        data.regulations.height.split('.')[0],
+        `Lot sizes: ${data.regulations.lotSize.split('.')[0]}`,
+        data.regulations.parking.split('.')[0],
+      ],
     },
     {
       num: '04 / Investment',
       title: data.costs.constructionRange,
-      desc: `Full design-build cost including architecture, engineering, permits, and construction. Typical size: ${data.costs.typicalSize}. Rental: ${data.rental.monthlyRange}.`,
+      desc: `Full design-build cost including architecture, engineering, permits, and construction.`,
+      items: [
+        `No hidden fees — fixed-price contracts`,
+        `Permit fees: ${data.costs.permitFees}`,
+        `Impact fees: ${data.costs.impactFees}`,
+        `Rental income: ${data.rental.monthlyRange}`,
+      ],
     },
   ];
 
@@ -1242,6 +1279,16 @@ export async function buildCityPage(data: CityData) {
     descEl.setTag('p');
     descEl.setStyles([cyGlassCardDesc]);
     descEl.setTextContent(card.desc);
+
+    // Bullet list
+    const listEl = cardEl.append(webflow.elementPresets.DOM);
+    listEl.setTag('ul');
+    listEl.setStyles([cyGlassCardList]);
+    card.items.forEach(item => {
+      const li = listEl.append(webflow.elementPresets.DOM);
+      li.setTag('li');
+      li.setTextContent(item);
+    });
   });
 
   await safeCall('append:requirements', () => body.append(reqsSection));
