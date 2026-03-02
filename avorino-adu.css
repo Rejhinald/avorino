@@ -802,12 +802,16 @@
   /* ── City page ── */
   .city-hero { min-height: 70vh !important; }
   .city-hero-content { max-width: 100% !important; }
+  .city-hero-scroll-hint { bottom: 28px !important; }
+  .city-regs-header { margin-bottom: 56px !important; }
   .city-regs-grid { grid-template-columns: 1fr !important; }
   .city-reqs-grid { grid-template-columns: 1fr !important; }
   .city-reqs { min-height: auto !important; }
+  .city-reqs-header { margin-bottom: 48px !important; }
   .city-showcase { min-height: 50vh !important; }
   .city-showcase-content { padding: 48px 40px !important; }
   .city-reg-card { padding: 40px 32px !important; }
+  .city-cta-container { min-height: 40vh !important; }
   .glass-card { padding: 40px 32px !important; }
 
   /* ── Shared CTA ── */
@@ -856,12 +860,19 @@
   /* ── City page ── */
   .city-hero { min-height: 65vh !important; padding-top: 100px !important; }
   .city-hero h1 { font-size: clamp(36px, 8vw, 56px) !important; }
+  .city-hero-subtitle { max-width: 100% !important; }
+  .city-hero-scroll-hint { bottom: 20px !important; }
+  .city-regs-header { margin-bottom: 40px !important; }
   .city-regs-grid { gap: 24px !important; }
   .city-reg-card { padding: 32px 24px !important; }
+  .city-reg-card-icon { width: 40px !important; height: 40px !important; }
   .city-reg-card-title { font-size: 22px !important; }
+  .city-reqs-header { margin-bottom: 40px !important; }
   .city-showcase { min-height: 40vh !important; }
   .city-showcase-content { padding: 40px 24px !important; }
   .city-showcase-title { font-size: clamp(28px, 6vw, 40px) !important; }
+  .city-cta-container { min-height: 36vh !important; }
+  .glass-card-title { font-size: 24px !important; }
 
   /* ── Shared CTA ── */
   .av-cta { padding: 24px !important; }
@@ -903,8 +914,14 @@
   /* ── City page ── */
   .city-hero { min-height: 60vh !important; }
   .city-hero h1 { font-size: clamp(28px, 9vw, 42px) !important; }
+  .city-hero-scroll-hint { bottom: 16px !important; gap: 4px !important; }
+  .city-regs-header { margin-bottom: 32px !important; }
   .city-reg-card { padding: 28px 20px !important; }
+  .city-reg-card-icon { width: 36px !important; height: 36px !important; border-radius: 8px !important; }
   .city-reg-card-title { font-size: 20px !important; }
+  .city-reqs-header { margin-bottom: 32px !important; }
+  .city-cta-container { min-height: 32vh !important; }
+  .glass-card-title { font-size: 22px !important; }
 
   /* ── Shared CTA ── */
   .av-cta { padding: 16px !important; }
