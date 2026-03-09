@@ -792,10 +792,10 @@
     var cw = container.clientWidth, ch = container.clientHeight;
     revRenderer.setSize(cw, ch, false);
 
-    // Camera facing the user (front view, zoomed in)
+    // Camera facing the user (front view, zoomed in, lower angle)
     var revCamera = new THREE.PerspectiveCamera(50, cw / ch, 0.1, 300);
-    revCamera.position.set(1.5, 4, 12);
-    revCamera.lookAt(0, 1.2, 0);
+    revCamera.position.set(0.5, 2.8, 9);
+    revCamera.lookAt(0, 1.0, 0);
 
     // Lighting
     revScene.add(new THREE.HemisphereLight(0x1a2040, 0x0a0a15, 0.2));
