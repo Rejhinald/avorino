@@ -532,7 +532,7 @@ nav.site-nav.nav--dropdown-open .nav-link--has-dropdown {
 }
 
 .nav-mobile-accordion.is-open + .nav-mobile-accordion-body {
-  max-height: 600px;
+  max-height: 800px;
 }
 
 .nav-mobile-city-grid {

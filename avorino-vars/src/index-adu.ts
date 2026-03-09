@@ -17,7 +17,7 @@ const PAGE_NAME = 'ADU';
 const PAGE_SLUG = 'adu';
 const PAGE_TITLE = 'Custom ADU Builder in Orange County | Avorino';
 const PAGE_DESC = 'Build a custom accessory dwelling unit in Orange County. Detached, attached, garage conversion, and above-garage ADUs. Design, permits, and construction by Avorino.';
-const CDN = '51ce355';
+const CDN = '6141837';
 const HEAD_CODE = [
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
@@ -71,8 +71,11 @@ async function buildADUPage() {
   const aduHero = await getOrCreateStyle('adu-hero');
   const aduHeroCanvas = await getOrCreateStyle('adu-hero-canvas-wrap');
   const aduHeroContent = await getOrCreateStyle('adu-hero-content');
+  const aduHeroLabel = await getOrCreateStyle('adu-hero-label');
   const aduHeroGoldLine = await getOrCreateStyle('adu-hero-gold-line');
+  const aduHeroSubtitle = await getOrCreateStyle('adu-hero-subtitle');
   const aduHeroScrollHint = await getOrCreateStyle('adu-hero-scroll-hint');
+  const aduHeroScrollLine = await getOrCreateStyle('adu-hero-scroll-line');
   // Types (scroll-locked cards + Three.js canvas)
   const aduTypes = await getOrCreateStyle('adu-types');
   const aduTypesCanvas = await getOrCreateStyle('adu-types-canvas-wrap');
@@ -85,8 +88,15 @@ async function buildADUPage() {
   const aduTypeCardTitle = await getOrCreateStyle('adu-type-card-title');
   const aduTypeCardDesc = await getOrCreateStyle('adu-type-card-desc');
   const aduTypesProgress = await getOrCreateStyle('adu-types-progress');
+  const aduTypesTrack = await getOrCreateStyle('adu-types-track');
+  const aduTypesFill = await getOrCreateStyle('adu-types-fill');
+  const aduTypesDots = await getOrCreateStyle('adu-types-dots');
+  const aduTdot = await getOrCreateStyle('adu-tdot');
   // Process (SVG timeline)
+  const aduProcess = await getOrCreateStyle('adu-process');
+  const aduProcessHeader = await getOrCreateStyle('adu-process-header');
   const aduTlContainer = await getOrCreateStyle('adu-timeline');
+  const aduTlSvg = await getOrCreateStyle('adu-tl-svg');
   const aduTlStep = await getOrCreateStyle('adu-tl-step');
   const aduTlNode = await getOrCreateStyle('adu-tl-node');
   const aduTlNumber = await getOrCreateStyle('adu-tl-number');
@@ -123,14 +133,27 @@ async function buildADUPage() {
     await clearAndSet(await freshStyle('adu-hero-content'), 'adu-hero-content', {
       'position': 'relative', 'z-index': '2', 'max-width': '800px',
     });
+    await clearAndSet(await freshStyle('adu-hero-label'), 'adu-hero-label', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
+      'letter-spacing': '0.3em', 'text-transform': 'uppercase',
+      'opacity': '0', 'margin-bottom': '32px', 'color': v['av-cream'],
+    });
     await clearAndSet(await freshStyle('adu-hero-gold-line'), 'adu-hero-gold-line', {
       'width': '0px', 'height': '1px',
-      'background-color': v['av-gold'], 'margin-bottom': '24px',
+      'background-color': '#c9a96e', 'margin-bottom': '24px',
+    });
+    await clearAndSet(await freshStyle('adu-hero-subtitle'), 'adu-hero-subtitle', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
+      'line-height': '1.9', 'opacity': '0', 'margin-top': '24px',
+      'color': v['av-cream'], 'max-width': '520px',
     });
     await clearAndSet(await freshStyle('adu-hero-scroll-hint'), 'adu-hero-scroll-hint', {
       'position': 'absolute', 'bottom': '40px', 'left': '50%',
       'z-index': '3', 'display': 'flex', 'flex-direction': 'column',
       'align-items': 'center', 'gap': '8px', 'opacity': '0',
+    });
+    await clearAndSet(await freshStyle('adu-hero-scroll-line'), 'adu-hero-scroll-line', {
+      'width': '1px', 'height': '40px', 'background-color': '#c9a96e',
     });
     await wait(500);
 
@@ -163,7 +186,8 @@ async function buildADUPage() {
     });
     await clearAndSet(await freshStyle('adu-type-card'), 'adu-type-card', {
       'background-color': '#ffffff', 'color': v['av-dark'],
-      'border-radius': v['av-radius'],
+      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
+      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
       'padding-top': '56px', 'padding-bottom': '56px',
       'padding-left': '48px', 'padding-right': '48px',
       'border-top-width': '2px', 'border-top-style': 'solid',
@@ -174,7 +198,7 @@ async function buildADUPage() {
     await clearAndSet(await freshStyle('adu-type-card-num'), 'adu-type-card-num', {
       'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
       'letter-spacing': '0.2em', 'text-transform': 'uppercase',
-      'margin-bottom': '16px', 'color': v['av-gold'],
+      'margin-bottom': '16px', 'color': '#c9a96e',
     });
     await clearAndSet(await freshStyle('adu-type-card-title'), 'adu-type-card-title', {
       'font-family': 'DM Serif Display', 'font-size': '28px',
@@ -189,22 +213,52 @@ async function buildADUPage() {
       'position': 'absolute', 'bottom': '40px', 'left': '50%',
       'z-index': '3', 'display': 'flex', 'align-items': 'center', 'gap': '32px',
     });
+    await clearAndSet(await freshStyle('adu-types-track'), 'adu-types-track', {
+      'width': '200px', 'height': '2px',
+      'background-color': 'rgba(17,17,17,0.08)', 'position': 'relative',
+    });
+    await clearAndSet(await freshStyle('adu-types-fill'), 'adu-types-fill', {
+      'height': '100%', 'background-color': v['av-red'], 'width': '0%',
+    });
+    await clearAndSet(await freshStyle('adu-types-dots'), 'adu-types-dots', {
+      'display': 'flex', 'gap': '24px',
+    });
+    await clearAndSet(await freshStyle('adu-tdot'), 'adu-tdot', {
+      'font-family': 'DM Sans', 'font-size': '12px', 'font-weight': '500',
+      'opacity': '0.3', 'color': v['av-dark'],
+    });
     await wait(500);
 
     // Process: SVG timeline
+    await clearAndSet(await freshStyle('adu-process'), 'adu-process', {
+      'position': 'relative',
+    });
+    await clearAndSet(await freshStyle('adu-process-header'), 'adu-process-header', {
+      'text-align': 'center', 'margin-bottom': '80px',
+    });
     await clearAndSet(await freshStyle('adu-timeline'), 'adu-timeline', {
       'position': 'relative', 'max-width': '700px',
       'margin-left': 'auto', 'margin-right': 'auto',
       'padding-left': '60px',
+    });
+    await clearAndSet(await freshStyle('adu-tl-svg'), 'adu-tl-svg', {
+      'position': 'absolute', 'left': '20px', 'top': '0px',
+      'height': '100%', 'width': '2px', 'overflow': 'visible',
     });
     await clearAndSet(await freshStyle('adu-tl-step'), 'adu-tl-step', {
       'position': 'relative', 'padding-bottom': '80px',
     });
     await clearAndSet(await freshStyle('adu-tl-node'), 'adu-tl-node', {
       'position': 'absolute', 'left': '-50px', 'top': '8px',
-      'width': '18px', 'height': '18px', 'border-radius': '50%',
-      'border-width': '2px', 'border-style': 'solid',
-      'border-color': 'rgba(17,17,17,0.15)',
+      'width': '18px', 'height': '18px',
+      'border-top-left-radius': '50%', 'border-top-right-radius': '50%',
+      'border-bottom-left-radius': '50%', 'border-bottom-right-radius': '50%',
+      'border-top-width': '2px', 'border-bottom-width': '2px',
+      'border-left-width': '2px', 'border-right-width': '2px',
+      'border-top-style': 'solid', 'border-bottom-style': 'solid',
+      'border-left-style': 'solid', 'border-right-style': 'solid',
+      'border-top-color': 'rgba(17,17,17,0.15)', 'border-bottom-color': 'rgba(17,17,17,0.15)',
+      'border-left-color': 'rgba(17,17,17,0.15)', 'border-right-color': 'rgba(17,17,17,0.15)',
       'background-color': v['av-warm'],
     });
     await clearAndSet(await freshStyle('adu-tl-number'), 'adu-tl-number', {
@@ -251,6 +305,7 @@ async function buildADUPage() {
 
   const heroLabel = heroC.append(webflow.elementPresets.DOM);
   heroLabel.setTag('div');
+  heroLabel.setStyles([aduHeroLabel]);
   heroLabel.setTextContent('// Avorino ADU');
   heroLabel.setAttribute('data-animate', 'fade-up');
 
@@ -266,6 +321,7 @@ async function buildADUPage() {
 
   const heroSub = heroC.append(webflow.elementPresets.DOM);
   heroSub.setTag('p');
+  heroSub.setStyles([aduHeroSubtitle]);
   heroSub.setTextContent('Custom-designed ADUs for Orange County homeowners. Maximize your property value with a premium backyard home.');
   heroSub.setAttribute('data-animate', 'fade-up');
 
@@ -281,6 +337,7 @@ async function buildADUPage() {
 
   const scrollLine = heroScrollHint.append(webflow.elementPresets.DOM);
   scrollLine.setTag('div');
+  scrollLine.setStyles([aduHeroScrollLine]);
 
   await safeCall('append:hero', () => body.append(hero));
   logDetail('Section 1: Hero appended', 'ok');
@@ -357,16 +414,20 @@ async function buildADUPage() {
   // Track + fill
   const typesTrack = typesProgressDiv.append(webflow.elementPresets.DOM);
   typesTrack.setTag('div');
+  typesTrack.setStyles([aduTypesTrack]);
   const typesFill = typesTrack.append(webflow.elementPresets.DOM);
   typesFill.setTag('div');
+  typesFill.setStyles([aduTypesFill]);
 
   // Dots container
   const typesDots = typesProgressDiv.append(webflow.elementPresets.DOM);
   typesDots.setTag('div');
+  typesDots.setStyles([aduTypesDots]);
 
   ['01', '02', '03', '04'].forEach((num, i) => {
     const dot = typesDots.append(webflow.elementPresets.DOM);
     dot.setTag('span');
+    dot.setStyles([aduTdot]);
     dot.setTextContent(num);
   });
 
@@ -377,12 +438,13 @@ async function buildADUPage() {
   log('Building Section 3: Process...');
   const processSection = webflow.elementBuilder(webflow.elementPresets.DOM);
   processSection.setTag('section');
-  processSection.setStyles([s.section, s.sectionWarm]);
+  processSection.setStyles([s.section, s.sectionWarm, aduProcess]);
   processSection.setAttribute('id', 'adu-process');
 
   // Centered header
   const procHeader = processSection.append(webflow.elementPresets.DOM);
   procHeader.setTag('div');
+  procHeader.setStyles([aduProcessHeader]);
 
   const procLabel = procHeader.append(webflow.elementPresets.DOM);
   procLabel.setTag('div');
@@ -407,10 +469,12 @@ async function buildADUPage() {
   // SVG element with track + draw lines
   const tlSvg = tlContainer.append(webflow.elementPresets.DOM);
   tlSvg.setTag('svg');
+  tlSvg.setStyles([aduTlSvg]);
   tlSvg.setAttribute('preserveAspectRatio', 'none');
 
   const tlTrackLine = tlSvg.append(webflow.elementPresets.DOM);
   tlTrackLine.setTag('line');
+  tlTrackLine.setAttribute('class', 'adu-tl-track');
   tlTrackLine.setAttribute('x1', '1');
   tlTrackLine.setAttribute('y1', '0');
   tlTrackLine.setAttribute('x2', '1');
@@ -418,6 +482,7 @@ async function buildADUPage() {
 
   const tlDrawLine = tlSvg.append(webflow.elementPresets.DOM);
   tlDrawLine.setTag('line');
+  tlDrawLine.setAttribute('class', 'adu-tl-draw');
   tlDrawLine.setAttribute('x1', '1');
   tlDrawLine.setAttribute('y1', '0');
   tlDrawLine.setAttribute('x2', '1');
@@ -454,6 +519,7 @@ async function buildADUPage() {
     words.forEach(word => {
       const wordSpan = title.append(webflow.elementPresets.DOM);
       wordSpan.setTag('span');
+      wordSpan.setAttribute('class', 'word');
       wordSpan.setTextContent(word);
     });
 

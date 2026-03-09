@@ -3,495 +3,275 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Custom Homes — Avorino Preview</title>
+<title>Custom Home Building in Orange County — Avorino Construction</title>
+<meta name="description" content="Ground-up custom home builder in Orange County, CA. Luxury residential construction from architecture through move-in.">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="avorino-custom-homes.css">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { overflow-x: hidden; font-family: 'DM Sans', sans-serif; background: #f0ede8; color: #111; }
+  html, body { overflow-x: hidden; font-family: 'DM Sans', system-ui, sans-serif; background: #f0ede8; color: #111; }
+  ul { list-style: none; }
 
-  :root {
-    --av-dark: #111111;
-    --av-cream: #f0ede8;
-    --av-warm: #e8e4df;
-    --av-red: #c8222a;
-    --av-gold: #c9a96e;
-    --av-radius: 8px;
-    --av-section-pad-y: 128px;
-    --av-section-pad-x: 80px;
-    --av-text-xl: clamp(48px, 5vw, 96px);
-    --av-text-lg: clamp(36px, 3.5vw, 64px);
-    --av-text-h3: clamp(24px, 2vw, 36px);
-    --av-text-body: clamp(16px, 1.1vw, 18px);
-    --av-text-sm: clamp(14px, 0.9vw, 16px);
-    --av-text-xs: clamp(11px, 0.7vw, 13px);
-  }
-
+  /* Webflow style equivalents */
   .av-section { padding: var(--av-section-pad-y) var(--av-section-pad-x); }
   .av-section-warm { background: var(--av-warm); }
-  .av-section-dark { background: var(--av-dark); color: var(--av-cream); }
-  .av-heading-xl { font-family: 'DM Serif Display', serif; font-size: var(--av-text-xl); line-height: 1.05; font-weight: 400; letter-spacing: -0.02em; }
-  .av-heading-lg { font-family: 'DM Serif Display', serif; font-size: var(--av-text-lg); line-height: 1.1; font-weight: 400; }
-  .av-heading-md { font-family: 'DM Serif Display', serif; font-size: var(--av-text-h3); line-height: 1.15; font-weight: 400; }
-  .av-body { font-size: var(--av-text-body); line-height: 1.9; }
-  .av-label { display: flex; align-items: center; gap: 16px; font-size: var(--av-text-xs); letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.4; }
+  .av-heading-xl { font-family: 'DM Serif Display', Georgia, serif; font-size: clamp(48px, 5vw, 96px); line-height: 1.05; font-weight: 400; letter-spacing: -0.02em; color: var(--av-cream); }
+  .av-heading-lg { font-family: 'DM Serif Display', Georgia, serif; font-size: clamp(36px, 3.5vw, 64px); line-height: 1.1; font-weight: 400; }
+  .av-body { font-family: 'DM Sans', system-ui, sans-serif; font-size: clamp(16px, 1.1vw, 18px); line-height: 1.9; }
+  .av-label { display: flex; align-items: center; gap: 16px; font-family: 'DM Sans', system-ui, sans-serif; font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.4; }
 
-  /* ═══════════════════════════════════════════════
-     HERO — Cinematic full-viewport with parallax
-     ═══════════════════════════════════════════════ */
-  .ch-hero {
-    min-height: 100vh; display: flex; align-items: flex-end;
-    padding: 0 var(--av-section-pad-x) var(--av-section-pad-y);
-    background: var(--av-dark); color: var(--av-cream);
-    position: relative; overflow: hidden;
-  }
-  .ch-hero-bg {
-    position: absolute; inset: 0;
-    background: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80') center/cover;
-    will-change: transform;
-  }
-  .ch-hero-overlay {
-    position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.4) 100%);
-  }
-  .ch-hero-content { position: relative; z-index: 2; max-width: 800px; }
-  .ch-hero-label { font-size: var(--av-text-xs); letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.4; margin-bottom: 24px; }
-  .ch-hero-gold-line { width: 0; height: 1px; background: var(--av-gold); margin-bottom: 32px; }
-  .ch-hero-subtitle { font-size: var(--av-text-body); line-height: 1.9; opacity: 0.55; margin-top: 24px; max-width: 520px; }
-  .ch-hero-meta {
-    display: flex; gap: 48px; margin-top: 48px;
-    padding-top: 32px; border-top: 1px solid rgba(240,237,232,0.1);
-  }
-  .ch-hero-meta-item { display: flex; flex-direction: column; gap: 4px; }
-  .ch-hero-meta-value { font-family: 'DM Serif Display', serif; font-size: 28px; font-weight: 400; color: var(--av-gold); }
-  .ch-hero-meta-label { font-size: var(--av-text-xs); opacity: 0.3; letter-spacing: 0.15em; text-transform: uppercase; }
-  .ch-hero-scroll {
-    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-    z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0.3;
-  }
-  .ch-hero-scroll span { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--av-cream); }
-  .ch-hero-scroll-line { width: 1px; height: 40px; background: var(--av-gold); transform-origin: top; animation: scrollPulse 2s ease-in-out infinite; }
-  @keyframes scrollPulse { 0%, 100% { transform: scaleY(0.3); opacity: 0.3; } 50% { transform: scaleY(1); opacity: 0.8; } }
+  /* Hero */
+  .sv-hero-content { max-width: 800px; }
+  .sv-hero-label { font-family: 'DM Sans', system-ui, sans-serif; font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0; margin-bottom: 32px; color: var(--av-cream); }
+  .sv-hero-gold-line { width: 0; height: 1px; background: var(--av-gold); margin-bottom: 24px; }
+  .sv-hero-subtitle { font-family: 'DM Sans', system-ui, sans-serif; font-size: 17px; line-height: 1.9; opacity: 0; margin-top: 24px; color: var(--av-cream); max-width: 560px; filter: blur(4px); }
+  .sv-hero-scroll-hint { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; }
+  .sv-hero-scroll-hint span { font-family: 'DM Sans', system-ui, sans-serif; font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--av-cream); }
+  .sv-hero-scroll-line { width: 1px; height: 40px; background: var(--av-gold); }
 
-  /* ═══════════════════════════════════════════════
-     NARRATIVE — Alternating image/text with clip reveals
-     ═══════════════════════════════════════════════ */
-  .ch-narr-row {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
-    min-height: 60vh;
-  }
-  .ch-narr-text {
-    display: flex; flex-direction: column; justify-content: center;
-    padding: 80px;
-  }
-  .ch-narr-eyebrow { font-size: var(--av-text-xs); letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.35; margin-bottom: 24px; }
-  .ch-narr-body { font-size: var(--av-text-body); line-height: 1.9; opacity: 0.55; margin-top: 20px; }
-  .ch-narr-image {
-    position: relative; overflow: hidden; min-height: 500px;
-  }
-  .ch-narr-image-inner {
-    position: absolute; inset: 0;
-    background-size: cover; background-position: center;
-    will-change: transform;
-    clip-path: inset(100% 0 0 0);
-    transition: clip-path 0s;
-  }
-  .ch-narr-image-inner.revealed { clip-path: inset(0 0 0 0); transition: clip-path 1.2s cubic-bezier(0.23,1,0.32,1); }
+  /* Approach */
+  .sv-approach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; max-width: 1200px; margin: 0 auto; }
+  .sv-approach-left { display: flex; flex-direction: column; gap: 24px; }
+  .sv-approach-right { display: flex; flex-direction: column; gap: 0; }
+  .sv-highlight { display: flex; gap: 20px; align-items: flex-start; padding: 24px 16px; border-top: 1px solid rgba(17,17,17,0.08); }
+  .sv-highlight-num { font-family: 'DM Sans', system-ui, sans-serif; font-size: 12px; letter-spacing: 0.2em; opacity: 1; min-width: 32px; padding-top: 4px; }
+  .sv-highlight-text { font-family: 'DM Sans', system-ui, sans-serif; font-size: 15px; line-height: 1.7; }
 
-  /* ═══════════════════════════════════════════════
-     FEATURES — Icon grid with Three.js background
-     ═══════════════════════════════════════════════ */
-  .ch-features { position: relative; overflow: hidden; }
-  .ch-features-canvas { position: absolute; inset: 0; z-index: 1; opacity: 0.6; }
-  .ch-features-content { position: relative; z-index: 2; }
-  .ch-features-header { text-align: center; max-width: 600px; margin: 0 auto 80px; }
-  .ch-features-header .av-body { opacity: 0.5; margin-top: 20px; }
-  .ch-features-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-  }
-  .ch-feature-card {
-    background: rgba(17,17,17,0.85); backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-radius: var(--av-radius); padding: 44px 36px;
-    border: 1px solid rgba(240,237,232,0.04);
-    transition: transform 0.5s cubic-bezier(0.23,1,0.32,1), border-color 0.4s ease;
-  }
-  .ch-feature-card:hover { transform: translateY(-6px); border-color: rgba(201,169,110,0.2); }
-  .ch-feature-num {
-    font-family: 'DM Serif Display', serif; font-size: 32px;
-    font-weight: 400; color: var(--av-gold); opacity: 0.3; margin-bottom: 24px;
-  }
-  .ch-feature-title {
-    font-family: 'DM Serif Display', serif; font-size: 20px;
-    font-weight: 400; margin-bottom: 12px; color: var(--av-cream);
-  }
-  .ch-feature-desc { font-size: 14px; line-height: 1.8; opacity: 0.45; color: var(--av-cream); }
+  /* Types */
+  .sv-types-header { text-align: center; margin-bottom: 64px; padding: 0 80px; }
+  .sv-type-num { font-family: 'DM Sans', system-ui, sans-serif; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.4; margin-bottom: 8px; }
+  .sv-type-title { font-family: 'DM Serif Display', Georgia, serif; font-size: 28px; line-height: 1.2; font-weight: 400; margin-bottom: 12px; }
+  .sv-type-desc { font-family: 'DM Sans', system-ui, sans-serif; font-size: 14px; line-height: 1.7; opacity: 0.7; margin-bottom: 4px; }
+  .sv-type-feature-list { padding-left: 0; margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
 
-  /* ═══════════════════════════════════════════════
-     PROCESS — Horizontal snap-scroll cards
-     ═══════════════════════════════════════════════ */
-  .ch-process-header { margin-bottom: 64px; }
-  .ch-process-header .av-body { opacity: 0.5; margin-top: 20px; max-width: 500px; }
-  .ch-process-track {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
-  }
-  .ch-process-card {
-    background: var(--av-dark); color: var(--av-cream);
-    border-radius: var(--av-radius); padding: 44px 36px; position: relative;
-    overflow: hidden;
-    transition: transform 0.5s cubic-bezier(0.23,1,0.32,1);
-  }
-  .ch-process-card:hover { transform: translateY(-4px); }
-  .ch-process-card-accent {
-    position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, var(--av-gold), transparent);
-    transform: scaleX(0); transform-origin: left;
-    transition: transform 0.8s cubic-bezier(0.23,1,0.32,1);
-  }
-  .ch-process-card:hover .ch-process-card-accent { transform: scaleX(1); }
-  .ch-process-card-num { font-family: 'DM Serif Display', serif; font-size: 48px; font-weight: 400; opacity: 0.1; margin-bottom: 24px; }
-  .ch-process-card-title { font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: 400; margin-bottom: 8px; }
-  .ch-process-card-time { font-size: var(--av-text-sm); color: var(--av-gold); opacity: 0.6; margin-bottom: 16px; }
-  .ch-process-card-desc { font-size: 14px; line-height: 1.8; opacity: 0.45; }
+  /* Process — Scroll-Locked 3D Build */
+  .sv-process-header { text-align: center; padding: 96px 80px 48px; position: relative; z-index: 2; }
+  .sv-process-pinned { position: relative; width: 100%; height: 100vh; overflow: hidden; }
+  .sv-process-visual { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+  .sv-process-visual canvas { display: block; width: 100%; height: 100%; }
+  .sv-process-cards { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 2; pointer-events: none; }
+  .sv-process-card { position: absolute; top: 50%; left: 50%; max-width: 420px; width: 90%; padding: 36px 32px; background: rgba(17,17,17,0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(240,237,232,0.08); pointer-events: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+  .sv-process-card-num { font-family: 'DM Sans', system-ui, sans-serif; font-size: 12px; letter-spacing: 0.2em; color: var(--av-gold); font-weight: 600; margin-bottom: 12px; }
+  .sv-process-card-title { font-family: 'DM Serif Display', Georgia, serif; font-size: 24px; line-height: 1.2; font-weight: 400; color: var(--av-cream); margin: 0 0 12px 0; }
+  .sv-process-card-desc { font-family: 'DM Sans', system-ui, sans-serif; font-size: 15px; line-height: 1.8; color: rgba(240,237,232,0.7); margin: 0; }
+  .sv-process-nav { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 3; text-align: center; }
 
-  /* ═══════════════════════════════════════════════
-     CTA
-     ═══════════════════════════════════════════════ */
-  .ch-cta {
-    min-height: 55vh; display: flex; align-items: center; justify-content: center;
-    text-align: center; position: relative; overflow: hidden;
-  }
-  .ch-cta-bg { position: absolute; inset: 0; background: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80') center/cover; opacity: 0.12; }
-  .ch-cta-glow {
-    position: absolute; width: 500px; height: 500px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(201,169,110,0.06) 0%, transparent 60%);
-    top: 50%; left: 50%; transform: translate(-50%, -50%);
-    animation: chGlow 5s ease-in-out infinite;
-  }
-  @keyframes chGlow { 0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.3; } 50% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.7; } }
-  .ch-cta-content { position: relative; z-index: 2; max-width: 640px; }
-  .ch-cta .av-heading-lg { margin-bottom: 20px; }
-  .ch-cta-subtitle { font-size: var(--av-text-body); opacity: 0.5; margin-bottom: 40px; line-height: 1.8; }
-  .ch-cta-btn {
-    display: inline-flex; align-items: center; gap: 12px;
-    font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 500;
-    color: var(--av-cream); background: var(--av-red);
-    padding: 18px 40px; border-radius: 100px; text-decoration: none;
-    transition: all 0.3s ease;
-  }
-  .ch-cta-btn:hover { background: #a01c22; transform: translateY(-2px); box-shadow: 0 12px 36px rgba(200,34,42,0.3); }
-  .ch-cta-btn .arrow { transition: transform 0.3s ease; }
-  .ch-cta-btn:hover .arrow { transform: translateX(4px); }
+  /* Why */
+  .sv-why-content { max-width: 900px; margin: 0 auto; text-align: center; }
+  .sv-stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 48px; margin-top: 64px; max-width: 800px; margin-left: auto; margin-right: auto; }
+  .sv-stat-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 
-  /* ═══════════════════════════════════════════════
-     RESPONSIVE
-     ═══════════════════════════════════════════════ */
+  /* CTA inline overrides */
+  .av-cta-container { background: var(--av-dark); color: var(--av-cream); border-radius: 16px; min-height: 56vh; padding: 96px 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; overflow: hidden; }
+  .av-cta-btn { font-family: 'DM Sans', system-ui, sans-serif; font-size: 14px; font-weight: 500; letter-spacing: 0.04em; display: inline-flex; align-items: center; gap: 12px; padding: 18px 40px; border-radius: 100px; text-decoration: none; cursor: pointer; border: none; transition: transform 0.5s cubic-bezier(0.23,1,0.32,1), box-shadow 0.3s ease; }
+  .av-cta-btn:hover { transform: translateY(-2px); }
+  .av-cta-btn-primary { background: var(--av-red); color: var(--av-cream); }
+  .av-cta-btn-ghost { background: rgba(240,237,232,0.08); color: var(--av-cream); border: 1px solid rgba(240,237,232,0.2); }
+
   @media (max-width: 991px) {
-    :root { --av-section-pad-x: 48px; --av-section-pad-y: 96px; }
-    .ch-narr-row { grid-template-columns: 1fr; }
-    .ch-narr-image { min-height: 400px; }
-    .ch-narr-text { padding: 56px 48px; }
-    .ch-features-grid { grid-template-columns: 1fr 1fr; }
-    .ch-process-track { grid-template-columns: 1fr 1fr; }
+    .sv-approach-grid { grid-template-columns: 1fr !important; gap: 48px !important; }
+    .av-cta-btns { flex-direction: column; align-items: center; }
+    .sv-process-pinned { height: auto !important; }
+    .sv-process-visual { display: none !important; }
+    .sv-process-cards { position: relative !important; display: flex !important; flex-direction: column !important; gap: 24px !important; padding: 24px 40px 80px !important; }
+    .sv-process-card { position: relative !important; top: auto !important; left: auto !important; transform: none !important; max-width: 100% !important; width: 100% !important; }
+    .sv-process-nav { display: none !important; }
   }
   @media (max-width: 767px) {
-    :root { --av-section-pad-x: 24px; --av-section-pad-y: 72px; }
-    .ch-hero { min-height: 80vh; }
-    .ch-hero-meta { flex-direction: column; gap: 20px; }
-    .ch-features-grid { grid-template-columns: 1fr; }
-    .ch-process-track { grid-template-columns: 1fr; }
-    .ch-narr-text { padding: 40px 24px; }
+    .sv-content-overlay { padding: 100px 24px 64px !important; }
+    .sv-process-cards { padding: 24px 24px 64px !important; }
+    .sv-stats-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
   }
   @media (max-width: 478px) {
-    :root { --av-section-pad-x: 16px; --av-section-pad-y: 56px; }
-    .ch-hero { padding: 0 16px 48px; }
+    .sv-content-overlay { padding: 80px 16px 48px !important; }
+    .sv-process-cards { padding: 24px 16px 48px !important; }
   }
 </style>
 </head>
 <body>
 
-<!-- ═══ HERO ═══ -->
-<section class="ch-hero">
-  <div class="ch-hero-bg"></div>
-  <div class="ch-hero-overlay"></div>
-  <div class="ch-hero-content">
-    <div class="ch-hero-label">// Custom Homes</div>
-    <div class="ch-hero-gold-line"></div>
-    <h1 class="av-heading-xl">Built around<br>your life</h1>
-    <p class="ch-hero-subtitle">Ground-up custom residences in Orange County. We handle architecture, engineering, permitting, and construction. Every detail is tailored to your vision.</p>
-    <div class="ch-hero-meta">
-      <div class="ch-hero-meta-item">
-        <span class="ch-hero-meta-value">$350-$550</span>
-        <span class="ch-hero-meta-label">Per sqft</span>
-      </div>
-      <div class="ch-hero-meta-item">
-        <span class="ch-hero-meta-value">12-18</span>
-        <span class="ch-hero-meta-label">Months</span>
-      </div>
-      <div class="ch-hero-meta-item">
-        <span class="ch-hero-meta-value">#1107538</span>
-        <span class="ch-hero-meta-label">License</span>
-      </div>
-    </div>
+<!-- ═══ SECTION 1: HERO ═══ -->
+<section id="sv-hero">
+  <div id="hero-canvas"></div>
+  <div class="sv-content-overlay sv-hero-content">
+    <div class="sv-hero-label" data-animate="fade-up">// Custom Homes</div>
+    <h1 class="av-heading-xl" data-animate="char-cascade">Built around the way you live</h1>
+    <div class="sv-hero-gold-line"></div>
+    <p class="sv-hero-subtitle" data-animate="fade-up">Ground-up custom residences in Orange County. Architecture, engineering, permitting, and construction — every detail tailored to your vision.</p>
   </div>
-  <div class="ch-hero-scroll">
+  <div class="sv-hero-scroll-hint" data-animate="fade-up">
     <span>Scroll</span>
-    <div class="ch-hero-scroll-line"></div>
+    <div class="sv-hero-scroll-line"></div>
   </div>
 </section>
 
-<!-- ═══ NARRATIVE ROW 1 ═══ -->
-<div class="ch-narr-row">
-  <div class="ch-narr-image">
-    <div class="ch-narr-image-inner" style="background-image: url('https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&q=80')" data-reveal></div>
-  </div>
-  <div class="ch-narr-text" style="background: var(--av-warm)">
-    <div class="ch-narr-eyebrow">What we build</div>
-    <h2 class="av-heading-lg">A home designed around your life</h2>
-    <p class="ch-narr-body">From floor plan to finishes — we build homes from the ground up. Architecture, engineering, permitting, and construction handled under one roof. No subcontractor runaround.</p>
-  </div>
-</div>
-
-<!-- ═══ NARRATIVE ROW 2 ═══ -->
-<div class="ch-narr-row">
-  <div class="ch-narr-text" style="background: var(--av-cream)">
-    <div class="ch-narr-eyebrow">How we build it</div>
-    <h2 class="av-heading-lg">Transparent from day one</h2>
-    <p class="ch-narr-body">Our process is straightforward: we start with your goals and site conditions, develop full architectural and engineering plans, handle all city permits, then build with a licensed crew delivering weekly updates through final inspection.</p>
-  </div>
-  <div class="ch-narr-image">
-    <div class="ch-narr-image-inner" style="background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80')" data-reveal></div>
-  </div>
-</div>
-
-<!-- ═══ FEATURES ═══ -->
-<section class="av-section av-section-dark ch-features">
-  <div class="ch-features-canvas" data-ch-canvas></div>
-  <div class="ch-features-content">
-    <div class="ch-features-header">
-      <div class="av-label" style="justify-content: center; color: var(--av-cream);"><span>What's included</span></div>
-      <h2 class="av-heading-lg" style="margin-top: 24px">Full-service, start to finish</h2>
-      <p class="av-body">Every custom home project includes complete architectural design, structural engineering, city permits, and construction management.</p>
+<!-- ═══ SECTION 2: APPROACH ═══ -->
+<section id="sv-approach" class="av-section">
+  <div class="sv-approach-grid">
+    <div class="sv-approach-left">
+      <div class="av-label" data-animate="fade-up"><div>// Our Approach</div></div>
+      <h2 class="av-heading-lg" data-animate="word-stagger-elastic">Design-build, not design-then-build</h2>
+      <p class="av-body" data-animate="fade-up">Most builders separate design and construction into disconnected phases. We integrate them. Your architect and your builder work as one team from day one — eliminating miscommunication, reducing change orders, and delivering a home that matches what was promised.</p>
     </div>
-    <div class="ch-features-grid">
-      <div class="ch-feature-card">
-        <div class="ch-feature-num">01</div>
-        <div class="ch-feature-title">Architectural Design</div>
-        <div class="ch-feature-desc">Custom floor plans and elevations designed to your lifestyle, lot constraints, and aesthetic preferences. 3D renderings included.</div>
+    <div class="sv-approach-right">
+      <div class="sv-highlight" data-animate="fade-up">
+        <span class="sv-highlight-num">01</span>
+        <p class="sv-highlight-text">Single point of accountability from concept to certificate of occupancy — no finger-pointing between architect and contractor</p>
       </div>
-      <div class="ch-feature-card">
-        <div class="ch-feature-num">02</div>
-        <div class="ch-feature-title">Structural Engineering</div>
-        <div class="ch-feature-desc">Full structural calculations and engineering drawings. Seismic compliance, load calculations, and foundation design.</div>
+      <div class="sv-highlight" data-animate="fade-up">
+        <span class="sv-highlight-num">02</span>
+        <p class="sv-highlight-text">Real-time cost visibility during design so you make material and layout decisions with budget clarity</p>
       </div>
-      <div class="ch-feature-card">
-        <div class="ch-feature-num">03</div>
-        <div class="ch-feature-title">City Permits</div>
-        <div class="ch-feature-desc">We handle all permit submissions, plan-check corrections, and city approvals. You never need to visit city hall.</div>
+      <div class="sv-highlight" data-animate="fade-up">
+        <span class="sv-highlight-num">03</span>
+        <p class="sv-highlight-text">Structural engineering integrated from day one — bold architectural concepts are buildable, not just renderable</p>
       </div>
-      <div class="ch-feature-card">
-        <div class="ch-feature-num">04</div>
-        <div class="ch-feature-title">Construction</div>
-        <div class="ch-feature-desc">Licensed crew, weekly progress photos, and on-budget delivery. Foundation through final inspection and certificate of occupancy.</div>
-      </div>
-      <div class="ch-feature-card">
-        <div class="ch-feature-num">05</div>
-        <div class="ch-feature-title">Interior Finishes</div>
-        <div class="ch-feature-desc">Material selection assistance for flooring, countertops, fixtures, cabinetry. We source and install everything.</div>
-      </div>
-      <div class="ch-feature-card">
-        <div class="ch-feature-num">06</div>
-        <div class="ch-feature-title">Warranty & Support</div>
-        <div class="ch-feature-desc">Comprehensive warranty documentation. Post-construction support for any adjustments or questions after move-in.</div>
+      <div class="sv-highlight" data-animate="fade-up">
+        <span class="sv-highlight-num">04</span>
+        <p class="sv-highlight-text">Site-specific design that accounts for soil conditions, topography, views, solar orientation, and local code</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══ PROCESS ═══ -->
-<section class="av-section" style="background: var(--av-cream)">
-  <div class="ch-process-header">
-    <div class="av-label"><span>The timeline</span></div>
-    <h2 class="av-heading-lg" style="margin-top: 24px">From concept to keys</h2>
-    <p class="av-body">A typical custom home takes 12-18 months. Here's how we break it down.</p>
+<!-- ═══ SECTION 3: SERVICE TYPES ═══ -->
+<section id="sv-types" class="av-section av-section-warm">
+  <div class="sv-types-header">
+    <div class="av-label" style="justify-content:center" data-animate="fade-up"><div>// What We Build</div></div>
+    <h2 class="av-heading-lg" data-animate="word-stagger-elastic">Our Custom Home Services</h2>
   </div>
-  <div class="ch-process-track">
-    <div class="ch-process-card">
-      <div class="ch-process-card-accent"></div>
-      <div class="ch-process-card-num">01</div>
-      <div class="ch-process-card-title">Discovery</div>
-      <div class="ch-process-card-time">2-4 weeks</div>
-      <div class="ch-process-card-desc">Site evaluation, feasibility analysis, budget alignment, and initial design concepts based on your vision.</div>
+  <div class="sv-types-grid">
+    <div class="sv-type-card" data-animate="fade-up">
+      <div class="sv-type-num">01</div>
+      <h3 class="sv-type-title">Single-Story Custom</h3>
+      <p class="sv-type-desc">Open floor plans with seamless indoor-outdoor living. Ideal for larger lots where horizontal space allows every room to connect to the landscape.</p>
+      <ul class="sv-type-feature-list">
+        <li>Great rooms with 12-14ft ceilings</li>
+        <li>Covered outdoor living integration</li>
+        <li>ADA-adaptable floor plans</li>
+        <li>Energy-efficient single-level HVAC</li>
+      </ul>
     </div>
-    <div class="ch-process-card">
-      <div class="ch-process-card-accent"></div>
-      <div class="ch-process-card-num">02</div>
-      <div class="ch-process-card-title">Design & Permits</div>
-      <div class="ch-process-card-time">3-5 months</div>
-      <div class="ch-process-card-desc">Full architectural plans, engineering, Title 24, and city permit submission with plan-check management.</div>
+    <div class="sv-type-card" data-animate="fade-up">
+      <div class="sv-type-num">02</div>
+      <h3 class="sv-type-title">Two-Story Residence</h3>
+      <p class="sv-type-desc">Maximized square footage with clear spatial separation — living areas downstairs, private quarters above.</p>
+      <ul class="sv-type-feature-list">
+        <li>Grand entry with statement staircase</li>
+        <li>Primary suite with retreat area</li>
+        <li>Bonus/flex rooms for evolving needs</li>
+        <li>Optimized lot coverage for yard space</li>
+      </ul>
     </div>
-    <div class="ch-process-card">
-      <div class="ch-process-card-accent"></div>
-      <div class="ch-process-card-num">03</div>
-      <div class="ch-process-card-title">Construction</div>
-      <div class="ch-process-card-time">8-12 months</div>
-      <div class="ch-process-card-desc">Foundation, framing, MEP rough-in, drywall, finishes, landscaping. Weekly updates with photo documentation.</div>
+    <div class="sv-type-card" data-animate="fade-up">
+      <div class="sv-type-num">03</div>
+      <h3 class="sv-type-title">Modern Architectural</h3>
+      <p class="sv-type-desc">Flat rooflines, floor-to-ceiling glass, cantilevered volumes. Statement design with structural engineering that makes bold geometry possible.</p>
+      <ul class="sv-type-feature-list">
+        <li>Steel moment frames for open spans</li>
+        <li>Curtain wall glazing systems</li>
+        <li>Green roof and deck integration</li>
+        <li>Smart home pre-wire throughout</li>
+      </ul>
     </div>
-    <div class="ch-process-card">
-      <div class="ch-process-card-accent"></div>
-      <div class="ch-process-card-num">04</div>
-      <div class="ch-process-card-title">Handoff</div>
-      <div class="ch-process-card-time">1-2 weeks</div>
-      <div class="ch-process-card-desc">Final inspection, certificate of occupancy, detailed walkthrough, and warranty documentation. Move-in ready.</div>
+    <div class="sv-type-card" data-animate="fade-up">
+      <div class="sv-type-num">04</div>
+      <h3 class="sv-type-title">Estate &amp; Luxury</h3>
+      <p class="sv-type-desc">Premium materials, smart-home integration, and spaces designed around how you actually live — not a template.</p>
+      <ul class="sv-type-feature-list">
+        <li>Custom millwork and built-ins</li>
+        <li>Home theater and wine cellar</li>
+        <li>Pool house and outdoor kitchen</li>
+        <li>Multi-car garage with EV charging</li>
+      </ul>
     </div>
   </div>
 </section>
 
-<!-- ═══ CTA ═══ -->
-<section class="av-section av-section-dark ch-cta">
-  <div class="ch-cta-bg"></div>
-  <div class="ch-cta-glow"></div>
-  <div class="ch-cta-content">
-    <h2 class="av-heading-lg">Let's build your dream home</h2>
-    <p class="ch-cta-subtitle">Start with a free consultation. We'll discuss your vision, evaluate your site, and provide a preliminary estimate.</p>
-    <a href="/schedule-a-meeting" class="ch-cta-btn">Book a Consultation <span class="arrow">&rarr;</span></a>
+<!-- ═══ SECTION 4: PROCESS (Scroll-Locked 3D Build) ═══ -->
+<section id="sv-process" class="av-section">
+  <div class="sv-process-header">
+    <div class="av-label" style="justify-content:center;color:var(--av-cream)" data-animate="fade-up"><div>// The Process</div></div>
+    <h2 class="av-heading-lg" style="color:var(--av-cream)" data-animate="word-stagger-elastic">How We Build</h2>
+  </div>
+  <div class="sv-process-pinned">
+    <div class="sv-process-visual"></div>
+    <div class="sv-process-cards">
+      <div class="sv-process-card">
+        <div class="sv-process-card-num">STEP 01</div>
+        <h3 class="sv-process-card-title">Site &amp; Feasibility</h3>
+        <p class="sv-process-card-desc">Lot evaluation, soil testing, zoning verification. We confirm what's buildable before you invest in design.</p>
+      </div>
+      <div class="sv-process-card">
+        <div class="sv-process-card-num">STEP 02</div>
+        <h3 class="sv-process-card-title">Architecture &amp; Engineering</h3>
+        <p class="sv-process-card-desc">Custom floor plans, structural engineering, Title 24 energy compliance, and 3D renderings — all developed in-house.</p>
+      </div>
+      <div class="sv-process-card">
+        <div class="sv-process-card-num">STEP 03</div>
+        <h3 class="sv-process-card-title">Permitting &amp; Approvals</h3>
+        <p class="sv-process-card-desc">Full plan-check submission, HOA review coordination, corrections management, and city approvals.</p>
+      </div>
+      <div class="sv-process-card">
+        <div class="sv-process-card-num">STEP 04</div>
+        <h3 class="sv-process-card-title">Foundation &amp; Framing</h3>
+        <p class="sv-process-card-desc">Engineered foundation systems, precision framing, structural steel as needed. Every structural element verified by our engineers.</p>
+      </div>
+      <div class="sv-process-card">
+        <div class="sv-process-card-num">STEP 05</div>
+        <h3 class="sv-process-card-title">MEP &amp; Finishes</h3>
+        <p class="sv-process-card-desc">Mechanical, electrical, plumbing rough-in followed by drywall, flooring, cabinetry, fixtures, and paint.</p>
+      </div>
+      <div class="sv-process-card">
+        <div class="sv-process-card-num">STEP 06</div>
+        <h3 class="sv-process-card-title">Final Walkthrough &amp; Handover</h3>
+        <p class="sv-process-card-desc">Comprehensive punch list, final inspection, Certificate of Occupancy, warranty documentation, and homeowner orientation.</p>
+      </div>
+    </div>
+    <div class="sv-process-nav"></div>
   </div>
 </section>
 
-<!-- ═══ SCRIPTS ═══ -->
+<!-- ═══ SECTION 5: WHY AVORINO ═══ -->
+<section id="sv-why" class="av-section">
+  <div class="sv-why-content">
+    <div class="av-label" style="justify-content:center" data-animate="fade-up"><div>// Why Avorino</div></div>
+    <h2 class="av-heading-lg" data-animate="word-stagger-elastic">One team, start to finish</h2>
+    <p class="av-body" data-animate="fade-up">Avorino is a licensed general contractor and design-build firm based in Orange County. We handle architecture, engineering, permitting, and construction under one roof — so your custom home is built with the same vision from first sketch to final walkthrough.</p>
+    <div class="sv-stats-grid" data-animate="fade-up">
+      <div class="sv-stat-item">
+        <div class="sv-stat-value">$350–550</div>
+        <div class="sv-stat-label">Per sqft</div>
+      </div>
+      <div class="sv-stat-item">
+        <div class="sv-stat-value">12–18mo</div>
+        <div class="sv-stat-label">Typical timeline</div>
+      </div>
+      <div class="sv-stat-item">
+        <div class="sv-stat-value">100%</div>
+        <div class="sv-stat-label">Licensed &amp; insured</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 6: CTA ═══ -->
+<section class="av-cta">
+  <div class="av-cta-container">
+    <div class="av-cta-subtitle">Let's Talk</div>
+    <h2 class="av-cta-heading" data-animate="word-stagger-elastic">Ready to build your dream home?</h2>
+    <div class="av-cta-btns" data-animate="fade-up">
+      <a href="/schedule-a-meeting" class="av-cta-btn av-cta-btn-primary">Schedule a Meeting <span class="btn-arrow">&rarr;</span></a>
+      <a href="tel:7149003676" class="av-cta-btn av-cta-btn-ghost">Call (714) 900-3676</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CDN SCRIPTS ═══ -->
 <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r149/three.min.js"></script>
-<script>
-(function() {
-  'use strict';
-
-  var lenis = new Lenis({ duration: 1.2, easing: function(t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); } });
-  function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-  requestAnimationFrame(raf);
-  gsap.ticker.add(function(time) { lenis.raf(time * 1000); });
-  gsap.ticker.lagSmoothing(0);
-  gsap.registerPlugin(ScrollTrigger);
-
-  // ── Hero ──
-  gsap.to('.ch-hero-gold-line', { width: '72px', duration: 1.2, delay: 0.3, ease: 'power3.out' });
-  gsap.from('.ch-hero-label', { opacity: 0, y: 20, duration: 0.8, delay: 0.2 });
-
-  // Char cascade
-  var h1 = document.querySelector('.ch-hero .av-heading-xl');
-  if (h1) {
-    var html = h1.innerHTML, result = '', inTag = false;
-    for (var i = 0; i < html.length; i++) {
-      if (html[i] === '<') { inTag = true; result += html[i]; continue; }
-      if (html[i] === '>') { inTag = false; result += html[i]; continue; }
-      if (inTag) { result += html[i]; continue; }
-      if (html[i] === ' ') { result += ' '; continue; }
-      result += '<span style="display:inline-block;opacity:0;transform:translateY(30px)">' + html[i] + '</span>';
-    }
-    h1.innerHTML = result;
-    gsap.to(h1.querySelectorAll('span'), { opacity: 1, y: 0, duration: 0.5, stagger: 0.025, delay: 0.5, ease: 'power3.out' });
-  }
-  gsap.from('.ch-hero-subtitle', { opacity: 0, y: 20, duration: 0.8, delay: 1.2 });
-  gsap.from('.ch-hero-meta', { opacity: 0, y: 20, duration: 0.8, delay: 1.4 });
-
-  // Hero parallax bg
-  gsap.to('.ch-hero-bg', {
-    scrollTrigger: { trigger: '.ch-hero', start: 'top top', end: 'bottom top', scrub: 1 },
-    y: 150, scale: 1.1, ease: 'none'
-  });
-
-  // ── Narrative image reveals ──
-  document.querySelectorAll('[data-reveal]').forEach(function(img) {
-    ScrollTrigger.create({
-      trigger: img.closest('.ch-narr-row'),
-      start: 'top 70%',
-      onEnter: function() { img.classList.add('revealed'); }
-    });
-  });
-
-  // Narrative text animations
-  document.querySelectorAll('.ch-narr-text > *').forEach(function(el) {
-    gsap.from(el, {
-      scrollTrigger: { trigger: el, start: 'top 85%' },
-      opacity: 0, y: 30, duration: 0.8, ease: 'power3.out'
-    });
-  });
-
-  // Narrative parallax
-  document.querySelectorAll('.ch-narr-image-inner').forEach(function(img) {
-    gsap.to(img, {
-      scrollTrigger: { trigger: img.closest('.ch-narr-row'), start: 'top bottom', end: 'bottom top', scrub: 1 },
-      backgroundPositionY: '40%', ease: 'none'
-    });
-  });
-
-  // ── Features ──
-  gsap.from('.ch-features-header > *', { scrollTrigger: { trigger: '.ch-features-header', start: 'top 80%' }, opacity: 0, y: 30, duration: 0.7, stagger: 0.1, ease: 'power3.out' });
-  gsap.from('.ch-feature-card', { scrollTrigger: { trigger: '.ch-features-grid', start: 'top 80%' }, opacity: 0, y: 40, duration: 0.6, stagger: 0.08, ease: 'power3.out' });
-
-  // Three.js floating geometry background
-  var fCanvas = document.querySelector('[data-ch-canvas]');
-  if (fCanvas && window.innerWidth >= 992 && typeof THREE !== 'undefined') {
-    var scene = new THREE.Scene();
-    var cam = new THREE.PerspectiveCamera(50, fCanvas.clientWidth / fCanvas.clientHeight, 0.1, 1000);
-    cam.position.set(0, 0, 30);
-    var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(fCanvas.clientWidth, fCanvas.clientHeight);
-    renderer.setClearColor(0x000000, 0);
-    fCanvas.appendChild(renderer.domElement);
-
-    var goldMat = new THREE.LineBasicMaterial({ color: 0xc9a96e, transparent: true, opacity: 0.12 });
-    var shapes = [];
-    // Floating geometric shapes
-    for (var s = 0; s < 8; s++) {
-      var geo;
-      switch (s % 4) {
-        case 0: geo = new THREE.IcosahedronGeometry(1.5 + Math.random() * 1.5, 0); break;
-        case 1: geo = new THREE.OctahedronGeometry(1.2 + Math.random() * 1.2, 0); break;
-        case 2: geo = new THREE.TetrahedronGeometry(1.5 + Math.random() * 1, 0); break;
-        default: geo = new THREE.BoxGeometry(1.5 + Math.random(), 1.5 + Math.random(), 1.5 + Math.random());
-      }
-      var edges = new THREE.EdgesGeometry(geo);
-      var mesh = new THREE.LineSegments(edges, goldMat);
-      mesh.position.set((Math.random() - 0.5) * 30, (Math.random() - 0.5) * 20, (Math.random() - 0.5) * 15);
-      mesh.userData = { ry: (Math.random() - 0.5) * 0.003, rx: (Math.random() - 0.5) * 0.002, floatSpeed: 0.2 + Math.random() * 0.3, floatOffset: Math.random() * Math.PI * 2 };
-      scene.add(mesh);
-      shapes.push(mesh);
-    }
-
-    var isVis = false;
-    var obs = new IntersectionObserver(function(e) { isVis = e[0].isIntersecting; }, { threshold: 0.05 });
-    obs.observe(fCanvas.closest('.ch-features'));
-
-    var clock = new THREE.Clock();
-    (function animate() {
-      requestAnimationFrame(animate);
-      if (!isVis) return;
-      var t = clock.getElapsedTime();
-      shapes.forEach(function(shape) {
-        shape.rotation.y += shape.userData.ry;
-        shape.rotation.x += shape.userData.rx;
-        shape.position.y += Math.sin(t * shape.userData.floatSpeed + shape.userData.floatOffset) * 0.003;
-      });
-      renderer.render(scene, cam);
-    })();
-
-    window.addEventListener('resize', function() {
-      cam.aspect = fCanvas.clientWidth / fCanvas.clientHeight;
-      cam.updateProjectionMatrix();
-      renderer.setSize(fCanvas.clientWidth, fCanvas.clientHeight);
-    });
-  }
-
-  // ── Process ──
-  gsap.from('.ch-process-header > *', { scrollTrigger: { trigger: '.ch-process-header', start: 'top 85%' }, opacity: 0, y: 30, duration: 0.7, stagger: 0.1, ease: 'power3.out' });
-  gsap.from('.ch-process-card', { scrollTrigger: { trigger: '.ch-process-track', start: 'top 80%' }, opacity: 0, y: 40, duration: 0.6, stagger: 0.1, ease: 'power3.out' });
-
-  // ── CTA ──
-  gsap.from('.ch-cta-content > *', { scrollTrigger: { trigger: '.ch-cta', start: 'top 80%' }, opacity: 0, y: 30, duration: 0.7, stagger: 0.12, ease: 'power3.out' });
-
-})();
-</script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+<script src="avorino-custom-homes-footer.js"></script>
 </body>
 </html>

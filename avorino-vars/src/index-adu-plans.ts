@@ -16,7 +16,7 @@ const PAGE_NAME = 'ADU Plan Samples';
 const PAGE_SLUG = 'adu-plan-samples';
 const PAGE_TITLE = 'ADU Floor Plans & Designs | Avorino Orange County';
 const PAGE_DESC = 'Browse ADU floor plans from studio to 1,200 sqft. Pre-approved and custom designs for Orange County. Detached, attached, and garage conversion layouts by Avorino.';
-const CDN = '51ce355';
+const CDN = '6141837';
 const HEAD_CODE = [
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
@@ -64,10 +64,10 @@ async function buildPlansPage() {
   const s = await createSharedStyles();
 
   log('Creating page-specific styles...');
-  // Hero
+  // Hero — style names match CSS class names in avorino-adu.css
   const plHero = await getOrCreateStyle('plans-hero');
-  const plCanvasWrap = await getOrCreateStyle('pl-canvas-wrap');
-  const plContentOverlay = await getOrCreateStyle('pl-content-overlay');
+  const plCanvasWrap = await getOrCreateStyle('canvas-wrap');
+  const plContentOverlay = await getOrCreateStyle('content-overlay');
   const plHeroContent = await getOrCreateStyle('plans-hero-content');
   const plHeroLabel = await getOrCreateStyle('plans-hero-label');
   const plHeroGoldLine = await getOrCreateStyle('plans-hero-gold-line');
@@ -83,15 +83,15 @@ async function buildPlansPage() {
   const plCardName = await getOrCreateStyle('plan-card-name');
   const plCardSpecs = await getOrCreateStyle('plan-card-specs');
   const plCardTag = await getOrCreateStyle('plan-card-tag');
-  // Custom
+  // Custom — style names match CSS classes (no pl- prefix)
   const plCustom = await getOrCreateStyle('plans-custom');
-  const plGlassCard = await getOrCreateStyle('pl-glass-card');
-  const plCustomInner = await getOrCreateStyle('pl-custom-inner');
-  const plCustomFeatures = await getOrCreateStyle('pl-custom-features');
-  const plCustomFeature = await getOrCreateStyle('pl-custom-feature');
-  const plCustomFeatureDot = await getOrCreateStyle('pl-custom-feature-dot');
+  const plGlassCard = await getOrCreateStyle('glass-card');
+  const plCustomInner = await getOrCreateStyle('custom-inner');
+  const plCustomFeatures = await getOrCreateStyle('custom-features');
+  const plCustomFeature = await getOrCreateStyle('custom-feature');
+  const plCustomFeatureDot = await getOrCreateStyle('custom-feature-dot');
   // Utility
-  const plLabelLine = await getOrCreateStyle('pl-label-line');
+  const plLabelLine = await getOrCreateStyle('av-label-line');
   const plMb48 = await getOrCreateStyle('pl-mb-48');
   const plMb64 = await getOrCreateStyle('pl-mb-64');
 
@@ -112,12 +112,13 @@ async function buildPlansPage() {
       'background-color': v['av-dark'], 'color': v['av-cream'],
       'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
-    await clearAndSet(await freshStyle('pl-canvas-wrap'), 'pl-canvas-wrap', {
+    await clearAndSet(await freshStyle('canvas-wrap'), 'canvas-wrap', {
       'position': 'absolute', 'top': '0px', 'left': '0px',
       'width': '100%', 'height': '100%', 'z-index': '1',
+      'pointer-events': 'none',
       'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
-    await clearAndSet(await freshStyle('pl-content-overlay'), 'pl-content-overlay', {
+    await clearAndSet(await freshStyle('content-overlay'), 'content-overlay', {
       'position': 'relative', 'z-index': '2',
     });
     await clearAndSet(await freshStyle('plans-hero-content'), 'plans-hero-content', {
@@ -140,7 +141,7 @@ async function buildPlansPage() {
     await clearAndSet(await freshStyle('plans-hero-scroll-hint'), 'plans-hero-scroll-hint', {
       'position': 'absolute', 'bottom': '40px', 'left': '50%',
       'z-index': '3', 'display': 'flex', 'flex-direction': 'column',
-      'align-items': 'center', 'opacity': '0',
+      'align-items': 'center', 'gap': '8px', 'opacity': '0',
     });
     await clearAndSet(await freshStyle('plans-hero-scroll-line'), 'plans-hero-scroll-line', {
       'width': '1px', 'height': '40px', 'background-color': '#c9a96e',
@@ -197,29 +198,29 @@ async function buildPlansPage() {
       'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
     });
-    await clearAndSet(await freshStyle('pl-glass-card'), 'pl-glass-card', {
-      'background-color': 'rgba(17,17,17,0.88)', 'color': v['av-cream'],
+    await clearAndSet(await freshStyle('glass-card'), 'glass-card', {
+      'color': v['av-cream'],
       'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
       'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
       'padding-top': '48px', 'padding-bottom': '48px',
       'padding-left': '40px', 'padding-right': '40px',
       'border-top-width': '2px', 'border-top-style': 'solid', 'border-top-color': 'rgba(201,169,110,0.25)',
     });
-    await clearAndSet(await freshStyle('pl-custom-inner'), 'pl-custom-inner', {
+    await clearAndSet(await freshStyle('custom-inner'), 'custom-inner', {
       'max-width': '700px', 'margin-left': 'auto', 'margin-right': 'auto',
       'text-align': 'center',
     });
-    await clearAndSet(await freshStyle('pl-custom-features'), 'pl-custom-features', {
+    await clearAndSet(await freshStyle('custom-features'), 'custom-features', {
       'display': 'grid', 'grid-template-columns': '1fr 1fr',
       'grid-column-gap': '16px', 'grid-row-gap': '16px',
       'text-align': 'left', 'margin-top': '32px',
     });
-    await clearAndSet(await freshStyle('pl-custom-feature'), 'pl-custom-feature', {
+    await clearAndSet(await freshStyle('custom-feature'), 'custom-feature', {
       'display': 'flex', 'align-items': 'flex-start',
       'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
       'opacity': '0.5', 'line-height': '1.5',
     });
-    await clearAndSet(await freshStyle('pl-custom-feature-dot'), 'pl-custom-feature-dot', {
+    await clearAndSet(await freshStyle('custom-feature-dot'), 'custom-feature-dot', {
       'width': '6px', 'height': '6px',
       'border-top-left-radius': '50%', 'border-top-right-radius': '50%',
       'border-bottom-left-radius': '50%', 'border-bottom-right-radius': '50%',
@@ -229,7 +230,7 @@ async function buildPlansPage() {
     await wait(500);
 
     // ── Utility ──
-    await clearAndSet(await freshStyle('pl-label-line'), 'pl-label-line', {
+    await clearAndSet(await freshStyle('av-label-line'), 'av-label-line', {
       'flex-grow': '1', 'height': '1px', 'background-color': 'rgba(17,17,17,0.15)',
     });
     await clearAndSet(await freshStyle('pl-mb-48'), 'pl-mb-48', { 'margin-bottom': '48px' });
@@ -246,25 +247,21 @@ async function buildPlansPage() {
   hero.setTag('section');
   hero.setStyles([plHero]);
   hero.setAttribute('id', 'plans-hero');
-  hero.setAttribute('class', 'plans-hero');
 
   // Canvas wrap (Three.js exploded floor plan — populated at runtime)
   const heroCanvasWrap = hero.append(webflow.elementPresets.DOM);
   heroCanvasWrap.setTag('div');
   heroCanvasWrap.setStyles([plCanvasWrap]);
   heroCanvasWrap.setAttribute('id', 'hero-canvas');
-  heroCanvasWrap.setAttribute('class', 'canvas-wrap');
 
   // Content overlay
   const heroOverlay = hero.append(webflow.elementPresets.DOM);
   heroOverlay.setTag('div');
-  heroOverlay.setStyles([plContentOverlay]);
-  heroOverlay.setAttribute('class', 'content-overlay plans-hero-content');
+  heroOverlay.setStyles([plContentOverlay, plHeroContent]);
 
   const heroLabel = heroOverlay.append(webflow.elementPresets.DOM);
   heroLabel.setTag('div');
   heroLabel.setStyles([plHeroLabel]);
-  heroLabel.setAttribute('class', 'plans-hero-label');
   heroLabel.setAttribute('data-animate', 'fade-up');
   heroLabel.setTextContent('// Floor Plans');
 
@@ -277,12 +274,10 @@ async function buildPlansPage() {
   const heroGoldLine = heroOverlay.append(webflow.elementPresets.DOM);
   heroGoldLine.setTag('div');
   heroGoldLine.setStyles([plHeroGoldLine]);
-  heroGoldLine.setAttribute('class', 'plans-hero-gold-line');
 
   const heroSub = heroOverlay.append(webflow.elementPresets.DOM);
   heroSub.setTag('p');
   heroSub.setStyles([plHeroSubtitle]);
-  heroSub.setAttribute('class', 'plans-hero-subtitle');
   heroSub.setAttribute('data-animate', 'fade-up');
   heroSub.setTextContent('Browse studio, 1-bed, and 2-bed ADU layouts designed for Orange County properties.');
 
@@ -290,7 +285,6 @@ async function buildPlansPage() {
   const scrollHint = hero.append(webflow.elementPresets.DOM);
   scrollHint.setTag('div');
   scrollHint.setStyles([plHeroScrollHint]);
-  scrollHint.setAttribute('class', 'plans-hero-scroll-hint');
   scrollHint.setAttribute('data-animate', 'fade-up');
 
   const scrollHintText = scrollHint.append(webflow.elementPresets.DOM);
@@ -300,7 +294,6 @@ async function buildPlansPage() {
   const scrollHintLine = scrollHint.append(webflow.elementPresets.DOM);
   scrollHintLine.setTag('div');
   scrollHintLine.setStyles([plHeroScrollLine]);
-  scrollHintLine.setAttribute('class', 'plans-hero-scroll-line');
 
   await safeCall('append:hero', () => body.append(hero));
 
@@ -315,7 +308,6 @@ async function buildPlansPage() {
   const galleryHeader = gallerySection.append(webflow.elementPresets.DOM);
   galleryHeader.setTag('div');
   galleryHeader.setStyles([plGalleryHeader]);
-  galleryHeader.setAttribute('class', 'plans-gallery-header');
 
   const galleryLabel = galleryHeader.append(webflow.elementPresets.DOM);
   galleryLabel.setTag('div');
@@ -327,7 +319,6 @@ async function buildPlansPage() {
   const galleryLabelLine = galleryLabel.append(webflow.elementPresets.DOM);
   galleryLabelLine.setTag('div');
   galleryLabelLine.setStyles([plLabelLine]);
-  galleryLabelLine.setAttribute('class', 'av-label-line');
 
   const galleryH = galleryHeader.append(webflow.elementPresets.DOM);
   galleryH.setTag('h2');
@@ -339,41 +330,34 @@ async function buildPlansPage() {
   const grid = gallerySection.append(webflow.elementPresets.DOM);
   grid.setTag('div');
   grid.setStyles([plGrid]);
-  grid.setAttribute('class', 'plans-grid');
 
   PLANS.forEach(plan => {
     const card = grid.append(webflow.elementPresets.DOM);
     card.setTag('div');
     card.setStyles([plCard]);
-    card.setAttribute('class', 'plan-card');
     card.setAttribute('data-animate', 'fade-up');
 
     const img = card.append(webflow.elementPresets.DOM);
     img.setTag('div');
     img.setStyles([plCardImg]);
-    img.setAttribute('class', 'plan-card-img');
 
     const cardBody = card.append(webflow.elementPresets.DOM);
     cardBody.setTag('div');
     cardBody.setStyles([plCardBody]);
-    cardBody.setAttribute('class', 'plan-card-body');
 
     const name = cardBody.append(webflow.elementPresets.DOM);
     name.setTag('h3');
     name.setStyles([plCardName]);
-    name.setAttribute('class', 'plan-card-name');
     name.setTextContent(plan.name);
 
     const specs = cardBody.append(webflow.elementPresets.DOM);
     specs.setTag('p');
     specs.setStyles([plCardSpecs]);
-    specs.setAttribute('class', 'plan-card-specs');
     specs.setTextContent(`${plan.sqft} \u00b7 ${plan.beds} \u00b7 ${plan.baths}`);
 
     const tag = cardBody.append(webflow.elementPresets.DOM);
     tag.setTag('span');
     tag.setStyles([plCardTag]);
-    tag.setAttribute('class', 'plan-card-tag');
     tag.setTextContent(plan.tag);
   });
 
@@ -385,20 +369,17 @@ async function buildPlansPage() {
   customSection.setTag('section');
   customSection.setStyles([plCustom]);
   customSection.setAttribute('id', 'plans-custom');
-  customSection.setAttribute('class', 'av-section-dark plans-custom');
 
   // Canvas wrap (Three.js multi-layout blueprints — populated at runtime)
   const customCanvasWrap = customSection.append(webflow.elementPresets.DOM);
   customCanvasWrap.setTag('div');
   customCanvasWrap.setStyles([plCanvasWrap]);
   customCanvasWrap.setAttribute('id', 'custom-canvas');
-  customCanvasWrap.setAttribute('class', 'canvas-wrap');
 
   // Content overlay
   const customOverlay = customSection.append(webflow.elementPresets.DOM);
   customOverlay.setTag('div');
   customOverlay.setStyles([plContentOverlay]);
-  customOverlay.setAttribute('class', 'content-overlay');
 
   // Section label
   const customLabel = customOverlay.append(webflow.elementPresets.DOM);
@@ -411,18 +392,15 @@ async function buildPlansPage() {
   const customLabelLine = customLabel.append(webflow.elementPresets.DOM);
   customLabelLine.setTag('div');
   customLabelLine.setStyles([plLabelLine]);
-  customLabelLine.setAttribute('class', 'av-label-line');
 
   // Glass card inner wrapper
   const customInner = customOverlay.append(webflow.elementPresets.DOM);
   customInner.setTag('div');
   customInner.setStyles([plCustomInner]);
-  customInner.setAttribute('class', 'custom-inner');
 
   const glassCard = customInner.append(webflow.elementPresets.DOM);
   glassCard.setTag('div');
   glassCard.setStyles([plGlassCard]);
-  glassCard.setAttribute('class', 'glass-card');
   glassCard.setAttribute('data-animate', 'fade-up');
 
   const customH = glassCard.append(webflow.elementPresets.DOM);
@@ -439,19 +417,16 @@ async function buildPlansPage() {
   const featuresGrid = glassCard.append(webflow.elementPresets.DOM);
   featuresGrid.setTag('div');
   featuresGrid.setStyles([plCustomFeatures]);
-  featuresGrid.setAttribute('class', 'custom-features');
 
   CUSTOM_FEATURES.forEach(feat => {
     const featureRow = featuresGrid.append(webflow.elementPresets.DOM);
     featureRow.setTag('div');
     featureRow.setStyles([plCustomFeature]);
-    featureRow.setAttribute('class', 'custom-feature');
     featureRow.setAttribute('data-animate', 'fade-up');
 
     const dot = featureRow.append(webflow.elementPresets.DOM);
     dot.setTag('div');
     dot.setStyles([plCustomFeatureDot]);
-    dot.setAttribute('class', 'custom-feature-dot');
 
     const text = featureRow.append(webflow.elementPresets.DOM);
     text.setTag('span');

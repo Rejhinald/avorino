@@ -17,9 +17,10 @@ const PAGE_NAME = 'ADU Construction';
 const PAGE_SLUG = 'adu-construction';
 const PAGE_TITLE = 'ADU Construction in Orange County — Avorino';
 const PAGE_DESC = 'Detached, attached, and garage conversion ADUs in Orange County. Fully permitted, designed, and built by Avorino.';
-const CDN = '51ce355';
+const CDN = '6141837';
 const HEAD_CODE = [
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
+  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-adu.css">`,
   CALENDLY_CSS,
 ].join('\n');
@@ -130,12 +131,12 @@ async function buildADUConstructionPage() {
       'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
       'background-color': v['av-dark'], 'color': v['av-cream'],
-      'position': 'relative', 'overflow': 'hidden',
+      'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
     await clearAndSet(await freshStyle('aduc-hero-canvas-wrap'), 'aduc-hero-canvas-wrap', {
       'position': 'absolute', 'top': '0px', 'left': '0px',
       'width': '100%', 'height': '100%',
-      'z-index': '1', 'pointer-events': 'none', 'overflow': 'hidden',
+      'z-index': '1', 'pointer-events': 'none', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
     await clearAndSet(await freshStyle('aduc-hero-content'), 'aduc-hero-content', {
       'position': 'relative', 'z-index': '2', 'max-width': '800px',
@@ -157,7 +158,7 @@ async function buildADUConstructionPage() {
     await clearAndSet(await freshStyle('aduc-hero-scroll-hint'), 'aduc-hero-scroll-hint', {
       'position': 'absolute', 'bottom': '40px', 'left': '50%',
       'z-index': '3', 'display': 'flex', 'flex-direction': 'column',
-      'align-items': 'center', 'opacity': '0',
+      'align-items': 'center', 'gap': '8px', 'opacity': '0',
     });
     await clearAndSet(await freshStyle('aduc-hero-scroll-line'), 'aduc-hero-scroll-line', {
       'width': '1px', 'height': '40px', 'background-color': '#c9a96e',
@@ -166,12 +167,12 @@ async function buildADUConstructionPage() {
 
     // ── Types (scroll-lock) ──
     await clearAndSet(await freshStyle('aduc-types'), 'aduc-types', {
-      'position': 'relative', 'overflow': 'hidden', 'background-color': '#ffffff',
+      'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden', 'background-color': '#ffffff',
     });
     await clearAndSet(await freshStyle('aduc-types-canvas-wrap'), 'aduc-types-canvas-wrap', {
       'position': 'absolute', 'top': '0px', 'left': '0px',
       'width': '100%', 'height': '100%',
-      'z-index': '1', 'pointer-events': 'none', 'overflow': 'hidden',
+      'z-index': '1', 'pointer-events': 'none', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
     await clearAndSet(await freshStyle('aduc-types-content'), 'aduc-types-content', {
       'position': 'relative', 'z-index': '2',
@@ -214,17 +215,17 @@ async function buildADUConstructionPage() {
     });
     await clearAndSet(await freshStyle('aduc-types-progress'), 'aduc-types-progress', {
       'position': 'absolute', 'bottom': '40px', 'left': '50%',
-      'z-index': '3', 'display': 'flex', 'align-items': 'center',
+      'z-index': '3', 'display': 'flex', 'align-items': 'center', 'gap': '32px',
     });
     await clearAndSet(await freshStyle('aduc-types-track'), 'aduc-types-track', {
       'width': '200px', 'height': '2px',
-      'background-color': 'rgba(17, 17, 17, 0.08)', 'position': 'relative',
+      'background-color': 'rgba(17,17,17,0.08)', 'position': 'relative',
     });
     await clearAndSet(await freshStyle('aduc-types-fill'), 'aduc-types-fill', {
       'height': '100%', 'background-color': v['av-red'], 'width': '0%',
     });
     await clearAndSet(await freshStyle('aduc-types-dots'), 'aduc-types-dots', {
-      'display': 'flex',
+      'display': 'flex', 'gap': '24px',
     });
     await clearAndSet(await freshStyle('aduc-tdot'), 'aduc-tdot', {
       'font-family': 'DM Sans', 'font-size': '12px', 'font-weight': '500',
@@ -253,7 +254,7 @@ async function buildADUConstructionPage() {
       'text-align': 'center',
     });
     await clearAndSet(await freshStyle('aduc-roi-value'), 'aduc-roi-value', {
-      'font-family': 'DM Serif Display', 'font-size': 'clamp(28px, 3.5vw, 42px)',
+      'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
       'font-weight': '400', 'color': '#c9a96e', 'margin-bottom': '12px', 'line-height': '1.1',
     });
     await clearAndSet(await freshStyle('aduc-roi-label'), 'aduc-roi-label', {
@@ -280,7 +281,7 @@ async function buildADUConstructionPage() {
     });
     await clearAndSet(await freshStyle('aduc-htl-track-bg'), 'aduc-htl-track-bg', {
       'width': '100%', 'height': '100%',
-      'background-color': 'rgba(17, 17, 17, 0.08)',
+      'background-color': 'rgba(17,17,17,0.08)',
       'border-top-left-radius': '2px', 'border-top-right-radius': '2px',
       'border-bottom-left-radius': '2px', 'border-bottom-right-radius': '2px',
     });
@@ -306,8 +307,8 @@ async function buildADUConstructionPage() {
       'border-left-width': '2px', 'border-right-width': '2px',
       'border-top-style': 'solid', 'border-bottom-style': 'solid',
       'border-left-style': 'solid', 'border-right-style': 'solid',
-      'border-top-color': 'rgba(17, 17, 17, 0.15)', 'border-bottom-color': 'rgba(17, 17, 17, 0.15)',
-      'border-left-color': 'rgba(17, 17, 17, 0.15)', 'border-right-color': 'rgba(17, 17, 17, 0.15)',
+      'border-top-color': 'rgba(17,17,17,0.15)', 'border-bottom-color': 'rgba(17,17,17,0.15)',
+      'border-left-color': 'rgba(17,17,17,0.15)', 'border-right-color': 'rgba(17,17,17,0.15)',
       'background-color': v['av-warm'],
       'position': 'absolute', 'top': '-51px', 'left': '50%',
       'z-index': '2',
@@ -339,7 +340,7 @@ async function buildADUConstructionPage() {
     await clearAndSet(await freshStyle('av-mb-48'), 'av-mb-48', { 'margin-bottom': '48px' });
     await clearAndSet(await freshStyle('av-mb-64'), 'av-mb-64', { 'margin-bottom': '64px' });
     await clearAndSet(await freshStyle('aduc-label-line'), 'aduc-label-line', {
-      'flex-grow': '1', 'height': '1px', 'background-color': 'rgba(17, 17, 17, 0.15)',
+      'flex-grow': '1', 'height': '1px', 'background-color': 'rgba(17,17,17,0.15)',
     });
     await wait(500);
 
@@ -633,6 +634,7 @@ async function buildADUConstructionPage() {
     // Each word wrapped in a span — single-word titles here
     const wordSpan = title.append(webflow.elementPresets.DOM);
     wordSpan.setTag('span');
+    wordSpan.setAttribute('class', 'word');
     wordSpan.setTextContent(step.title);
 
     // Time
