@@ -16,7 +16,7 @@ const PAGE_NAME = 'ADU Plan Samples';
 const PAGE_SLUG = 'adu-plan-samples';
 const PAGE_TITLE = 'ADU Floor Plans & Designs | Avorino Orange County';
 const PAGE_DESC = 'Browse ADU floor plans from studio to 1,200 sqft. Pre-approved and custom designs for Orange County. Detached, attached, and garage conversion layouts by Avorino.';
-const CDN = '7ad2702';
+const CDN = '6377158';
 const HEAD_CODE = [
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
