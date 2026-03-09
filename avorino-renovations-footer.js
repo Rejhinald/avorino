@@ -4,8 +4,13 @@
   gsap.registerPlugin(ScrollTrigger);
 
   /* ── Preserve original text before avorino-animations.js modifies DOM ── */
-  document.querySelectorAll('#sv-hero h1, #sv-types h2, #sv-process h2, #sv-why h2, .av-cta-heading, [data-animate="word-stagger-elastic"], [data-animate="char-cascade"]').forEach(function(el) {
+  document.querySelectorAll('#sv-hero h1, #sv-types h2, #sv-process h2, #sv-why h2, .av-cta-heading, .sv-stat-label, .sv-stat-value, [data-animate="word-stagger-elastic"], [data-animate="char-cascade"]').forEach(function(el) {
     if (!el.dataset.origText) el.dataset.origText = el.textContent.trim();
+  });
+
+  /* ── Remove data-animate from elements this script handles, so avorino-animations.js skips them ── */
+  document.querySelectorAll('.sv-process-row, .sv-process-divider, .sv-stat-value, .sv-stat-label, .sv-stats-grid, .sv-highlight').forEach(function(el) {
+    el.removeAttribute('data-animate');
   });
 
   /* ═══════════════════════════════════════════════
@@ -451,7 +456,7 @@
     var scrollProgress = 0;
 
     ScrollTrigger.create({
-      trigger: hero, start: 'top top', end: '+=' + (window.innerHeight * 2.8),
+      trigger: hero, start: 'top top', end: '+=' + (window.innerHeight * 1.5),
       pin: true, scrub: 1,
       onUpdate: function(self) {
         scrollProgress = self.progress;

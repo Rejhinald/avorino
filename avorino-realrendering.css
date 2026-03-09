@@ -192,10 +192,12 @@
 }
 /* Title */
 .sv-type-title {
+  color: var(--av-cream) !important;
   font-family: 'DM Serif Display', Georgia, serif !important;
   position: relative; z-index: 1;
 }
 .sv-type-desc {
+  color: rgba(240,237,232,0.7) !important;
   position: relative; z-index: 1;
 }
 /* Feature list bullets */
