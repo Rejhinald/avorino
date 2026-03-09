@@ -4,8 +4,13 @@
   gsap.registerPlugin(ScrollTrigger);
 
   /* ── Preserve original text before avorino-animations.js modifies DOM ── */
-  document.querySelectorAll('#sv-hero h1, #sv-types h2, #sv-process h2, #sv-why h2, .av-cta-heading, [data-animate="word-stagger-elastic"], [data-animate="char-cascade"]').forEach(function(el) {
+  document.querySelectorAll('#sv-hero h1, #sv-types h2, #sv-process h2, #sv-why h2, .av-cta-heading, .sv-stat-label, .sv-stat-value, [data-animate="word-stagger-elastic"], [data-animate="char-cascade"]').forEach(function(el) {
     if (!el.dataset.origText) el.dataset.origText = el.textContent.trim();
+  });
+
+  /* ── Remove data-animate from elements this script handles, so avorino-animations.js skips them ── */
+  document.querySelectorAll('.sv-process-row, .sv-process-divider, .sv-stat-value, .sv-stat-label, .sv-stats-grid, .sv-highlight').forEach(function(el) {
+    el.removeAttribute('data-animate');
   });
 
   /* ═══════════════════════════════════════════════
@@ -328,7 +333,7 @@
 
     /* ═══ SCROLL-DRIVEN BUILD ═══ */
     ScrollTrigger.create({
-      trigger: hero, start: 'top top', end: '+=' + (window.innerHeight * 2.5),
+      trigger: hero, start: 'top top', end: '+=' + (window.innerHeight * 1.5),
       pin: true, scrub: 1,
       onUpdate: function(self) {
         var p = self.progress;
@@ -1662,15 +1667,36 @@
 
     /* ── Approach highlights: stagger from right ── */
     gsap.utils.toArray('[class*="highlight"]').forEach(function(hl, i) {
+      gsap.killTweensOf(hl);
+      gsap.set(hl, { clearProps: 'all' });
       gsap.from(hl, {
         x: 50, opacity: 0, duration: 0.8, delay: i * 0.1, ease: 'power3.out',
         scrollTrigger: { trigger: hl, start: 'top 88%', once: true }
       });
     });
 
-    /* ── Fade-up elements ── */
+    /* ── Process rows: kill any existing tweens, force-reset, re-animate ── */
+    gsap.utils.toArray('.sv-process-row').forEach(function(row, i) {
+      row.removeAttribute('data-animate');
+      gsap.killTweensOf(row);
+      gsap.set(row, { clearProps: 'all' });
+      gsap.fromTo(row,
+        { y: 40, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, delay: i * 0.08, ease: 'power3.out',
+          scrollTrigger: { trigger: row, start: 'top 90%', once: true } }
+      );
+    });
+    gsap.utils.toArray('.sv-process-divider').forEach(function(div) {
+      div.removeAttribute('data-animate');
+      gsap.killTweensOf(div);
+      gsap.set(div, { clearProps: 'all' });
+    });
+
+    /* ── Fade-up elements (remaining ones not handled above) ── */
     document.querySelectorAll('[data-animate="fade-up"]').forEach(function(el) {
       el.removeAttribute('data-animate');
+      gsap.killTweensOf(el);
+      gsap.set(el, { clearProps: 'all' });
       gsap.fromTo(el,
         { y: 40, opacity: 0, filter: 'blur(3px)' },
         { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1, ease: 'power3.out',
@@ -1679,11 +1705,32 @@
     });
 
     /* ── Stat values: scale-in ── */
-    gsap.utils.toArray('[class*="stat-value"]').forEach(function(stat) {
-      gsap.from(stat, {
-        scale: 0.8, opacity: 0, duration: 0.7, ease: 'back.out(2)',
-        scrollTrigger: { trigger: stat, start: 'top 85%', once: true }
-      });
+    gsap.utils.toArray('.sv-stat-value').forEach(function(stat) {
+      gsap.killTweensOf(stat);
+      gsap.set(stat, { clearProps: 'all' });
+      gsap.fromTo(stat,
+        { scale: 0.8, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.7, ease: 'back.out(2)',
+          scrollTrigger: { trigger: stat, start: 'top 90%', once: true } }
+      );
+    });
+
+    /* ── Stat labels: protect from text-splitting, force visible ── */
+    gsap.utils.toArray('.sv-stat-label').forEach(function(label) {
+      label.removeAttribute('data-animate');
+      gsap.killTweensOf(label);
+      gsap.set(label, { clearProps: 'all' });
+      if (label.dataset.origText) {
+        label.textContent = label.dataset.origText;
+      }
+      label.style.opacity = '0.55';
+    });
+
+    /* ── Stats grid: force visible ── */
+    gsap.utils.toArray('.sv-stats-grid').forEach(function(grid) {
+      grid.removeAttribute('data-animate');
+      gsap.killTweensOf(grid);
+      gsap.set(grid, { clearProps: 'all' });
     });
 
     /* ── CTA section: entrance ── */
@@ -1693,11 +1740,15 @@
       var subtitle = cta.querySelector('.av-cta-subtitle, [class*="cta-subtitle"]');
 
       if (subtitle) {
+        gsap.killTweensOf(subtitle);
+        gsap.set(subtitle, { clearProps: 'all' });
         gsap.from(subtitle, { y: 20, opacity: 0, duration: 0.8, ease: 'power3.out',
           scrollTrigger: { trigger: cta, start: 'top 80%', once: true } });
       }
       if (heading) {
         heading.removeAttribute('data-animate');
+        gsap.killTweensOf(heading);
+        gsap.set(heading, { clearProps: 'all' });
         var headWords = splitIntoWords(heading);
         gsap.set(headWords, { yPercent: 100, opacity: 0 });
         gsap.to(headWords, {
@@ -1706,6 +1757,8 @@
         });
       }
       if (btns) {
+        gsap.killTweensOf(btns.children);
+        gsap.set(btns.children, { clearProps: 'all' });
         gsap.from(btns.children, {
           y: 30, opacity: 0, scale: 0.95, duration: 0.8, stagger: 0.15, ease: 'back.out(1.5)',
           scrollTrigger: { trigger: cta, start: 'top 75%', once: true }
