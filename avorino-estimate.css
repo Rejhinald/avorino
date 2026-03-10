@@ -9,7 +9,8 @@
 .est-hero-content { max-width: 700px; margin: 0 auto; }
 
 /* Form section - 2 col layout */
-.est-form-section { background: #f0ede8; padding: 96px 80px; }
+.est-form-section { background: #f0ede8; padding: 96px 80px; overflow: hidden; box-sizing: border-box; }
+.est-form-section *, .est-form-section *::before, .est-form-section *::after { box-sizing: border-box; }
 .est-form-grid { display: grid; grid-template-columns: 40% 60%; gap: 64px; max-width: 1200px; margin: 0 auto; }
 
 /* Info column (left - sticky) */
@@ -27,7 +28,8 @@
 .est-step-note { font-family: 'DM Sans', sans-serif; font-size: 13px; opacity: 0.4; margin-left: auto; color: #111; }
 
 /* Form column */
-.est-form-col { display: flex; flex-direction: column; }
+.est-form-col { display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+.est-form-col input, .est-form-col textarea, .est-form-col select, .est-form-col button { max-width: 100%; box-sizing: border-box; }
 
 /* ═══ RESPONSIVE ═══ */
 @media (max-width: 991px) {
