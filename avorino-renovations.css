@@ -265,8 +265,40 @@
   flex: 0 0 auto !important;
   width: 520px !important;
   padding: 48px 40px !important;
-  border-radius: 12px !important;
+  background: rgba(17,17,17,0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 16px;
+  border: 1px solid rgba(240,237,232,0.08);
   pointer-events: auto !important;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.sv-process-card:hover {
+  border-color: rgba(201,169,110,0.25);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+.sv-process-card-num {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--av-gold);
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.sv-process-card-title {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 400;
+  color: var(--av-cream);
+  margin-bottom: 16px;
+}
+.sv-process-card-desc {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.8;
+  color: rgba(240,237,232,0.7);
+  margin: 0;
 }
 .sv-process-visual {
   display: none !important;
