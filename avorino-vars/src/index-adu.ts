@@ -17,7 +17,7 @@ const PAGE_NAME = 'ADU';
 const PAGE_SLUG = 'adu';
 const PAGE_TITLE = 'Custom ADU Builder in Orange County | Avorino';
 const PAGE_DESC = 'Build a custom accessory dwelling unit in Orange County. Detached, attached, garage conversion, and above-garage ADUs. Design, permits, and construction by Avorino.';
-const CDN = 'e114aa4';
+const CDN = '374435c';
 const HEAD_CODE = [
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,

@@ -1,6 +1,6 @@
 // ════════════════════════════════════════════════════════════════
-// Avorino Builder — CUSTOM HOMES PAGE
-// Rename this to index.ts to build the Custom Homes service page.
+// Avorino Builder — NEW CONSTRUCTION PAGE
+// Rename this to index.ts to build the New Construction service page.
 // ════════════════════════════════════════════════════════════════
 
 import {
@@ -9,11 +9,11 @@ import {
   CALENDLY_CSS, CALENDLY_JS,
 } from './shared.js';
 
-const CDN = 'e114aa4';
+const CDN = '374435c';
 const HEAD_CODE = [
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
-  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-custom-homes.css">`,
+  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-newconstruction.css">`,
   CALENDLY_CSS,
 ].join('\n');
 const FOOTER_CODE = [
@@ -22,78 +22,78 @@ const FOOTER_CODE = [
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
   '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
   `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-animations.js"><\/script>`,
-  `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-custom-homes-footer.js"><\/script>`,
+  `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-newconstruction-footer.js"><\/script>`,
   CALENDLY_JS,
 ].join('\n');
 
 const SERVICE_DATA: ServiceData = {
-  slug: 'custom-homes',
-  pageName: 'Custom Homes',
-  title: 'Custom Home Building in Orange County — Avorino Construction',
-  seoDesc: 'Ground-up custom home builder in Orange County, CA. Luxury residential construction from architecture through move-in. Design-build approach, licensed and insured. Serving Irvine, Newport Beach, Laguna Beach, and all of OC.',
+  slug: 'newconstruction',
+  pageName: 'New Construction',
+  title: 'New Construction in Orange County — Avorino Construction',
+  seoDesc: 'New residential and multi-unit construction in Orange County. Foundation to finish — structural engineering, permitting, and licensed construction. Serving Irvine, Newport Beach, Anaheim, and all of OC.',
 
-  heroLabel: '// Custom Homes',
-  heroTitle: 'Built around the way you live',
-  heroSubtitle: 'Ground-up custom residences in Orange County. Architecture, engineering, permitting, and construction — every detail tailored to your vision.',
+  heroLabel: '// New Construction',
+  heroTitle: 'From foundation to finish',
+  heroSubtitle: 'New residential and multi-unit construction in Orange County. Engineering-first approach with full-service project management from groundbreak to certificate of occupancy.',
 
   approach: {
-    heading: 'Design-build, not design-then-build',
-    body: 'Most builders separate design and construction into disconnected phases. We integrate them. Your architect and your builder work as one team from day one — eliminating miscommunication, reducing change orders, and delivering a home that matches what was promised. Every home we build starts with your goals and your site conditions — not a catalog template.',
+    heading: 'Engineering before everything',
+    body: 'New construction demands precision from the start. We begin with geotechnical reports, structural calculations, and code analysis before the first design line is drawn. This engineering-first approach means fewer surprises during construction, fewer change orders, and a building that performs for decades.',
     highlights: [
-      'Single point of accountability from concept to certificate of occupancy — no finger-pointing between architect and contractor',
-      'Real-time cost visibility during design so you make material and layout decisions with budget clarity',
-      'Structural engineering integrated from day one — bold architectural concepts are buildable, not just renderable',
-      'Site-specific design that accounts for soil conditions, topography, views, solar orientation, and local code',
+      'Geotechnical analysis and structural engineering completed before design finalization',
+      'Full Title 24 energy compliance modeling integrated into architectural plans',
+      'Value engineering identifies cost savings without compromising structural integrity',
+      'Phased construction scheduling with milestone tracking and weekly progress reporting',
     ],
   },
 
   serviceTypes: [
     {
       number: '01',
-      title: 'Single-Story Custom',
-      desc: 'Open floor plans with seamless indoor-outdoor living. Ideal for larger lots where horizontal space allows every room to connect to the landscape.',
-      features: ['Great rooms with 12-14ft ceilings', 'Covered outdoor living integration', 'ADA-adaptable floor plans', 'Energy-efficient single-level HVAC'],
+      title: 'Single-Family Residential',
+      desc: 'Ground-up custom homes from 1,500 to 8,000+ sqft. Every detail engineered and built to your specifications on your lot.',
+      features: ['Custom architecture and floor plans', 'Full structural engineering', 'Smart home pre-wire packages', 'Energy-efficient building envelope'],
     },
     {
       number: '02',
-      title: 'Two-Story Residence',
-      desc: 'Maximized square footage with clear spatial separation — living areas downstairs, private quarters above. The most popular configuration in Orange County.',
-      features: ['Grand entry with statement staircase', 'Primary suite with retreat area', 'Bonus/flex rooms for evolving needs', 'Optimized lot coverage for yard space'],
+      title: 'Multi-Unit Residential',
+      desc: 'Duplexes, triplexes, and small multi-family projects. Maximize lot potential with code-compliant density and quality construction.',
+      features: ['Density and zoning optimization', 'Separate utility metering', 'Sound attenuation between units', 'Shared amenity space design'],
     },
     {
       number: '03',
-      title: 'Modern Architectural',
-      desc: 'Flat rooflines, floor-to-ceiling glass, cantilevered volumes. Statement design with structural engineering that makes bold geometry possible.',
-      features: ['Steel moment frames for open spans', 'Curtain wall glazing systems', 'Green roof and deck integration', 'Smart home pre-wire throughout'],
+      title: 'Mixed-Use Development',
+      desc: 'Ground-floor commercial with residential above. Navigate complex zoning and build projects that serve both tenants and the community.',
+      features: ['Commercial-residential code compliance', 'ADA-accessible ground floor', 'Separate ingress/egress planning', 'Fire separation and rated assemblies'],
     },
     {
       number: '04',
-      title: 'Estate & Luxury',
-      desc: 'Premium materials, smart-home integration, and spaces designed around how you actually live. Wine rooms, home theaters, guest suites — built to your brief.',
-      features: ['Custom millwork and built-ins', 'Home theater and wine cellar', 'Pool house and outdoor kitchen', 'Multi-car garage with EV charging'],
+      title: 'Spec & Investment Builds',
+      desc: 'New construction built to sell or lease. Market-optimized design, controlled budgets, and construction timelines that protect your ROI.',
+      features: ['Market analysis-driven design', 'Cost-per-sqft optimization', 'Finish packages for target buyers', 'Accelerated construction schedules'],
     },
   ],
 
   process: [
-    { number: '01', title: 'Site & Feasibility', desc: 'Lot evaluation, soil testing, zoning verification. We confirm what\'s buildable before you invest in design.' },
-    { number: '02', title: 'Architecture & Engineering', desc: 'Custom floor plans, structural engineering, Title 24 energy compliance, and 3D renderings — all developed in-house.' },
-    { number: '03', title: 'Permitting & Approvals', desc: 'Full plan-check submission, HOA review coordination, corrections management, and city approvals. Nothing starts until everything is signed off.' },
-    { number: '04', title: 'Foundation & Framing', desc: 'Engineered foundation systems, precision framing, structural steel as needed. The bones of your home built to last generations.' },
-    { number: '05', title: 'MEP & Finishes', desc: 'Mechanical, electrical, plumbing rough-in followed by drywall, flooring, cabinetry, fixtures, and paint. Weekly progress updates and transparent budgets.' },
-    { number: '06', title: 'Final Walkthrough & Handover', desc: 'Comprehensive punch list, final inspection, Certificate of Occupancy, warranty documentation. Your home, built exactly as designed.' },
+    { number: '01', title: 'Site Analysis & Feasibility', desc: 'Soil testing, topographic survey, zoning verification, utility mapping. We determine buildability and identify constraints before committing resources.' },
+    { number: '02', title: 'Design & Engineering', desc: 'Architectural plans, structural engineering, MEP design, Title 24 energy compliance, and landscape planning — all coordinated under one project team.' },
+    { number: '03', title: 'Permitting & Plan Check', desc: 'Full plan submission to building department, fire department review, corrections management, and approval tracking. No construction starts without signed permits.' },
+    { number: '04', title: 'Site Prep & Foundation', desc: 'Grading, excavation, utilities trenching, and engineered foundation systems. The critical phase that determines everything built above.' },
+    { number: '05', title: 'Framing Through Finishes', desc: 'Structural framing, rough-in MEP, insulation, drywall, flooring, cabinetry, fixtures, and paint. Weekly updates with photo documentation.' },
+    { number: '06', title: 'Inspection & Turnover', desc: 'Final building inspection, utility connection verification, punch list completion, and Certificate of Occupancy. Full warranty documentation provided at handover.' },
   ],
 
   whyAvorino: {
-    heading: 'One team, start to finish',
-    body: 'Avorino is a licensed general contractor and design-build firm based in Orange County. We handle architecture, engineering, permitting, and construction under one roof — so your custom home is built with the same vision from first sketch to final walkthrough.',
+    heading: 'Built to perform, not just to pass',
+    body: 'Avorino builds new construction that exceeds code minimums. We use engineered lumber systems, high-performance building envelopes, and construction practices that deliver homes and buildings built for the next 50 years — not just the next inspection.',
     stats: [
-      { value: '$350–550', label: 'Per sqft' },
-      { value: '12–18mo', label: 'Typical timeline' },
-      { value: '100%', label: 'Licensed & insured' },
+      { value: '$280–550', label: 'Per sqft range' },
+      { value: '8–18mo', label: 'Build timeline' },
+      { value: 'A+', label: 'BBB rated' },
     ],
   },
 
-  ctaHeading: 'Ready to build your dream home?',
+  ctaHeading: 'Ready to break ground?',
 };
 
 // ── Panel UI ──
@@ -125,7 +125,7 @@ document.getElementById('build-page')?.addEventListener('click', async () => {
   const btn = document.getElementById('build-page') as HTMLButtonElement;
   btn.disabled = true;
   clearErrorLog();
-  logDetail('Starting Custom Homes page build...', 'info');
+  logDetail('Starting New Construction page build...', 'info');
   try { await buildServicePage(SERVICE_DATA); } catch (err: any) {
     log(`Error: ${err.message || err}`, 'error');
     await webflow.notify({ type: 'Error', message: `Failed: ${err.message || err}` });
