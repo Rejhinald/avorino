@@ -28,6 +28,7 @@
    HERO
    ═══════════════════════════════════════════════ */
 #sv-hero {
+  padding-top: 0 !important;
   min-height: 100vh;
   position: relative;
   overflow: hidden;
@@ -531,6 +532,13 @@
     --av-section-pad-y: 80px;
     --av-section-pad-x: 40px;
   }
+  #sv-approach {
+    padding: var(--av-section-pad-y) var(--av-section-pad-x) !important;
+  }
+  #sv-process {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
   /* Process section: mobile stack layout (no 3D canvas) */
   .sv-process-pinned {
     height: auto !important;
@@ -575,7 +583,7 @@
   #sv-why h2 {
     font-size: clamp(32px, 5vw, 44px);
   }
-  .sv-stats-grid {
+  .sv-stats-grid, .sv-statsblock {
     grid-template-columns: 1fr 1fr 1fr !important;
     gap: 32px !important;
   }
@@ -595,6 +603,9 @@
     --av-section-pad-y: 64px;
     --av-section-pad-x: 24px;
   }
+  #sv-approach {
+    padding: var(--av-section-pad-y) var(--av-section-pad-x) !important;
+  }
   .sv-content-overlay {
     min-height: 70vh;
     padding: 100px var(--av-section-pad-x) var(--av-section-pad-y);
@@ -607,9 +618,9 @@
   }
   .sv-process-row {
     grid-template-columns: 48px 1fr !important;
-    gap: 24px !important;
+    gap: 0 24px !important;
   }
-  .sv-stats-grid {
+  .sv-stats-grid, .sv-statsblock {
     grid-template-columns: 1fr !important;
     gap: 24px !important;
   }
@@ -627,6 +638,14 @@
     font-size: clamp(28px, 6vw, 36px);
     margin-bottom: 48px;
   }
+  /* Highlight items stack better on mobile */
+  .sv-highlight {
+    padding: 20px 12px !important;
+  }
+  .sv-highlight-text {
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+  }
 }
 
 /* ═══════════════════════════════════════════════
@@ -636,6 +655,12 @@
   :root {
     --av-section-pad-y: 48px;
     --av-section-pad-x: 16px;
+  }
+  #sv-approach {
+    padding: var(--av-section-pad-y) var(--av-section-pad-x) !important;
+  }
+  .sv-content-overlay h1 {
+    font-size: clamp(32px, 9vw, 48px) !important;
   }
   .sv-content-overlay {
     min-height: 65vh;
@@ -662,5 +687,19 @@
     width: 100% !important;
     justify-content: center !important;
     padding: 16px 32px !important;
+  }
+  .sv-type-title {
+    font-size: 22px !important;
+  }
+  .sv-process-title {
+    font-size: 20px !important;
+  }
+  /* Reveal section responsive */
+  .sv-reveal-container {
+    aspect-ratio: 4/3 !important;
+    border-radius: 8px !important;
+  }
+  .sv-reveal-header {
+    padding: 0 16px 32px !important;
   }
 }

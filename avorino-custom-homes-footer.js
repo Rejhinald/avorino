@@ -13,14 +13,31 @@
     el.removeAttribute('data-animate');
   });
 
+  /* ── Hide stats grid from avorino-animations.js initStatCounters ──
+     animations.js matches [class*="stats-grid"] and runs scrambleDecode on labels.
+     We temporarily swap the class so it can't find it. Restore after DOMContentLoaded. */
+  document.querySelectorAll('.sv-stats-grid').forEach(function(grid) {
+    grid.classList.remove('sv-stats-grid');
+    grid.classList.add('sv-statsblock');
+    grid.dataset.restoreClass = '1';
+  });
+
+  /* ── Also remove data-animate from CTA elements so animations.js doesn't touch them ── */
+  document.querySelectorAll('.av-cta-heading, .av-cta-btn, .av-cta-btns, .av-cta-subtitle').forEach(function(el) {
+    el.removeAttribute('data-animate');
+  });
+
   /* ═══════════════════════════════════════════════
-     LENIS SMOOTH SCROLL
+     LENIS SMOOTH SCROLL — reuse or replace existing
      ═══════════════════════════════════════════════ */
+  /* Destroy any existing Lenis instance from avorino-animations.js */
+  if (window.__lenis) { try { window.__lenis.destroy(); } catch(e) {} }
   var lenis = new Lenis({
     duration: 1.4,
     easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
     smooth: true, smoothTouch: false,
   });
+  window.__lenis = lenis;
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
   gsap.ticker.lagSmoothing(0);
@@ -333,8 +350,8 @@
 
     /* ═══ SCROLL-DRIVEN BUILD ═══ */
     ScrollTrigger.create({
-      trigger: hero, start: 'top top', end: '+=' + (window.innerHeight * 1.5),
-      pin: true, scrub: 1,
+      trigger: hero, start: 'top top', end: '+=' + (window.innerHeight * 0.8),
+      pin: true, pinSpacing: true, scrub: 1,
       onUpdate: function(self) {
         var p = self.progress;
         var wallP = Math.min(1, p / 0.35);
@@ -401,7 +418,7 @@
     gsap.set(cards, { y: 60, opacity: 0 });
     gsap.to(cards, {
       y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: 'power3.out',
-      scrollTrigger: { trigger: typesSection, start: 'top 65%', once: true }
+      scrollTrigger: { trigger: typesSection, start: 'top 90%', once: true }
     });
   }
 
@@ -1715,7 +1732,7 @@
       );
     });
 
-    /* ── Stat labels: protect from text-splitting, force visible ── */
+    /* ── Stat labels: protect from text-splitting and scrambleDecode ── */
     gsap.utils.toArray('.sv-stat-label').forEach(function(label) {
       label.removeAttribute('data-animate');
       gsap.killTweensOf(label);
@@ -1726,12 +1743,26 @@
       label.style.opacity = '0.55';
     });
 
-    /* ── Stats grid: force visible ── */
-    gsap.utils.toArray('.sv-stats-grid').forEach(function(grid) {
+    /* ── Restore stats grid class and force visible ── */
+    document.querySelectorAll('.sv-statsblock[data-restore-class]').forEach(function(grid) {
+      grid.classList.remove('sv-statsblock');
+      grid.classList.add('sv-stats-grid');
+      grid.removeAttribute('data-restore-class');
       grid.removeAttribute('data-animate');
       gsap.killTweensOf(grid);
       gsap.set(grid, { clearProps: 'all' });
     });
+
+    /* ── Poll to protect stat labels from scrambleDecode for 2 seconds ── */
+    var labelGuard = setInterval(function() {
+      document.querySelectorAll('.sv-stat-label').forEach(function(label) {
+        if (label.dataset.origText && label.textContent.trim() !== label.dataset.origText) {
+          label.textContent = label.dataset.origText;
+          label.style.opacity = '0.55';
+        }
+      });
+    }, 50);
+    setTimeout(function() { clearInterval(labelGuard); }, 2500);
 
     /* ── CTA section: entrance ── */
     gsap.utils.toArray('.av-cta').forEach(function(cta) {
@@ -1742,26 +1773,27 @@
       if (subtitle) {
         gsap.killTweensOf(subtitle);
         gsap.set(subtitle, { clearProps: 'all' });
-        gsap.from(subtitle, { y: 20, opacity: 0, duration: 0.8, ease: 'power3.out',
-          scrollTrigger: { trigger: cta, start: 'top 80%', once: true } });
+        gsap.fromTo(subtitle, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out',
+          scrollTrigger: { trigger: cta, start: 'top 95%', once: true } });
       }
       if (heading) {
         heading.removeAttribute('data-animate');
         gsap.killTweensOf(heading);
         gsap.set(heading, { clearProps: 'all' });
+        if (heading.dataset.origText) heading.textContent = heading.dataset.origText;
         var headWords = splitIntoWords(heading);
         gsap.set(headWords, { yPercent: 100, opacity: 0 });
         gsap.to(headWords, {
           yPercent: 0, opacity: 1, duration: 1.2, stagger: 0.05, ease: 'elastic.out(1, 0.5)',
-          scrollTrigger: { trigger: cta, start: 'top 75%', once: true }
+          scrollTrigger: { trigger: cta, start: 'top 95%', once: true }
         });
       }
       if (btns) {
         gsap.killTweensOf(btns.children);
         gsap.set(btns.children, { clearProps: 'all' });
-        gsap.from(btns.children, {
-          y: 30, opacity: 0, scale: 0.95, duration: 0.8, stagger: 0.15, ease: 'back.out(1.5)',
-          scrollTrigger: { trigger: cta, start: 'top 75%', once: true }
+        gsap.fromTo(btns.children, { y: 30, opacity: 0, scale: 0.95 }, {
+          y: 0, opacity: 1, scale: 1, duration: 0.8, stagger: 0.15, ease: 'back.out(1.5)',
+          scrollTrigger: { trigger: cta, start: 'top 95%', once: true }
         });
       }
     });

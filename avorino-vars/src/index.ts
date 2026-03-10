@@ -1,18 +1,19 @@
 // ════════════════════════════════════════════════════════════════
-// Avorino Builder — WESTMINSTER ADU PAGE
-// Rename this to index.ts to build the Westminster ADU page.
+// Avorino Builder — GARAGE CONVERSION PAGE
+// Rename this to index.ts to build the Garage Conversion service page.
 // ════════════════════════════════════════════════════════════════
 
 import {
   webflow, log, logDetail, clearErrorLog,
-  createAllVariables, buildCityPage, CityData,
+  createAllVariables, buildServicePage, ServiceData,
   CALENDLY_CSS, CALENDLY_JS,
 } from './shared.js';
 
+const CDN = '1835174';
 const HEAD_CODE = [
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@6141837/avorino-responsive.css">',
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@6141837/avorino-nav-footer.css">',
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@6141837/avorino-adu.css">',
+  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
+  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
+  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-garageconversion.css">`,
   CALENDLY_CSS,
 ].join('\n');
 const FOOTER_CODE = [
@@ -20,70 +21,83 @@ const FOOTER_CODE = [
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
   '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
-  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@6141837/avorino-animations.js"><\/script>',
-  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@6141837/avorino-city-adu-footer.js"><\/script>',
+  `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-animations.js"><\/script>`,
+  `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-garageconversion-footer.js"><\/script>`,
   CALENDLY_JS,
 ].join('\n');
 
-const CITY_DATA: CityData = {
-  slug: 'adu-westminster',
-  city: 'Westminster',
-  title: 'ADU Construction in Westminster — Avorino',
-  seoDesc: 'Build a permitted ADU in Westminster, CA. Home to Little Saigon, strong multigenerational housing demand, affordable construction costs, and excellent rental returns. Licensed OC contractor.',
+const SERVICE_DATA: ServiceData = {
+  slug: 'garageconversion',
+  pageName: 'Garage Conversions',
+  title: 'Garage Conversion in Orange County — Avorino Construction',
+  seoDesc: 'Convert your garage into a legal ADU, rental unit, or living space in Orange County. Full-service garage conversion — design, engineering, permitting, and construction. Fastest ROI of any ADU type.',
 
-  overview: 'Westminster is a culturally vibrant city of approximately 92,000 residents in central-west Orange County, best known as the home of Little Saigon — the largest Vietnamese-American community in the United States. The Bolsa Avenue commercial corridor is a nationally recognized cultural destination, drawing visitors from across Southern California for its restaurants, shops, and cultural events. Westminster\'s residential neighborhoods are predominantly single-family homes built in the 1960s–70s on lots typically ranging from 5,500–7,000 sqft, with flat topography ideal for ADU construction. The city\'s strong multigenerational family culture creates exceptional demand for ADUs as in-law suites and family housing — a demand pattern that exists alongside traditional rental demand. Westminster is served by the Westminster School District, Ocean View School District, and Huntington Beach Union High School District. The 405 and 22 freeways provide commute access to Huntington Beach, Costa Mesa, Irvine, and the broader OC/LA metro area. Westminster Mall and the Bella Terra shopping center anchor the city\'s retail offerings.',
+  heroLabel: '// Garage Conversions',
+  heroTitle: 'Your garage is your best investment',
+  heroSubtitle: 'Convert underused garage space into a legal, permitted living unit. The fastest and most cost-effective path to rental income or multigenerational housing in Orange County.',
 
-  whyBuild: 'Little Saigon\'s multigenerational family culture drives exceptional ADU demand for in-law suites and family housing, affordable construction costs maximize ROI, strong traditional rental demand from a diverse workforce, and central OC location with good freeway access to multiple employment centers.',
-
-  regulations: {
-    setbacks: '4-foot minimum from rear and side property lines for new detached ADUs. No setback required for conversions of existing structures.',
-    height: '16 feet for single-story detached ADUs. Up to 18 feet with roof pitch allowance. Two-story ADUs may reach 25 feet in qualifying zones under AB 1332.',
-    parking: 'No additional parking required if within 0.5 miles of public transit. OCTA bus routes on Bolsa Avenue, Brookhurst Street, and Westminster Avenue qualify many properties for parking exemptions.',
-    lotSize: '5,500–7,000 sqft typical in established Westminster neighborhoods. No minimum lot size required by state law.',
-    ownerOccupancy: 'No owner-occupancy requirement (permanent per AB 976, effective 2025).',
-    additionalNotes: 'Westminster processes ADU applications ministerially per state law. ADUs under 750 sqft are exempt from impact fees. The city actively supports ADU construction as part of its housing element and multigenerational housing goals.',
-  },
-
-  permitting: {
-    department: 'City of Westminster Community Development Department',
-    steps: [
-      { title: 'Verify zoning & lot dimensions', desc: 'Confirm your property is zoned residential using the city\'s zoning map. Most single-family zones in Westminster allow ADUs by right. Measure your lot — typical lots of 5,500–7,000 sqft with flat topography can accommodate a 600–800 sqft detached ADU.' },
-      { title: 'Pre-application consultation', desc: 'Contact the Community Development Department at (714) 898-3311, ext. 262, for a pre-application consultation. Staff can confirm ADU eligibility and identify any site-specific requirements for your property.' },
-      { title: 'Submit complete plans', desc: 'Submit architectural and engineering plans to Community Development. Include site plan, floor plans, elevations, structural calculations, Title 24 energy compliance, and MEP plans. Westminster processes ADU applications ministerially — no public hearing required.' },
-      { title: 'Plan check review', desc: 'Plan check typically takes 4–6 weeks. The city must process compliant ADU applications within 60 days per state law. Address any corrections and resubmit promptly.' },
-      { title: 'Pull permit & construct', desc: 'Pay fees and pull your building permit. Begin construction with a licensed contractor. Westminster\'s flat lots and consistent infrastructure make construction straightforward and efficient.' },
-      { title: 'Final inspection & occupancy', desc: 'Pass final inspection and receive your Certificate of Occupancy. Your ADU is legally habitable and can serve as a rental unit, in-law suite, or multigenerational family housing.' },
+  approach: {
+    heading: 'Conversion, not just renovation',
+    body: 'A garage conversion isn\'t simply finishing a garage — it\'s transforming a non-habitable structure into a code-compliant dwelling unit. This requires structural upgrades, insulation, ventilation, plumbing, electrical service, and fire separation. We handle the engineering and code compliance so the finished unit passes inspection and qualifies as legal habitable space.',
+    highlights: [
+      'Structural assessment of existing garage — verify slab thickness, wall framing, and roof capacity for habitable-space code requirements',
+      'Full MEP design — new electrical sub-panel, plumbing for kitchen and bathroom, HVAC for year-round comfort',
+      'Fire separation and egress engineering — required when converting attached garages per California Building Code',
+      'Parking replacement solutions — tandem parking, carport, or permeable driveway paving to satisfy replacement parking requirements',
     ],
-    fees: '$3,500–$9,000 total (plan check, building permit, school fees). Impact fees waived for ADUs under 750 sqft.',
-    timeline: '4–6 weeks plan check. 60-day maximum for compliant applications per state mandate.',
-    contact: '(714) 898-3311, ext. 262 — Westminster Community Development',
-    website: 'westminster-ca.gov/departments/community-development',
   },
 
-  costs: {
-    constructionRange: '$210K–$360K',
-    permitFees: '$3.5K–$9K',
-    impactFees: 'Waived under 750 sqft',
-    typicalSize: '600–1,000 sqft',
-  },
-
-  rental: {
-    monthlyRange: '$2,100–$3,300/mo',
-    demandDrivers: 'Multigenerational Vietnamese-American families seeking in-law suites and family housing (the largest single demand driver in Westminster), Little Saigon corridor workers and small business owners, commuters to Huntington Beach, Costa Mesa, and Irvine, healthcare workers at nearby hospitals, and families seeking affordable Orange County housing.',
-  },
-
-  guide: [
-    { title: 'Evaluate your lot', desc: 'Westminster\'s 1960s–70s homes sit on flat lots of 5,500–7,000 sqft. Measure your buildable area accounting for 4-foot setbacks. Most lots can accommodate a 600–800 sqft detached ADU. The flat topography keeps foundation and grading costs low.' },
-    { title: 'Consider multigenerational design', desc: 'Westminster\'s strong multigenerational family culture means many ADUs here are built for aging parents, adult children, or extended family. If building for family use, consider design features like step-free entries, wider doorways, and a kitchen layout suited to multi-course cooking. Even if you plan to rent, these features appeal to Westminster\'s family-oriented rental market.' },
-    { title: 'Choose your ADU type', desc: 'Detached backyard ADUs are the most popular choice in Westminster. Garage conversions are the most cost-effective option, starting around $90K–$140K. For multigenerational use, a detached unit with a private entrance and small patio area maximizes both privacy and family connection.' },
-    { title: 'Submit to Community Development', desc: 'File plans with the City of Westminster Community Development Department. ADU applications are processed ministerially within 60 days — no public hearing or discretionary review required.' },
-    { title: 'Build with Avorino', desc: 'Avorino provides full-service ADU construction — design, engineering, permitting, and building. We understand Westminster\'s community character and multigenerational housing needs, and design ADUs that serve both family use and rental purposes.' },
-    { title: 'Serve family or generate income', desc: 'Westminster ADUs serve dual purposes exceptionally well. As family housing, they provide privacy and independence for multigenerational living. As rentals, they command $2,100–$3,300/mo in a market with strong demand from families and workers throughout central-west OC.' },
+  serviceTypes: [
+    {
+      number: '01',
+      title: 'Full Garage Conversion',
+      desc: 'Transform the entire 2-car garage into a studio or 1-bedroom unit. 380–500+ sqft of living space with full kitchen, bathroom, and separate entrance.',
+      features: ['Full kitchen with range and refrigerator', 'Bathroom with shower or tub', 'Separate entrance and utility meters', 'Insulated walls, ceiling, and new flooring'],
+    },
+    {
+      number: '02',
+      title: 'Partial Garage Conversion',
+      desc: 'Convert half the garage while keeping one parking bay. Ideal for homeowners who want a home office, gym, or studio while retaining some garage functionality.',
+      features: ['Demising wall between living and garage', 'Independent HVAC zone', 'Maintains one-car parking', 'Flexible use — office, studio, or guest suite'],
+    },
+    {
+      number: '03',
+      title: 'Junior ADU (JADU)',
+      desc: 'A unit of 500 sqft or less created within the existing footprint of the primary home, including the garage. Requires an efficiency kitchen — may share a bathroom with the main house.',
+      features: ['Efficiency kitchen (sink, cooking, fridge)', 'Interior or exterior entrance options', 'No impact fees under 500 sqft', 'Simplest permitting pathway in California'],
+    },
+    {
+      number: '04',
+      title: 'Garage + Addition Hybrid',
+      desc: 'Convert the garage and extend beyond its footprint. Adds square footage for a full 1-bedroom layout with separate living and sleeping areas.',
+      features: ['Extended foundation beyond garage slab', 'Full bedroom with closet', 'Living room and full kitchen', 'Maximizes rental income potential'],
+    },
   ],
+
+  process: [
+    { number: '01', title: 'Feasibility Assessment', desc: 'We inspect your garage — slab condition, framing, roof, electrical panel capacity, and sewer/water lateral location. Many garages need slab reinforcement or raising to meet habitable-space requirements.' },
+    { number: '02', title: 'Design & Engineering', desc: 'Floor plan layout, structural engineering for any modifications, MEP design, Title 24 energy compliance, and fire separation details if attached to the main home.' },
+    { number: '03', title: 'Permitting', desc: 'ADU permit application filed ministerially — no public hearing required. Garage conversions are among the fastest to approve because they convert existing structures with minimal site impact.' },
+    { number: '04', title: 'Structural & MEP Rough-In', desc: 'Framing modifications, insulation, electrical panel upgrade or sub-panel, plumbing rough-in, HVAC installation, and fire-rated assemblies as required.' },
+    { number: '05', title: 'Finishes & Inspection', desc: 'Drywall, flooring, cabinetry, fixtures, paint, and exterior modifications. Final building inspection and Certificate of Occupancy.' },
+    { number: '06', title: 'Move-In Ready', desc: 'Your converted unit is legally habitable and ready for a tenant, family member, or personal use. Full warranty documentation provided.' },
+  ],
+
+  whyAvorino: {
+    heading: 'The fastest ROI in residential construction',
+    body: 'Garage conversions typically cost 40–60% less than detached ADUs and can be completed in half the time. With no foundation excavation, minimal site disturbance, and an existing roof over your head, a garage conversion is the most efficient path to additional living space or rental income in Orange County.',
+    stats: [
+      { value: '$90–180K', label: 'Typical cost' },
+      { value: '8–14wk', label: 'Build timeline' },
+      { value: '$1.8–2.8K', label: 'Monthly rental' },
+    ],
+  },
+
+  ctaHeading: 'Ready to unlock your garage\'s potential?',
 };
 
 // ── Panel UI ──
-document.getElementById('page-name')!.textContent = `${CITY_DATA.city} ADU`;
+document.getElementById('page-name')!.textContent = `${SERVICE_DATA.pageName}`;
 const headCodeEl = document.getElementById('head-code');
 const footerCodeEl = document.getElementById('footer-code');
 if (headCodeEl) headCodeEl.textContent = HEAD_CODE;
@@ -111,8 +125,8 @@ document.getElementById('build-page')?.addEventListener('click', async () => {
   const btn = document.getElementById('build-page') as HTMLButtonElement;
   btn.disabled = true;
   clearErrorLog();
-  logDetail('Starting Westminster ADU page build...', 'info');
-  try { await buildCityPage(CITY_DATA); } catch (err: any) {
+  logDetail('Starting Garage Conversions page build...', 'info');
+  try { await buildServicePage(SERVICE_DATA); } catch (err: any) {
     log(`Error: ${err.message || err}`, 'error');
     await webflow.notify({ type: 'Error', message: `Failed: ${err.message || err}` });
   } finally { btn.disabled = false; }
