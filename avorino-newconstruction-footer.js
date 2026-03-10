@@ -1942,6 +1942,10 @@
         _track.appendChild(card);
       });
 
+      /* Create visual container for 3D scene */
+      var _visual = document.createElement('div');
+      _visual.className = 'sv-process-visual';
+      pinned.appendChild(_visual);
       pinned.appendChild(_track);
       pinned.appendChild(_nav);
 
