@@ -549,6 +549,7 @@
   /* Process section: mobile stack layout (no 3D canvas) */
   .sv-process-pinned {
     height: auto !important;
+    width: 100% !important;
   }
   .sv-process-visual {
     display: none !important;
