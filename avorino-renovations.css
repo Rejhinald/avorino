@@ -229,6 +229,7 @@
   background-color: var(--av-dark);
   color: var(--av-cream);
   position: relative;
+  box-sizing: border-box;
 }
 #sv-process h2 {
   font-family: 'DM Serif Display', Georgia, serif;
