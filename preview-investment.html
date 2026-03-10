@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADU Investment Opportunity in Orange County — Avorino Construction</title>
+<meta name="description" content="ADU investment opportunities in Orange County. Generate $2K–$4.5K+ monthly rental income. 5–12% annual ROI with property value appreciation. Build an ADU on your lot with Avorino Construction.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="avorino-investment.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overflow-x: hidden; font-family: 'DM Sans', system-ui, sans-serif; background: #f0ede8; color: #111; }
+  ul { list-style: none; }
+
+  /* Webflow style equivalents */
+  .av-section { padding: var(--av-section-pad-y) var(--av-section-pad-x); }
+  .av-section-warm { background: var(--av-warm); }
+  .av-heading-xl { font-family: 'DM Serif Display', Georgia, serif; font-size: clamp(48px, 5vw, 96px); line-height: 1.05; font-weight: 400; letter-spacing: -0.02em; color: var(--av-cream); }
+  .av-heading-lg { font-family: 'DM Serif Display', Georgia, serif; font-size: clamp(36px, 3.5vw, 64px); line-height: 1.1; font-weight: 400; }
+  .av-body { font-family: 'DM Sans', system-ui, sans-serif; font-size: clamp(16px, 1.1vw, 18px); line-height: 1.9; }
+  .av-label { display: flex; align-items: center; gap: 16px; font-family: 'DM Sans', system-ui, sans-serif; font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.4; }
+
+  /* Hero */
+  .sv-hero-content { max-width: 800px; }
+  .sv-hero-label { font-family: 'DM Sans', system-ui, sans-serif; font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0; margin-bottom: 32px; color: var(--av-cream); }
+  .sv-hero-gold-line { width: 0; height: 1px; background: var(--av-gold); margin-bottom: 24px; }
+  .sv-hero-subtitle { font-family: 'DM Sans', system-ui, sans-serif; font-size: 17px; line-height: 1.9; opacity: 0; margin-top: 24px; color: var(--av-cream); max-width: 560px; filter: blur(4px); }
+  .sv-hero-scroll-hint { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; }
+  .sv-hero-scroll-hint span { font-family: 'DM Sans', system-ui, sans-serif; font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--av-cream); }
+  .sv-hero-scroll-line { width: 1px; height: 40px; background: var(--av-gold); }
+
+  /* Approach */
+  .sv-approach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; max-width: 1200px; margin: 0 auto; }
+  .sv-approach-left { display: flex; flex-direction: column; gap: 24px; }
+  .sv-approach-right { display: flex; flex-direction: column; gap: 0; }
+  .sv-highlight { display: flex; gap: 20px; align-items: flex-start; padding: 24px 16px; border-top: 1px solid rgba(17,17,17,0.08); }
+  .sv-highlight-num { font-family: 'DM Sans', system-ui, sans-serif; font-size: 12px; letter-spacing: 0.2em; opacity: 1; min-width: 32px; padding-top: 4px; }
+  .sv-highlight-text { font-family: 'DM Sans', system-ui, sans-serif; font-size: 15px; line-height: 1.7; }
+
+  /* Types */
+  .sv-types-header { text-align: center; margin-bottom: 64px; padding: 0 80px; }
+  .sv-type-num { font-family: 'DM Sans', system-ui, sans-serif; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.4; margin-bottom: 8px; }
+  .sv-type-title { font-family: 'DM Serif Display', Georgia, serif; font-size: 28px; line-height: 1.2; font-weight: 400; margin-bottom: 12px; }
+  .sv-type-desc { font-family: 'DM Sans', system-ui, sans-serif; font-size: 14px; line-height: 1.7; opacity: 0.7; margin-bottom: 4px; }
+  .sv-type-feature-list { padding-left: 0; margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+
+  /* Process — Scroll-Locked 3D Build */
+  .sv-process-header { text-align: center; padding: 96px 80px 48px; position: relative; z-index: 2; }
+  .sv-process-pinned { position: relative; width: 100%; height: 100vh; overflow: hidden; }
+  .sv-process-visual { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+  .sv-process-visual canvas { display: block; width: 100%; height: 100%; }
+  .sv-process-cards { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 2; pointer-events: none; }
+  .sv-process-card { position: absolute; top: 50%; left: 50%; max-width: 420px; width: 90%; padding: 36px 32px; background: rgba(17,17,17,0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(240,237,232,0.08); pointer-events: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+  .sv-process-card-num { font-family: 'DM Sans', system-ui, sans-serif; font-size: 12px; letter-spacing: 0.2em; color: var(--av-gold); font-weight: 600; margin-bottom: 12px; }
+  .sv-process-card-title { font-family: 'DM Serif Display', Georgia, serif; font-size: 24px; line-height: 1.2; font-weight: 400; color: var(--av-cream); margin: 0 0 12px 0; }
+  .sv-process-card-desc { font-family: 'DM Sans', system-ui, sans-serif; font-size: 15px; line-height: 1.8; color: rgba(240,237,232,0.7); margin: 0; }
+  .sv-process-nav { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 3; text-align: center; }
+
+  /* Why */
+  .sv-why-content { max-width: 900px; margin: 0 auto; text-align: center; }
+  .sv-stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 48px; margin-top: 64px; max-width: 800px; margin-left: auto; margin-right: auto; }
+  .sv-stat-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+
+  /* CTA inline overrides */
+  .av-cta-container { background: var(--av-dark); color: var(--av-cream); border-radius: 16px; min-height: 56vh; padding: 96px 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; overflow: hidden; }
+  .av-cta-btn { font-family: 'DM Sans', system-ui, sans-serif; font-size: 14px; font-weight: 500; letter-spacing: 0.04em; display: inline-flex; align-items: center; gap: 12px; padding: 18px 40px; border-radius: 100px; text-decoration: none; cursor: pointer; border: none; transition: transform 0.5s cubic-bezier(0.23,1,0.32,1), box-shadow 0.3s ease; }
+  .av-cta-btn:hover { transform: translateY(-2px); }
+  .av-cta-btn-primary { background: var(--av-red); color: var(--av-cream); }
+  .av-cta-btn-ghost { background: rgba(240,237,232,0.08); color: var(--av-cream); border: 1px solid rgba(240,237,232,0.2); }
+
+  @media (max-width: 991px) {
+    .sv-approach-grid { grid-template-columns: 1fr !important; gap: 48px !important; }
+    .av-cta-btns { flex-direction: column; align-items: center; }
+    .sv-process-pinned { height: auto !important; }
+    .sv-process-visual { display: none !important; }
+    .sv-process-cards { position: relative !important; display: flex !important; flex-direction: column !important; gap: 24px !important; padding: 24px 40px 80px !important; }
+    .sv-process-card { position: relative !important; top: auto !important; left: auto !important; transform: none !important; max-width: 100% !important; width: 100% !important; }
+    .sv-process-nav { display: none !important; }
+  }
+  @media (max-width: 767px) {
+    .sv-content-overlay { padding: 100px 24px 64px !important; }
+    .sv-process-cards { padding: 24px 24px 64px !important; }
+    .sv-stats-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
+  }
+  @media (max-width: 478px) {
+    .sv-content-overlay { padding: 80px 16px 48px !important; }
+    .sv-process-cards { padding: 24px 16px 48px !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ SECTION 1: HERO ═══ -->
+<section id="sv-hero">
+  <div id="hero-canvas"></div>
+  <div class="sv-content-overlay sv-hero-content">
+    <div class="sv-hero-label" data-animate="fade-up">// Investment Opportunity</div>
+    <h1 class="av-heading-xl" data-animate="char-cascade">Your property is your portfolio</h1>
+    <div class="sv-hero-gold-line"></div>
+    <p class="sv-hero-subtitle" data-animate="fade-up">Adding an ADU to your Orange County property is one of the highest-ROI home improvements in California. Generate passive rental income while building long-term equity — without selling or moving.</p>
+  </div>
+  <div class="sv-hero-scroll-hint" data-animate="fade-up">
+    <span>Scroll</span>
+    <div class="sv-hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 2: APPROACH ═══ -->
+<section id="sv-approach" class="av-section">
+  <div class="sv-approach-grid">
+    <div class="sv-approach-left">
+      <div class="av-label" data-animate="fade-up"><div>// Our Approach</div></div>
+      <h2 class="av-heading-lg" data-animate="word-stagger-elastic">Real estate investing from your own backyard</h2>
+      <p class="av-body" data-animate="fade-up">You don't need to buy a second property to build rental income. California law now allows ADUs on most single-family lots — and Orange County's rental market is one of the strongest in the country. A well-designed ADU generates $2K–$4.5K/month in rental income, increases your property value by 20–35%, and often pays for itself within 5–7 years.</p>
+    </div>
+    <div class="sv-approach-right">
+      <div class="sv-highlight" data-animate="fade-up">
+        <span class="sv-highlight-num">01</span>
+        <p class="sv-highlight-text">Monthly rental income of $2,000–$4,500+ in Orange County — often exceeding your construction loan payment</p>
+      </div>
+      <div class="sv-highlight" data-animate="fade-up">
+        <span class="sv-highlight-num">02</span>
+        <p class="sv-highlight-text">Property value increase of 20–35% with a permitted, professionally-built ADU</p>
+      </div>
+      <div class="sv-highlight" data-animate="fade-up">
+        <span class="sv-highlight-num">03</span>
+        <p class="sv-highlight-text">Tax advantages including depreciation, mortgage interest deductions, and operating expense write-offs</p>
+      </div>
+      <div class="sv-highlight" data-animate="fade-up">
+        <span class="sv-highlight-num">04</span>
+        <p class="sv-highlight-text">No landlord experience needed — we connect you with property management partners</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 3: SERVICE TYPES ═══ -->
+<section id="sv-types" class="av-section av-section-warm">
+  <div class="sv-types-header">
+    <div class="av-label" style="justify-content:center" data-animate="fade-up"><div>// What We Build</div></div>
+    <h2 class="av-heading-lg" data-animate="word-stagger-elastic">Our Investment ADU Options</h2>
+  </div>
+  <div class="sv-types-grid">
+    <div class="sv-type-card" data-animate="fade-up">
+      <div class="sv-type-num">01</div>
+      <h3 class="sv-type-title">Long-Term Rental ADU</h3>
+      <p class="sv-type-desc">Build a 1-2 bedroom unit designed for 12-month tenants. Steady, predictable income with minimal turnover and management overhead.</p>
+      <ul class="sv-type-feature-list">
+        <li>$2K–$3.5K/month in OC</li>
+        <li>Lower management costs</li>
+        <li>Stable occupancy rates</li>
+        <li>Attractive to quality tenants</li>
+      </ul>
+    </div>
+    <div class="sv-type-card" data-animate="fade-up">
+      <div class="sv-type-num">02</div>
+      <h3 class="sv-type-title">Premium Rental ADU</h3>
+      <p class="sv-type-desc">Higher-end finishes targeting professional tenants willing to pay above-market rates. Studio to 2BR in desirable neighborhoods.</p>
+      <ul class="sv-type-feature-list">
+        <li>$3K–$4.5K/month premium</li>
+        <li>Luxury finishes and appliances</li>
+        <li>Smart home integration</li>
+        <li>Indoor-outdoor living design</li>
+      </ul>
+    </div>
+    <div class="sv-type-card" data-animate="fade-up">
+      <div class="sv-type-num">03</div>
+      <h3 class="sv-type-title">Multi-Generational ADU</h3>
+      <p class="sv-type-desc">Build for family now, rent later. A flexible unit that houses parents or adult children today and becomes an income property when needs change.</p>
+      <ul class="sv-type-feature-list">
+        <li>ADA-adaptable design</li>
+        <li>Private entrance and parking</li>
+        <li>Full kitchen and laundry</li>
+        <li>Future rental conversion ready</li>
+      </ul>
+    </div>
+    <div class="sv-type-card" data-animate="fade-up">
+      <div class="sv-type-num">04</div>
+      <h3 class="sv-type-title">Portfolio Addition</h3>
+      <p class="sv-type-desc">Already own investment properties? Add ADUs to maximize lot potential. We handle multiple projects simultaneously across your portfolio.</p>
+      <ul class="sv-type-feature-list">
+        <li>Multi-property project management</li>
+        <li>Volume pricing on materials</li>
+        <li>Standardized floor plans</li>
+        <li>Coordinated permitting</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 4: PROCESS (Scroll-Locked 3D Build) ═══ -->
+<section id="sv-process" class="av-section">
+  <div class="sv-process-header">
+    <div class="av-label" style="justify-content:center;color:var(--av-cream)" data-animate="fade-up"><div>// The Process</div></div>
+    <h2 class="av-heading-lg" style="color:var(--av-cream)" data-animate="word-stagger-elastic">How We Build</h2>
+  </div>
+  <div class="sv-process-pinned">
+    <div class="sv-process-visual"></div>
+    <div class="sv-process-cards">
+      <div class="sv-process-card">
+        <div class="sv-process-card-num">STEP 01</div>
+        <h3 class="sv-process-card-title">Feasibility Analysis</h3>
+        <p class="sv-process-card-desc">We evaluate your lot — zoning, setbacks, utility access, and rental market comps. You get a clear picture of what's buildable and what the income potential is.</p>
+      </div>
+      <div class="sv-process-card">
+        <div class="sv-process-card-num">STEP 02</div>
+        <h3 class="sv-process-card-title">Financial Modeling</h3>
+        <p class="sv-process-card-desc">Construction cost estimate, rental income projections, ROI timeline, and financing options. Real numbers, not marketing projections.</p>
+      </div>
+      <div class="sv-process-card">
+        <div class="sv-process-card-num">STEP 03</div>
+        <h3 class="sv-process-card-title">Design &amp; Permitting</h3>
+        <p class="sv-process-card-desc">Architecture optimized for rental appeal and construction efficiency. Full permit submission and city approval management.</p>
+      </div>
+      <div class="sv-process-card">
+        <div class="sv-process-card-num">STEP 04</div>
+        <h3 class="sv-process-card-title">Construction</h3>
+        <p class="sv-process-card-desc">Foundation to finish in 6–10 months. Weekly progress updates, transparent budgets, and milestone-based draw schedules for your lender.</p>
+      </div>
+      <div class="sv-process-card">
+        <div class="sv-process-card-num">STEP 05</div>
+        <h3 class="sv-process-card-title">Tenant-Ready Handover</h3>
+        <p class="sv-process-card-desc">Final inspection, Certificate of Occupancy, and a move-in-ready unit. We can connect you with property management if needed.</p>
+      </div>
+    </div>
+    <div class="sv-process-nav"></div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 5: WHY AVORINO ═══ -->
+<section id="sv-why" class="av-section av-section-warm">
+  <div class="sv-why-content">
+    <div class="av-label" style="justify-content:center" data-animate="fade-up"><div>// Why Avorino</div></div>
+    <h2 class="av-heading-lg" data-animate="word-stagger-elastic">The numbers speak for themselves</h2>
+    <p class="av-body" data-animate="fade-up">An ADU in Orange County isn't just an addition — it's a performing asset. With rental rates at historic highs and housing demand outpacing supply, a professionally-built ADU is one of the safest real estate investments you can make.</p>
+    <div class="sv-stats-grid" data-animate="fade-up-stagger">
+      <div class="sv-stat-item">
+        <div class="sv-stat-value">5–12%</div>
+        <div class="sv-stat-label">Annual ROI</div>
+      </div>
+      <div class="sv-stat-item">
+        <div class="sv-stat-value">+30%</div>
+        <div class="sv-stat-label">Property value</div>
+      </div>
+      <div class="sv-stat-item">
+        <div class="sv-stat-value">$2-4.5K</div>
+        <div class="sv-stat-label">Monthly income</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 6: CTA ═══ -->
+<section class="av-cta">
+  <div class="av-cta-container">
+    <div class="av-cta-subtitle">Let's Talk</div>
+    <h2 class="av-cta-heading" data-animate="word-stagger-elastic">Ready to build your investment?</h2>
+    <div class="av-cta-btns" data-animate="fade-up">
+      <a href="/schedule-a-meeting" class="av-cta-btn av-cta-btn-primary">Schedule a Meeting &rarr;</a>
+      <a href="tel:7149003676" class="av-cta-btn av-cta-btn-ghost">Call (714) 900-3676</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CDN SCRIPTS ═══ -->
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+<script src="avorino-investment-footer.js"></script>
+</body>
+</html>

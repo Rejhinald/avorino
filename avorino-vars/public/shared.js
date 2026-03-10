@@ -651,6 +651,492 @@ function _buildField(parent, field, s) {
             el.setAttribute('placeholder', field.placeholder);
     }
 }
+export async function buildServicePage(data) {
+    const v = await getAvorinVars();
+    logDetail('Loaded Avorino variable collection', 'ok');
+    log('Creating shared styles...');
+    const s = await createSharedStyles();
+    // ── Service page styles ──
+    log('Creating service page styles...');
+    // Hero
+    const svHero = await getOrCreateStyle('sv-hero');
+    const svHeroContent = await getOrCreateStyle('sv-hero-content');
+    const svHeroLabel = await getOrCreateStyle('sv-hero-label');
+    const svHeroGoldLine = await getOrCreateStyle('sv-hero-gold-line');
+    const svHeroSubtitle = await getOrCreateStyle('sv-hero-subtitle');
+    const svHeroScrollHint = await getOrCreateStyle('sv-hero-scroll-hint');
+    const svHeroScrollLine = await getOrCreateStyle('sv-hero-scroll-line');
+    const svCanvasWrap = await getOrCreateStyle('sv-canvas-wrap');
+    const svContentOverlay = await getOrCreateStyle('sv-content-overlay');
+    // Approach section
+    const svApproach = await getOrCreateStyle('sv-approach');
+    const svApproachGrid = await getOrCreateStyle('sv-approach-grid');
+    const svApproachLeft = await getOrCreateStyle('sv-approach-left');
+    const svApproachRight = await getOrCreateStyle('sv-approach-right');
+    const svHighlight = await getOrCreateStyle('sv-highlight');
+    const svHighlightNum = await getOrCreateStyle('sv-highlight-num');
+    const svHighlightText = await getOrCreateStyle('sv-highlight-text');
+    // Types/services grid
+    const svTypesGrid = await getOrCreateStyle('sv-types-grid');
+    const svTypeCard = await getOrCreateStyle('sv-type-card');
+    const svTypeNum = await getOrCreateStyle('sv-type-num');
+    const svTypeTitle = await getOrCreateStyle('sv-type-title');
+    const svTypeDesc = await getOrCreateStyle('sv-type-desc');
+    const svTypeFeatureList = await getOrCreateStyle('sv-type-feature-list');
+    // Process section
+    const svProcessSection = await getOrCreateStyle('sv-process');
+    const svProcessRow = await getOrCreateStyle('sv-process-row');
+    const svProcessNum = await getOrCreateStyle('sv-process-num');
+    const svProcessContent = await getOrCreateStyle('sv-process-content');
+    const svProcessTitle = await getOrCreateStyle('sv-process-title');
+    const svProcessDesc = await getOrCreateStyle('sv-process-desc');
+    const svProcessDivider = await getOrCreateStyle('sv-process-divider');
+    // Why Avorino
+    const svWhy = await getOrCreateStyle('sv-why');
+    const svWhyContent = await getOrCreateStyle('sv-why-content');
+    const svStatsGrid = await getOrCreateStyle('sv-stats-grid');
+    const svStatItem = await getOrCreateStyle('sv-stat-item');
+    const svStatValue = await getOrCreateStyle('sv-stat-value');
+    const svStatLabel = await getOrCreateStyle('sv-stat-label');
+    // ── Create page ──
+    const { body } = await createPageWithSlug(data.pageName, data.slug, data.title, data.seoDesc);
+    // ── Style properties ──
+    async function applyStyleProperties() {
+        log('Setting shared style properties...');
+        await setSharedStyleProps(s, v);
+        await wait(1000);
+        log('Setting service page style properties...');
+        // Hero
+        await clearAndSet(await freshStyle('sv-hero'), 'sv-hero', {
+            'min-height': '80vh',
+            'display': 'flex', 'align-items': 'flex-end',
+            'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
+            'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
+            'background-color': v['av-dark'], 'color': v['av-cream'],
+            'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
+        });
+        await clearAndSet(await freshStyle('sv-canvas-wrap'), 'sv-canvas-wrap', {
+            'position': 'absolute', 'top': '0px', 'left': '0px',
+            'width': '100%', 'height': '100%',
+            'z-index': '1', 'pointer-events': 'none',
+            'overflow-x': 'hidden', 'overflow-y': 'hidden',
+        });
+        await clearAndSet(await freshStyle('sv-content-overlay'), 'sv-content-overlay', {
+            'position': 'relative', 'z-index': '2',
+        });
+        await clearAndSet(await freshStyle('sv-hero-content'), 'sv-hero-content', {
+            'max-width': '800px',
+        });
+        await clearAndSet(await freshStyle('sv-hero-label'), 'sv-hero-label', {
+            'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
+            'letter-spacing': '0.3em', 'text-transform': 'uppercase',
+            'opacity': '0', 'margin-bottom': '32px', 'color': v['av-cream'],
+        });
+        await clearAndSet(await freshStyle('sv-hero-gold-line'), 'sv-hero-gold-line', {
+            'width': '0px', 'height': '1px',
+            'background-color': '#c9a96e', 'margin-bottom': '24px',
+        });
+        await clearAndSet(await freshStyle('sv-hero-subtitle'), 'sv-hero-subtitle', {
+            'font-family': 'DM Sans', 'font-size': v['av-text-body'],
+            'line-height': '1.9', 'opacity': '0', 'margin-top': '24px',
+            'color': v['av-cream'], 'max-width': '560px',
+        });
+        await clearAndSet(await freshStyle('sv-hero-scroll-hint'), 'sv-hero-scroll-hint', {
+            'position': 'absolute', 'bottom': '40px', 'left': '50%',
+            'z-index': '3', 'display': 'flex', 'flex-direction': 'column',
+            'align-items': 'center', 'grid-row-gap': '8px', 'opacity': '0',
+        });
+        await clearAndSet(await freshStyle('sv-hero-scroll-line'), 'sv-hero-scroll-line', {
+            'width': '1px', 'height': '40px', 'background-color': '#c9a96e',
+        });
+        await wait(500);
+        // Approach section
+        await clearAndSet(await freshStyle('sv-approach'), 'sv-approach', {
+            'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
+            'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
+        });
+        await clearAndSet(await freshStyle('sv-approach-grid'), 'sv-approach-grid', {
+            'display': 'grid', 'grid-template-columns': '1fr 1fr',
+            'grid-column-gap': '80px', 'grid-row-gap': '48px',
+            'max-width': '1200px', 'margin-left': 'auto', 'margin-right': 'auto',
+        });
+        await clearAndSet(await freshStyle('sv-approach-left'), 'sv-approach-left', {
+            'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '24px',
+        });
+        await clearAndSet(await freshStyle('sv-approach-right'), 'sv-approach-right', {
+            'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '24px',
+        });
+        await clearAndSet(await freshStyle('sv-highlight'), 'sv-highlight', {
+            'display': 'flex', 'grid-column-gap': '20px', 'align-items': 'flex-start',
+            'padding-top': '20px', 'padding-bottom': '20px',
+            'border-top': `1px solid ${v['av-dark-06']}`,
+        });
+        await clearAndSet(await freshStyle('sv-highlight-num'), 'sv-highlight-num', {
+            'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
+            'letter-spacing': '0.2em', 'opacity': '0.3', 'min-width': '32px',
+            'padding-top': '4px',
+        });
+        await clearAndSet(await freshStyle('sv-highlight-text'), 'sv-highlight-text', {
+            'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
+            'line-height': '1.7',
+        });
+        await wait(500);
+        // Types/services grid
+        await clearAndSet(await freshStyle('sv-types-grid'), 'sv-types-grid', {
+            'display': 'grid', 'grid-template-columns': '1fr 1fr',
+            'grid-column-gap': '32px', 'grid-row-gap': '32px',
+            'max-width': '1100px', 'margin-left': 'auto', 'margin-right': 'auto',
+        });
+        await clearAndSet(await freshStyle('sv-type-card'), 'sv-type-card', {
+            'background-color': v['av-dark'], 'color': v['av-cream'],
+            'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
+            'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
+            'padding-top': '48px', 'padding-bottom': '48px',
+            'padding-left': '40px', 'padding-right': '40px',
+            'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '12px',
+        });
+        await clearAndSet(await freshStyle('sv-type-num'), 'sv-type-num', {
+            'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
+            'letter-spacing': '0.2em', 'text-transform': 'uppercase',
+            'opacity': '0.4', 'margin-bottom': '4px',
+        });
+        await clearAndSet(await freshStyle('sv-type-title'), 'sv-type-title', {
+            'font-family': 'DM Serif Display', 'font-size': '28px',
+            'line-height': '1.2', 'margin-bottom': '4px', 'font-weight': '400',
+        });
+        await clearAndSet(await freshStyle('sv-type-desc'), 'sv-type-desc', {
+            'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
+            'line-height': '1.7', 'opacity': '0.5',
+        });
+        await clearAndSet(await freshStyle('sv-type-feature-list'), 'sv-type-feature-list', {
+            'padding-left': '0px', 'margin-top': '16px',
+            'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '10px',
+        });
+        await wait(500);
+        // Process section
+        await clearAndSet(await freshStyle('sv-process'), 'sv-process', {
+            'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
+            'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
+            'background-color': v['av-dark'], 'color': v['av-cream'],
+        });
+        await clearAndSet(await freshStyle('sv-process-row'), 'sv-process-row', {
+            'display': 'grid', 'grid-template-columns': '80px 1fr',
+            'grid-column-gap': '40px', 'padding-top': '40px', 'padding-bottom': '40px',
+            'max-width': '900px', 'margin-left': 'auto', 'margin-right': 'auto',
+        });
+        await clearAndSet(await freshStyle('sv-process-num'), 'sv-process-num', {
+            'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
+            'letter-spacing': '0.2em', 'opacity': '0.3', 'padding-top': '6px',
+        });
+        await clearAndSet(await freshStyle('sv-process-content'), 'sv-process-content', {
+            'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '12px',
+        });
+        await clearAndSet(await freshStyle('sv-process-title'), 'sv-process-title', {
+            'font-family': 'DM Serif Display', 'font-size': '24px',
+            'line-height': '1.2', 'font-weight': '400',
+        });
+        await clearAndSet(await freshStyle('sv-process-desc'), 'sv-process-desc', {
+            'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
+            'line-height': '1.8', 'opacity': '0.5',
+        });
+        await clearAndSet(await freshStyle('sv-process-divider'), 'sv-process-divider', {
+            'height': '1px', 'background-color': v['av-cream'],
+            'opacity': '0.06', 'max-width': '900px',
+            'margin-left': 'auto', 'margin-right': 'auto',
+        });
+        await wait(500);
+        // Why Avorino
+        await clearAndSet(await freshStyle('sv-why'), 'sv-why', {
+            'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
+            'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
+        });
+        await clearAndSet(await freshStyle('sv-why-content'), 'sv-why-content', {
+            'max-width': '900px', 'margin-left': 'auto', 'margin-right': 'auto',
+            'text-align': 'center',
+        });
+        await clearAndSet(await freshStyle('sv-stats-grid'), 'sv-stats-grid', {
+            'display': 'grid', 'grid-template-columns': '1fr 1fr 1fr',
+            'grid-column-gap': '48px', 'margin-top': '64px',
+            'max-width': '800px', 'margin-left': 'auto', 'margin-right': 'auto',
+        });
+        await clearAndSet(await freshStyle('sv-stat-item'), 'sv-stat-item', {
+            'display': 'flex', 'flex-direction': 'column', 'align-items': 'center',
+            'grid-row-gap': '8px',
+        });
+        await clearAndSet(await freshStyle('sv-stat-value'), 'sv-stat-value', {
+            'font-family': 'DM Serif Display', 'font-size': '48px',
+            'line-height': '1', 'font-weight': '400',
+        });
+        await clearAndSet(await freshStyle('sv-stat-label'), 'sv-stat-label', {
+            'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
+            'letter-spacing': '0.2em', 'text-transform': 'uppercase',
+            'opacity': '0.4',
+        });
+        await wait(500);
+        await applyCTAStyleProps(v);
+    }
+    // ═══════════════ BUILD ELEMENTS ═══════════════
+    // SECTION 1: HERO
+    log('Building Section 1: Hero...');
+    const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
+    hero.setTag('section');
+    hero.setStyles([svHero]);
+    hero.setAttribute('id', 'sv-hero');
+    const heroCanvasWrap = hero.append(webflow.elementPresets.DOM);
+    heroCanvasWrap.setTag('div');
+    heroCanvasWrap.setStyles([svCanvasWrap]);
+    heroCanvasWrap.setAttribute('id', 'hero-canvas');
+    const heroOverlay = hero.append(webflow.elementPresets.DOM);
+    heroOverlay.setTag('div');
+    heroOverlay.setStyles([svContentOverlay, svHeroContent]);
+    const heroLabel = heroOverlay.append(webflow.elementPresets.DOM);
+    heroLabel.setTag('div');
+    heroLabel.setStyles([svHeroLabel]);
+    heroLabel.setTextContent(data.heroLabel);
+    heroLabel.setAttribute('data-animate', 'fade-up');
+    const heroH = heroOverlay.append(webflow.elementPresets.DOM);
+    heroH.setTag('h1');
+    heroH.setStyles([s.headingXL]);
+    heroH.setTextContent(data.heroTitle);
+    heroH.setAttribute('data-animate', 'char-cascade');
+    const heroGoldLine = heroOverlay.append(webflow.elementPresets.DOM);
+    heroGoldLine.setTag('div');
+    heroGoldLine.setStyles([svHeroGoldLine]);
+    const heroSub = heroOverlay.append(webflow.elementPresets.DOM);
+    heroSub.setTag('p');
+    heroSub.setStyles([svHeroSubtitle]);
+    heroSub.setTextContent(data.heroSubtitle);
+    heroSub.setAttribute('data-animate', 'fade-up');
+    const scrollHint = hero.append(webflow.elementPresets.DOM);
+    scrollHint.setTag('div');
+    scrollHint.setStyles([svHeroScrollHint]);
+    scrollHint.setAttribute('data-animate', 'fade-up');
+    const scrollHintText = scrollHint.append(webflow.elementPresets.DOM);
+    scrollHintText.setTag('span');
+    scrollHintText.setTextContent('Scroll');
+    const scrollHintLine = scrollHint.append(webflow.elementPresets.DOM);
+    scrollHintLine.setTag('div');
+    scrollHintLine.setStyles([svHeroScrollLine]);
+    await safeCall('append:hero', () => body.append(hero));
+    logDetail('Section 1: Hero appended', 'ok');
+    // SECTION 2: APPROACH — Split layout
+    log('Building Section 2: Approach...');
+    const approachSection = webflow.elementBuilder(webflow.elementPresets.DOM);
+    approachSection.setTag('section');
+    approachSection.setStyles([svApproach]);
+    approachSection.setAttribute('id', 'sv-approach');
+    const approachGrid = approachSection.append(webflow.elementPresets.DOM);
+    approachGrid.setTag('div');
+    approachGrid.setStyles([svApproachGrid]);
+    // Left: label + heading + body
+    const approachLeft = approachGrid.append(webflow.elementPresets.DOM);
+    approachLeft.setTag('div');
+    approachLeft.setStyles([svApproachLeft]);
+    const approachLabel = approachLeft.append(webflow.elementPresets.DOM);
+    approachLabel.setTag('div');
+    approachLabel.setStyles([s.label]);
+    approachLabel.setAttribute('data-animate', 'fade-up');
+    const approachLabelTxt = approachLabel.append(webflow.elementPresets.DOM);
+    approachLabelTxt.setTag('div');
+    approachLabelTxt.setTextContent('// Our Approach');
+    const approachH = approachLeft.append(webflow.elementPresets.DOM);
+    approachH.setTag('h2');
+    approachH.setStyles([s.headingLG]);
+    approachH.setTextContent(data.approach.heading);
+    approachH.setAttribute('data-animate', 'word-stagger-elastic');
+    const approachBody = approachLeft.append(webflow.elementPresets.DOM);
+    approachBody.setTag('p');
+    approachBody.setStyles([s.body]);
+    approachBody.setTextContent(data.approach.body);
+    approachBody.setAttribute('data-animate', 'fade-up');
+    // Right: highlights
+    const approachRight = approachGrid.append(webflow.elementPresets.DOM);
+    approachRight.setTag('div');
+    approachRight.setStyles([svApproachRight]);
+    if (data.approach.highlights) {
+        data.approach.highlights.forEach((h, i) => {
+            const row = approachRight.append(webflow.elementPresets.DOM);
+            row.setTag('div');
+            row.setStyles([svHighlight]);
+            row.setAttribute('data-animate', 'fade-up');
+            const num = row.append(webflow.elementPresets.DOM);
+            num.setTag('span');
+            num.setStyles([svHighlightNum]);
+            num.setTextContent(String(i + 1).padStart(2, '0'));
+            const txt = row.append(webflow.elementPresets.DOM);
+            txt.setTag('p');
+            txt.setStyles([svHighlightText]);
+            txt.setTextContent(h);
+        });
+    }
+    await safeCall('append:approach', () => body.append(approachSection));
+    logDetail('Section 2: Approach appended', 'ok');
+    // SECTION 3: SERVICE TYPES — Warm bg, 2-col cards
+    log('Building Section 3: Service Types...');
+    const typesSection = webflow.elementBuilder(webflow.elementPresets.DOM);
+    typesSection.setTag('section');
+    typesSection.setStyles([s.section, s.sectionWarm]);
+    typesSection.setAttribute('id', 'sv-types');
+    const typesHeader = typesSection.append(webflow.elementPresets.DOM);
+    typesHeader.setTag('div');
+    typesHeader.setStyles([await getOrCreateStyle('sv-types-header')]);
+    const typesLabel = typesHeader.append(webflow.elementPresets.DOM);
+    typesLabel.setTag('div');
+    typesLabel.setStyles([s.label]);
+    typesLabel.setAttribute('data-animate', 'fade-up');
+    const typesLabelTxt = typesLabel.append(webflow.elementPresets.DOM);
+    typesLabelTxt.setTag('div');
+    typesLabelTxt.setTextContent('// What We Build');
+    const typesH = typesHeader.append(webflow.elementPresets.DOM);
+    typesH.setTag('h2');
+    typesH.setStyles([s.headingLG]);
+    typesH.setTextContent(`Our ${data.pageName} Services`);
+    typesH.setAttribute('data-animate', 'word-stagger-elastic');
+    await clearAndSet(await freshStyle('sv-types-header'), 'sv-types-header', {
+        'text-align': 'center', 'margin-bottom': '64px',
+        'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
+    });
+    const typesGrid = typesSection.append(webflow.elementPresets.DOM);
+    typesGrid.setTag('div');
+    typesGrid.setStyles([svTypesGrid]);
+    data.serviceTypes.forEach(svc => {
+        const card = typesGrid.append(webflow.elementPresets.DOM);
+        card.setTag('div');
+        card.setStyles([svTypeCard]);
+        card.setAttribute('data-animate', 'fade-up');
+        const numEl = card.append(webflow.elementPresets.DOM);
+        numEl.setTag('div');
+        numEl.setStyles([svTypeNum]);
+        numEl.setTextContent(svc.number);
+        const titleEl = card.append(webflow.elementPresets.DOM);
+        titleEl.setTag('h3');
+        titleEl.setStyles([svTypeTitle]);
+        titleEl.setTextContent(svc.title);
+        const descEl = card.append(webflow.elementPresets.DOM);
+        descEl.setTag('p');
+        descEl.setStyles([svTypeDesc]);
+        descEl.setTextContent(svc.desc);
+        if (svc.features && svc.features.length) {
+            const listEl = card.append(webflow.elementPresets.DOM);
+            listEl.setTag('ul');
+            listEl.setStyles([svTypeFeatureList]);
+            svc.features.forEach(f => {
+                const li = listEl.append(webflow.elementPresets.DOM);
+                li.setTag('li');
+                li.setTextContent(f);
+            });
+        }
+    });
+    await safeCall('append:types', () => body.append(typesSection));
+    logDetail('Section 3: Service Types appended', 'ok');
+    // SECTION 4: PROCESS — Dark bg, numbered rows
+    log('Building Section 4: Process...');
+    const processSection = webflow.elementBuilder(webflow.elementPresets.DOM);
+    processSection.setTag('section');
+    processSection.setStyles([svProcessSection]);
+    processSection.setAttribute('id', 'sv-process');
+    const processHeader = processSection.append(webflow.elementPresets.DOM);
+    processHeader.setTag('div');
+    processHeader.setStyles([await getOrCreateStyle('sv-process-header')]);
+    const processLabel = processHeader.append(webflow.elementPresets.DOM);
+    processLabel.setTag('div');
+    processLabel.setStyles([s.label]);
+    processLabel.setAttribute('data-animate', 'fade-up');
+    const processLabelTxt = processLabel.append(webflow.elementPresets.DOM);
+    processLabelTxt.setTag('div');
+    processLabelTxt.setTextContent('// The Process');
+    const processH = processHeader.append(webflow.elementPresets.DOM);
+    processH.setTag('h2');
+    processH.setStyles([s.headingLG]);
+    processH.setTextContent('How We Build');
+    processH.setAttribute('data-animate', 'word-stagger-elastic');
+    await clearAndSet(await freshStyle('sv-process-header'), 'sv-process-header', {
+        'text-align': 'center', 'margin-bottom': '48px',
+        'max-width': '900px', 'margin-left': 'auto', 'margin-right': 'auto',
+    });
+    data.process.forEach((step, i) => {
+        if (i > 0) {
+            const divider = processSection.append(webflow.elementPresets.DOM);
+            divider.setTag('div');
+            divider.setStyles([svProcessDivider]);
+        }
+        const row = processSection.append(webflow.elementPresets.DOM);
+        row.setTag('div');
+        row.setStyles([svProcessRow]);
+        row.setAttribute('data-animate', 'fade-up');
+        const num = row.append(webflow.elementPresets.DOM);
+        num.setTag('div');
+        num.setStyles([svProcessNum]);
+        num.setTextContent(step.number);
+        const content = row.append(webflow.elementPresets.DOM);
+        content.setTag('div');
+        content.setStyles([svProcessContent]);
+        const titleEl = content.append(webflow.elementPresets.DOM);
+        titleEl.setTag('h3');
+        titleEl.setStyles([svProcessTitle]);
+        titleEl.setTextContent(step.title);
+        const descEl = content.append(webflow.elementPresets.DOM);
+        descEl.setTag('p');
+        descEl.setStyles([svProcessDesc]);
+        descEl.setTextContent(step.desc);
+    });
+    await safeCall('append:process', () => body.append(processSection));
+    logDetail('Section 4: Process appended', 'ok');
+    // SECTION 5: WHY AVORINO — Warm bg, centered with stats
+    log('Building Section 5: Why Avorino...');
+    const whySection = webflow.elementBuilder(webflow.elementPresets.DOM);
+    whySection.setTag('section');
+    whySection.setStyles([svWhy, s.sectionWarm]);
+    whySection.setAttribute('id', 'sv-why');
+    const whyContent = whySection.append(webflow.elementPresets.DOM);
+    whyContent.setTag('div');
+    whyContent.setStyles([svWhyContent]);
+    const whyLabel = whyContent.append(webflow.elementPresets.DOM);
+    whyLabel.setTag('div');
+    whyLabel.setStyles([s.label]);
+    whyLabel.setAttribute('data-animate', 'fade-up');
+    const whyLabelTxt = whyLabel.append(webflow.elementPresets.DOM);
+    whyLabelTxt.setTag('div');
+    whyLabelTxt.setTextContent('// Why Avorino');
+    const whyH = whyContent.append(webflow.elementPresets.DOM);
+    whyH.setTag('h2');
+    whyH.setStyles([s.headingLG]);
+    whyH.setTextContent(data.whyAvorino.heading);
+    whyH.setAttribute('data-animate', 'word-stagger-elastic');
+    const whyBody = whyContent.append(webflow.elementPresets.DOM);
+    whyBody.setTag('p');
+    whyBody.setStyles([s.body]);
+    whyBody.setTextContent(data.whyAvorino.body);
+    whyBody.setAttribute('data-animate', 'fade-up');
+    if (data.whyAvorino.stats && data.whyAvorino.stats.length) {
+        const statsGrid = whyContent.append(webflow.elementPresets.DOM);
+        statsGrid.setTag('div');
+        statsGrid.setStyles([svStatsGrid]);
+        statsGrid.setAttribute('data-animate', 'fade-up-stagger');
+        data.whyAvorino.stats.forEach(stat => {
+            const item = statsGrid.append(webflow.elementPresets.DOM);
+            item.setTag('div');
+            item.setStyles([svStatItem]);
+            const val = item.append(webflow.elementPresets.DOM);
+            val.setTag('div');
+            val.setStyles([svStatValue]);
+            val.setTextContent(stat.value);
+            const label = item.append(webflow.elementPresets.DOM);
+            label.setTag('div');
+            label.setStyles([svStatLabel]);
+            label.setTextContent(stat.label);
+        });
+    }
+    await safeCall('append:why', () => body.append(whySection));
+    logDetail('Section 5: Why Avorino appended', 'ok');
+    // SECTION 6: CTA
+    log('Building Section 6: CTA...');
+    await buildCTASection(body, v, data.ctaHeading, 'Schedule a Meeting', '/schedule-a-meeting', 'Call (714) 900-3676', 'tel:7149003676');
+    // ═══════════════ APPLY STYLES ═══════════════
+    await applyStyleProperties();
+    log(`${data.pageName} page built!`, 'success');
+    await webflow.notify({ type: 'Success', message: `${data.pageName} page created!` });
+}
 export async function buildCityPage(data) {
     const v = await getAvorinVars();
     logDetail('Loaded Avorino variable collection', 'ok');

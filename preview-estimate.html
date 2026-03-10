@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get Your Free Estimate — Avorino Construction</title>
+<meta name="description" content="No obligations. Real numbers for your construction project in Orange County.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="avorino-estimate.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overflow-x: hidden; font-family: 'DM Sans', system-ui, sans-serif; background: #f0ede8; color: #111; }
+
+  /* Webflow equivalents */
+  .av-heading-xl { font-family: 'DM Serif Display', Georgia, serif; font-size: clamp(48px, 5vw, 96px); line-height: 1.05; font-weight: 400; letter-spacing: -0.02em; color: #f0ede8; }
+  .av-body-muted { opacity: 0.6; }
+
+  /* Form styling */
+  .est-form input, .est-form textarea, .est-form select {
+    width: 100%; padding: 14px 18px; border: 1px solid rgba(17,17,17,0.1); border-radius: 8px;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; background: #fff; color: #111;
+    transition: border-color 0.3s ease;
+  }
+  .est-form input:focus, .est-form textarea:focus, .est-form select:focus { outline: none; border-color: rgba(17,17,17,0.3); }
+  .est-form textarea { resize: vertical; min-height: 120px; }
+  .est-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .est-form label { font-family: 'DM Sans', sans-serif; font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; opacity: 0.5; margin-bottom: 6px; display: block; }
+  .est-form-group { display: flex; flex-direction: column; gap: 6px; }
+  .est-form-submit { padding: 18px 40px; background: #111; color: #f0ede8; border: none; border-radius: 100px; font-family: 'DM Sans'; font-size: 15px; font-weight: 500; cursor: pointer; transition: transform 0.3s ease; width: 100%; margin-top: 8px; }
+  .est-form-submit:hover { transform: translateY(-2px); }
+
+  /* CTA */
+  .av-cta-container { background: #111; color: #f0ede8; border-radius: 16px; min-height: 40vh; padding: 72px 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .av-cta-btn { font-family: 'DM Sans'; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 12px; padding: 18px 40px; border-radius: 100px; text-decoration: none; }
+  .av-cta-btn-primary { background: #c8222a; color: #f0ede8; }
+
+  @media (max-width: 767px) {
+    .est-form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section id="est-hero">
+  <div id="hero-canvas" class="sv-canvas-wrap"></div>
+  <div class="sv-content-overlay">
+    <div class="est-hero-content">
+      <h1 class="av-heading-xl" data-animate="word-stagger-elastic">Get Your Free Estimate</h1>
+      <p class="av-body-muted" style="color:#f0ede8;margin-top:24px;" data-animate="fade-up">No obligations. Real numbers for your project.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FORM SECTION -->
+<section class="est-form-section">
+  <div class="est-form-grid">
+    <!-- LEFT: Info + Steps -->
+    <div class="est-info-col" data-animate="fade-up">
+      <h2 class="est-info-heading">Tell us about your project</h2>
+      <p class="est-info-body">Fill out the form and we'll get back to you within 24 hours with a detailed estimate.</p>
+      <div class="est-divider"></div>
+      <div style="font-size:11px;letter-spacing:0.25em;text-transform:uppercase;opacity:0.4;margin-bottom:16px;font-family:'DM Sans',sans-serif;">What Happens Next</div>
+      <div class="est-step-item"><div class="est-step-num">1</div><div class="est-step-title">We review your details</div><div class="est-step-note">within 24 hours</div></div>
+      <div class="est-step-item"><div class="est-step-num">2</div><div class="est-step-title">Free site visit</div><div class="est-step-note">at your property</div></div>
+      <div class="est-step-item"><div class="est-step-num">3</div><div class="est-step-title">Detailed proposal</div><div class="est-step-note">in 5 business days</div></div>
+    </div>
+
+    <!-- RIGHT: Form -->
+    <div class="est-form-col">
+      <form class="est-form" style="display:flex;flex-direction:column;gap:20px;">
+        <div class="est-form-group"><label>Full Name</label><input type="text" placeholder="Your full name"></div>
+        <div class="est-form-row">
+          <div class="est-form-group"><label>Email</label><input type="email" placeholder="you@email.com"></div>
+          <div class="est-form-group"><label>Phone</label><input type="tel" placeholder="(000) 000-0000"></div>
+        </div>
+        <div class="est-form-group"><label>Property Address</label><input type="text" placeholder="Street address, City, CA"></div>
+        <div class="est-form-row">
+          <div class="est-form-group"><label>Service Type</label><select><option>ADU</option><option>Custom Home</option><option>Renovation</option><option>Addition</option><option>Garage Conversion</option><option>Commercial</option><option>Other</option></select></div>
+          <div class="est-form-group"><label>Budget Range</label><select><option>Under $100K</option><option>$100K–$250K</option><option>$250K–$500K</option><option>$500K–$1M</option><option>$1M+</option><option>Not sure yet</option></select></div>
+        </div>
+        <div class="est-form-group"><label>Timeline</label><select><option>Ready now</option><option>1–3 months</option><option>3–6 months</option><option>6–12 months</option><option>Just exploring</option></select></div>
+        <div class="est-form-group"><label>Project Details</label><textarea placeholder="Describe your project — size, goals, anything relevant."></textarea></div>
+        <button type="submit" class="est-form-submit">Request Estimate</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="av-cta" style="padding:48px;background:#f0ede8;">
+  <div class="av-cta-container">
+    <div class="av-cta-subtitle" style="font-size:11px;letter-spacing:0.25em;text-transform:uppercase;opacity:0.4;margin-bottom:24px;">// Or Call Us</div>
+    <h2 class="av-cta-heading" style="font-family:'DM Serif Display';font-size:clamp(32px,4vw,56px);font-weight:400;margin-bottom:40px;" data-animate="word-stagger-elastic">Or call us directly</h2>
+    <a href="tel:7149003676" class="av-cta-btn av-cta-btn-primary">Call (714) 900-3676</a>
+  </div>
+</section>
+
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+<script src="avorino-estimate-footer.js"></script>
+</body>
+</html>
