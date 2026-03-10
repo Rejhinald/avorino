@@ -1,6 +1,6 @@
 // ════════════════════════════════════════════════════════════════
-// Avorino Builder — GARAGE CONVERSION PAGE
-// Rename this to index.ts to build the Garage Conversion service page.
+// Avorino Builder — CUSTOM HOMES PAGE
+// Rename this to index.ts to build the Custom Homes service page.
 // ════════════════════════════════════════════════════════════════
 
 import {
@@ -9,11 +9,11 @@ import {
   CALENDLY_CSS, CALENDLY_JS,
 } from './shared.js';
 
-const CDN = '9bad36d';
+const CDN = 'e114aa4';
 const HEAD_CODE = [
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
-  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-garageconversion.css">`,
+  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-custom-homes.css">`,
   CALENDLY_CSS,
 ].join('\n');
 const FOOTER_CODE = [
@@ -22,78 +22,78 @@ const FOOTER_CODE = [
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
   '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
   `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-animations.js"><\/script>`,
-  `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-garageconversion-footer.js"><\/script>`,
+  `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-custom-homes-footer.js"><\/script>`,
   CALENDLY_JS,
 ].join('\n');
 
 const SERVICE_DATA: ServiceData = {
-  slug: 'garageconversion',
-  pageName: 'Garage Conversions',
-  title: 'Garage Conversion in Orange County — Avorino Construction',
-  seoDesc: 'Convert your garage into a legal ADU, rental unit, or living space in Orange County. Full-service garage conversion — design, engineering, permitting, and construction. Fastest ROI of any ADU type.',
+  slug: 'custom-homes',
+  pageName: 'Custom Homes',
+  title: 'Custom Home Building in Orange County — Avorino Construction',
+  seoDesc: 'Ground-up custom home builder in Orange County, CA. Luxury residential construction from architecture through move-in. Design-build approach, licensed and insured. Serving Irvine, Newport Beach, Laguna Beach, and all of OC.',
 
-  heroLabel: '// Garage Conversions',
-  heroTitle: 'Your garage is your best investment',
-  heroSubtitle: 'Convert underused garage space into a legal, permitted living unit. The fastest and most cost-effective path to rental income or multigenerational housing in Orange County.',
+  heroLabel: '// Custom Homes',
+  heroTitle: 'Built around the way you live',
+  heroSubtitle: 'Ground-up custom residences in Orange County. Architecture, engineering, permitting, and construction — every detail tailored to your vision.',
 
   approach: {
-    heading: 'Conversion, not just renovation',
-    body: 'A garage conversion isn\'t simply finishing a garage — it\'s transforming a non-habitable structure into a code-compliant dwelling unit. This requires structural upgrades, insulation, ventilation, plumbing, electrical service, and fire separation. We handle the engineering and code compliance so the finished unit passes inspection and qualifies as legal habitable space.',
+    heading: 'Design-build, not design-then-build',
+    body: 'Most builders separate design and construction into disconnected phases. We integrate them. Your architect and your builder work as one team from day one — eliminating miscommunication, reducing change orders, and delivering a home that matches what was promised. Every home we build starts with your goals and your site conditions — not a catalog template.',
     highlights: [
-      'Structural assessment of existing garage — verify slab thickness, wall framing, and roof capacity for habitable-space code requirements',
-      'Full MEP design — new electrical sub-panel, plumbing for kitchen and bathroom, HVAC for year-round comfort',
-      'Fire separation and egress engineering — required when converting attached garages per California Building Code',
-      'Parking replacement solutions — tandem parking, carport, or permeable driveway paving to satisfy replacement parking requirements',
+      'Single point of accountability from concept to certificate of occupancy — no finger-pointing between architect and contractor',
+      'Real-time cost visibility during design so you make material and layout decisions with budget clarity',
+      'Structural engineering integrated from day one — bold architectural concepts are buildable, not just renderable',
+      'Site-specific design that accounts for soil conditions, topography, views, solar orientation, and local code',
     ],
   },
 
   serviceTypes: [
     {
       number: '01',
-      title: 'Full Garage Conversion',
-      desc: 'Transform the entire 2-car garage into a studio or 1-bedroom unit. 380–500+ sqft of living space with full kitchen, bathroom, and separate entrance.',
-      features: ['Full kitchen with range and refrigerator', 'Bathroom with shower or tub', 'Separate entrance and utility meters', 'Insulated walls, ceiling, and new flooring'],
+      title: 'Single-Story Custom',
+      desc: 'Open floor plans with seamless indoor-outdoor living. Ideal for larger lots where horizontal space allows every room to connect to the landscape.',
+      features: ['Great rooms with 12-14ft ceilings', 'Covered outdoor living integration', 'ADA-adaptable floor plans', 'Energy-efficient single-level HVAC'],
     },
     {
       number: '02',
-      title: 'Partial Garage Conversion',
-      desc: 'Convert half the garage while keeping one parking bay. Ideal for homeowners who want a home office, gym, or studio while retaining some garage functionality.',
-      features: ['Demising wall between living and garage', 'Independent HVAC zone', 'Maintains one-car parking', 'Flexible use — office, studio, or guest suite'],
+      title: 'Two-Story Residence',
+      desc: 'Maximized square footage with clear spatial separation — living areas downstairs, private quarters above. The most popular configuration in Orange County.',
+      features: ['Grand entry with statement staircase', 'Primary suite with retreat area', 'Bonus/flex rooms for evolving needs', 'Optimized lot coverage for yard space'],
     },
     {
       number: '03',
-      title: 'Junior ADU (JADU)',
-      desc: 'A unit of 500 sqft or less created within the existing footprint of the primary home, including the garage. Requires an efficiency kitchen — may share a bathroom with the main house.',
-      features: ['Efficiency kitchen (sink, cooking, fridge)', 'Interior or exterior entrance options', 'No impact fees under 500 sqft', 'Simplest permitting pathway in California'],
+      title: 'Modern Architectural',
+      desc: 'Flat rooflines, floor-to-ceiling glass, cantilevered volumes. Statement design with structural engineering that makes bold geometry possible.',
+      features: ['Steel moment frames for open spans', 'Curtain wall glazing systems', 'Green roof and deck integration', 'Smart home pre-wire throughout'],
     },
     {
       number: '04',
-      title: 'Garage + Addition Hybrid',
-      desc: 'Convert the garage and extend beyond its footprint. Adds square footage for a full 1-bedroom layout with separate living and sleeping areas.',
-      features: ['Extended foundation beyond garage slab', 'Full bedroom with closet', 'Living room and full kitchen', 'Maximizes rental income potential'],
+      title: 'Estate & Luxury',
+      desc: 'Premium materials, smart-home integration, and spaces designed around how you actually live. Wine rooms, home theaters, guest suites — built to your brief.',
+      features: ['Custom millwork and built-ins', 'Home theater and wine cellar', 'Pool house and outdoor kitchen', 'Multi-car garage with EV charging'],
     },
   ],
 
   process: [
-    { number: '01', title: 'Feasibility Assessment', desc: 'We inspect your garage — slab condition, framing, roof, electrical panel capacity, and sewer/water lateral location. Many garages need slab reinforcement or raising to meet habitable-space requirements.' },
-    { number: '02', title: 'Design & Engineering', desc: 'Floor plan layout, structural engineering for any modifications, MEP design, Title 24 energy compliance, and fire separation details if attached to the main home.' },
-    { number: '03', title: 'Permitting', desc: 'ADU permit application filed ministerially — no public hearing required. Garage conversions are among the fastest to approve because they convert existing structures with minimal site impact.' },
-    { number: '04', title: 'Structural & MEP Rough-In', desc: 'Framing modifications, insulation, electrical panel upgrade or sub-panel, plumbing rough-in, HVAC installation, and fire-rated assemblies as required.' },
-    { number: '05', title: 'Finishes & Inspection', desc: 'Drywall, flooring, cabinetry, fixtures, paint, and exterior modifications. Final building inspection and Certificate of Occupancy.' },
-    { number: '06', title: 'Move-In Ready', desc: 'Your converted unit is legally habitable and ready for a tenant, family member, or personal use. Full warranty documentation provided.' },
+    { number: '01', title: 'Site & Feasibility', desc: 'Lot evaluation, soil testing, zoning verification. We confirm what\'s buildable before you invest in design.' },
+    { number: '02', title: 'Architecture & Engineering', desc: 'Custom floor plans, structural engineering, Title 24 energy compliance, and 3D renderings — all developed in-house.' },
+    { number: '03', title: 'Permitting & Approvals', desc: 'Full plan-check submission, HOA review coordination, corrections management, and city approvals. Nothing starts until everything is signed off.' },
+    { number: '04', title: 'Foundation & Framing', desc: 'Engineered foundation systems, precision framing, structural steel as needed. The bones of your home built to last generations.' },
+    { number: '05', title: 'MEP & Finishes', desc: 'Mechanical, electrical, plumbing rough-in followed by drywall, flooring, cabinetry, fixtures, and paint. Weekly progress updates and transparent budgets.' },
+    { number: '06', title: 'Final Walkthrough & Handover', desc: 'Comprehensive punch list, final inspection, Certificate of Occupancy, warranty documentation. Your home, built exactly as designed.' },
   ],
 
   whyAvorino: {
-    heading: 'The fastest ROI in residential construction',
-    body: 'Garage conversions typically cost 40–60% less than detached ADUs and can be completed in half the time. With no foundation excavation, minimal site disturbance, and an existing roof over your head, a garage conversion is the most efficient path to additional living space or rental income in Orange County.',
+    heading: 'One team, start to finish',
+    body: 'Avorino is a licensed general contractor and design-build firm based in Orange County. We handle architecture, engineering, permitting, and construction under one roof — so your custom home is built with the same vision from first sketch to final walkthrough.',
     stats: [
-      { value: '$90–180K', label: 'Typical cost' },
-      { value: '8–14wk', label: 'Build timeline' },
-      { value: '$1.8–2.8K', label: 'Monthly rental' },
+      { value: '$350–550', label: 'Per sqft' },
+      { value: '12–18mo', label: 'Typical timeline' },
+      { value: '100%', label: 'Licensed & insured' },
     ],
   },
 
-  ctaHeading: 'Ready to unlock your garage\'s potential?',
+  ctaHeading: 'Ready to build your dream home?',
 };
 
 // ── Panel UI ──
@@ -125,7 +125,7 @@ document.getElementById('build-page')?.addEventListener('click', async () => {
   const btn = document.getElementById('build-page') as HTMLButtonElement;
   btn.disabled = true;
   clearErrorLog();
-  logDetail('Starting Garage Conversions page build...', 'info');
+  logDetail('Starting Custom Homes page build...', 'info');
   try { await buildServicePage(SERVICE_DATA); } catch (err: any) {
     log(`Error: ${err.message || err}`, 'error');
     await webflow.notify({ type: 'Error', message: `Failed: ${err.message || err}` });

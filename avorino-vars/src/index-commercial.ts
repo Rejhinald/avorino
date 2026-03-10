@@ -9,7 +9,7 @@ import {
   CALENDLY_CSS, CALENDLY_JS,
 } from './shared.js';
 
-const CDN = '9bad36d';
+const CDN = 'e114aa4';
 const HEAD_CODE = [
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
