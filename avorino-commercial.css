@@ -373,6 +373,10 @@
 }
 .sv-process-title {
   font-family: 'DM Serif Display', Georgia, serif !important;
+  color: var(--av-cream) !important;
+}
+.sv-process-desc {
+  color: rgba(240,237,232,0.7) !important;
 }
 
 /* ═══════════════════════════════════════════════

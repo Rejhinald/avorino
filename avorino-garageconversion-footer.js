@@ -532,7 +532,56 @@
 
   function initProcessCards() {
     var pinned = document.querySelector('.sv-process-pinned');
-    if (!pinned) return;
+
+    /* ── If no pinned container, build carousel from existing rows ── */
+    if (!pinned) {
+      var section = document.getElementById('sv-process');
+      var rows = section ? Array.prototype.slice.call(section.querySelectorAll('.sv-process-row')) : [];
+      if (!rows.length) return;
+
+      /* Create carousel container */
+      pinned = document.createElement('div');
+      pinned.className = 'sv-process-pinned';
+      var track = document.createElement('div');
+      track.className = 'sv-process-cards';
+      var nav = document.createElement('div');
+      nav.className = 'sv-process-nav';
+
+      /* Transform each row into a card */
+      rows.forEach(function(row) {
+        var num = row.querySelector('.sv-process-num');
+        var title = row.querySelector('.sv-process-title');
+        var desc = row.querySelector('.sv-process-desc');
+        var card = document.createElement('div');
+        card.className = 'sv-process-card';
+        var cardNum = document.createElement('div');
+        cardNum.className = 'sv-process-card-num';
+        cardNum.textContent = num ? 'STEP ' + num.textContent.trim() : '';
+        var cardTitle = document.createElement('h3');
+        cardTitle.className = 'sv-process-card-title';
+        cardTitle.textContent = title ? title.textContent.trim() : '';
+        var cardDesc = document.createElement('p');
+        cardDesc.className = 'sv-process-card-desc';
+        cardDesc.textContent = desc ? desc.textContent.trim() : '';
+        card.appendChild(cardNum);
+        card.appendChild(cardTitle);
+        card.appendChild(cardDesc);
+        track.appendChild(card);
+      });
+
+      pinned.appendChild(track);
+      pinned.appendChild(nav);
+
+      /* Remove old rows and dividers, insert carousel after header */
+      var header = section.querySelector('.sv-process-header');
+      var toRemove = Array.prototype.slice.call(section.querySelectorAll('.sv-process-row, .sv-process-divider'));
+      toRemove.forEach(function(el) { el.remove(); });
+      if (header) {
+        header.insertAdjacentElement('afterend', pinned);
+      } else {
+        section.appendChild(pinned);
+      }
+    }
 
     var track = pinned.querySelector('.sv-process-cards');
     var cards = Array.prototype.slice.call(pinned.querySelectorAll('.sv-process-card'));

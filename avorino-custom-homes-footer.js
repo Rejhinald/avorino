@@ -1556,10 +1556,54 @@
     if (!section) return;
 
     var pinned = section.querySelector('.sv-process-pinned');
+
+    /* ── If no pinned container, build carousel from existing rows ── */
     if (!pinned) {
-      // Fallback: simple stagger if HTML hasn't been updated
-      initProcessFallback();
-      return;
+      var rows = Array.prototype.slice.call(section.querySelectorAll('.sv-process-row'));
+      if (!rows.length) { initProcessFallback(); return; }
+
+      /* Create carousel container */
+      pinned = document.createElement('div');
+      pinned.className = 'sv-process-pinned';
+      var _track = document.createElement('div');
+      _track.className = 'sv-process-cards';
+      var _nav = document.createElement('div');
+      _nav.className = 'sv-process-nav';
+
+      /* Transform each row into a card */
+      rows.forEach(function(row) {
+        var num = row.querySelector('.sv-process-num');
+        var title = row.querySelector('.sv-process-title');
+        var desc = row.querySelector('.sv-process-desc');
+        var card = document.createElement('div');
+        card.className = 'sv-process-card';
+        var cardNum = document.createElement('div');
+        cardNum.className = 'sv-process-card-num';
+        cardNum.textContent = num ? 'STEP ' + num.textContent.trim() : '';
+        var cardTitle = document.createElement('h3');
+        cardTitle.className = 'sv-process-card-title';
+        cardTitle.textContent = title ? title.textContent.trim() : '';
+        var cardDesc = document.createElement('p');
+        cardDesc.className = 'sv-process-card-desc';
+        cardDesc.textContent = desc ? desc.textContent.trim() : '';
+        card.appendChild(cardNum);
+        card.appendChild(cardTitle);
+        card.appendChild(cardDesc);
+        _track.appendChild(card);
+      });
+
+      pinned.appendChild(_track);
+      pinned.appendChild(_nav);
+
+      /* Remove old rows and dividers, insert carousel after header */
+      var header = section.querySelector('.sv-process-header');
+      var toRemove = Array.prototype.slice.call(section.querySelectorAll('.sv-process-row, .sv-process-divider'));
+      toRemove.forEach(function(el) { el.remove(); });
+      if (header) {
+        header.insertAdjacentElement('afterend', pinned);
+      } else {
+        section.appendChild(pinned);
+      }
     }
 
     var visualEl = section.querySelector('.sv-process-visual');
