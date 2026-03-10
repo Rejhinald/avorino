@@ -203,6 +203,7 @@
 }
 /* Feature list bullets */
 .sv-type-feature-list {
+  list-style: none; padding: 0; margin: 0;
   position: relative; z-index: 1;
 }
 .sv-type-feature-list li {
