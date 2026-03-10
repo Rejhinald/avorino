@@ -15,7 +15,7 @@ import {
 } from './shared.js';
 
 // ── CDN hash ──
-const CDN = '10abfbe';
+const CDN = '4533be4';
 const HEAD_CODE = [
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
