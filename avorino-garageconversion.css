@@ -619,12 +619,14 @@
     --av-section-pad-y: 80px;
     --av-section-pad-x: 40px;
   }
-  #sv-approach {
+  #sv-approach, #sv-types, #sv-why {
     padding: var(--av-section-pad-y) var(--av-section-pad-x) !important;
   }
   #sv-process {
     width: 100% !important;
     margin-left: 0 !important;
+    padding-left: var(--av-section-pad-x) !important;
+    padding-right: var(--av-section-pad-x) !important;
   }
   .sv-process-card {
     width: 440px !important;
@@ -672,8 +674,12 @@
     --av-section-pad-y: 64px;
     --av-section-pad-x: 24px;
   }
-  #sv-approach {
+  #sv-approach, #sv-types, #sv-why {
     padding: var(--av-section-pad-y) var(--av-section-pad-x) !important;
+  }
+  #sv-process {
+    padding-left: var(--av-section-pad-x) !important;
+    padding-right: var(--av-section-pad-x) !important;
   }
   .sv-content-overlay {
     min-height: 70vh;
@@ -733,8 +739,15 @@
     --av-section-pad-y: 48px;
     --av-section-pad-x: 16px;
   }
-  #sv-approach {
+  #sv-approach, #sv-types, #sv-why {
     padding: var(--av-section-pad-y) var(--av-section-pad-x) !important;
+  }
+  #sv-process {
+    padding-left: var(--av-section-pad-x) !important;
+    padding-right: var(--av-section-pad-x) !important;
+  }
+  .av-cta {
+    padding: var(--av-section-pad-x) !important;
   }
   .sv-content-overlay {
     min-height: 65vh;
