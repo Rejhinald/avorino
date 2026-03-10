@@ -1,0 +1,51 @@
+/* ═══ FREE ESTIMATE PAGE ═══ */
+
+/* Hero */
+#est-hero { min-height: 50vh; display: flex; align-items: center; justify-content: center; position: relative; background: #111; color: #f0ede8; padding: 160px 80px 96px; overflow: hidden; text-align: center; }
+#est-hero .sv-canvas-wrap { position: absolute; inset: 0; z-index: 0; }
+#est-hero .sv-content-overlay { position: relative; z-index: 2; }
+
+/* Est hero content */
+.est-hero-content { max-width: 700px; margin: 0 auto; }
+
+/* Form section - 2 col layout */
+.est-form-section { background: #f0ede8; padding: 96px 80px; }
+.est-form-grid { display: grid; grid-template-columns: 40% 60%; gap: 64px; max-width: 1200px; margin: 0 auto; }
+
+/* Info column (left - sticky) */
+.est-info-col { display: flex; flex-direction: column; position: sticky; top: 160px; align-self: start; }
+.est-info-heading { font-family: 'DM Serif Display', Georgia, serif; font-size: clamp(28px, 3vw, 40px); line-height: 1.08; letter-spacing: -0.02em; font-weight: 400; margin-bottom: 16px; color: #111; }
+.est-info-body { font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.9; opacity: 0.6; color: #111; margin-bottom: 32px; }
+
+/* Divider */
+.est-divider { width: 100%; height: 1px; background: rgba(17,17,17,0.1); margin: 24px 0; }
+
+/* Step items */
+.est-step-item { display: flex; align-items: baseline; gap: 16px; padding: 16px 0; }
+.est-step-num { font-family: 'DM Serif Display', Georgia, serif; font-size: clamp(24px, 2.5vw, 32px); line-height: 1; font-weight: 400; opacity: 0.15; min-width: 32px; color: #111; }
+.est-step-title { font-family: 'DM Serif Display', Georgia, serif; font-size: 16px; line-height: 1.4; font-weight: 400; color: #111; }
+.est-step-note { font-family: 'DM Sans', sans-serif; font-size: 13px; opacity: 0.4; margin-left: auto; color: #111; }
+
+/* Form column */
+.est-form-col { display: flex; flex-direction: column; }
+
+/* ═══ RESPONSIVE ═══ */
+@media (max-width: 991px) {
+  #est-hero { padding: 140px 48px 72px; }
+  .est-form-section { padding: 72px 48px; }
+  .est-form-grid { grid-template-columns: 1fr; gap: 48px; }
+  .est-info-col { position: static; }
+}
+
+@media (max-width: 767px) {
+  #est-hero { padding: 120px 24px 56px; min-height: 40vh; }
+  .est-form-section { padding: 56px 24px; }
+  .est-form-grid { gap: 32px; }
+}
+
+@media (max-width: 478px) {
+  #est-hero { padding: 100px 16px 40px; }
+  .est-form-section { padding: 40px 16px; }
+  .est-step-item { flex-wrap: wrap; }
+  .est-step-note { margin-left: 48px; }
+}

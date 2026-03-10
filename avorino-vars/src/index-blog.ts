@@ -9,13 +9,28 @@ import {
   safeCall, getAvorinVars,
   getOrCreateStyle, clearAndSet, freshStyle,
   createSharedStyles, setSharedStyleProps,
-  createPageWithSlug, buildCTASection, applyCTAStyleProps,
+  createAllVariables, createPageWithSlug,
+  buildCTASection, applyCTAStyleProps,
+  CALENDLY_CSS, CALENDLY_JS,
 } from './shared.js';
 
-// ── CDN hash (auto-updated) ──
-const CDN = 'https://cdn.jsdelivr.net/gh/Rejhinald/avorino@3cf6b06';
-const CALENDLY_CSS = '<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">';
-const CALENDLY_JS = '<script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>';
+// ── CDN hash ──
+const CDN = '819434a';
+const HEAD_CODE = [
+  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
+  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
+  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-blog.css">`,
+  CALENDLY_CSS,
+].join('\n');
+const FOOTER_CODE = [
+  '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
+  '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
+  '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
+  `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-animations.js"><\/script>`,
+  `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-blog-footer.js"><\/script>`,
+  CALENDLY_JS,
+].join('\n');
 
 // ── Blog post data (scraped from Wix) ──
 const BLOG_POSTS = [
@@ -167,7 +182,7 @@ async function populateBlogPosts(collectionId: string, token: string) {
     } catch (err: any) {
       logDetail(`  FAILED ${i + 1}/${BLOG_POSTS.length} — ${post.title}: ${err.message}`, 'err');
     }
-    await wait(300); // rate limit
+    await wait(300);
   }
 
   logDetail('Blog posts populated!', 'ok');
@@ -201,15 +216,23 @@ async function buildBlogPage(v: Record<string, any>, s: Record<string, any>) {
   hero.setTag('section'); hero.setStyles([blogHero]);
   hero.setAttribute('id', 'blog-hero');
 
+  // Three.js canvas container
+  const canvasWrap = hero.append(webflow.elementPresets.DOM);
+  canvasWrap.setTag('div');
+  canvasWrap.setAttribute('id', 'hero-canvas');
+  canvasWrap.setAttribute('class', 'sv-canvas-wrap');
+
+  // Content overlay
   const heroContent = hero.append(webflow.elementPresets.DOM);
   heroContent.setTag('div'); heroContent.setStyles([blogHeroContent]);
+  heroContent.setAttribute('class', 'sv-content-overlay');
 
   // Label with line
   const heroLbl = heroContent.append(webflow.elementPresets.DOM);
   heroLbl.setTag('div'); heroLbl.setStyles([s.label]);
   heroLbl.setAttribute('data-animate', 'fade-up');
   const heroLblTxt = heroLbl.append(webflow.elementPresets.DOM);
-  heroLblTxt.setTag('div'); heroLblTxt.setTextContent('INSIGHTS');
+  heroLblTxt.setTag('div'); heroLblTxt.setTextContent('// Insights');
   const heroLblLine = heroLbl.append(webflow.elementPresets.DOM);
   heroLblLine.setTag('div'); heroLblLine.setStyles([labelLine]);
 
@@ -217,7 +240,7 @@ async function buildBlogPage(v: Record<string, any>, s: Record<string, any>) {
   const heroHeading = heroContent.append(webflow.elementPresets.DOM);
   heroHeading.setTag('h1'); heroHeading.setStyles([s.headingXL]);
   heroHeading.setTextContent('Blog');
-  heroHeading.setAttribute('data-animate', 'fade-up');
+  heroHeading.setAttribute('data-animate', 'word-stagger-elastic');
 
   // Subtitle
   const heroSub = heroContent.append(webflow.elementPresets.DOM);
@@ -227,63 +250,48 @@ async function buildBlogPage(v: Record<string, any>, s: Record<string, any>) {
 
   await safeCall('append:hero', () => body.append(hero));
 
-  // ═══ BLOG GRID (CMS Collection List) ═══
+  // ═══ BLOG GRID ═══
   const gridSection = webflow.elementBuilder(webflow.elementPresets.DOM);
   gridSection.setTag('section'); gridSection.setStyles([blogGridWrap]);
 
-  // Try DynamoWrapper (Collection List) — falls back to static cards if unsupported
-  let usedCMS = false;
-  try {
-    log('Attempting CMS Collection List (DynamoWrapper)...');
-    const dynamo = gridSection.append(webflow.elementPresets.DynamoWrapper);
-    dynamo.setStyles([blogGrid]);
-    logDetail('DynamoWrapper created — bind to Blog Posts collection in Designer', 'ok');
-    usedCMS = true;
-  } catch (err: any) {
-    logDetail(`DynamoWrapper not supported: ${err.message} — using static cards`, 'err');
+  const grid = gridSection.append(webflow.elementPresets.DOM);
+  grid.setTag('div'); grid.setStyles([blogGrid]);
 
-    const grid = gridSection.append(webflow.elementPresets.DOM);
-    grid.setTag('div'); grid.setStyles([blogGrid]);
+  for (const post of BLOG_POSTS) {
+    const card = grid.append(webflow.elementPresets.DOM);
+    card.setTag('a'); card.setStyles([blogCard]);
+    card.setAttribute('href', `/blog-posts/${post.slug}`);
+    card.setAttribute('class', 'blog-card');
 
-    for (const post of BLOG_POSTS) {
-      const card = grid.append(webflow.elementPresets.DOM);
-      card.setTag('a'); card.setStyles([blogCard]);
-      card.setAttribute('href', `/blog-posts/${post.slug}`);
+    const imgWrap = card.append(webflow.elementPresets.DOM);
+    imgWrap.setTag('div'); imgWrap.setStyles([blogCardImgWrap]);
 
-      const imgWrap = card.append(webflow.elementPresets.DOM);
-      imgWrap.setTag('div'); imgWrap.setStyles([blogCardImgWrap]);
+    const img = imgWrap.append(webflow.elementPresets.DOM);
+    img.setTag('img'); img.setStyles([blogCardImg]);
+    img.setAttribute('src', post.image);
+    img.setAttribute('alt', post.title);
 
-      const img = imgWrap.append(webflow.elementPresets.DOM);
-      img.setTag('img'); img.setStyles([blogCardImg]);
-      img.setAttribute('src', post.image);
-      img.setAttribute('alt', post.title);
+    const cardBody = card.append(webflow.elementPresets.DOM);
+    cardBody.setTag('div'); cardBody.setStyles([blogCardBody]);
 
-      const cardBody = card.append(webflow.elementPresets.DOM);
-      cardBody.setTag('div'); cardBody.setStyles([blogCardBody]);
+    const date = cardBody.append(webflow.elementPresets.DOM);
+    date.setTag('p'); date.setStyles([blogCardDate]);
+    date.setTextContent(new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
 
-      const date = cardBody.append(webflow.elementPresets.DOM);
-      date.setTag('p'); date.setStyles([blogCardDate]);
-      date.setTextContent(new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
+    const title = cardBody.append(webflow.elementPresets.DOM);
+    title.setTag('h3'); title.setStyles([blogCardTitle]);
+    title.setTextContent(post.title);
 
-      const title = cardBody.append(webflow.elementPresets.DOM);
-      title.setTag('h3'); title.setStyles([blogCardTitle]);
-      title.setTextContent(post.title);
+    const summary = cardBody.append(webflow.elementPresets.DOM);
+    summary.setTag('p'); summary.setStyles([blogCardSummary]);
+    summary.setTextContent(post.summary);
 
-      const summary = cardBody.append(webflow.elementPresets.DOM);
-      summary.setTag('p'); summary.setStyles([blogCardSummary]);
-      summary.setTextContent(post.summary);
-
-      const readMore = cardBody.append(webflow.elementPresets.DOM);
-      readMore.setTag('span'); readMore.setStyles([blogCardLink]);
-      readMore.setTextContent('Read Article \u2192');
-    }
+    const readMore = cardBody.append(webflow.elementPresets.DOM);
+    readMore.setTag('span'); readMore.setStyles([blogCardLink]);
+    readMore.setTextContent('Read Article \u2192');
   }
 
   await safeCall('append:grid', () => body.append(gridSection));
-
-  if (usedCMS) {
-    log('Collection List added! Now in Designer: select it → connect to "Blog Posts" collection → design the card template inside.', 'info');
-  }
 
   // ═══ CTA ═══
   await buildCTASection(body, v, 'Ready to Build Your Dream Home?', 'Get a Free Estimate', '/free-estimate');
@@ -302,7 +310,7 @@ async function buildBlogPage(v: Record<string, any>, s: Record<string, any>) {
   });
 
   await clearAndSet(await freshStyle('blog-hero-content'), 'blog-hero-content', {
-    'max-width': '800px',
+    'max-width': '800px', 'position': 'relative', 'z-index': '2',
   });
 
   await clearAndSet(await freshStyle('blog-hero-subtitle'), 'blog-hero-subtitle', {
@@ -400,7 +408,6 @@ async function buildBlogTemplate(v: Record<string, any>, s: Record<string, any>)
   const allElements: any[] = await safeCall('getAllElements', () => webflow.getAllElements());
   const body = allElements[0];
 
-  // Guard: prevent duplicate builds
   const children = await body.getChildren();
   if (children && children.length > 0) {
     log('Page already has content — undo first or use a blank page.');
@@ -409,7 +416,6 @@ async function buildBlogTemplate(v: Record<string, any>, s: Record<string, any>)
 
   logDetail(`Got body element (${allElements.length} elements on page)`, 'ok');
 
-  // ── Create template-specific styles ──
   const btHero = await getOrCreateStyle('bt-hero');
   const btHeroInner = await getOrCreateStyle('bt-hero-inner');
   const btLabel = await getOrCreateStyle('bt-label');
@@ -427,7 +433,6 @@ async function buildBlogTemplate(v: Record<string, any>, s: Record<string, any>)
   const btBackLink = await getOrCreateStyle('bt-back-link');
   const btDivider = await getOrCreateStyle('bt-divider');
 
-  // ═══ SECTION 1: HERO ═══
   log('Building hero section...');
   const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
   hero.setTag('section'); hero.setStyles([btHero]);
@@ -435,24 +440,20 @@ async function buildBlogTemplate(v: Record<string, any>, s: Record<string, any>)
   const heroInner = hero.append(webflow.elementPresets.DOM);
   heroInner.setTag('div'); heroInner.setStyles([btHeroInner]);
 
-  // Label with line
   const labelRow = heroInner.append(webflow.elementPresets.DOM);
   labelRow.setTag('div'); labelRow.setStyles([btLabel]);
   const labelTxt = labelRow.append(webflow.elementPresets.DOM);
   labelTxt.setTag('div'); labelTxt.setTextContent('BLOG');
-  const labelLine = labelRow.append(webflow.elementPresets.DOM);
-  labelLine.setTag('div'); labelLine.setStyles([btLabelLine]);
+  const labelLine2 = labelRow.append(webflow.elementPresets.DOM);
+  labelLine2.setTag('div'); labelLine2.setStyles([btLabelLine]);
 
-  // Title — bind to CMS "Name"
   const title = heroInner.append(webflow.elementPresets.DOM);
   title.setTag('h1'); title.setStyles([btTitle]);
   title.setTextContent('Blog Post Title');
 
-  // Meta row
   const meta = heroInner.append(webflow.elementPresets.DOM);
   meta.setTag('div'); meta.setStyles([btMeta]);
 
-  // Author — bind "Author Name" span to CMS "Author"
   const authorWrap = meta.append(webflow.elementPresets.DOM);
   authorWrap.setTag('div'); authorWrap.setStyles([btMetaItem]);
   const authorLbl = authorWrap.append(webflow.elementPresets.DOM);
@@ -462,12 +463,10 @@ async function buildBlogTemplate(v: Record<string, any>, s: Record<string, any>)
   authorVal.setTag('span'); authorVal.setStyles([btMetaValue]);
   authorVal.setTextContent('Author Name');
 
-  // Divider dot
   const dot = meta.append(webflow.elementPresets.DOM);
   dot.setTag('span'); dot.setStyles([btMetaLabel]);
   dot.setTextContent('\u00B7');
 
-  // Date — bind "January 1, 2025" span to CMS "Publish Date"
   const dateWrap = meta.append(webflow.elementPresets.DOM);
   dateWrap.setTag('div'); dateWrap.setStyles([btMetaItem]);
   const dateLbl = dateWrap.append(webflow.elementPresets.DOM);
@@ -480,12 +479,10 @@ async function buildBlogTemplate(v: Record<string, any>, s: Record<string, any>)
   await safeCall('append:hero', () => body.append(hero));
   logDetail('Hero section appended', 'ok');
 
-  // ═══ SECTION 2: FEATURED IMAGE ═══
   log('Building featured image section...');
   const imgSection = webflow.elementBuilder(webflow.elementPresets.DOM);
   imgSection.setTag('section'); imgSection.setStyles([btImgWrap]);
 
-  // Try native Image preset, fall back to placeholder div
   try {
     const img = imgSection.append(webflow.elementPresets.Image);
     img.setStyles([btFeaturedImg]);
@@ -495,9 +492,7 @@ async function buildBlogTemplate(v: Record<string, any>, s: Record<string, any>)
   }
 
   await safeCall('append:img', () => body.append(imgSection));
-  logDetail('Featured image section appended', 'ok');
 
-  // ═══ SECTION 3: ARTICLE BODY ═══
   log('Building article body section...');
   const article = webflow.elementBuilder(webflow.elementPresets.DOM);
   article.setTag('section'); article.setStyles([btArticle]);
@@ -505,7 +500,6 @@ async function buildBlogTemplate(v: Record<string, any>, s: Record<string, any>)
   const articleInner = article.append(webflow.elementPresets.DOM);
   articleInner.setTag('div'); articleInner.setStyles([btArticleInner]);
 
-  // Try native RichText preset, fall back to div
   try {
     const richText = articleInner.append(webflow.elementPresets.RichText);
     richText.setStyles([btRichText]);
@@ -514,24 +508,19 @@ async function buildBlogTemplate(v: Record<string, any>, s: Record<string, any>)
     logDetail('RichText preset not supported — drag Rich Text into bt-article-inner in Designer', 'err');
   }
 
-  // Divider
   const divider = articleInner.append(webflow.elementPresets.DOM);
   divider.setTag('div'); divider.setStyles([btDivider]);
 
-  // Back to blog link
   const backLink = articleInner.append(webflow.elementPresets.DOM);
   backLink.setTag('a'); backLink.setStyles([btBackLink]);
   backLink.setTextContent('\u2190 Back to Blog');
   backLink.setAttribute('href', '/blog');
 
   await safeCall('append:article', () => body.append(article));
-  logDetail('Article body section appended', 'ok');
 
-  // ═══ SECTION 4: CTA ═══
   log('Building CTA section...');
   await buildCTASection(body, v, 'Ready to Build Your Dream Home?', 'Get a Free Estimate', '/free-estimate');
 
-  // ═══ APPLY STYLE PROPERTIES ═══
   log('Applying template style properties...');
 
   await clearAndSet(await freshStyle('bt-hero'), 'bt-hero', {
@@ -637,19 +626,6 @@ async function buildBlogTemplate(v: Record<string, any>, s: Record<string, any>)
   log('Blog post template built! Now bind CMS fields to each element.', 'success');
 }
 
-// ── Head / Footer output ──
-const HEAD_CODE = [
-  `<link rel="stylesheet" href="${CDN}/avorino-responsive.css">`,
-  `<link rel="stylesheet" href="${CDN}/avorino-nav-footer.css">`,
-  `<link rel="stylesheet" href="${CDN}/avorino-blog.css">`,
-  CALENDLY_CSS,
-].join('\n');
-
-const FOOTER_CODE = [
-  `<script src="${CDN}/avorino-blog.js"></script>`,
-  CALENDLY_JS,
-].join('\n');
-
 // ── UI: Add template builder + API token input ──
 function addExtraUI() {
   const statusEl = document.getElementById('status')!;
@@ -669,10 +645,31 @@ function addExtraUI() {
   statusEl.parentNode!.insertBefore(extraUI, statusEl);
 }
 
-// ── Init ──
-const pageName = document.getElementById('page-name')!;
-pageName.textContent = 'Blog';
+// ── Panel UI ──
+document.getElementById('page-name')!.textContent = 'Blog';
+const headCodeEl = document.getElementById('head-code');
+const footerCodeEl = document.getElementById('footer-code');
+if (headCodeEl) headCodeEl.textContent = HEAD_CODE;
+if (footerCodeEl) footerCodeEl.textContent = FOOTER_CODE;
 addExtraUI();
+
+// ── Event listeners ──
+document.getElementById('inject-btn')?.addEventListener('click', async () => {
+  const btn = document.getElementById('inject-btn') as HTMLButtonElement;
+  btn.disabled = true;
+  try { await createAllVariables(); } catch (err: any) { log(`Error: ${err.message || err}`, 'error'); } finally { btn.disabled = false; }
+});
+
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const type = (btn as HTMLElement).dataset.copy;
+    let text = type === 'head' ? HEAD_CODE : type === 'footer' ? FOOTER_CODE : '';
+    navigator.clipboard.writeText(text).then(() => {
+      (btn as HTMLElement).textContent = 'Copied!';
+      setTimeout(() => { (btn as HTMLElement).textContent = 'Copy'; }, 2000);
+    });
+  });
+});
 
 // Build template button (for Blog Posts Template page)
 document.getElementById('build-template')?.addEventListener('click', async () => {
@@ -680,23 +677,13 @@ document.getElementById('build-template')?.addEventListener('click', async () =>
   try {
     log('Loading variables...', 'info');
     const v = await getAvorinVars();
-
     log('Creating shared styles...', 'info');
     const s = await createSharedStyles();
-
     log('Setting shared style properties...', 'info');
     await setSharedStyleProps(s, v);
-
     await buildBlogTemplate(v, s);
-
-    // Show head/footer code
-    const headEl = document.getElementById('head-code');
-    const footerEl = document.getElementById('footer-code');
-    if (headEl) headEl.textContent = HEAD_CODE;
-    if (footerEl) footerEl.textContent = FOOTER_CODE;
   } catch (err: any) {
     log(`Template error: ${err.message}`, 'error');
-    logDetail(`Template error: ${err.message}`, 'err');
   }
 });
 
@@ -714,53 +701,31 @@ document.getElementById('migrate-cms')?.addEventListener('click', async () => {
   try {
     log('Creating CMS collection...', 'info');
     const collectionId = await createBlogCollection(siteId, token);
-
     log('Populating blog posts...', 'info');
     await populateBlogPosts(collectionId, token);
-
     log('CMS migration complete!', 'success');
   } catch (err: any) {
     log(`CMS Error: ${err.message}`, 'error');
-    logDetail(`CMS Error: ${err.message}`, 'err');
   }
 });
 
 // Build page button
 document.getElementById('build-page')?.addEventListener('click', async () => {
+  const btn = document.getElementById('build-page') as HTMLButtonElement;
+  btn.disabled = true;
   clearErrorLog();
   try {
     log('Loading variables...', 'info');
     const v = await getAvorinVars();
-
     log('Creating shared styles...', 'info');
     const s = await createSharedStyles();
-
     log('Setting shared style properties...', 'info');
     await setSharedStyleProps(s, v);
-
     await buildBlogPage(v, s);
-
-    // Show head/footer code
-    const headEl = document.getElementById('head-code');
-    const footerEl = document.getElementById('footer-code');
-    if (headEl) headEl.textContent = HEAD_CODE;
-    if (footerEl) footerEl.textContent = FOOTER_CODE;
-
-    log('Blog page built! See custom code below.', 'success');
+    log('Blog page built!', 'success');
+    await webflow.notify({ type: 'Success', message: 'Blog page created!' });
   } catch (err: any) {
-    log(`Build error: ${err.message}`, 'error');
-    logDetail(`Build error: ${err.message}`, 'err');
-  }
-});
-
-// Variable injection
-document.getElementById('inject-btn')?.addEventListener('click', async () => {
-  clearErrorLog();
-  try {
-    const { createAllVariables } = await import('./shared');
-    await createAllVariables();
-    log('Variables created!', 'success');
-  } catch (err: any) {
-    log(`Error: ${err.message}`, 'error');
-  }
+    log(`Error: ${err.message || err}`, 'error');
+    await webflow.notify({ type: 'Error', message: `Failed: ${err.message || err}` });
+  } finally { btn.disabled = false; }
 });
