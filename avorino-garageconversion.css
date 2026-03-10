@@ -231,6 +231,7 @@
   overflow: hidden;
   width: 100vw;
   margin-left: calc(-50vw + 50%);
+  box-sizing: border-box;
 }
 #sv-process .sv-process-header {
   text-align: center;
