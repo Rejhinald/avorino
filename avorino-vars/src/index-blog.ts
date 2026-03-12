@@ -452,14 +452,26 @@ async function buildBlogTemplate(v: Record<string, any>, s: Record<string, any>)
   const btDivider = await getOrCreateStyle('bt-divider');
 
   log('Building hero section...');
+  const svCanvasWrap = await getOrCreateStyle('sv-canvas-wrap');
+
   const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
   hero.setTag('section'); hero.setStyles([btHero]);
+  hero.setAttribute('class', 'bt-hero');
+
+  // Three.js canvas container
+  const heroCanvas = hero.append(webflow.elementPresets.DOM);
+  heroCanvas.setTag('div'); heroCanvas.setStyles([svCanvasWrap]);
+  heroCanvas.setAttribute('id', 'hero-canvas');
+  heroCanvas.setAttribute('class', 'sv-canvas-wrap');
 
   const heroInner = hero.append(webflow.elementPresets.DOM);
   heroInner.setTag('div'); heroInner.setStyles([btHeroInner]);
+  heroInner.setAttribute('class', 'bt-hero-inner');
 
   const labelRow = heroInner.append(webflow.elementPresets.DOM);
   labelRow.setTag('div'); labelRow.setStyles([btLabel]);
+  labelRow.setAttribute('class', 'bt-label');
+  labelRow.setAttribute('data-animate', 'fade-up');
   const labelTxt = labelRow.append(webflow.elementPresets.DOM);
   labelTxt.setTag('div'); labelTxt.setTextContent('BLOG');
   const labelLine2 = labelRow.append(webflow.elementPresets.DOM);
@@ -468,9 +480,13 @@ async function buildBlogTemplate(v: Record<string, any>, s: Record<string, any>)
   const title = heroInner.append(webflow.elementPresets.DOM);
   title.setTag('h1'); title.setStyles([btTitle]);
   title.setTextContent('Blog Post Title');
+  title.setAttribute('class', 'bt-title');
+  title.setAttribute('data-animate', 'word-stagger-elastic');
 
   const meta = heroInner.append(webflow.elementPresets.DOM);
   meta.setTag('div'); meta.setStyles([btMeta]);
+  meta.setAttribute('class', 'bt-meta');
+  meta.setAttribute('data-animate', 'fade-up');
 
   const authorWrap = meta.append(webflow.elementPresets.DOM);
   authorWrap.setTag('div'); authorWrap.setStyles([btMetaItem]);
@@ -500,10 +516,13 @@ async function buildBlogTemplate(v: Record<string, any>, s: Record<string, any>)
   log('Building featured image section...');
   const imgSection = webflow.elementBuilder(webflow.elementPresets.DOM);
   imgSection.setTag('section'); imgSection.setStyles([btImgWrap]);
+  imgSection.setAttribute('class', 'bt-img-wrap');
 
   try {
     const img = imgSection.append(webflow.elementPresets.Image);
     img.setStyles([btFeaturedImg]);
+    img.setAttribute('class', 'bt-featured-img');
+    img.setAttribute('data-animate', 'fade-up');
     logDetail('Native Image element created — bind to CMS "Featured Image"', 'ok');
   } catch (_e) {
     logDetail('Image preset not supported — drag Image into bt-img-wrap in Designer', 'err');
@@ -517,10 +536,12 @@ async function buildBlogTemplate(v: Record<string, any>, s: Record<string, any>)
 
   const articleInner = article.append(webflow.elementPresets.DOM);
   articleInner.setTag('div'); articleInner.setStyles([btArticleInner]);
+  articleInner.setAttribute('class', 'bt-article-inner');
 
   try {
     const richText = articleInner.append(webflow.elementPresets.RichText);
     richText.setStyles([btRichText]);
+    richText.setAttribute('class', 'bt-rich-text');
     logDetail('Native RichText element created — bind to CMS "Post Body"', 'ok');
   } catch (_e) {
     logDetail('RichText preset not supported — drag Rich Text into bt-article-inner in Designer', 'err');
@@ -528,11 +549,13 @@ async function buildBlogTemplate(v: Record<string, any>, s: Record<string, any>)
 
   const divider = articleInner.append(webflow.elementPresets.DOM);
   divider.setTag('div'); divider.setStyles([btDivider]);
+  divider.setAttribute('class', 'bt-divider');
 
   const backLink = articleInner.append(webflow.elementPresets.DOM);
   backLink.setTag('a'); backLink.setStyles([btBackLink]);
   backLink.setTextContent('\u2190 Back to Blog');
   backLink.setAttribute('href', '/blog');
+  backLink.setAttribute('class', 'bt-back-link');
 
   await safeCall('append:article', () => body.append(article));
 
