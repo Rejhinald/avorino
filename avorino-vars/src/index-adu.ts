@@ -243,7 +243,7 @@ async function buildADUPage() {
     });
     await clearAndSet(await freshStyle('adu-tl-svg'), 'adu-tl-svg', {
       'position': 'absolute', 'left': '20px', 'top': '0px',
-      'height': '100%', 'width': '2px', 'overflow': 'visible',
+      'height': '100%', 'width': '2px', 'overflow-x': 'visible', 'overflow-y': 'visible',
     });
     await clearAndSet(await freshStyle('adu-tl-step'), 'adu-tl-step', {
       'position': 'relative', 'padding-bottom': '80px',

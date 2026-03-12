@@ -101,7 +101,7 @@ async function buildEstimatePage() {
       'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
       'background-color': v['av-dark'], 'color': v['av-cream'],
-      'text-align': 'center', 'position': 'relative', 'overflow': 'hidden',
+      'text-align': 'center', 'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
     await clearAndSet(await freshStyle('sv-canvas-wrap'), 'sv-canvas-wrap', {
       'position': 'absolute', 'top': '0px', 'left': '0px',

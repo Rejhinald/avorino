@@ -359,7 +359,7 @@
     /* Background: particle field morphs per step */
     var PDOTS = 44;
     var pCanvas = document.createElement('canvas');
-    pCanvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;';
+    pCanvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;';
     section.insertBefore(pCanvas, section.firstChild);
     var pw = section.clientWidth  || window.innerWidth;
     var ph = section.clientHeight || window.innerHeight;

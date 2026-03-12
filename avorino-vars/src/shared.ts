@@ -957,22 +957,22 @@ export async function buildServicePage(data: ServiceData) {
       'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
       'background-color': v['av-dark'], 'color': v['av-cream'],
-      'min-height': '100vh', 'display': 'flex', 'flex-direction': 'column',
-      'position': 'relative', 'overflow': 'hidden',
+      'min-height': '100vh', 'display': 'flex', 'flex-direction': 'column', 'align-items': 'center',
+      'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
     await clearAndSet(await freshStyle('sv-process-steps'), 'sv-process-steps', {
       'position': 'relative', 'width': '100%', 'max-width': '1100px',
-      'flex': '1', 'margin-left': 'auto', 'margin-right': 'auto',
-      'border-top': '1px solid rgba(240,237,232,0.08)',
-      'border-bottom': '1px solid rgba(240,237,232,0.08)',
+      'flex-grow': '1', 'flex-shrink': '1', 'flex-basis': 'auto',
+      'margin-left': 'auto', 'margin-right': 'auto',
+      'border-top-width': '1px', 'border-top-style': 'solid', 'border-top-color': 'rgba(240,237,232,0.08)',
+      'border-bottom-width': '1px', 'border-bottom-style': 'solid', 'border-bottom-color': 'rgba(240,237,232,0.08)',
     });
     await clearAndSet(await freshStyle('sv-process-step'), 'sv-process-step', {
       'display': 'grid', 'grid-template-columns': '80px 1fr 160px',
       'grid-column-gap': '48px', 'padding-top': '48px', 'padding-bottom': '48px',
       'align-items': 'center', 'position': 'absolute', 'top': '50%',
       'left': '0', 'width': '100%', 'opacity': '0',
-      'transform': 'translateY(calc(-50% + 24px))',
-      'transition': 'opacity 0.5s ease, transform 0.5s ease',
+      'transition-property': 'opacity', 'transition-duration': '0.5s', 'transition-timing-function': 'ease',
       'pointer-events': 'none',
     });
     await clearAndSet(await freshStyle('sv-process-step-num'), 'sv-process-step-num', {
@@ -981,7 +981,7 @@ export async function buildServicePage(data: ServiceData) {
       'color': 'rgba(240,237,232,0.28)',
     });
     await clearAndSet(await freshStyle('sv-process-step-body'), 'sv-process-step-body', {
-      'display': 'flex', 'flex-direction': 'column', 'row-gap': '10px',
+      'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '10px',
     });
     await clearAndSet(await freshStyle('sv-process-step-title'), 'sv-process-step-title', {
       'font-family': 'DM Serif Display', 'font-size': '28px',
@@ -999,13 +999,11 @@ export async function buildServicePage(data: ServiceData) {
     });
     await clearAndSet(await freshStyle('sv-process-bar-track'), 'sv-process-bar-track', {
       'position': 'absolute', 'top': '50%', 'left': '0', 'right': '0',
-      'height': '1px', 'background': 'rgba(240,237,232,0.08)',
-      'transform': 'translateY(-50%)',
+      'height': '1px', 'background-color': 'rgba(240,237,232,0.08)',
     });
     await clearAndSet(await freshStyle('sv-process-bar-fill'), 'sv-process-bar-fill', {
       'position': 'absolute', 'top': '50%', 'left': '0', 'right': '0',
-      'height': '1px', 'background': v['av-red'], 'opacity': '0.5',
-      'transform': 'translateY(-50%) scaleX(0)', 'transform-origin': 'left center',
+      'height': '1px', 'background-color': '#c8222a', 'opacity': '0.5',
     });
     await clearAndSet(await freshStyle('sv-process-bar-dots'), 'sv-process-bar-dots', {
       'position': 'relative', 'width': '100%',
@@ -1013,8 +1011,12 @@ export async function buildServicePage(data: ServiceData) {
     });
     await clearAndSet(await freshStyle('sv-process-bar-dot'), 'sv-process-bar-dot', {
       'position': 'relative', 'width': '10px', 'height': '10px',
-      'border-radius': '50%', 'border': '1.5px solid rgba(240,237,232,0.15)',
-      'background': v['av-dark'], 'z-index': '1',
+      'border-radius': '50%',
+      'border-top-width': '1.5px', 'border-top-style': 'solid', 'border-top-color': 'rgba(240,237,232,0.15)',
+      'border-right-width': '1.5px', 'border-right-style': 'solid', 'border-right-color': 'rgba(240,237,232,0.15)',
+      'border-bottom-width': '1.5px', 'border-bottom-style': 'solid', 'border-bottom-color': 'rgba(240,237,232,0.15)',
+      'border-left-width': '1.5px', 'border-left-style': 'solid', 'border-left-color': 'rgba(240,237,232,0.15)',
+      'background-color': '#111111', 'z-index': '1',
     });
     await wait(500);
 
