@@ -529,332 +529,145 @@
   }
 
   /* ═══════════════════════════════════════════════
-     PROCESS SECTION — Scroll-Locked Carousel
-     with simple rotating wireframe in .sv-process-visual
+     PROCESS SECTION — Simple Animated Steps
+     GSAP stagger fade-up, no scroll lock, no Three.js
      ═══════════════════════════════════════════════ */
-  var procScene, procCamera, procRenderer, procAnimId;
-  var procCurrentStep = -1;
-  var isMobileProc = window.innerWidth < 992;
-
-  /* ── Three.js Scene for Process Section: rotating wireframe polyhedron ── */
-  function createProcessScene(canvas) {
-    procScene = new THREE.Scene();
-
-    procRenderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-    procRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    procRenderer.setClearColor(0x000000, 0);
-
-    var parent = canvas.parentElement;
-    var w = parent.clientWidth, h = parent.clientHeight;
-    procRenderer.setSize(w, h, false);
-
-    procCamera = new THREE.PerspectiveCamera(50, w / h, 0.1, 200);
-    procCamera.position.set(0, 0, 8);
-    procCamera.lookAt(0, 0, 0);
-
-    // Wireframe icosahedron — elegant geometric shape
-    var icoGeo = new THREE.IcosahedronGeometry(2.5, 1);
-    var wireframeMat = new THREE.MeshBasicMaterial({
-      color: 0xc9a96e,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.25
-    });
-    var wireframe = new THREE.Mesh(icoGeo, wireframeMat);
-    procScene.add(wireframe);
-
-    // Inner smaller icosahedron rotating opposite direction
-    var innerGeo = new THREE.IcosahedronGeometry(1.4, 0);
-    var innerMat = new THREE.MeshBasicMaterial({
-      color: 0xc8222a,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.15
-    });
-    var innerMesh = new THREE.Mesh(innerGeo, innerMat);
-    procScene.add(innerMesh);
-
-    // Ambient glow points
-    var glowGeo = new THREE.BufferGeometry();
-    var glowCount = 30;
-    var glowPos = new Float32Array(glowCount * 3);
-    for (var i = 0; i < glowCount; i++) {
-      var theta = Math.random() * Math.PI * 2;
-      var phi = Math.acos(2 * Math.random() - 1);
-      var r = 3.2 + Math.random() * 1.5;
-      glowPos[i * 3]     = r * Math.sin(phi) * Math.cos(theta);
-      glowPos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-      glowPos[i * 3 + 2] = r * Math.cos(phi);
-    }
-    glowGeo.setAttribute('position', new THREE.BufferAttribute(glowPos, 3));
-    var glowMat = new THREE.PointsMaterial({
-      color: 0xc9a96e,
-      size: 0.08,
-      transparent: true,
-      opacity: 0.4,
-      blending: THREE.AdditiveBlending
-    });
-    var glowPoints = new THREE.Points(glowGeo, glowMat);
-    procScene.add(glowPoints);
-
-    function procAnimate() {
-      procAnimId = requestAnimationFrame(procAnimate);
-      wireframe.rotation.x += 0.003;
-      wireframe.rotation.y += 0.005;
-      innerMesh.rotation.x -= 0.004;
-      innerMesh.rotation.y -= 0.003;
-      glowPoints.rotation.y += 0.001;
-
-      var pCanvas = procRenderer.domElement;
-      var pParent = pCanvas.parentElement;
-      if (pParent) {
-        var pw = pParent.clientWidth, ph = pParent.clientHeight;
-        if (pCanvas.width !== pw || pCanvas.height !== ph) {
-          procRenderer.setSize(pw, ph, false);
-          procCamera.aspect = pw / ph;
-          procCamera.updateProjectionMatrix();
-        }
-      }
-      procRenderer.render(procScene, procCamera);
-    }
-    procAnimate();
-  }
-
-  /* ── Nav dots + progress bar ── */
-  function buildNavDots(navEl, count) {
-    navEl.innerHTML = '';
-    var counter = document.createElement('div');
-    counter.className = 'sv-process-counter';
-    var curr = document.createElement('span');
-    curr.className = 'sv-process-counter-current';
-    curr.textContent = '01';
-    var sep = document.createElement('span');
-    sep.className = 'sv-process-counter-sep';
-    sep.textContent = '/';
-    var tot = document.createElement('span');
-    tot.className = 'sv-process-counter-total';
-    tot.textContent = count < 10 ? '0' + count : String(count);
-    counter.appendChild(curr);
-    counter.appendChild(sep);
-    counter.appendChild(tot);
-    navEl.appendChild(counter);
-
-    var track = document.createElement('div');
-    track.className = 'sv-process-track';
-    var fill = document.createElement('div');
-    fill.className = 'sv-process-fill';
-    track.appendChild(fill);
-    navEl.appendChild(track);
-  }
-
-  function updateNavDots(navEl, idx) {
-    var curr = navEl.querySelector('.sv-process-counter-current');
-    if (curr) curr.textContent = idx < 9 ? '0' + (idx + 1) : String(idx + 1);
-  }
-  function updateProgressBar(navEl, progress) {
-    var fill = navEl.querySelector('.sv-process-fill');
-    if (fill) fill.style.width = (progress * 100).toFixed(1) + '%';
-  }
-
-  /* ── Card transitions ── */
-  var cardPositions = [
-    { side: 'left', enterFrom: 'left' },
-    { side: 'right', enterFrom: 'right' },
-    { side: 'left', enterFrom: 'left' },
-    { side: 'right', enterFrom: 'right' },
-    { side: 'left', enterFrom: 'left' },
-    { side: 'right', enterFrom: 'right' },
-  ];
-
-  function getCardOffset() {
-    var el = document.querySelector('.sv-process-pinned');
-    var cw = el ? el.clientWidth : window.innerWidth;
-    var cardW = 420;
-    var margin = Math.max(40, cw * 0.04);
-    return (cw / 2) - (cardW / 2) - margin;
-  }
-
-  function getCardX(pos) {
-    var offset = getCardOffset();
-    if (pos.side === 'left') return -offset;
-    if (pos.side === 'right') return offset;
-    return 0;
-  }
-
-  function transitionToStep(cards, idx, navEl) {
-    if (idx === procCurrentStep) return;
-    var prevIdx = procCurrentStep;
-    procCurrentStep = idx;
-
-    var pos = cardPositions[idx] || cardPositions[0];
-    var targetX = getCardX(pos);
-
-    cards.forEach(function(card, i) {
-      if (i === idx) {
-        var ch = card.children;
-        for (var c = 0; c < ch.length; c++) {
-          gsap.set(ch[c], { opacity: 0, y: 15 });
-        }
-        var enterX = targetX;
-        if (pos.enterFrom === 'left') enterX -= 80;
-        else if (pos.enterFrom === 'right') enterX += 80;
-
-        gsap.set(card, { opacity: 0, xPercent: -50, yPercent: -50, x: enterX, y: 0, scale: 0.96 });
-        gsap.to(card, { opacity: 1, x: targetX, y: 0, scale: 1, duration: 0.7, ease: 'expo.out', overwrite: true });
-
-        for (var c = 0; c < ch.length; c++) {
-          gsap.to(ch[c], { opacity: 1, y: 0, duration: 0.45, ease: 'power3.out', delay: 0.12 + c * 0.1 });
-        }
-      } else if (i === prevIdx) {
-        var exitDir = i < idx ? -1 : 1;
-        gsap.to(card, { opacity: 0, y: exitDir * 30, scale: 0.97, duration: 0.4, ease: 'power3.in', overwrite: true });
-      } else {
-        gsap.set(card, { opacity: 0, xPercent: -50, yPercent: -50 });
-      }
-    });
-
-    updateNavDots(navEl, idx);
-  }
-
-  /* ═══ INIT PROCESS SECTION ═══ */
-  function initProcessTimeline() {
+  function initProcess() {
     var section = document.getElementById('sv-process');
     if (!section) return;
+    var steps   = Array.prototype.slice.call(section.querySelectorAll('.sv-process-step'));
+    var dots    = Array.prototype.slice.call(section.querySelectorAll('.sv-process-bar-dot'));
+    var barFill = section.querySelector('.sv-process-bar-fill');
+    if (!steps.length) return;
+    var total = steps.length;
+    var current = -1;
 
-    var pinned = section.querySelector('.sv-process-pinned');
+    /* Background: particle field morphs per step */
+    var PDOTS = 44;
+    var pCanvas = document.createElement('canvas');
+    pCanvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;';
+    section.insertBefore(pCanvas, section.firstChild);
+    var pw = section.clientWidth  || window.innerWidth;
+    var ph = section.clientHeight || window.innerHeight;
+    var pScene    = new THREE.Scene();
+    var pCam      = new THREE.OrthographicCamera(-pw/2, pw/2, ph/2, -ph/2, -1, 1);
+    var pRenderer = new THREE.WebGLRenderer({ canvas: pCanvas, antialias: false, alpha: true });
+    pRenderer.setSize(pw, ph);
+    pRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    pRenderer.setClearColor(0x000000, 0);
 
-    /* ── If no pinned container, build carousel from existing rows ── */
-    if (!pinned) {
-      var rows = Array.prototype.slice.call(section.querySelectorAll('.sv-process-row'));
-      if (!rows.length) { initProcessFallback(); return; }
-
-      /* Create carousel container */
-      pinned = document.createElement('div');
-      pinned.className = 'sv-process-pinned';
-      var _track = document.createElement('div');
-      _track.className = 'sv-process-cards';
-      var _nav = document.createElement('div');
-      _nav.className = 'sv-process-nav';
-
-      /* Transform each row into a card */
-      rows.forEach(function(row) {
-        var num = row.querySelector('.sv-process-num');
-        var title = row.querySelector('.sv-process-title');
-        var desc = row.querySelector('.sv-process-desc');
-        var card = document.createElement('div');
-        card.className = 'sv-process-card';
-        var cardNum = document.createElement('div');
-        cardNum.className = 'sv-process-card-num';
-        cardNum.textContent = num ? 'STEP ' + num.textContent.trim() : '';
-        var cardTitle = document.createElement('h3');
-        cardTitle.className = 'sv-process-card-title';
-        cardTitle.textContent = title ? title.textContent.trim() : '';
-        var cardDesc = document.createElement('p');
-        cardDesc.className = 'sv-process-card-desc';
-        cardDesc.textContent = desc ? desc.textContent.trim() : '';
-        card.appendChild(cardNum);
-        card.appendChild(cardTitle);
-        card.appendChild(cardDesc);
-        _track.appendChild(card);
-      });
-
-      /* Create visual container for 3D scene */
-      var _visual = document.createElement('div');
-      _visual.className = 'sv-process-visual';
-      pinned.appendChild(_visual);
-      pinned.appendChild(_track);
-      pinned.appendChild(_nav);
-
-      /* Remove old rows and dividers, insert carousel after header */
-      var header = section.querySelector('.sv-process-header');
-      var toRemove = Array.prototype.slice.call(section.querySelectorAll('.sv-process-row, .sv-process-divider'));
-      toRemove.forEach(function(el) { el.remove(); });
-      if (header) {
-        header.insertAdjacentElement('afterend', pinned);
-      } else {
-        section.appendChild(pinned);
-      }
-    }
-
-    var visualEl = section.querySelector('.sv-process-visual');
-    var cardsWrap = section.querySelector('.sv-process-cards');
-    var navEl = section.querySelector('.sv-process-nav');
-    var cards = section.querySelectorAll('.sv-process-card');
-    if (!cards.length) return;
-
-    var totalSteps = cards.length;
-
-    // Build nav
-    if (navEl) buildNavDots(navEl, totalSteps);
-
-    // Initialize cards
-    var firstPos = cardPositions[0] || { side: 'left', enterFrom: 'left' };
-    var firstX = getCardX(firstPos);
-    cards.forEach(function(card, i) {
-      if (i === 0) {
-        gsap.set(card, { opacity: 1, xPercent: -50, yPercent: -50, x: firstX, y: 0, scale: 1 });
-      } else {
-        gsap.set(card, { opacity: 0, xPercent: -50, yPercent: -50 });
-      }
-    });
-    procCurrentStep = 0;
-
-    // Create 3D scene (desktop only)
-    if (!isMobileProc && typeof THREE !== 'undefined' && visualEl) {
-      visualEl.style.backgroundColor = '#0B0E18';
-      var canvas = document.createElement('canvas');
-      canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;';
-      visualEl.appendChild(canvas);
-      createProcessScene(canvas);
-    }
-
-    if (!isMobileProc) {
-      var stepFrac = 1 / (totalSteps - 1);
-
-      ScrollTrigger.create({
-        trigger: pinned,
-        start: 'top top',
-        end: '+=' + (window.innerHeight * totalSteps * 2),
-        pin: true,
-        scrub: 0.5,
-        onUpdate: function(self) {
-          var progress = self.progress;
-          var step = Math.round(progress * (totalSteps - 1));
-          step = Math.max(0, Math.min(totalSteps - 1, step));
-
-          transitionToStep(cards, step, navEl);
-          updateProgressBar(navEl, progress);
+    function genConfig(si) {
+      var cfg = new Float32Array(PDOTS * 2);
+      var cols, rows, maxRow, a, r;
+      for (var i = 0; i < PDOTS; i++) {
+        var x = 0, y = 0;
+        switch (si % 5) {
+          case 0:
+            x = Math.sin(i * 2.3999) * 0.48 * pw * 0.42;
+            y = Math.cos(i * 1.6180) * 0.48 * ph * 0.32; break;
+          case 1:
+            cols = 8; rows = Math.ceil(PDOTS / cols);
+            x = ((i % cols) / (cols - 1) - 0.5) * pw * 0.58;
+            y = (Math.floor(i / cols) / (rows - 1) - 0.5) * ph * 0.38; break;
+          case 2:
+            a = (i / PDOTS) * Math.PI * 2;
+            r = Math.min(pw, ph) * 0.25;
+            x = Math.cos(a) * r; y = Math.sin(a) * r; break;
+          case 3:
+            cols = 5; maxRow = Math.floor(PDOTS / cols);
+            x = ((i % cols) / (cols - 1) - 0.5) * pw * 0.48;
+            y = (Math.floor(i / cols) / (maxRow - 1) - 0.5) * ph * 0.38; break;
+          case 4:
+            a = (i / PDOTS) * Math.PI * 2;
+            r = Math.min(pw, ph) * (0.07 + 0.22 * ((i % 3) / 2));
+            x = Math.cos(a) * r; y = Math.sin(a) * r; break;
         }
-      });
-    } else {
-      // Mobile: cards stack with simple fade-up
-      cards.forEach(function(card, i) {
-        gsap.set(card, { opacity: 1, position: 'relative', top: 'auto', left: 'auto',
-          transform: 'none', xPercent: 0, yPercent: 0, x: 0, y: 0 });
-        gsap.fromTo(card, { y: 40, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out',
-            scrollTrigger: { trigger: card, start: 'top 85%', once: true } });
-      });
+        cfg[i * 2] = x; cfg[i * 2 + 1] = y;
+      }
+      return cfg;
     }
-  }
 
-  // Fallback for old HTML structure or mobile
-  function initProcessFallback() {
-    var processSection = document.getElementById('sv-process');
-    if (!processSection) return;
-    var rows = Array.prototype.slice.call(processSection.querySelectorAll('[class*="process-row"]'));
-    if (!rows.length) return;
-    rows.forEach(function(row) { row.removeAttribute('data-animate'); });
-    gsap.set(rows, { y: 30, opacity: 0 });
-    gsap.to(rows, {
-      y: 0, opacity: 1, duration: 0.7, stagger: 0.12, ease: 'power3.out',
-      scrollTrigger: { trigger: processSection, start: 'top 60%', once: true }
+    var configs = [];
+    for (var si = 0; si < total; si++) configs.push(genConfig(si));
+    var pCurr = new Float32Array(PDOTS * 3);
+    var pTgt  = new Float32Array(PDOTS * 2);
+    for (var pi = 0; pi < PDOTS; pi++) {
+      pCurr[pi*3]   = configs[0][pi*2];
+      pCurr[pi*3+1] = configs[0][pi*2+1];
+      pTgt[pi*2]    = configs[0][pi*2];
+      pTgt[pi*2+1]  = configs[0][pi*2+1];
+    }
+    var pGeo = new THREE.BufferGeometry();
+    pGeo.setAttribute('position', new THREE.BufferAttribute(pCurr, 3));
+    var pMat = new THREE.PointsMaterial({ color: 0xf0ede8, size: 3, transparent: true, opacity: 0.14, sizeAttenuation: false });
+    pScene.add(new THREE.Points(pGeo, pMat));
+    var MAX_LINES = 50;
+    var pLineBuf = new Float32Array(MAX_LINES * 6);
+    var pLineGeo = new THREE.BufferGeometry();
+    pLineGeo.setAttribute('position', new THREE.BufferAttribute(pLineBuf, 3));
+    pScene.add(new THREE.LineSegments(pLineGeo, new THREE.LineBasicMaterial({ color: 0xf0ede8, transparent: true, opacity: 0.045 })));
+
+    function updateBg(idx) {
+      var cfg = configs[idx] || configs[0];
+      for (var pi = 0; pi < PDOTS; pi++) {
+        pTgt[pi*2]   = cfg[pi*2];
+        pTgt[pi*2+1] = cfg[pi*2+1];
+      }
+    }
+    var pTime = 0;
+    (function animBg() {
+      requestAnimationFrame(animBg);
+      pTime += 0.008;
+      var pos = pGeo.attributes.position.array;
+      for (var pi = 0; pi < PDOTS; pi++) {
+        var tx = pTgt[pi*2]   + Math.sin(pTime + pi * 0.71) * 3.5;
+        var ty = pTgt[pi*2+1] + Math.cos(pTime * 0.9 + pi * 0.53) * 2.5;
+        pos[pi*3]   += (tx - pos[pi*3])   * 0.04;
+        pos[pi*3+1] += (ty - pos[pi*3+1]) * 0.04;
+      }
+      pGeo.attributes.position.needsUpdate = true;
+      var li = 0, THRESH = 85;
+      for (var a = 0; a < PDOTS && li < MAX_LINES; a++) {
+        for (var b = a + 1; b < PDOTS && li < MAX_LINES; b++) {
+          var dx = pos[a*3] - pos[b*3], dy = pos[a*3+1] - pos[b*3+1];
+          if (dx*dx + dy*dy < THRESH*THRESH) {
+            var o = li * 6;
+            pLineBuf[o]=pos[a*3]; pLineBuf[o+1]=pos[a*3+1]; pLineBuf[o+2]=0;
+            pLineBuf[o+3]=pos[b*3]; pLineBuf[o+4]=pos[b*3+1]; pLineBuf[o+5]=0;
+            li++;
+          }
+        }
+      }
+      for (var z = li*6; z < MAX_LINES*6; z++) pLineBuf[z] = 0;
+      pLineGeo.attributes.position.needsUpdate = true;
+      pLineGeo.setDrawRange(0, li * 2);
+      pRenderer.render(pScene, pCam);
+    })();
+    window.addEventListener('resize', function() {
+      var nw = section.clientWidth, nh = section.clientHeight;
+      pCam.left=-nw/2; pCam.right=nw/2; pCam.top=nh/2; pCam.bottom=-nh/2;
+      pCam.updateProjectionMatrix();
+      pRenderer.setSize(nw, nh);
     });
-    var dividers = Array.prototype.slice.call(processSection.querySelectorAll('[class*="process-divider"]'));
-    gsap.set(dividers, { scaleX: 0, transformOrigin: 'left center' });
-    gsap.to(dividers, {
-      scaleX: 1, duration: 0.6, stagger: 0.1, ease: 'power2.out',
-      scrollTrigger: { trigger: processSection, start: 'top 55%', once: true }
+
+    function setStep(idx) {
+      if (idx === current) return;
+      current = idx;
+      steps.forEach(function(s, i) { s.classList.toggle('is-active', i === idx); });
+      dots.forEach(function(d, i) { d.classList.toggle('is-active', i <= idx); });
+      if (barFill) {
+        gsap.to(barFill, { scaleX: total > 1 ? idx / (total - 1) : 1, duration: 0.5, ease: 'power2.out', overwrite: true });
+      }
+      updateBg(idx);
+    }
+    setStep(0);
+    ScrollTrigger.create({
+      trigger: section, start: 'top top',
+      end: '+=' + (window.innerHeight * (total + 0.5)),
+      pin: true, pinSpacing: true, scrub: 0.8,
+      onUpdate: function(self) {
+        setStep(Math.min(total - 1, Math.floor(self.progress * total)));
+      }
     });
   }
 
@@ -997,11 +810,7 @@
   window.addEventListener('DOMContentLoaded', function() {
     initHero();
     initTypesShowcase();
-    if (window.innerWidth > 991) {
-      initProcessTimeline();
-    } else {
-      initProcessFallback();
-    }
+    initProcess();
     initScrollAnimations();
   });
 

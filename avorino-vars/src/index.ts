@@ -1,6 +1,6 @@
 // ════════════════════════════════════════════════════════════════
-// Avorino Builder — NEW CONSTRUCTION PAGE
-// Rename this to index.ts to build the New Construction service page.
+// Avorino Builder — FINANCING PAGE
+// Rename this to index.ts to build the Financing service page.
 // ════════════════════════════════════════════════════════════════
 
 import {
@@ -9,11 +9,11 @@ import {
   CALENDLY_CSS, CALENDLY_JS,
 } from './shared.js';
 
-const CDN = 'b0fca5b';
+const CDN = '59b1ad3';
 const HEAD_CODE = [
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
-  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-newconstruction.css">`,
+  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-financing.css">`,
   CALENDLY_CSS,
 ].join('\n');
 const FOOTER_CODE = [
@@ -22,78 +22,77 @@ const FOOTER_CODE = [
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
   '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
   `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-animations.js"><\/script>`,
-  `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-newconstruction-footer.js"><\/script>`,
+  `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-financing-footer.js"><\/script>`,
   CALENDLY_JS,
 ].join('\n');
 
 const SERVICE_DATA: ServiceData = {
-  slug: 'newconstruction',
-  pageName: 'New Construction',
-  title: 'New Construction in Orange County — Avorino Construction',
-  seoDesc: 'New residential and multi-unit construction in Orange County. Foundation to finish — structural engineering, permitting, and licensed construction. Serving Irvine, Newport Beach, Anaheim, and all of OC.',
+  slug: 'financing',
+  pageName: 'Financing',
+  title: '100% Construction Financing in Orange County — Avorino Construction',
+  seoDesc: 'Build now, pay over time. Up to 100% financing for ADU construction, custom homes, and renovations in Orange County. Leverage your property equity with competitive rates. Serving Irvine, Newport Beach, and all of OC.',
 
-  heroLabel: '// New Construction',
-  heroTitle: 'From foundation to finish',
-  heroSubtitle: 'New residential and multi-unit construction in Orange County. Engineering-first approach with full-service project management from groundbreak to certificate of occupancy.',
+  heroLabel: '// Financing',
+  heroTitle: 'Build now, pay over time',
+  heroSubtitle: 'Up to 100% financing for your ADU or construction project. Leverage your property equity to build without a large upfront cost — competitive rates, fast approvals, and flexible terms.',
 
   approach: {
-    heading: 'Engineering before everything',
-    body: 'New construction demands precision from the start. We begin with geotechnical reports, structural calculations, and code analysis before the first design line is drawn. This engineering-first approach means fewer surprises during construction, fewer change orders, and a building that performs for decades.',
+    heading: 'Financing that makes building possible',
+    body: 'Most homeowners have the equity to build but not the cash on hand. Our lending partners specialize in construction financing — not generic home equity lines. They understand construction draws, permit timelines, and project phases. That means faster approvals, better terms, and a financing structure designed for how construction actually works.',
     highlights: [
-      'Geotechnical analysis and structural engineering completed before design finalization',
-      'Full Title 24 energy compliance modeling integrated into architectural plans',
-      'Value engineering identifies cost savings without compromising structural integrity',
-      'Phased construction scheduling with milestone tracking and weekly progress reporting',
+      'Up to 100% project financing — cover your entire build cost without a large down payment',
+      'Construction-specific loan structures with draw schedules that match project milestones',
+      'Pre-qualification in 48 hours so you know your budget before design begins',
+      'Competitive rates from lending partners who specialize in Orange County construction',
     ],
   },
 
   serviceTypes: [
     {
       number: '01',
-      title: 'Single-Family Residential',
-      desc: 'Ground-up custom homes from 1,500 to 8,000+ sqft. Every detail engineered and built to your specifications on your lot.',
-      features: ['Custom architecture and floor plans', 'Full structural engineering', 'Smart home pre-wire packages', 'Energy-efficient building envelope'],
+      title: 'ADU Construction Loan',
+      desc: 'Purpose-built financing for accessory dwelling units. Cover design, permitting, and construction with a single loan — then refinance or pay from rental income.',
+      features: ['$150K–$350K typical loan range', 'Interest-only during construction', 'Rental income offsets payments', 'No prepayment penalties'],
     },
     {
       number: '02',
-      title: 'Multi-Unit Residential',
-      desc: 'Duplexes, triplexes, and small multi-family projects. Maximize lot potential with code-compliant density and quality construction.',
-      features: ['Density and zoning optimization', 'Separate utility metering', 'Sound attenuation between units', 'Shared amenity space design'],
+      title: 'Home Equity Line (HELOC)',
+      desc: 'Tap into your existing home equity for renovations, additions, or smaller projects. Draw funds as needed and only pay interest on what you use.',
+      features: ['Draw up to 85% of equity', 'Flexible draw schedule', 'Variable or fixed rate options', 'Reusable credit line'],
     },
     {
       number: '03',
-      title: 'Mixed-Use Development',
-      desc: 'Ground-floor commercial with residential above. Navigate complex zoning and build projects that serve both tenants and the community.',
-      features: ['Commercial-residential code compliance', 'ADA-accessible ground floor', 'Separate ingress/egress planning', 'Fire separation and rated assemblies'],
+      title: 'Construction-to-Permanent',
+      desc: 'Single-close loan that covers both construction and permanent mortgage. Build your custom home or major addition with one application and one closing.',
+      features: ['One closing, one set of fees', 'Rate lock during construction', 'Converts to 30-year fixed', 'Custom home and ground-up eligible'],
     },
     {
       number: '04',
-      title: 'Spec & Investment Builds',
-      desc: 'New construction built to sell or lease. Market-optimized design, controlled budgets, and construction timelines that protect your ROI.',
-      features: ['Market analysis-driven design', 'Cost-per-sqft optimization', 'Finish packages for target buyers', 'Accelerated construction schedules'],
+      title: 'Renovation Loan',
+      desc: 'Finance your renovation based on the after-improvement value of your home. FHA 203(k) and conventional renovation loans available through our partners.',
+      features: ['Based on after-renovation value', 'FHA and conventional options', 'Include permits and labor costs', 'Single monthly payment'],
     },
   ],
 
   process: [
-    { number: '01', title: 'Site Analysis & Feasibility', desc: 'Soil testing, topographic survey, zoning verification, utility mapping. We determine buildability and identify constraints before committing resources.' },
-    { number: '02', title: 'Design & Engineering', desc: 'Architectural plans, structural engineering, MEP design, Title 24 energy compliance, and landscape planning — all coordinated under one project team.' },
-    { number: '03', title: 'Permitting & Plan Check', desc: 'Full plan submission to building department, fire department review, corrections management, and approval tracking. No construction starts without signed permits.' },
-    { number: '04', title: 'Site Prep & Foundation', desc: 'Grading, excavation, utilities trenching, and engineered foundation systems. The critical phase that determines everything built above.' },
-    { number: '05', title: 'Framing Through Finishes', desc: 'Structural framing, rough-in MEP, insulation, drywall, flooring, cabinetry, fixtures, and paint. Weekly updates with photo documentation.' },
-    { number: '06', title: 'Inspection & Turnover', desc: 'Final building inspection, utility connection verification, punch list completion, and Certificate of Occupancy. Full warranty documentation provided at handover.' },
+    { number: '01', title: 'Pre-Qualification', desc: 'Quick credit review and equity assessment. Know your financing capacity within 48 hours — before you invest in design or engineering.' },
+    { number: '02', title: 'Project Scoping', desc: 'We provide your lender with project scope, estimated costs, and timeline. Construction-specific documentation that lenders need to approve draws.' },
+    { number: '03', title: 'Loan Approval', desc: 'Your lending partner finalizes terms, appraisal, and closing. We coordinate directly with the lender to answer construction-related questions.' },
+    { number: '04', title: 'Construction Draws', desc: 'Funds released at project milestones — foundation, framing, rough-in, finishes. We handle draw requests and lender inspections.' },
+    { number: '05', title: 'Project Completion', desc: 'Final inspection, certificate of occupancy, and loan conversion to permanent financing. Your project is complete and your payments are set.' },
   ],
 
   whyAvorino: {
-    heading: 'Built to perform, not just to pass',
-    body: 'Avorino builds new construction that exceeds code minimums. We use engineered lumber systems, high-performance building envelopes, and construction practices that deliver homes and buildings built for the next 50 years — not just the next inspection.',
+    heading: 'Build without the cash barrier',
+    body: 'Most Orange County homeowners have $200K–$800K+ in property equity. An ADU that costs $250K to build can generate $2K–$4.5K/month in rental income — often exceeding the monthly payment from day one. That\'s not just financing — it\'s an investment that pays for itself.',
     stats: [
-      { value: '$280–550', label: 'Per sqft range' },
-      { value: '8–18mo', label: 'Build timeline' },
-      { value: 'A+', label: 'BBB rated' },
+      { value: '100%', label: 'Financing available' },
+      { value: '48hr', label: 'Pre-qualification' },
+      { value: '$2-4.5K', label: 'Monthly ADU income' },
     ],
   },
 
-  ctaHeading: 'Ready to break ground?',
+  ctaHeading: 'Ready to get pre-qualified?',
 };
 
 // ── Panel UI ──
@@ -125,7 +124,7 @@ document.getElementById('build-page')?.addEventListener('click', async () => {
   const btn = document.getElementById('build-page') as HTMLButtonElement;
   btn.disabled = true;
   clearErrorLog();
-  logDetail('Starting New Construction page build...', 'info');
+  logDetail('Starting Financing page build...', 'info');
   try { await buildServicePage(SERVICE_DATA); } catch (err: any) {
     log(`Error: ${err.message || err}`, 'error');
     await webflow.notify({ type: 'Error', message: `Failed: ${err.message || err}` });

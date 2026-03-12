@@ -44,17 +44,23 @@
   .sv-type-desc { font-family: 'DM Sans', system-ui, sans-serif; font-size: 14px; line-height: 1.7; opacity: 0.7; margin-bottom: 4px; }
   .sv-type-feature-list { padding-left: 0; margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
 
-  /* Process — Scroll-Locked 3D Build */
-  .sv-process-header { text-align: center; padding: 96px 80px 48px; position: relative; z-index: 2; }
-  .sv-process-pinned { position: relative; width: 100%; height: 100vh; overflow: hidden; }
-  .sv-process-visual { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-  .sv-process-visual canvas { display: block; width: 100%; height: 100%; }
-  .sv-process-cards { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 2; pointer-events: none; }
-  .sv-process-card { position: absolute; top: 50%; left: 50%; max-width: 420px; width: 90%; padding: 36px 32px; background: rgba(17,17,17,0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(240,237,232,0.08); pointer-events: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
-  .sv-process-card-num { font-family: 'DM Sans', system-ui, sans-serif; font-size: 12px; letter-spacing: 0.2em; color: var(--av-gold); font-weight: 600; margin-bottom: 12px; }
-  .sv-process-card-title { font-family: 'DM Serif Display', Georgia, serif; font-size: 24px; line-height: 1.2; font-weight: 400; color: var(--av-cream); margin: 0 0 12px 0; }
-  .sv-process-card-desc { font-family: 'DM Sans', system-ui, sans-serif; font-size: 15px; line-height: 1.8; color: rgba(240,237,232,0.7); margin: 0; }
-  .sv-process-nav { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 3; text-align: center; }
+  /* Process — Simple Animated Steps */
+  .sv-process-header { text-align: center; padding-bottom: 64px; }
+  .sv-process-steps { position: relative; width: 100%; max-width: 1100px; flex: 1; margin: 0 auto; border-top: 1px solid rgba(240,237,232,0.08); border-bottom: 1px solid rgba(240,237,232,0.08); }
+  .sv-process-step { display: grid; grid-template-columns: 80px 1fr 160px; gap: 0 48px; padding: 48px 0; align-items: center; position: absolute; top: 50%; left: 0; width: 100%; opacity: 0; transform: translateY(calc(-50% + 24px)); transition: opacity 0.5s ease, transform 0.5s ease; pointer-events: none; }
+  .sv-process-step.is-active { opacity: 1; transform: translateY(-50%); pointer-events: auto; }
+  .sv-process-step-num { font-family: 'DM Serif Display', Georgia, serif; font-size: 72px; line-height: 1; color: rgba(240,237,232,0.28); font-weight: 400; text-align: center; }
+  .sv-process-step-title { font-family: 'DM Serif Display', Georgia, serif; font-size: 28px; line-height: 1.2; font-weight: 400; color: var(--av-cream); margin: 0 0 10px 0; }
+  .sv-process-step-desc { font-family: 'DM Sans', system-ui, sans-serif; font-size: 15px; line-height: 1.8; color: rgba(240,237,232,0.6); margin: 0; max-width: 480px; }
+  .sv-process-step-icon { display: flex; align-items: center; justify-content: flex-end; }
+  .sv-process-step-icon svg { width: 96px; height: 96px; color: var(--av-gold); opacity: 0.3; stroke: currentColor; fill: none; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
+  .sv-process-bar { position: relative; width: 100%; max-width: 1100px; margin: 48px auto 0; display: flex; align-items: center; height: 48px; }
+  .sv-process-bar-track { position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: rgba(240,237,232,0.08); transform: translateY(-50%); }
+  .sv-process-bar-fill { position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--av-red); opacity: 0.5; transform: translateY(-50%) scaleX(0); transform-origin: left center; }
+  .sv-process-bar-dots { position: relative; width: 100%; display: flex; align-items: center; justify-content: space-between; }
+  .sv-process-bar-dot { position: relative; width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid rgba(240,237,232,0.15); background: var(--av-dark); z-index: 1; }
+  .sv-process-bar-dot.is-active { background: var(--av-red); border-color: var(--av-red); box-shadow: 0 0 0 4px rgba(200,34,42,0.12); }
+  .sv-process-bar-dot span { position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%); font-family: 'DM Sans', system-ui, sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; color: var(--av-cream); opacity: 0.35; white-space: nowrap; }
 
   /* Why */
   .sv-why-content { max-width: 900px; margin: 0 auto; text-align: center; }
@@ -71,20 +77,20 @@
   @media (max-width: 991px) {
     .sv-approach-grid { grid-template-columns: 1fr !important; gap: 48px !important; }
     .av-cta-btns { flex-direction: column; align-items: center; }
-    .sv-process-pinned { height: auto !important; }
-    .sv-process-visual { display: none !important; }
-    .sv-process-cards { position: relative !important; display: flex !important; flex-direction: column !important; gap: 24px !important; padding: 24px 40px 80px !important; }
-    .sv-process-card { position: relative !important; top: auto !important; left: auto !important; transform: none !important; max-width: 100% !important; width: 100% !important; }
-    .sv-process-nav { display: none !important; }
+    .sv-process-step { grid-template-columns: 60px 1fr; gap: 0 32px; }
+    .sv-process-step-icon { display: none; }
+    .sv-process-step-num { font-size: 56px; }
   }
   @media (max-width: 767px) {
     .sv-content-overlay { padding: 100px 24px 64px !important; }
-    .sv-process-cards { padding: 24px 24px 64px !important; }
     .sv-stats-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
+    .sv-process-step { grid-template-columns: 48px 1fr; gap: 0 24px; padding: 36px 0; }
+    .sv-process-step-num { font-size: 40px; }
+    .sv-process-step-title { font-size: 22px; }
+    .sv-process-bar { display: none; }
   }
   @media (max-width: 478px) {
     .sv-content-overlay { padding: 80px 16px 48px !important; }
-    .sv-process-cards { padding: 24px 16px 48px !important; }
   }
 </style>
 </head>
@@ -188,42 +194,79 @@
   </div>
 </section>
 
-<!-- ═══ SECTION 4: PROCESS (Scroll-Locked 3D Build) ═══ -->
+<!-- ═══ SECTION 4: PROCESS ═══ -->
 <section id="sv-process" class="av-section">
   <div class="sv-process-header">
     <div class="av-label" style="justify-content:center;color:var(--av-cream)" data-animate="fade-up"><div>// The Process</div></div>
-    <h2 class="av-heading-lg" style="color:var(--av-cream)" data-animate="word-stagger-elastic">How We Build</h2>
+    <h2 class="av-heading-lg" style="color:var(--av-cream);text-align:center" data-animate="fade-up">How It Works</h2>
   </div>
-  <div class="sv-process-pinned">
-    <div class="sv-process-visual"></div>
-    <div class="sv-process-cards">
-      <div class="sv-process-card">
-        <div class="sv-process-card-num">STEP 01</div>
-        <h3 class="sv-process-card-title">Feasibility Analysis</h3>
-        <p class="sv-process-card-desc">We evaluate your lot — zoning, setbacks, utility access, and rental market comps. You get a clear picture of what's buildable and what the income potential is.</p>
+  <div class="sv-process-steps">
+    <!-- STEP 1 -->
+    <div class="sv-process-step is-active">
+      <div class="sv-process-step-num">01</div>
+      <div class="sv-process-step-body">
+        <h3 class="sv-process-step-title">Feasibility Analysis</h3>
+        <p class="sv-process-step-desc">We evaluate your lot — zoning, setbacks, utility access, and rental market comps. You get a clear picture of what's buildable and what the income potential is.</p>
       </div>
-      <div class="sv-process-card">
-        <div class="sv-process-card-num">STEP 02</div>
-        <h3 class="sv-process-card-title">Financial Modeling</h3>
-        <p class="sv-process-card-desc">Construction cost estimate, rental income projections, ROI timeline, and financing options. Real numbers, not marketing projections.</p>
-      </div>
-      <div class="sv-process-card">
-        <div class="sv-process-card-num">STEP 03</div>
-        <h3 class="sv-process-card-title">Design &amp; Permitting</h3>
-        <p class="sv-process-card-desc">Architecture optimized for rental appeal and construction efficiency. Full permit submission and city approval management.</p>
-      </div>
-      <div class="sv-process-card">
-        <div class="sv-process-card-num">STEP 04</div>
-        <h3 class="sv-process-card-title">Construction</h3>
-        <p class="sv-process-card-desc">Foundation to finish in 6–10 months. Weekly progress updates, transparent budgets, and milestone-based draw schedules for your lender.</p>
-      </div>
-      <div class="sv-process-card">
-        <div class="sv-process-card-num">STEP 05</div>
-        <h3 class="sv-process-card-title">Tenant-Ready Handover</h3>
-        <p class="sv-process-card-desc">Final inspection, Certificate of Occupancy, and a move-in-ready unit. We can connect you with property management if needed.</p>
+      <div class="sv-process-step-icon">
+        <svg viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="22"/><line x1="56" y1="56" x2="78" y2="78"/></svg>
       </div>
     </div>
-    <div class="sv-process-nav"></div>
+    <!-- STEP 2 -->
+    <div class="sv-process-step">
+      <div class="sv-process-step-num">02</div>
+      <div class="sv-process-step-body">
+        <h3 class="sv-process-step-title">Financial Modeling</h3>
+        <p class="sv-process-step-desc">Construction cost estimate, rental income projections, ROI timeline, and financing options. Real numbers, not marketing projections.</p>
+      </div>
+      <div class="sv-process-step-icon">
+        <svg viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="18,74 38,50 54,58 76,24"/><polyline points="66,24 76,24 76,34"/><line x1="18" y1="78" x2="78" y2="78"/><line x1="18" y1="20" x2="18" y2="78"/></svg>
+      </div>
+    </div>
+    <!-- STEP 3 -->
+    <div class="sv-process-step">
+      <div class="sv-process-step-num">03</div>
+      <div class="sv-process-step-body">
+        <h3 class="sv-process-step-title">Design &amp; Permitting</h3>
+        <p class="sv-process-step-desc">Architecture optimized for rental appeal and construction efficiency. Full permit submission and city approval management.</p>
+      </div>
+      <div class="sv-process-step-icon">
+        <svg viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="16" width="64" height="64" rx="4"/><line x1="32" y1="32" x2="64" y2="32"/><line x1="32" y1="44" x2="64" y2="44"/><line x1="32" y1="56" x2="52" y2="56"/><rect x="52" y="52" width="14" height="14"/></svg>
+      </div>
+    </div>
+    <!-- STEP 4 -->
+    <div class="sv-process-step">
+      <div class="sv-process-step-num">04</div>
+      <div class="sv-process-step-body">
+        <h3 class="sv-process-step-title">Construction</h3>
+        <p class="sv-process-step-desc">Foundation to finish in 6–10 months. Weekly progress updates, transparent budgets, and milestone-based draw schedules for your lender.</p>
+      </div>
+      <div class="sv-process-step-icon">
+        <svg viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="40" width="56" height="40"/><polyline points="14,44 48,14 82,44"/><rect x="36" y="56" width="12" height="24"/><rect x="52" y="56" width="12" height="16"/></svg>
+      </div>
+    </div>
+    <!-- STEP 5 -->
+    <div class="sv-process-step">
+      <div class="sv-process-step-num">05</div>
+      <div class="sv-process-step-body">
+        <h3 class="sv-process-step-title">Tenant-Ready Handover</h3>
+        <p class="sv-process-step-desc">Final inspection, Certificate of Occupancy, and a move-in-ready unit. We can connect you with property management if needed.</p>
+      </div>
+      <div class="sv-process-step-icon">
+        <svg viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="16,48 48,32 80,48 48,64 16,48"/><polyline points="16,58 48,74 80,58"/><polyline points="16,38 48,22 80,38"/></svg>
+      </div>
+    </div>
+  </div>
+  <div class="sv-process-bar">
+    <div class="sv-process-bar-track"></div>
+    <div class="sv-process-bar-fill"></div>
+    <div class="sv-process-bar-dots">
+      <div class="sv-process-bar-dot is-active"><span>01</span></div>
+      <div class="sv-process-bar-dot"><span>02</span></div>
+      <div class="sv-process-bar-dot"><span>03</span></div>
+      <div class="sv-process-bar-dot"><span>04</span></div>
+      <div class="sv-process-bar-dot"><span>05</span></div>
+    </div>
   </div>
 </section>
 

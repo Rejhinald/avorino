@@ -83,6 +83,8 @@ async function buildEstimatePage() {
   const estStepNote = await getOrCreateStyle('est-step-note');
   const estStepNum = await getOrCreateStyle('est-step-num');
   const estFormCol = await getOrCreateStyle('est-form-col');
+  const svCanvasWrap = await getOrCreateStyle('sv-canvas-wrap');
+  const svContentOverlay = await getOrCreateStyle('sv-content-overlay');
 
   const { body } = await createPageWithSlug(PAGE_NAME, PAGE_SLUG, PAGE_TITLE, PAGE_DESC);
 
@@ -99,7 +101,16 @@ async function buildEstimatePage() {
       'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
       'background-color': v['av-dark'], 'color': v['av-cream'],
-      'text-align': 'center',
+      'text-align': 'center', 'position': 'relative', 'overflow': 'hidden',
+    });
+    await clearAndSet(await freshStyle('sv-canvas-wrap'), 'sv-canvas-wrap', {
+      'position': 'absolute', 'top': '0px', 'left': '0px',
+      'width': '100%', 'height': '100%',
+      'z-index': '1', 'pointer-events': 'none',
+      'overflow-x': 'hidden', 'overflow-y': 'hidden',
+    });
+    await clearAndSet(await freshStyle('sv-content-overlay'), 'sv-content-overlay', {
+      'position': 'relative', 'z-index': '2',
     });
     await clearAndSet(await freshStyle('est-hero-content'), 'est-hero-content', {
       'max-width': '700px',
@@ -154,7 +165,20 @@ async function buildEstimatePage() {
   hero.setStyles([estHero]);
   hero.setAttribute('id', 'est-hero');
 
-  const heroC = hero.append(webflow.elementPresets.DOM);
+  // Canvas wrap for Three.js hero
+  const heroCanvasWrap = hero.append(webflow.elementPresets.DOM);
+  heroCanvasWrap.setTag('div');
+  heroCanvasWrap.setStyles([svCanvasWrap]);
+  heroCanvasWrap.setAttribute('id', 'hero-canvas');
+  heroCanvasWrap.setAttribute('class', 'sv-canvas-wrap');
+
+  // Content overlay (sits above canvas)
+  const heroOverlay = hero.append(webflow.elementPresets.DOM);
+  heroOverlay.setTag('div');
+  heroOverlay.setStyles([svContentOverlay]);
+  heroOverlay.setAttribute('class', 'sv-content-overlay');
+
+  const heroC = heroOverlay.append(webflow.elementPresets.DOM);
   heroC.setTag('div');
   heroC.setStyles([estHeroContent]);
 

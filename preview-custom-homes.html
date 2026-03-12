@@ -44,17 +44,8 @@
   .sv-type-desc { font-family: 'DM Sans', system-ui, sans-serif; font-size: 14px; line-height: 1.7; opacity: 0.7; margin-bottom: 4px; }
   .sv-type-feature-list { padding-left: 0; margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
 
-  /* Process — Scroll-Locked 3D Build */
-  .sv-process-header { text-align: center; padding: 96px 80px 48px; position: relative; z-index: 2; }
-  .sv-process-pinned { position: relative; width: 100%; height: 100vh; overflow: hidden; }
-  .sv-process-visual { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-  .sv-process-visual canvas { display: block; width: 100%; height: 100%; }
-  .sv-process-cards { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 2; pointer-events: none; }
-  .sv-process-card { position: absolute; top: 50%; left: 50%; max-width: 420px; width: 90%; padding: 36px 32px; background: rgba(17,17,17,0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 16px; border: 1px solid rgba(240,237,232,0.08); pointer-events: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
-  .sv-process-card-num { font-family: 'DM Sans', system-ui, sans-serif; font-size: 12px; letter-spacing: 0.2em; color: var(--av-gold); font-weight: 600; margin-bottom: 12px; }
-  .sv-process-card-title { font-family: 'DM Serif Display', Georgia, serif; font-size: 24px; line-height: 1.2; font-weight: 400; color: var(--av-cream); margin: 0 0 12px 0; }
-  .sv-process-card-desc { font-family: 'DM Sans', system-ui, sans-serif; font-size: 15px; line-height: 1.8; color: rgba(240,237,232,0.7); margin: 0; }
-  .sv-process-nav { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 3; text-align: center; }
+  /* Process — Simple Animated Steps */
+  .sv-process-step-body { display: flex; flex-direction: column; }
 
   /* Why */
   .sv-why-content { max-width: 900px; margin: 0 auto; text-align: center; }
@@ -71,20 +62,20 @@
   @media (max-width: 991px) {
     .sv-approach-grid { grid-template-columns: 1fr !important; gap: 48px !important; }
     .av-cta-btns { flex-direction: column; align-items: center; }
-    .sv-process-pinned { height: auto !important; }
-    .sv-process-visual { display: none !important; }
-    .sv-process-cards { position: relative !important; display: flex !important; flex-direction: column !important; gap: 24px !important; padding: 24px 40px 80px !important; }
-    .sv-process-card { position: relative !important; top: auto !important; left: auto !important; transform: none !important; max-width: 100% !important; width: 100% !important; }
-    .sv-process-nav { display: none !important; }
+    .sv-process-step { grid-template-columns: 60px 1fr; gap: 0 32px; }
+    .sv-process-step-icon { display: none; }
+    .sv-process-step-num { font-size: 56px; }
   }
   @media (max-width: 767px) {
     .sv-content-overlay { padding: 100px 24px 64px !important; }
-    .sv-process-cards { padding: 24px 24px 64px !important; }
     .sv-stats-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
+    .sv-process-step { grid-template-columns: 48px 1fr; gap: 0 24px; padding: 36px 0; }
+    .sv-process-step-num { font-size: 40px; }
+    .sv-process-step-title { font-size: 22px; }
+    .sv-process-bar { display: none; }
   }
   @media (max-width: 478px) {
     .sv-content-overlay { padding: 80px 16px 48px !important; }
-    .sv-process-cards { padding: 24px 16px 48px !important; }
   }
 </style>
 </head>
@@ -188,47 +179,85 @@
   </div>
 </section>
 
-<!-- ═══ SECTION 4: PROCESS (Scroll-Locked 3D Build) ═══ -->
+<!-- ═══ SECTION 4: PROCESS ═══ -->
 <section id="sv-process" class="av-section">
   <div class="sv-process-header">
     <div class="av-label" style="justify-content:center;color:var(--av-cream)" data-animate="fade-up"><div>// The Process</div></div>
-    <h2 class="av-heading-lg" style="color:var(--av-cream)" data-animate="word-stagger-elastic">How We Build</h2>
+    <h2 class="av-heading-lg" style="color:var(--av-cream);text-align:center" data-animate="word-stagger-elastic">How We Build</h2>
   </div>
-  <div class="sv-process-pinned">
-    <div class="sv-process-visual"></div>
-    <div class="sv-process-cards">
-      <div class="sv-process-card">
-        <div class="sv-process-card-num">STEP 01</div>
-        <h3 class="sv-process-card-title">Site &amp; Feasibility</h3>
-        <p class="sv-process-card-desc">Lot evaluation, soil testing, zoning verification. We confirm what's buildable before you invest in design.</p>
+  <div class="sv-process-steps">
+    <div class="sv-process-step">
+      <div class="sv-process-step-num">01</div>
+      <div class="sv-process-step-body">
+        <h3 class="sv-process-step-title">Site &amp; Feasibility</h3>
+        <p class="sv-process-step-desc">Lot evaluation, soil testing, zoning verification. We confirm what's buildable before you invest in design.</p>
       </div>
-      <div class="sv-process-card">
-        <div class="sv-process-card-num">STEP 02</div>
-        <h3 class="sv-process-card-title">Architecture &amp; Engineering</h3>
-        <p class="sv-process-card-desc">Custom floor plans, structural engineering, Title 24 energy compliance, and 3D renderings — all developed in-house.</p>
-      </div>
-      <div class="sv-process-card">
-        <div class="sv-process-card-num">STEP 03</div>
-        <h3 class="sv-process-card-title">Permitting &amp; Approvals</h3>
-        <p class="sv-process-card-desc">Full plan-check submission, HOA review coordination, corrections management, and city approvals.</p>
-      </div>
-      <div class="sv-process-card">
-        <div class="sv-process-card-num">STEP 04</div>
-        <h3 class="sv-process-card-title">Foundation &amp; Framing</h3>
-        <p class="sv-process-card-desc">Engineered foundation systems, precision framing, structural steel as needed. Every structural element verified by our engineers.</p>
-      </div>
-      <div class="sv-process-card">
-        <div class="sv-process-card-num">STEP 05</div>
-        <h3 class="sv-process-card-title">MEP &amp; Finishes</h3>
-        <p class="sv-process-card-desc">Mechanical, electrical, plumbing rough-in followed by drywall, flooring, cabinetry, fixtures, and paint.</p>
-      </div>
-      <div class="sv-process-card">
-        <div class="sv-process-card-num">STEP 06</div>
-        <h3 class="sv-process-card-title">Final Walkthrough &amp; Handover</h3>
-        <p class="sv-process-card-desc">Comprehensive punch list, final inspection, Certificate of Occupancy, warranty documentation, and homeowner orientation.</p>
+      <div class="sv-process-step-icon">
+        <svg viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="22"/><line x1="56" y1="56" x2="78" y2="78"/><line x1="34" y1="40" x2="46" y2="40"/><line x1="40" y1="34" x2="40" y2="46"/></svg>
       </div>
     </div>
-    <div class="sv-process-nav"></div>
+    <div class="sv-process-step">
+      <div class="sv-process-step-num">02</div>
+      <div class="sv-process-step-body">
+        <h3 class="sv-process-step-title">Architecture &amp; Engineering</h3>
+        <p class="sv-process-step-desc">Custom floor plans, structural engineering, Title 24 energy compliance, and 3D renderings — all developed in-house.</p>
+      </div>
+      <div class="sv-process-step-icon">
+        <svg viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 76 L26 56 L62 20 L76 34 L40 70 Z"/><line x1="26" y1="56" x2="40" y2="70"/><line x1="20" y1="76" x2="34" y2="62"/></svg>
+      </div>
+    </div>
+    <div class="sv-process-step">
+      <div class="sv-process-step-num">03</div>
+      <div class="sv-process-step-body">
+        <h3 class="sv-process-step-title">Permitting &amp; Approvals</h3>
+        <p class="sv-process-step-desc">Full plan-check submission, HOA review coordination, corrections management, and city approvals.</p>
+      </div>
+      <div class="sv-process-step-icon">
+        <svg viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 16 L24 80 L72 80 L72 32 L56 16 Z"/><polyline points="56,16 56,32 72,32"/><polyline points="36,54 44,62 60,46"/></svg>
+      </div>
+    </div>
+    <div class="sv-process-step">
+      <div class="sv-process-step-num">04</div>
+      <div class="sv-process-step-body">
+        <h3 class="sv-process-step-title">Foundation &amp; Framing</h3>
+        <p class="sv-process-step-desc">Engineered foundation systems, precision framing, structural steel as needed. Every structural element verified by our engineers.</p>
+      </div>
+      <div class="sv-process-step-icon">
+        <svg viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="64" width="64" height="12" rx="2"/><rect x="24" y="50" width="48" height="12" rx="2"/><rect x="32" y="36" width="32" height="12" rx="2"/></svg>
+      </div>
+    </div>
+    <div class="sv-process-step">
+      <div class="sv-process-step-num">05</div>
+      <div class="sv-process-step-body">
+        <h3 class="sv-process-step-title">MEP &amp; Finishes</h3>
+        <p class="sv-process-step-desc">Mechanical, electrical, plumbing rough-in followed by drywall, flooring, cabinetry, fixtures, and paint.</p>
+      </div>
+      <div class="sv-process-step-icon">
+        <svg viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="20" width="56" height="56" rx="4"/><line x1="20" y1="38" x2="76" y2="38"/><line x1="38" y1="38" x2="38" y2="76"/><rect x="44" y="44" width="20" height="16"/></svg>
+      </div>
+    </div>
+    <div class="sv-process-step">
+      <div class="sv-process-step-num">06</div>
+      <div class="sv-process-step-body">
+        <h3 class="sv-process-step-title">Final Walkthrough &amp; Handover</h3>
+        <p class="sv-process-step-desc">Comprehensive punch list, final inspection, Certificate of Occupancy, warranty documentation, and homeowner orientation.</p>
+      </div>
+      <div class="sv-process-step-icon">
+        <svg viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="34" cy="38" r="16"/><line x1="48" y1="46" x2="78" y2="76"/><line x1="66" y1="64" x2="74" y2="72"/><line x1="60" y1="70" x2="60" y2="78"/></svg>
+      </div>
+    </div>
+  </div>
+  <div class="sv-process-bar">
+    <div class="sv-process-bar-track"></div>
+    <div class="sv-process-bar-fill"></div>
+    <div class="sv-process-bar-dots">
+      <div class="sv-process-bar-dot is-active"><span>Site</span></div>
+      <div class="sv-process-bar-dot"><span>Architecture</span></div>
+      <div class="sv-process-bar-dot"><span>Permitting</span></div>
+      <div class="sv-process-bar-dot"><span>Foundation</span></div>
+      <div class="sv-process-bar-dot"><span>Finishes</span></div>
+      <div class="sv-process-bar-dot"><span>Handover</span></div>
+    </div>
   </div>
 </section>
 

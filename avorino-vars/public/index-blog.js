@@ -5,7 +5,7 @@
 // ════════════════════════════════════════════════════════════════
 import { webflow, log, logDetail, clearErrorLog, wait, safeCall, getAvorinVars, getOrCreateStyle, clearAndSet, freshStyle, createSharedStyles, setSharedStyleProps, createAllVariables, createPageWithSlug, buildCTASection, applyCTAStyleProps, CALENDLY_CSS, CALENDLY_JS, } from './shared.js';
 // ── CDN hash ──
-const CDN = '10abfbe';
+const CDN = '4533be4';
 const HEAD_CODE = [
     `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
     `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
@@ -174,6 +174,8 @@ async function buildBlogPage(v, s) {
     const { body } = await createPageWithSlug('Blog', 'blog', 'Blog | Avorino Construction', 'Insights on custom homes, ADUs, and construction in Orange County from the Avorino team.');
     // ── Page styles ──
     const blogHero = await getOrCreateStyle('blog-hero');
+    const svCanvasWrap = await getOrCreateStyle('sv-canvas-wrap');
+    const svContentOverlay = await getOrCreateStyle('sv-content-overlay');
     const blogHeroContent = await getOrCreateStyle('blog-hero-content');
     const blogHeroSubtitle = await getOrCreateStyle('blog-hero-subtitle');
     const labelLine = await getOrCreateStyle('blog-label-line');
@@ -197,12 +199,13 @@ async function buildBlogPage(v, s) {
     // Three.js canvas container
     const canvasWrap = hero.append(webflow.elementPresets.DOM);
     canvasWrap.setTag('div');
+    canvasWrap.setStyles([svCanvasWrap]);
     canvasWrap.setAttribute('id', 'hero-canvas');
     canvasWrap.setAttribute('class', 'sv-canvas-wrap');
     // Content overlay
     const heroContent = hero.append(webflow.elementPresets.DOM);
     heroContent.setTag('div');
-    heroContent.setStyles([blogHeroContent]);
+    heroContent.setStyles([svContentOverlay, blogHeroContent]);
     heroContent.setAttribute('class', 'sv-content-overlay');
     // Label with line
     const heroLbl = heroContent.append(webflow.elementPresets.DOM);
@@ -282,8 +285,17 @@ async function buildBlogPage(v, s) {
         'background-color': v['av-dark'], 'color': v['av-cream'],
         'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
+    await clearAndSet(await freshStyle('sv-canvas-wrap'), 'sv-canvas-wrap', {
+        'position': 'absolute', 'top': '0px', 'left': '0px',
+        'width': '100%', 'height': '100%',
+        'z-index': '1', 'pointer-events': 'none',
+        'overflow-x': 'hidden', 'overflow-y': 'hidden',
+    });
+    await clearAndSet(await freshStyle('sv-content-overlay'), 'sv-content-overlay', {
+        'position': 'relative', 'z-index': '2',
+    });
     await clearAndSet(await freshStyle('blog-hero-content'), 'blog-hero-content', {
-        'max-width': '800px', 'position': 'relative', 'z-index': '2',
+        'max-width': '800px',
     });
     await clearAndSet(await freshStyle('blog-hero-subtitle'), 'blog-hero-subtitle', {
         'font-family': 'DM Sans', 'font-size': v['av-text-body'],

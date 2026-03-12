@@ -194,6 +194,8 @@ async function buildBlogPage(v: Record<string, any>, s: Record<string, any>) {
 
   // ── Page styles ──
   const blogHero = await getOrCreateStyle('blog-hero');
+  const svCanvasWrap = await getOrCreateStyle('sv-canvas-wrap');
+  const svContentOverlay = await getOrCreateStyle('sv-content-overlay');
   const blogHeroContent = await getOrCreateStyle('blog-hero-content');
   const blogHeroSubtitle = await getOrCreateStyle('blog-hero-subtitle');
   const labelLine = await getOrCreateStyle('blog-label-line');
@@ -219,12 +221,13 @@ async function buildBlogPage(v: Record<string, any>, s: Record<string, any>) {
   // Three.js canvas container
   const canvasWrap = hero.append(webflow.elementPresets.DOM);
   canvasWrap.setTag('div');
+  canvasWrap.setStyles([svCanvasWrap]);
   canvasWrap.setAttribute('id', 'hero-canvas');
   canvasWrap.setAttribute('class', 'sv-canvas-wrap');
 
   // Content overlay
   const heroContent = hero.append(webflow.elementPresets.DOM);
-  heroContent.setTag('div'); heroContent.setStyles([blogHeroContent]);
+  heroContent.setTag('div'); heroContent.setStyles([svContentOverlay, blogHeroContent]);
   heroContent.setAttribute('class', 'sv-content-overlay');
 
   // Label with line
@@ -302,20 +305,30 @@ async function buildBlogPage(v: Record<string, any>, s: Record<string, any>) {
   log('Applying blog style properties...');
 
   await clearAndSet(await freshStyle('blog-hero'), 'blog-hero', {
-    'min-height': '60vh', 'display': 'flex', 'align-items': 'flex-end',
-    'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
+    'min-height': '75vh', 'display': 'flex', 'align-items': 'flex-end',
+    'padding-top': '180px', 'padding-bottom': v['av-section-pad-y'],
     'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
     'background-color': v['av-dark'], 'color': v['av-cream'],
     'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
   });
+  await clearAndSet(await freshStyle('sv-canvas-wrap'), 'sv-canvas-wrap', {
+    'position': 'absolute', 'top': '0px', 'left': '0px',
+    'width': '100%', 'height': '100%',
+    'z-index': '1', 'pointer-events': 'none',
+    'overflow-x': 'hidden', 'overflow-y': 'hidden',
+  });
+  await clearAndSet(await freshStyle('sv-content-overlay'), 'sv-content-overlay', {
+    'position': 'relative', 'z-index': '2',
+  });
 
   await clearAndSet(await freshStyle('blog-hero-content'), 'blog-hero-content', {
-    'max-width': '800px', 'position': 'relative', 'z-index': '2',
+    'max-width': '900px',
   });
 
   await clearAndSet(await freshStyle('blog-hero-subtitle'), 'blog-hero-subtitle', {
-    'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-    'line-height': '1.9', 'opacity': '0.6', 'margin-top': '24px', 'color': v['av-cream'],
+    'font-family': 'DM Sans', 'font-size': '17px',
+    'line-height': '1.8', 'color': 'rgba(240,237,232,0.55)',
+    'margin-top': '28px', 'max-width': '520px',
   });
 
   await clearAndSet(await freshStyle('blog-label-line'), 'blog-label-line', {
@@ -324,34 +337,38 @@ async function buildBlogPage(v: Record<string, any>, s: Record<string, any>) {
   await wait(500);
 
   await clearAndSet(await freshStyle('blog-grid-wrap'), 'blog-grid-wrap', {
-    'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
+    'padding-top': v['av-section-pad-y'], 'padding-bottom': '120px',
     'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
-    'background-color': v['av-cream'],
+    'background-color': v['av-dark'], 'position': 'relative',
   });
 
   await clearAndSet(await freshStyle('blog-grid'), 'blog-grid', {
     'display': 'grid',
     'grid-template-columns': '1fr 1fr 1fr',
-    'grid-column-gap': v['av-gap-md'],
-    'grid-row-gap': v['av-gap-lg'],
+    'grid-column-gap': '1px', 'grid-row-gap': '1px',
     'max-width': '1200px', 'margin-left': 'auto', 'margin-right': 'auto',
+    'background-color': 'rgba(240,237,232,0.05)',
+    'border-top-width': '1px', 'border-bottom-width': '1px',
+    'border-left-width': '1px', 'border-right-width': '1px',
+    'border-top-style': 'solid', 'border-bottom-style': 'solid',
+    'border-left-style': 'solid', 'border-right-style': 'solid',
+    'border-top-color': 'rgba(240,237,232,0.05)',
+    'border-bottom-color': 'rgba(240,237,232,0.05)',
+    'border-left-color': 'rgba(240,237,232,0.05)',
+    'border-right-color': 'rgba(240,237,232,0.05)',
   });
 
   await clearAndSet(await freshStyle('blog-card'), 'blog-card', {
-    'background-color': '#ffffff',
-    'border-top-left-radius': v['av-radius'],
-    'border-top-right-radius': v['av-radius'],
-    'border-bottom-left-radius': v['av-radius'],
-    'border-bottom-right-radius': v['av-radius'],
+    'background-color': '#141414',
     'overflow-x': 'hidden', 'overflow-y': 'hidden',
     'display': 'flex', 'flex-direction': 'column',
-    'box-shadow': '0 2px 20px rgba(0, 0, 0, 0.06)',
-    'text-decoration': 'none', 'color': v['av-dark'],
+    'text-decoration': 'none', 'color': v['av-cream'],
+    'position': 'relative',
   });
 
   await clearAndSet(await freshStyle('blog-card-img-wrap'), 'blog-card-img-wrap', {
     'overflow-x': 'hidden', 'overflow-y': 'hidden',
-    'height': '240px',
+    'height': '220px', 'position': 'relative',
   });
 
   await clearAndSet(await freshStyle('blog-card-img'), 'blog-card-img', {
@@ -361,38 +378,39 @@ async function buildBlogPage(v: Record<string, any>, s: Record<string, any>) {
   await wait(500);
 
   await clearAndSet(await freshStyle('blog-card-body'), 'blog-card-body', {
-    'padding-top': '32px', 'padding-bottom': '32px',
+    'padding-top': '28px', 'padding-bottom': '32px',
     'padding-left': '32px', 'padding-right': '32px',
     'display': 'flex', 'flex-direction': 'column',
-    'grid-row-gap': '12px', 'flex-grow': '1',
+    'grid-row-gap': '10px', 'flex-grow': '1',
   });
 
   await clearAndSet(await freshStyle('blog-card-date'), 'blog-card-date', {
     'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
-    'letter-spacing': '0.15em', 'text-transform': 'uppercase',
-    'opacity': '0.4', 'margin-top': '0px', 'margin-bottom': '0px',
-    'color': v['av-dark'],
+    'letter-spacing': '0.2em', 'text-transform': 'uppercase',
+    'color': 'rgba(240,237,232,0.3)',
+    'margin-top': '0px', 'margin-bottom': '0px',
   });
 
   await clearAndSet(await freshStyle('blog-card-title'), 'blog-card-title', {
-    'font-family': 'DM Serif Display', 'font-size': '22px',
-    'line-height': '1.25', 'font-weight': '400',
+    'font-family': 'DM Serif Display', 'font-size': '20px',
+    'line-height': '1.3', 'font-weight': '400',
     'margin-top': '0px', 'margin-bottom': '0px',
-    'color': v['av-dark'],
+    'color': v['av-cream'],
   });
 
   await clearAndSet(await freshStyle('blog-card-summary'), 'blog-card-summary', {
     'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
-    'line-height': '1.7', 'font-weight': '400',
-    'opacity': '0.6', 'margin-top': '0px', 'margin-bottom': '0px',
-    'color': v['av-dark'],
+    'line-height': '1.75', 'font-weight': '400',
+    'color': 'rgba(240,237,232,0.45)',
+    'margin-top': '0px', 'margin-bottom': '0px',
     'overflow-x': 'hidden', 'overflow-y': 'hidden',
   });
 
   await clearAndSet(await freshStyle('blog-card-link'), 'blog-card-link', {
-    'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
-    'color': v['av-dark'], 'opacity': '0.5',
-    'margin-top': 'auto', 'padding-top': '8px',
+    'font-family': 'DM Sans', 'font-size': '11px',
+    'letter-spacing': '0.12em', 'text-transform': 'uppercase',
+    'color': v['av-red'], 'opacity': '0.6',
+    'margin-top': 'auto', 'padding-top': '16px',
   });
   await wait(500);
 

@@ -117,27 +117,41 @@
   }
 
   /* ═══════════════════════════════════════════════
-     BLOG CARD STAGGER — fade-up on scroll
+     BLOG CARD REVEAL — editorial stagger
      ═══════════════════════════════════════════════ */
   function initBlogCards() {
     var cards = document.querySelectorAll('.blog-card');
     if (!cards.length) return;
 
-    // Remove data-animate to prevent conflict with avorino-animations.js
     cards.forEach(function(card) { card.removeAttribute('data-animate'); });
 
-    gsap.set(cards, { opacity: 0, y: 40 });
+    gsap.set(cards, { opacity: 0, y: 48, scale: 0.97 });
+
     ScrollTrigger.batch(cards, {
       onEnter: function(batch) {
         gsap.to(batch, {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          stagger: 0.15,
-          ease: 'power2.out'
+          opacity: 1, y: 0, scale: 1,
+          duration: 1.0,
+          stagger: 0.1,
+          ease: 'power3.out',
+          clearProps: 'scale,transform',
         });
       },
-      start: 'top 85%'
+      start: 'top 88%',
+    });
+
+    // Subtle parallax on each card image
+    document.querySelectorAll('.blog-card-img').forEach(function(img) {
+      gsap.to(img, {
+        yPercent: -8,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: img.closest('.blog-card'),
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true,
+        }
+      });
     });
   }
 
