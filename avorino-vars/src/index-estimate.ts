@@ -19,7 +19,7 @@ const PAGE_NAME = 'Free Estimate';
 const PAGE_SLUG = 'free-estimate';
 const PAGE_TITLE = 'Get Your Free Estimate — Avorino Construction';
 const PAGE_DESC = 'No obligations. Real numbers for your construction project in Orange County.';
-const CDN = 'cd1790b';
+const CDN = '0561094';
 const HEAD_CODE = [
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
