@@ -34,7 +34,6 @@ nav.site-nav .nav-logo {
   height: 28px;
   width: auto;
   display: block;
-  filter: brightness(0) invert(1);
   transition: filter 0.4s ease;
 }
 

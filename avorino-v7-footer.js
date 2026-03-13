@@ -80,7 +80,7 @@
       const col = document.createElement('div');
       col.style.cssText = 'position:absolute;top:0;height:' + logoH + 'px;overflow:hidden;left:' + def.left + ';width:' + def.width + ';';
       const inner = document.createElement('div');
-      inner.style.cssText = 'position:absolute;top:0;width:' + logoW + 'px;height:' + logoH + 'px;background-image:' + bgImage + ';background-size:contain;background-repeat:no-repeat;background-position:center;filter:brightness(0) invert(1);';
+      inner.style.cssText = 'position:absolute;top:0;width:' + logoW + 'px;height:' + logoH + 'px;background-image:' + bgImage + ';background-size:contain;background-repeat:no-repeat;background-position:center;';
       if (def.imgRight) { inner.style.right = def.imgRight; inner.style.left = 'auto'; }
       else { inner.style.left = def.imgLeft; }
       col.appendChild(inner);
