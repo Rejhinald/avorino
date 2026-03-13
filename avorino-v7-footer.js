@@ -16,44 +16,18 @@
   // Keep Lenis scroll limits in sync when ScrollTrigger adds/removes pin-spacers
   ScrollTrigger.addEventListener('refresh', () => lenis.resize());
 
-  // CUSTOM CURSOR
-  const cursorRing = document.querySelector('.cursor-ring');
-  const cursorDot = document.querySelector('.cursor-dot');
-  let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
-
-  if (cursorRing && cursorDot && window.innerWidth > 768) {
-    document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX; mouseY = e.clientY;
-      gsap.set(cursorDot, { x: mouseX, y: mouseY });
+  // MAGNETIC BUTTONS
+  document.querySelectorAll('[data-magnetic]').forEach(btn => {
+    btn.addEventListener('mousemove', (e) => {
+      const rect = btn.getBoundingClientRect();
+      const dx = e.clientX - (rect.left + rect.width / 2);
+      const dy = e.clientY - (rect.top + rect.height / 2);
+      gsap.to(btn, { x: dx * 0.25, y: dy * 0.25, duration: 0.4, ease: 'power3.out' });
     });
-    gsap.ticker.add(() => {
-      ringX += (mouseX - ringX) * 0.12;
-      ringY += (mouseY - ringY) * 0.12;
-      gsap.set(cursorRing, { x: ringX, y: ringY });
+    btn.addEventListener('mouseleave', () => {
+      gsap.to(btn, { x: 0, y: 0, duration: 0.8, ease: 'elastic.out(1, 0.5)' });
     });
-    document.querySelectorAll('a, button, [data-magnetic]').forEach(el => {
-      el.addEventListener('mouseenter', () => cursorRing.classList.add('hover-link'));
-      el.addEventListener('mouseleave', () => cursorRing.classList.remove('hover-link'));
-    });
-    document.querySelectorAll('.hero-container, .featured-image-wrap, .service-card-image').forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        cursorRing.classList.add('hover-image');
-        cursorRing.classList.remove('hover-link');
-      });
-      el.addEventListener('mouseleave', () => cursorRing.classList.remove('hover-image'));
-    });
-    document.querySelectorAll('[data-magnetic]').forEach(btn => {
-      btn.addEventListener('mousemove', (e) => {
-        const rect = btn.getBoundingClientRect();
-        const dx = e.clientX - (rect.left + rect.width / 2);
-        const dy = e.clientY - (rect.top + rect.height / 2);
-        gsap.to(btn, { x: dx * 0.25, y: dy * 0.25, duration: 0.4, ease: 'power3.out' });
-      });
-      btn.addEventListener('mouseleave', () => {
-        gsap.to(btn, { x: 0, y: 0, duration: 0.8, ease: 'elastic.out(1, 0.5)' });
-      });
-    });
-  }
+  });
 
   // PRELOADER — Paint Roller Reveal
   // Splits logo into 3 vertical columns, each revealed by a roller sweep:
