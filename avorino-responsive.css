@@ -185,11 +185,11 @@
     z-index: 2;
   }
   .hero-subtitle {
-    font-size: 12px !important;
+    font-size: 14px !important;
     letter-spacing: 0.18em !important;
   }
   .hero .btn-pill {
-    font-size: 14px !important;
+    font-size: 17px !important;
     padding: 16px 32px !important;
   }
 
@@ -198,7 +198,7 @@
     grid-template-columns: 1fr !important;
   }
   .about-heading {
-    font-size: clamp(48px, 7vw, 72px) !important;
+    font-size: clamp(52px, 8vw, 76px) !important;
     max-width: 100% !important;
     word-wrap: break-word !important;
     overflow-wrap: break-word !important;
@@ -237,16 +237,16 @@
   }
   .flip-card-top,
   .flip-card-bottom {
-    font-size: 36px !important;
+    font-size: 40px !important;
   }
   .stat-suffix {
-    font-size: 28px !important;
+    font-size: 32px !important;
   }
   .stat-separator {
-    font-size: 28px !important;
+    font-size: 32px !important;
   }
   .stat-label {
-    font-size: 11px !important;
+    font-size: 13px !important;
     letter-spacing: 0.18em !important;
   }
   .stat-digits {
@@ -323,11 +323,11 @@
     /* GSAP controls opacity — don't hide with display:none */
   }
   .process-slide-title {
-    font-size: clamp(28px, 5vw, 40px) !important;
+    font-size: clamp(32px, 5.7vw, 44px) !important;
     margin-bottom: 16px !important;
   }
   .process-slide-body {
-    font-size: 15px !important;
+    font-size: 18px !important;
     max-width: 100% !important;
   }
   /* Show the progress bar below steps */
@@ -420,7 +420,7 @@
     display: block !important;
   }
   .tool-panel-label-text {
-    font-size: 22px !important;
+    font-size: 26px !important;
     opacity: 1 !important;
   }
   /* Show content area directly (Webflow hides it on mobile) */
@@ -439,14 +439,14 @@
     display: none !important;
   }
   .tool-desc {
-    font-size: 14px !important;
+    font-size: 17px !important;
     opacity: 0.55 !important;
     margin-bottom: 16px !important;
     max-width: 100% !important;
   }
   .tool-cta {
     opacity: 1 !important;
-    font-size: 12px !important;
+    font-size: 14px !important;
     color: rgba(201, 169, 110, 0.8) !important;
   }
   .tool-arrow {
@@ -530,7 +530,7 @@
     min-height: 32vh !important;
   }
   .av-cta-heading {
-    font-size: clamp(28px, 6vw, 40px) !important;
+    font-size: clamp(32px, 6.9vw, 44px) !important;
   }
   .av-cta-btns {
     flex-direction: column !important;
@@ -551,7 +551,7 @@
     padding: 32px 28px !important;
   }
   .about-process-card-title {
-    font-size: 24px !important;
+    font-size: 28px !important;
   }
 
   /* ── Image placeholders ── */
@@ -577,7 +577,7 @@
   .av-input-clean,
   .av-textarea-clean,
   .av-select-clean {
-    font-size: 16px !important;
+    font-size: 19px !important;
   }
 
   /* ── Spacing reductions ── */
@@ -608,7 +608,7 @@
     top: auto !important;
   }
   .ct-info-phone {
-    font-size: clamp(24px, 5vw, 32px) !important;
+    font-size: clamp(28px, 5.8vw, 36px) !important;
   }
   .est-step-item {
     padding-top: 12px !important;
@@ -622,7 +622,7 @@
 
   /* ── Investment: reduce stat size, centered layout ── */
   .inv-hero-stat {
-    font-size: clamp(56px, 14vw, 96px) !important;
+    font-size: clamp(60px, 15.1vw, 100px) !important;
   }
   .inv-hero-stat-label {
     margin-bottom: 32px !important;
@@ -645,7 +645,7 @@
     height: 180px !important;
   }
   .blog-card-title {
-    font-size: 19px !important;
+    font-size: 23px !important;
   }
   .blog-grid-wrap {
     padding-left: 24px !important;
@@ -657,7 +657,7 @@
     max-width: 100% !important;
   }
   .bt-title {
-    font-size: clamp(28px, 5vw, 42px) !important;
+    font-size: clamp(32px, 5.7vw, 46px) !important;
   }
   .bt-meta {
     gap: 12px !important;
@@ -672,7 +672,7 @@
     padding-right: 24px !important;
   }
   .bt-rich-text {
-    font-size: 16px !important;
+    font-size: 19px !important;
     line-height: 2.2 !important;
   }
   .bt-featured-img {
@@ -685,15 +685,15 @@
     margin-bottom: 40px !important;
   }
   .cy-permit-meta {
-    font-size: 12px !important;
+    font-size: 14px !important;
   }
 
   /* ── Heading size overrides for inner pages ── */
   .av-heading-xl {
-    font-size: clamp(36px, 8vw, 56px) !important;
+    font-size: clamp(40px, 8.9vw, 60px) !important;
   }
   .av-heading-lg {
-    font-size: clamp(28px, 6vw, 40px) !important;
+    font-size: clamp(32px, 6.9vw, 44px) !important;
   }
 
   /* ── Flex column gap reduction ── */
@@ -719,17 +719,17 @@
     min-height: auto !important;
   }
   .hero-subtitle {
-    font-size: 11px !important;
+    font-size: 13px !important;
     letter-spacing: 0.15em !important;
   }
   .hero .btn-pill {
-    font-size: 14px !important;
+    font-size: 17px !important;
     padding: 14px 28px !important;
   }
 
   /* ── About: scale heading for mobile ── */
   .about-heading {
-    font-size: clamp(36px, 9vw, 56px) !important;
+    font-size: clamp(40px, 10.3vw, 60px) !important;
   }
 
   /* ── Services: wider cards on smaller screens ── */
@@ -751,13 +751,13 @@
   }
   .flip-card-top,
   .flip-card-bottom {
-    font-size: 30px !important;
+    font-size: 34px !important;
   }
   .stat-suffix {
-    font-size: 22px !important;
+    font-size: 26px !important;
   }
   .stat-separator {
-    font-size: 22px !important;
+    font-size: 26px !important;
     margin-bottom: 8px !important;
   }
   .stat-item {
@@ -776,10 +776,10 @@
     max-width: 180px !important;
   }
   .process-slide-title {
-    font-size: clamp(24px, 6vw, 34px) !important;
+    font-size: clamp(28px, 6.9vw, 38px) !important;
   }
   .process-slide-body {
-    font-size: 14px !important;
+    font-size: 17px !important;
   }
 
   /* ── Tools: compact cards ── */
@@ -787,20 +787,20 @@
     padding: 64px 16px !important;
   }
   .tools-heading > div {
-    font-size: clamp(28px, 7vw, 48px) !important;
+    font-size: clamp(32px, 8vw, 52px) !important;
   }
   .tools-intro {
-    font-size: 15px !important;
+    font-size: 18px !important;
   }
   .tool-panel {
     min-height: 100px !important;
     padding: 20px 24px !important;
   }
   .tool-panel-label-text {
-    font-size: 20px !important;
+    font-size: 24px !important;
   }
   .tool-desc {
-    font-size: 13px !important;
+    font-size: 16px !important;
     margin-bottom: 12px !important;
   }
 }
@@ -847,7 +847,7 @@
     min-height: auto !important;
   }
   .av-cta-heading {
-    font-size: clamp(24px, 7vw, 32px) !important;
+    font-size: clamp(28px, 8.2vw, 36px) !important;
   }
 
   /* ── Service cards ── */
@@ -858,7 +858,7 @@
     padding: 24px 20px !important;
   }
   .sv-card-title {
-    font-size: 22px !important;
+    font-size: 26px !important;
   }
 
   /* ── Process cards ── */
@@ -867,10 +867,10 @@
     padding: 24px 20px !important;
   }
   .about-process-card-title {
-    font-size: 20px !important;
+    font-size: 24px !important;
   }
   .about-process-card-desc {
-    font-size: 13px !important;
+    font-size: 16px !important;
   }
 
   /* ── Buttons: full width ── */
@@ -879,7 +879,7 @@
   .av-cta-btn,
   .av-submit-btn {
     padding: 14px 28px !important;
-    font-size: 13px !important;
+    font-size: 16px !important;
     width: 100%;
     justify-content: center !important;
   }
@@ -910,7 +910,7 @@
 
   /* ── Label: smaller ── */
   .av-label {
-    font-size: 9px !important;
+    font-size: 11px !important;
     letter-spacing: 0.25em !important;
     gap: 0 16px !important;
   }
@@ -930,10 +930,10 @@
 
   /* ── Investment hero stat: reduce ── */
   .inv-hero-stat {
-    font-size: clamp(48px, 12vw, 80px) !important;
+    font-size: clamp(52px, 13vw, 84px) !important;
   }
   .inv-hero-stat-label {
-    font-size: 14px !important;
+    font-size: 17px !important;
     margin-bottom: 24px !important;
   }
 
@@ -950,11 +950,11 @@
     max-width: 100% !important;
   }
   .ct-info-phone {
-    font-size: clamp(20px, 6vw, 28px) !important;
+    font-size: clamp(24px, 6.9vw, 32px) !important;
   }
   .ct-info-heading,
   .est-info-heading {
-    font-size: clamp(24px, 6vw, 32px) !important;
+    font-size: clamp(28px, 6.9vw, 36px) !important;
   }
   .est-step-item {
     flex-direction: column !important;
@@ -972,20 +972,20 @@
 
   /* ── Service-sub: compact narrative ── */
   .svsub-narr-heading {
-    font-size: clamp(24px, 6vw, 32px) !important;
+    font-size: clamp(28px, 6.9vw, 36px) !important;
   }
 
   /* ── City ADU: compact ── */
   .cy-overview {
     max-width: 100% !important;
     margin-bottom: 32px !important;
-    font-size: 15px !important;
+    font-size: 18px !important;
   }
   .cy-step-num {
-    font-size: clamp(32px, 8vw, 44px) !important;
+    font-size: clamp(36px, 9.1vw, 48px) !important;
   }
   .cy-permit-meta {
-    font-size: 11px !important;
+    font-size: 13px !important;
   }
 
   /* ── Calendly: minimal ── */
@@ -994,7 +994,7 @@
     padding-right: 16px !important;
   }
   .av-cal-heading {
-    font-size: clamp(24px, 6vw, 32px) !important;
+    font-size: clamp(28px, 6.9vw, 36px) !important;
   }
   .av-cal-widget {
     min-height: 600px !important;
@@ -1008,13 +1008,13 @@
     height: 160px !important;
   }
   .blog-card-title {
-    font-size: 17px !important;
+    font-size: 21px !important;
   }
   .blog-card-summary {
-    font-size: 13px !important;
+    font-size: 16px !important;
   }
   .blog-card-date {
-    font-size: 9px !important;
+    font-size: 11px !important;
   }
   .blog-grid-wrap {
     padding-left: 16px !important;
@@ -1023,11 +1023,11 @@
 
   /* ── Blog template: compact ── */
   .bt-title {
-    font-size: clamp(24px, 6vw, 36px) !important;
+    font-size: clamp(28px, 6.9vw, 40px) !important;
   }
   .bt-meta {
     gap: 8px !important;
-    font-size: 12px !important;
+    font-size: 14px !important;
   }
   .bt-img-wrap {
     padding-left: 16px !important;
@@ -1038,7 +1038,7 @@
     padding-right: 16px !important;
   }
   .bt-rich-text {
-    font-size: 15px !important;
+    font-size: 18px !important;
     line-height: 2 !important;
   }
   .bt-divider {
@@ -1052,13 +1052,13 @@
 
   /* ── Heading sizes: tightest ── */
   .av-heading-xl {
-    font-size: clamp(28px, 9vw, 42px) !important;
+    font-size: clamp(32px, 10.3vw, 46px) !important;
   }
   .av-heading-lg {
-    font-size: clamp(24px, 6vw, 32px) !important;
+    font-size: clamp(28px, 6.9vw, 36px) !important;
   }
   .av-heading-md {
-    font-size: clamp(20px, 5vw, 28px) !important;
+    font-size: clamp(24px, 5.7vw, 32px) !important;
   }
 
   /* ── Cards: minimal padding ── */
@@ -1084,16 +1084,16 @@
     min-height: auto !important;
   }
   .hero-subtitle {
-    font-size: 11px !important;
+    font-size: 13px !important;
   }
   .hero .btn-pill {
-    font-size: 13px !important;
+    font-size: 16px !important;
     padding: 14px 24px !important;
   }
 
   /* ── About: tightest heading ── */
   .about-heading {
-    font-size: clamp(28px, 10vw, 44px) !important;
+    font-size: clamp(32px, 11.4vw, 48px) !important;
   }
 
   /* ── Services: near full-width cards ── */
@@ -1115,22 +1115,22 @@
   }
   .flip-card-top,
   .flip-card-bottom {
-    font-size: 26px !important;
+    font-size: 30px !important;
     border-radius: 4px !important;
   }
   .flip-card {
     border-radius: 4px !important;
   }
   .stat-suffix {
-    font-size: 18px !important;
+    font-size: 22px !important;
     margin-left: 2px !important;
   }
   .stat-separator {
-    font-size: 18px !important;
+    font-size: 22px !important;
     margin-bottom: 6px !important;
   }
   .stat-label {
-    font-size: 10px !important;
+    font-size: 12px !important;
     letter-spacing: 0.15em !important;
   }
   .stat-item {
@@ -1148,11 +1148,11 @@
     margin-bottom: 28px !important;
   }
   .process-slide-title {
-    font-size: clamp(22px, 6vw, 30px) !important;
+    font-size: clamp(26px, 6.9vw, 34px) !important;
     margin-bottom: 12px !important;
   }
   .process-slide-body {
-    font-size: 14px !important;
+    font-size: 17px !important;
     line-height: 1.7 !important;
   }
   .process-slides {
@@ -1177,10 +1177,10 @@
     margin-bottom: 32px !important;
   }
   .tools-heading > div {
-    font-size: clamp(24px, 8vw, 40px) !important;
+    font-size: clamp(28px, 9.1vw, 44px) !important;
   }
   .tools-intro {
-    font-size: 14px !important;
+    font-size: 17px !important;
   }
   .tools-accordion {
     gap: 8px !important;
@@ -1191,14 +1191,14 @@
     border-radius: 10px !important;
   }
   .tool-panel-label-text {
-    font-size: 18px !important;
+    font-size: 22px !important;
   }
   .tool-desc {
-    font-size: 13px !important;
+    font-size: 16px !important;
     line-height: 1.6 !important;
     margin-bottom: 10px !important;
   }
   .tool-cta {
-    font-size: 11px !important;
+    font-size: 16px !important;
   }
 }
