@@ -647,52 +647,120 @@
     });
   }
 
-  // TESTIMONIAL NAVIGATION
+  // TESTIMONIAL CAROUSEL — 25 Reviews
   function initTestimonials() {
-    const card = document.querySelector('.testimonial-card');
-    if (!card) return;
-    const dots = card.querySelectorAll('.testimonial-dot');
-    const slides = card.querySelectorAll('.testimonial-slide');
-    const arrows = card.querySelectorAll('.testimonial-arrow');
-    const total = slides.length;
-    let current = 0, isAnimating = false;
-    if (!slides.length) return;
+    var REVIEWS = [
+      { quote: 'I am so happy I used Avorino Construction to build and renovate my two custom homes in Santa Ana. Raja and his team were absolutely amazing and made the whole process seamless and streamlined. The quality of work was absolutely fantastic and top notch all the way!', author: 'S S.', location: 'Irvine, CA' },
+      { quote: 'Avorino converted our RV garage to a custom ADU. Raja is a great project manager and easy to work with. He is organized and a clear communicator. Our architect made mistakes on the plans but Raja and team helped work through all issues. I highly recommend them.', author: 'Sam W.', location: 'Oakland, CA' },
+      { quote: 'These guys helped us out, converting our one car garage into a junior ADU. The city was difficult to work with, and they took care of everything. Raja was excellent and easy to work with. Their cost was very competitive. I would definitely work with them again.', author: 'Alex D.', location: 'Los Angeles, CA' },
+      { quote: 'We had Avorino build us an ADU in our property recently. They provided the full design and rendering. They pulled permits and built our 1,000 sqft ADU from start to finish. They are really easy to work with and their prices are very competitive.', author: 'Ray W.', location: 'Irvine, CA' },
+      { quote: 'This was my first kitchen remodeling experience and I was very nervous. From the first time I made contact, it was a smooth and professional experience. They executed my vision in every detail. The work was completed in less time than estimated and perfectly within budget.', author: 'Tina C.', location: 'Dana Point, CA' },
+      { quote: 'What a wonderful experience working with Raja and his team! Raja was extremely professional, timely, and had clear communication the entire time. My parents were so happy with how their ADU turned out and I am impressed with the care and service I received!', author: 'Alarah R.', location: 'Orange County, CA' },
+      { quote: "It's so rare to find a contractor that you have a good experience with. They got the work done quickly and made sure every little detail was completed without me having to be on top of them. I highly recommend and will definitely use them again!", author: 'Nikki B.', location: 'Laguna Niguel, CA' },
+      { quote: 'These are the best people in the business. They beat every single price that I got on top of that they did an excellent job finishing it in no time. They are truly the best of the best, highly recommended.', author: 'Shahin S.', location: 'Los Angeles, CA' },
+      { quote: 'Avorino built me a custom home. We loved how great they executed our project. We were impressed that they finished before the estimated timeline. They communicated every step. Love this company.', author: 'Hooman E.', location: 'Irvine, CA' },
+      { quote: 'Raja and William were great to work with. After our consultation they started the work within a week. They were professional, courteous, and precise. The job turned out great. I would totally recommend them.', author: 'Ryan J.', location: 'Brentwood, CA' },
+      { quote: 'They responded very quickly and showed up the next day to give a quote. Always responded and showed up on time. The job was done on time and I love the fine look and clear way of working. I highly recommend this business!', author: 'Pazit B.', location: 'Irvine, CA' },
+      { quote: "Raja was attentive, responsive and communicative with the entire process. He gave us good ideas throughout and supported us in selecting the various fixtures and tiles. We've been thrilled with how the kitchen has turned out!", author: 'Peeb P.', location: 'Irvine, CA' },
+      { quote: 'William and Raja are hands down the best around! They are with you from start to finish and are incredibly helpful, communicative and understanding. We have used them for multiple projects at home and at our two businesses.', author: 'Kristle J.', location: 'San Clemente, CA' },
+      { quote: 'Did a bathroom remodel. Full service company. Accommodates changes along the way, and fixing anything we point out or that we wanted changed. Fast and things get done, thanks Raja!', author: 'Tony H.', location: 'Irvine, CA' },
+      { quote: 'They did an excellent job and actually at a good price. We did a retile plus new fixtures and it came out looking like a high end resort bathroom.', author: 'Amy D.', location: 'San Clemente, CA' },
+      { quote: 'They were exceptional. The expertise, responsiveness, professionalism, cleanliness, creative and ingenuity is top of the line. Their work is so good and most important, honest.', author: 'Boris B.', location: 'Newport Beach, CA' },
+      { quote: 'Such a professional and creative team! They walked into my house with confidence that they would remodel my horrific 1960s fireplace to a clean cut, modern, cozy and budget friendly replacement. And so they did!', author: 'Teri N.', location: 'Irvine, CA' },
+      { quote: 'William and his team did a spectacular job on our new front porch! I rehired him due to his responsiveness, honesty and speedy, quality work! His team got our porch done in literally a day and a half.', author: 'Courtney C.', location: 'Mission Viejo, CA' },
+      { quote: "Raja and Amir are easily the most friendly and up front contractors we've worked with. Highly recommend them for being super easy to work with and good quality.", author: 'Allen D.', location: 'San Clemente, CA' },
+      { quote: 'This company is VERY communicative, professional and cost friendly. They got the job done in a timely manner. Every pre-existing issue I had they went over and beyond to fix. 100/100 across the board.', author: 'Jeremy C.', location: 'Long Beach, CA' },
+      { quote: 'Raja and his team came in with a reasonable price and worked after hours to get the job done! His team was respectful, clean, and worked after hours. I cannot recommend them enough.', author: 'Behrooz S.', location: 'Huntington Beach, CA' },
+      { quote: "We had them complete our media wall and absolutely loved working with their team! They were so professional from the beginning and set very realistic expectations. Our final product was better than I had imagined.", author: 'Srishti P.', location: 'Burbank, CA' },
+      { quote: 'I am very happy with my decision and the final outcome is fabulous! All the workers were on time, professional and respectful. The work is top notch!', author: 'Theresa F.', location: 'Laguna Niguel, CA' },
+      { quote: "Raja gave me the kitchen of my dreams. I couldn't have made a better decision. He was honest and very easy to work with. They were always on time and completed the work in record time.", author: 'Sonia H.', location: 'Irvine, CA' },
+      { quote: 'William was wonderful in relieving my fears and reassuring me they could take care of everything! He was professional as was his crew. I would certainly recommend them!', author: 'Marcia R.', location: 'San Clemente, CA' },
+    ];
 
-    // Auto-advance timer
-    let autoTimer = null;
-    function startAuto() { stopAuto(); autoTimer = setInterval(function() { goToSlide(current + 1 < total ? current + 1 : 0); }, 3000); }
+    var card = document.querySelector('[data-el="testimonial-card"]');
+    if (!card) return;
+
+    var slidesWrap = card.querySelector('[data-el="testimonial-slides-wrap"]');
+    var counterEl = card.querySelector('[data-el="testimonial-counter"]');
+    var progressFill = card.querySelector('[data-el="testimonial-progress-fill"]');
+    var arrows = card.querySelectorAll('[data-el="testimonial-arrow"]');
+    var total = REVIEWS.length;
+    var current = 0;
+    var isAnimating = false;
+    var cycleCount = 0;
+
+    // Build slides
+    REVIEWS.forEach(function(review, i) {
+      var slide = document.createElement('div');
+      slide.className = 'testimonial-slide' + (i === 0 ? ' active' : '');
+      slide.innerHTML =
+        '<div class="testimonial-stars">\u2605\u2605\u2605\u2605\u2605</div>' +
+        '<blockquote class="testimonial-quote">\u201C' + review.quote + '\u201D</blockquote>' +
+        '<div><p class="testimonial-author">\u2014 ' + review.author + '</p>' +
+        '<p class="testimonial-location">' + review.location + '</p></div>';
+      slidesWrap.appendChild(slide);
+    });
+
+    var slides = slidesWrap.querySelectorAll('.testimonial-slide');
+
+    function updateCounter() {
+      if (counterEl) counterEl.textContent = String(current + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+      if (progressFill) progressFill.style.width = ((current + 1) / total * 100) + '%';
+    }
+    updateCounter();
+
+    // Auto-advance
+    var autoTimer = null;
+    function startAuto() {
+      stopAuto();
+      if (cycleCount >= total) return; // stop after one full rotation
+      autoTimer = setInterval(function() {
+        var next = current + 1 < total ? current + 1 : 0;
+        if (next === 0) cycleCount += current + 1;
+        goToSlide(next);
+        if (cycleCount >= total) stopAuto();
+      }, 5000);
+    }
     function stopAuto() { if (autoTimer) { clearInterval(autoTimer); autoTimer = null; } }
     function resetAuto() { stopAuto(); startAuto(); }
 
     function goToSlide(target) {
       if (target === current || isAnimating || target < 0 || target >= total) return;
       isAnimating = true;
-      const dir = target > current ? 1 : -1;
-      dots.forEach(d => d.classList.remove('active'));
-      if (dots[target]) dots[target].classList.add('active');
-      const oldSlide = slides[current], newSlide = slides[target];
+      var dir = target > current ? 1 : -1;
+      var oldSlide = slides[current];
+      var newSlide = slides[target];
+
       gsap.to(oldSlide, {
         opacity: 0, x: -20 * dir, duration: 0.35, ease: 'power2.in',
-        onComplete: () => {
-          oldSlide.classList.remove('active'); gsap.set(oldSlide, { x: 0 });
+        onComplete: function() {
+          oldSlide.classList.remove('active');
+          gsap.set(oldSlide, { x: 0 });
           newSlide.classList.add('active');
-          gsap.fromTo(newSlide, { opacity: 0, x: 20 * dir }, { opacity: 1, x: 0, duration: 0.45, ease: 'power3.out', onComplete: () => { current = target; isAnimating = false; } });
+          gsap.fromTo(newSlide,
+            { opacity: 0, x: 20 * dir },
+            { opacity: 1, x: 0, duration: 0.45, ease: 'power3.out',
+              onComplete: function() { current = target; updateCounter(); isAnimating = false; }
+            }
+          );
         }
       });
     }
-    dots.forEach(dot => { dot.addEventListener('click', (e) => { e.stopPropagation(); resetAuto(); goToSlide(parseInt(dot.getAttribute('data-goto'))); }); });
-    arrows.forEach(arrow => {
-      arrow.addEventListener('click', (e) => {
+
+    // Arrow navigation
+    arrows.forEach(function(arrow) {
+      arrow.addEventListener('click', function(e) {
         e.stopPropagation();
         resetAuto();
+        cycleCount = 0; // reset cycle on manual interaction
         if (arrow.getAttribute('data-dir') === 'next') goToSlide(current + 1 < total ? current + 1 : 0);
         else goToSlide(current - 1 >= 0 ? current - 1 : total - 1);
       });
     });
 
-    // Pause on hover, resume on leave
+    // Pause on hover
     card.addEventListener('mouseenter', stopAuto);
-    card.addEventListener('mouseleave', startAuto);
+    card.addEventListener('mouseleave', function() { cycleCount = 0; startAuto(); });
 
     startAuto();
   }
