@@ -462,7 +462,7 @@
     ScrollTrigger.create({
       trigger: section,
       start: 'top top',
-      end: function() { return '+=' + (window.innerHeight * 2.5); },
+      end: function() { return '+=' + (window.innerHeight * 1.5); },
       pin: true,
       scrub: 0.6,
       anticipatePin: 1,
@@ -502,26 +502,43 @@
             }});
           }
 
-          // Slide crossfade
+          // Slide transition with direction-aware entrance/exit
           slides.forEach(function(slide, i) {
             if (i === step) {
-              gsap.to(slide, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out', overwrite: true });
+              // Incoming: fade in + slide from right
+              gsap.fromTo(slide,
+                { opacity: 0, x: 40, filter: 'blur(4px)' },
+                { opacity: 1, x: 0, filter: 'blur(0px)', duration: 0.5, ease: 'power3.out', overwrite: true }
+              );
               slide.classList.add('is-active');
+            } else if (i === prev) {
+              // Outgoing: fade out + slide left
+              gsap.to(slide, {
+                opacity: 0, x: -40, filter: 'blur(4px)',
+                duration: 0.35, ease: 'power2.in', overwrite: true
+              });
+              slide.classList.remove('is-active');
             } else {
-              var dir = i < step ? -1 : 1;
-              gsap.to(slide, { opacity: 0, y: 30 * dir, duration: 0.35, ease: 'power2.in', overwrite: true });
+              gsap.set(slide, { opacity: 0 });
               slide.classList.remove('is-active');
             }
           });
 
-          // Illustration crossfade
+          // Illustration transition with scale
           illusEls.forEach(function(el, i) {
             if (i === step) {
-              gsap.to(el, { opacity: 1, duration: 0.4, ease: 'power2.out', overwrite: true });
-              // Reset its timeline so it plays from start
+              gsap.fromTo(el,
+                { opacity: 0, scale: 0.85 },
+                { opacity: 1, scale: 1, duration: 0.5, ease: 'power3.out', overwrite: true }
+              );
               if (illusTimelines[i]) illusTimelines[i].progress(0);
+            } else if (i === prev) {
+              gsap.to(el, {
+                opacity: 0, scale: 0.9,
+                duration: 0.3, ease: 'power2.in', overwrite: true
+              });
             } else {
-              gsap.to(el, { opacity: 0, duration: 0.3, ease: 'power2.in', overwrite: true });
+              gsap.set(el, { opacity: 0 });
             }
           });
         }

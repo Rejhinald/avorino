@@ -170,7 +170,7 @@
   top: 50%;
   left: 0;
   right: 0;
-  height: 1px;
+  height: 4px;
   background: rgba(17, 17, 17, 0.08);
   transform: translateY(-50%);
 }
@@ -180,7 +180,7 @@
   top: 50%;
   left: 0;
   right: 0;
-  height: 1px;
+  height: 4px;
   background: #c8222a;
   opacity: 0.5;
   transform: translateY(-50%) scaleX(0);
