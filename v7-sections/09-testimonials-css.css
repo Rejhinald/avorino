@@ -21,6 +21,17 @@
   top: 200px;
 }
 
+.testimonials-label {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #111111;
+  opacity: 0.4;
+  margin-bottom: 32px;
+}
+
 .testimonials-heading {
   font-family: 'DM Serif Display', Georgia, serif;
   font-weight: 400;

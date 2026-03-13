@@ -7,6 +7,17 @@
   overflow: hidden;
 }
 
+.process-label {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #111111;
+  opacity: 0.4;
+  margin-bottom: 32px;
+}
+
 .process-header {
   display: grid;
   grid-template-columns: 1fr 1fr;
