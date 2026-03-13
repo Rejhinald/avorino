@@ -26,7 +26,7 @@
 .tools-heading > div {
   font-family: 'DM Serif Display', Georgia, serif;
   font-weight: 400;
-  font-size: clamp(36px, 3.5vw, 64px);
+  font-size: clamp(40px, 3.9vw, 68px);
   line-height: 1.08;
   letter-spacing: -0.02em;
   color: #f0ede8;
@@ -35,7 +35,7 @@
 .tools-intro {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-weight: 400;
-  font-size: 17px;
+  font-size: 21px;
   line-height: 1.9;
   color: #f0ede8;
   opacity: 0.65;
@@ -106,7 +106,7 @@
   transform: translateX(-50%);
   font-family: 'DM Serif Display', Georgia, serif;
   font-weight: 400;
-  font-size: 72px;
+  font-size: 76px;
   line-height: 1;
   letter-spacing: -0.04em;
   color: rgba(201, 169, 110, 0.1);
@@ -134,7 +134,7 @@
 .tool-panel-label-text {
   font-family: 'DM Serif Display', Georgia, serif;
   font-weight: 400;
-  font-size: 24px;
+  font-size: 28px;
   letter-spacing: 0.04em;
   color: #f0ede8;
   opacity: 0.75;
@@ -182,7 +182,7 @@
 
 .tp-symbol {
   font-family: 'DM Serif Display', Georgia, serif;
-  font-size: 36px;
+  font-size: 40px;
   color: rgba(201, 169, 110, 0.25);
   line-height: 1;
   margin-top: 8px;
@@ -278,7 +278,7 @@
 
 .tv-label {
   font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -287,7 +287,7 @@
 
 .tv-value {
   font-family: 'DM Serif Display', Georgia, serif;
-  font-size: 13px;
+  font-size: 16px;
   color: rgba(201, 169, 110, 0.7);
   letter-spacing: 0.02em;
 }
@@ -328,7 +328,7 @@
 
 .tv-total-label {
   font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -337,7 +337,7 @@
 
 .tv-total-value {
   font-family: 'DM Serif Display', Georgia, serif;
-  font-size: 28px;
+  font-size: 32px;
   color: rgba(201, 169, 110, 0.85);
   letter-spacing: -0.02em;
   line-height: 1;
@@ -380,7 +380,7 @@
 
 .tv-bar-label {
   font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -395,7 +395,7 @@
 
 .tv-stat-big {
   font-family: 'DM Serif Display', Georgia, serif;
-  font-size: 28px;
+  font-size: 32px;
   color: rgba(201, 169, 110, 0.85);
   letter-spacing: -0.02em;
   line-height: 1;
@@ -403,7 +403,7 @@
 
 .tv-stat-sub {
   font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -457,7 +457,7 @@
 
 .tv-gauge-status {
   font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -466,7 +466,7 @@
 
 .tv-gauge-amount {
   font-family: 'DM Serif Display', Georgia, serif;
-  font-size: 32px;
+  font-size: 36px;
   color: rgba(201, 169, 110, 0.85);
   letter-spacing: -0.02em;
   line-height: 1;
@@ -511,7 +511,7 @@
 .tool-name {
   font-family: 'DM Serif Display', Georgia, serif;
   font-weight: 400;
-  font-size: 28px;
+  font-size: 32px;
   color: #f0ede8;
   margin-bottom: 12px;
   line-height: 1.2;
@@ -520,7 +520,7 @@
 .tool-desc {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 18px;
   line-height: 1.7;
   color: #f0ede8;
   opacity: 0.45;
@@ -530,7 +530,7 @@
 
 .tool-cta {
   font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;

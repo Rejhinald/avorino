@@ -53,7 +53,7 @@
 .hero-subtitle {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 16px;
   color: rgba(240, 237, 232, 0.6);
   letter-spacing: 0.25em;
   text-transform: uppercase;
@@ -69,7 +69,7 @@
   align-items: center;
   gap: 12px;
   font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: 14px;
+  font-size: 17px;
   font-weight: 500;
   color: #111111;
   background-color: #f0ede8;
@@ -98,7 +98,7 @@
 
 .hero-scroll-text {
   font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 400;
   letter-spacing: 0.3em;
   text-transform: uppercase;

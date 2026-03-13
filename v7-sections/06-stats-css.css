@@ -51,7 +51,7 @@
   overflow: hidden;
   display: flex;
   justify-content: center;
-  font-size: 48px;
+  font-size: 52px;
   color: #f0ede8;
   background-color: #1a1a1a;
   top: 0;
@@ -70,7 +70,7 @@
   overflow: hidden;
   display: flex;
   justify-content: center;
-  font-size: 48px;
+  font-size: 52px;
   color: #f0ede8;
   background-color: #1a1a1a;
   bottom: 0;
@@ -82,7 +82,7 @@
 .stat-suffix {
   font-family: 'DM Serif Display', Georgia, serif;
   font-weight: 400;
-  font-size: 36px;
+  font-size: 40px;
   color: #f0ede8;
   opacity: 0;
   margin-left: 4px;
@@ -92,7 +92,7 @@
 .stat-separator {
   font-family: 'DM Serif Display', Georgia, serif;
   font-weight: 400;
-  font-size: 36px;
+  font-size: 40px;
   color: #f0ede8;
   opacity: 0;
   align-self: flex-end;
@@ -102,7 +102,7 @@
 .stat-label {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-weight: 400;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   opacity: 0.55;

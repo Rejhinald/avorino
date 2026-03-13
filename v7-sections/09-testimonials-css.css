@@ -24,7 +24,7 @@
 .testimonials-label {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-weight: 400;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: #111111;
@@ -52,7 +52,7 @@
 .testimonials-count {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 17px;
   color: #111111;
   opacity: 0.55;
 }
@@ -85,7 +85,7 @@
 
 .testimonial-stars {
   font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: 18px;
+  font-size: 22px;
   letter-spacing: 4px;
   margin-bottom: 32px;
   color: #c8222a;
@@ -105,7 +105,7 @@
 .testimonial-author {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 17px;
   letter-spacing: 0.04em;
   color: #f0ede8;
   opacity: 0.7;
@@ -115,7 +115,7 @@
 .testimonial-location {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 17px;
   color: #f0ede8;
   opacity: 0.45;
 }
@@ -167,7 +167,7 @@
   border: 1px solid rgba(240, 237, 232, 0.15);
   background-color: transparent;
   color: #f0ede8;
-  font-size: 14px;
+  font-size: 17px;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -10,7 +10,7 @@
 .featured-label {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 16px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: #111111;
@@ -55,7 +55,7 @@
 .featured-panel-title {
   font-family: 'DM Serif Display', Georgia, serif;
   font-weight: 400;
-  font-size: 44px;
+  font-size: 48px;
   line-height: 1.12;
   color: #f0ede8;
   margin-bottom: 32px;
@@ -64,7 +64,7 @@
 .featured-panel-title > div {
   font-family: 'DM Serif Display', Georgia, serif;
   font-weight: 400;
-  font-size: 44px;
+  font-size: 48px;
   line-height: 1.12;
   color: #f0ede8;
 }
@@ -84,7 +84,7 @@
 .featured-meta-label {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-weight: 400;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: #f0ede8;
@@ -94,7 +94,7 @@
 .featured-meta-value {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 17px;
   color: #f0ede8;
   opacity: 0.7;
 }
@@ -167,7 +167,7 @@
   font-weight: 400;
   display: flex;
   gap: 24px;
-  font-size: 14px;
+  font-size: 17px;
   color: #f0ede8;
   opacity: 0.65;
 }
