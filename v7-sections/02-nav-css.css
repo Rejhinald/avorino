@@ -12,7 +12,6 @@
   align-items: center;
   justify-content: space-between;
   background-color: transparent;
-  mix-blend-mode: difference;
   transition: background-color 0.4s ease, backdrop-filter 0.4s ease,
               -webkit-backdrop-filter 0.4s ease, box-shadow 0.4s ease, padding 0.3s ease;
 }
@@ -56,6 +55,7 @@ nav.site-nav .nav-link {
 
 nav.site-nav .nav-link:hover {
   opacity: 1;
+  color: #c8222a !important;
 }
 
 nav.site-nav .nav-cta {
@@ -80,8 +80,12 @@ nav.site-nav .nav-burger span {
   background-color: #ffffff !important;
 }
 
-/* ── Scrolled State: always transparent (no frosted glass) ── */
-/* .nav--scrolled class is toggled by JS but nav stays transparent */
+/* ── Scrolled State: dark frosted glass ── */
+nav.site-nav.nav--scrolled {
+  background-color: rgba(17, 17, 17, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
 
 /* ── Dropdown Open State: disable blend mode, frosted glass + dark text ── */
 nav.site-nav.nav--dropdown-open {
@@ -106,6 +110,10 @@ nav.site-nav.nav--dropdown-open .nav-cta {
 
 nav.site-nav.nav--dropdown-open .nav-link--has-dropdown {
   opacity: 1;
+}
+
+nav.site-nav.nav--dropdown-open .nav-link:hover {
+  color: #c8222a !important;
 }
 
 /* ── Nav Item (wrapper for link + dropdown) ── */

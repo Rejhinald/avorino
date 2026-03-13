@@ -10,7 +10,6 @@
   // ── Config ──
   var HOVER_ENTER  = 80;    // ms before dropdown opens (prevents accidental triggers)
   var HOVER_LEAVE  = 350;   // ms grace period before closing (prevents flicker between items)
-  var SCROLL_TOP   = 10;    // px — add glass bg after this
   var STAGGER_MS   = 35;    // ms between each content item fade-in
 
   // ── Cached Elements ──
@@ -116,7 +115,9 @@
   var ticking = false;
 
   function onScroll() {
-    if (window.scrollY > SCROLL_TOP) {
+    var hero = document.querySelector('.hero');
+    var threshold = hero ? hero.offsetHeight * 0.5 : 100;
+    if (window.scrollY > threshold) {
       nav.classList.add('nav--scrolled');
     } else {
       nav.classList.remove('nav--scrolled');
