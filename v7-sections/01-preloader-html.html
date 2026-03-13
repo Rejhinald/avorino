@@ -1,12 +1,31 @@
-<!-- Preloader — Paint Roller Reveal
-     The JS (avorino-v7-footer.js) dynamically creates:
-     - 3 vertical column divs splitting the logo into thirds
-     - SVG paint roller that sweeps each column (right→mid→left)
-     - GSAP timeline with clip-path reveals synced to roller position
-     No extra markup needed beyond this base structure. -->
+<!-- Preloader — Blueprint Wireframe Build -->
 <div class="preloader" data-el="preloader">
-  <div class="preloader-text" data-el="preloader-text" data-animate="preloader">
-    <img src="https://placeholder.com/avorino-logo.svg" alt="Avorino" class="preloader-logo-img">
+  <div class="preloader-content" data-el="preloader-content">
+    <!-- Blueprint grid background -->
+    <div class="preloader-grid" data-el="preloader-grid"></div>
+    <!-- House wireframe SVG -->
+    <svg class="preloader-house" data-el="preloader-house" viewBox="0 0 300 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Foundation -->
+      <line class="house-foundation" x1="30" y1="190" x2="270" y2="190" stroke="#f0ede8" stroke-width="2" stroke-dasharray="240" stroke-dashoffset="240"/>
+      <!-- Left wall -->
+      <line class="house-wall house-wall-l" x1="50" y1="190" x2="50" y2="80" stroke="#f0ede8" stroke-width="1.5" stroke-dasharray="110" stroke-dashoffset="110"/>
+      <!-- Right wall -->
+      <line class="house-wall house-wall-r" x1="250" y1="190" x2="250" y2="80" stroke="#f0ede8" stroke-width="1.5" stroke-dasharray="110" stroke-dashoffset="110"/>
+      <!-- Roof left -->
+      <line class="house-roof house-roof-l" x1="150" y1="30" x2="40" y2="85" stroke="#f0ede8" stroke-width="2" stroke-linecap="round" stroke-dasharray="125" stroke-dashoffset="125"/>
+      <!-- Roof right -->
+      <line class="house-roof house-roof-r" x1="150" y1="30" x2="260" y2="85" stroke="#f0ede8" stroke-width="2" stroke-linecap="round" stroke-dasharray="125" stroke-dashoffset="125"/>
+      <!-- Door -->
+      <rect class="house-door" x="125" y="130" width="50" height="60" rx="3" stroke="#f0ede8" stroke-width="1.5" fill="none" opacity="0"/>
+      <!-- Window left -->
+      <rect class="house-window" x="70" y="110" width="35" height="30" rx="2" stroke="#f0ede8" stroke-width="1" fill="none" opacity="0"/>
+      <!-- Window right -->
+      <rect class="house-window" x="195" y="110" width="35" height="30" rx="2" stroke="#f0ede8" stroke-width="1" fill="none" opacity="0"/>
+    </svg>
+    <!-- Logo appears after wireframe -->
+    <div class="preloader-logo-wrap" data-el="preloader-logo-wrap">
+      <img src="https://placeholder.com/avorino-logo.svg" alt="Avorino" class="preloader-logo-img">
+    </div>
   </div>
   <div class="preloader-curtain" data-el="preloader-curtain"></div>
 </div>

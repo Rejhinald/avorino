@@ -29,11 +29,7 @@
     });
   });
 
-  // PRELOADER — Paint Roller Reveal
-  // Splits logo into 3 vertical columns, each revealed by a roller sweep:
-  //   Pass 1: right third ("NO")  — bottom → top
-  //   Pass 2: middle third ("RI") — top → bottom
-  //   Pass 3: left third ("AVO")  — bottom → top
+  // PRELOADER — Blueprint Wireframe Build
   function initPreloader() {
     const preloader = document.querySelector('.preloader');
     const curtain = document.querySelector('.preloader-curtain');
@@ -45,126 +41,69 @@
       return;
     }
 
+    // Skip animation for repeat visitors in same session
+    if (sessionStorage.getItem('avorino-visited')) {
+      gsap.set(preloader, { display: 'none' });
+      lenis.start();
+      initScrollAnimations();
+      initHeroContentEntrance();
+      return;
+    }
+    sessionStorage.setItem('avorino-visited', '1');
+
     lenis.stop();
 
-    // Find the logo element (img or div with bg-image)
-    const textWrap = preloader.querySelector('.preloader-text');
-    const logoEl = textWrap.querySelector('img, div');
-    if (!logoEl) { preloader.style.display = 'none'; lenis.start(); initScrollAnimations(); return; }
-
-    // Roller SVG moves above/below logo bounds — need visible overflow
-    textWrap.style.overflow = 'visible';
-
-    // Get the background-image (from div) or src (from img)
-    const isImg = logoEl.tagName === 'IMG';
-    const bgImage = isImg
-      ? 'url(' + logoEl.src + ')'
-      : getComputedStyle(logoEl).backgroundImage;
-
-    // Get logo dimensions
-    const logoW = logoEl.offsetWidth || 200;
-    const logoH = logoEl.offsetHeight || 48;
-
-    // Hide the original logo
-    gsap.set(logoEl, { opacity: 0 });
-
-    // Create 3 column containers + inner image divs
-    const cols = [];
-    const colDefs = [
-      { left: (logoW * 2 / 3) + 'px', width: (logoW / 3) + 'px', imgRight: '0', imgLeft: 'auto' },  // right: "NO"
-      { left: (logoW / 3) + 'px', width: (logoW / 3) + 'px', imgLeft: -(logoW / 3) + 'px' },          // mid: "RI"
-      { left: '0', width: (logoW / 3) + 'px', imgLeft: '0' }                                           // left: "AVO"
-    ];
-
-    colDefs.forEach(function(def) {
-      const col = document.createElement('div');
-      col.style.cssText = 'position:absolute;top:0;height:' + logoH + 'px;overflow:hidden;left:' + def.left + ';width:' + def.width + ';';
-      const inner = document.createElement('div');
-      inner.style.cssText = 'position:absolute;top:0;width:' + logoW + 'px;height:' + logoH + 'px;background-image:' + bgImage + ';background-size:contain;background-repeat:no-repeat;background-position:center;';
-      if (def.imgRight) { inner.style.right = def.imgRight; inner.style.left = 'auto'; }
-      else { inner.style.left = def.imgLeft; }
-      col.appendChild(inner);
-      textWrap.appendChild(col);
-      cols.push(col);
-    });
-
-    // Create SVG paint roller
-    const colW = logoW / 3;
-    const rollerWrap = document.createElement('div');
-    rollerWrap.style.cssText = 'position:absolute;z-index:10;opacity:0;pointer-events:none;';
-    rollerWrap.innerHTML = '<svg width="78" height="88" viewBox="0 0 78 88" fill="none" xmlns="http://www.w3.org/2000/svg">'
-      + '<rect x="4" y="2" width="56" height="18" rx="5" fill="rgba(240,237,232,0.12)" stroke="rgba(240,237,232,0.28)" stroke-width="1.2"/>'
-      + '<rect x="8" y="5" width="48" height="12" rx="4" fill="rgba(240,237,232,0.45)"/>'
-      + '<rect x="12" y="8.5" width="40" height="3" rx="1.5" fill="rgba(240,237,232,0.7)" opacity="0.3"/>'
-      + '<path d="M 5 7 L 1 7 L 1 15 L 5 15" stroke="rgba(240,237,232,0.28)" stroke-width="1.5" fill="none" stroke-linejoin="round"/>'
-      + '<path d="M 58 11 L 64 11 A 5 5 0 0 1 69 16 L 69 40 A 5 5 0 0 1 64 45 L 50 45" stroke="rgba(240,237,232,0.38)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>'
-      + '<path d="M 50 45 L 50 58" stroke="rgba(240,237,232,0.38)" stroke-width="3" stroke-linecap="round" fill="none"/>'
-      + '<rect x="42" y="56" width="16" height="30" rx="6" fill="rgba(240,237,232,0.12)" stroke="rgba(240,237,232,0.22)" stroke-width="1.2"/>'
-      + '<rect x="45.5" y="60" width="9" height="22" rx="3.5" fill="rgba(240,237,232,0.38)"/>'
-      + '</svg>';
-    textWrap.appendChild(rollerWrap);
-
-    const headY = 11; // vertical center of roller drum in SVG (drum at top)
-    const slant = 6;
-
-    // Initial clip states
-    gsap.set(cols[0], { clipPath: 'inset(100% 0 0 0)' });
-    gsap.set(cols[1], { clipPath: 'inset(0 0 100% 0)' });
-    gsap.set(cols[2], { clipPath: 'inset(100% 0 0 0)' });
-
-    // Proxy progress objects — onUpdate syncs roller + clip-path every frame
-    const p1 = { v: 0 }, p2 = { v: 0 }, p3 = { v: 0 };
+    const grid = preloader.querySelector('[data-el="preloader-grid"]');
+    const house = preloader.querySelector('[data-el="preloader-house"]');
+    const logoWrap = preloader.querySelector('[data-el="preloader-logo-wrap"]');
+    const foundation = house.querySelector('.house-foundation');
+    const walls = house.querySelectorAll('.house-wall');
+    const roofLines = house.querySelectorAll('.house-roof');
+    const door = house.querySelector('.house-door');
+    const windows = house.querySelectorAll('.house-window');
 
     const tl = gsap.timeline({
-      onComplete: function() {
+      onComplete: () => {
         preloader.style.display = 'none';
         lenis.start();
         initScrollAnimations();
       }
     });
 
-    // Roller appears at bottom-right
-    tl.set(rollerWrap, {
-      left: (colW * 2 - 5) + 'px',
-      top: logoH + 'px',
-      rotation: -slant,
-      opacity: 0.9
-    }, 0);
+    // 0s: Blueprint grid fades in
+    tl.to(grid, { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0);
 
-    // Pass 1: Right ("NO") — bottom → top, clip synced to roller
-    tl.to(p1, { v: 1, duration: 0.6, ease: 'power2.inOut', onUpdate: function() {
-      cols[0].style.clipPath = 'inset(' + ((1 - p1.v) * 100) + '% 0 0 0)';
-      rollerWrap.style.top = (logoH * (1 - p1.v) - headY) + 'px';
-    }}, 0);
+    // 0.3s: Foundation draws left→right
+    tl.to(foundation, { strokeDashoffset: 0, duration: 0.5, ease: 'power2.inOut' }, 0.3);
 
-    // Transition: slide left to middle, flip slant
-    tl.to(rollerWrap, { left: (colW - 5) + 'px', rotation: slant, duration: 0.12, ease: 'power1.inOut' });
+    // 0.7s: Walls draw upward
+    tl.to(walls, { strokeDashoffset: 0, duration: 0.4, stagger: 0.1, ease: 'power2.out' }, 0.7);
 
-    // Pass 2: Middle ("RI") — top → bottom
-    tl.to(p2, { v: 1, duration: 0.6, ease: 'power2.inOut', onUpdate: function() {
-      cols[1].style.clipPath = 'inset(0 0 ' + ((1 - p2.v) * 100) + '% 0)';
-      rollerWrap.style.top = (logoH * p2.v - headY) + 'px';
-    }});
+    // 1.0s: Roof draws from peak outward
+    tl.to(roofLines, { strokeDashoffset: 0, duration: 0.4, stagger: 0.05, ease: 'power2.inOut' }, 1.0);
 
-    // Transition: slide left, flip slant back
-    tl.to(rollerWrap, { left: '-5px', rotation: -slant, duration: 0.12, ease: 'power1.inOut' });
+    // 1.3s: Door and windows fade in
+    tl.to(door, { opacity: 0.6, duration: 0.3, ease: 'power2.out' }, 1.3);
+    tl.to(windows, { opacity: 0.5, duration: 0.25, stagger: 0.1, ease: 'power2.out' }, 1.4);
 
-    // Pass 3: Left ("AVO") — bottom → top
-    tl.to(p3, { v: 1, duration: 0.6, ease: 'power2.inOut', onUpdate: function() {
-      cols[2].style.clipPath = 'inset(' + ((1 - p3.v) * 100) + '% 0 0 0)';
-      rollerWrap.style.top = (logoH * (1 - p3.v) - headY) + 'px';
-    }});
+    // 1.7s: Lines glow red briefly
+    tl.to(house.querySelectorAll('line, rect'), {
+      stroke: '#c8222a', duration: 0.3, ease: 'power2.out'
+    }, 1.7);
+    tl.to(house.querySelectorAll('line, rect'), {
+      stroke: '#f0ede8', duration: 0.4, ease: 'power2.out'
+    }, 2.0);
 
-    // Roller fades
-    tl.to(rollerWrap, { opacity: 0, duration: 0.3 });
+    // 2.2s: Wireframe fades + scales down, logo fades in
+    tl.to(house, { opacity: 0, scale: 0.8, duration: 0.4, ease: 'power2.in' }, 2.2);
+    tl.to(grid, { opacity: 0, duration: 0.3 }, 2.2);
+    tl.to(logoWrap, { opacity: 1, scale: 1, duration: 0.6, ease: 'power3.out' }, 2.4);
 
-    // Hold full logo
-    tl.to({}, { duration: 0.6 });
-
-    // Exit: fade logo + curtain up
-    tl.to(cols, { opacity: 0, duration: 0.4, ease: 'power2.in' });
+    // 3.0s: Hold logo briefly, then exit
+    tl.to({}, { duration: 0.4 }, 3.0);
+    tl.to(logoWrap, { opacity: 0, duration: 0.3, ease: 'power2.in' }, 3.4);
     tl.set(preloader, { background: 'transparent' });
-    if (curtain) tl.to(curtain, { yPercent: -100, duration: 1.2, ease: 'power4.inOut' }, '<');
+    if (curtain) tl.to(curtain, { yPercent: -100, duration: 1, ease: 'power4.inOut' }, 3.4);
     initHeroContentEntrance();
   }
 
