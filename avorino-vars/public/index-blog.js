@@ -5,7 +5,7 @@
 // ════════════════════════════════════════════════════════════════
 import { webflow, log, logDetail, clearErrorLog, wait, safeCall, getAvorinVars, getOrCreateStyle, clearAndSet, freshStyle, createSharedStyles, setSharedStyleProps, createAllVariables, createPageWithSlug, buildCTASection, applyCTAStyleProps, CALENDLY_CSS, CALENDLY_JS, } from './shared.js';
 // ── CDN hash ──
-const CDN = '4533be4';
+const CDN = '7dbdec0';
 const HEAD_CODE = [
     `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
     `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
@@ -23,6 +23,14 @@ const FOOTER_CODE = [
 ].join('\n');
 // ── Blog post data (scraped from Wix) ──
 const BLOG_POSTS = [
+    {
+        title: 'The Complete Guide to Building an ADU in 2026: Costs, Benefits, and Planning Tips',
+        slug: 'the-complete-guide-to-building-an-adu-in-2026-costs-benefits-and-planning-tips',
+        date: '2026-03-06T00:00:00.000Z',
+        author: 'Avorino',
+        summary: 'Discover how to build an ADU in 2026. Learn planning tips, financing options, and estimate costs with our ADU calculators and ROI tools.',
+        image: 'https://static.wixstatic.com/media/e962d0f54c71471b8962607de56eaaff.jpg',
+    },
     {
         title: 'Maximizing Energy Efficiency in Your Custom Home',
         slug: 'maximizing-energy-efficiency-in-your-custom-home',
@@ -279,8 +287,8 @@ async function buildBlogPage(v, s) {
     // ── Apply style properties ──
     log('Applying blog style properties...');
     await clearAndSet(await freshStyle('blog-hero'), 'blog-hero', {
-        'min-height': '60vh', 'display': 'flex', 'align-items': 'flex-end',
-        'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
+        'min-height': '75vh', 'display': 'flex', 'align-items': 'flex-end',
+        'padding-top': '180px', 'padding-bottom': v['av-section-pad-y'],
         'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
         'background-color': v['av-dark'], 'color': v['av-cream'],
         'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
@@ -295,42 +303,47 @@ async function buildBlogPage(v, s) {
         'position': 'relative', 'z-index': '2',
     });
     await clearAndSet(await freshStyle('blog-hero-content'), 'blog-hero-content', {
-        'max-width': '800px',
+        'max-width': '900px',
     });
     await clearAndSet(await freshStyle('blog-hero-subtitle'), 'blog-hero-subtitle', {
-        'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-        'line-height': '1.9', 'opacity': '0.6', 'margin-top': '24px', 'color': v['av-cream'],
+        'font-family': 'DM Sans', 'font-size': '17px',
+        'line-height': '1.8', 'color': 'rgba(240,237,232,0.55)',
+        'margin-top': '28px', 'max-width': '520px',
     });
     await clearAndSet(await freshStyle('blog-label-line'), 'blog-label-line', {
         'flex-grow': '1', 'height': '1px', 'background-color': v['av-dark-15'],
     });
     await wait(500);
     await clearAndSet(await freshStyle('blog-grid-wrap'), 'blog-grid-wrap', {
-        'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
+        'padding-top': v['av-section-pad-y'], 'padding-bottom': '120px',
         'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
-        'background-color': v['av-cream'],
+        'background-color': v['av-dark'], 'position': 'relative',
     });
     await clearAndSet(await freshStyle('blog-grid'), 'blog-grid', {
         'display': 'grid',
         'grid-template-columns': '1fr 1fr 1fr',
-        'grid-column-gap': v['av-gap-md'],
-        'grid-row-gap': v['av-gap-lg'],
+        'grid-column-gap': '1px', 'grid-row-gap': '1px',
         'max-width': '1200px', 'margin-left': 'auto', 'margin-right': 'auto',
+        'background-color': 'rgba(240,237,232,0.05)',
+        'border-top-width': '1px', 'border-bottom-width': '1px',
+        'border-left-width': '1px', 'border-right-width': '1px',
+        'border-top-style': 'solid', 'border-bottom-style': 'solid',
+        'border-left-style': 'solid', 'border-right-style': 'solid',
+        'border-top-color': 'rgba(240,237,232,0.05)',
+        'border-bottom-color': 'rgba(240,237,232,0.05)',
+        'border-left-color': 'rgba(240,237,232,0.05)',
+        'border-right-color': 'rgba(240,237,232,0.05)',
     });
     await clearAndSet(await freshStyle('blog-card'), 'blog-card', {
-        'background-color': '#ffffff',
-        'border-top-left-radius': v['av-radius'],
-        'border-top-right-radius': v['av-radius'],
-        'border-bottom-left-radius': v['av-radius'],
-        'border-bottom-right-radius': v['av-radius'],
+        'background-color': '#141414',
         'overflow-x': 'hidden', 'overflow-y': 'hidden',
         'display': 'flex', 'flex-direction': 'column',
-        'box-shadow': '0 2px 20px rgba(0, 0, 0, 0.06)',
-        'text-decoration': 'none', 'color': v['av-dark'],
+        'text-decoration': 'none', 'color': v['av-cream'],
+        'position': 'relative',
     });
     await clearAndSet(await freshStyle('blog-card-img-wrap'), 'blog-card-img-wrap', {
         'overflow-x': 'hidden', 'overflow-y': 'hidden',
-        'height': '240px',
+        'height': '220px', 'position': 'relative',
     });
     await clearAndSet(await freshStyle('blog-card-img'), 'blog-card-img', {
         'width': '100%', 'height': '100%',
@@ -338,34 +351,35 @@ async function buildBlogPage(v, s) {
     });
     await wait(500);
     await clearAndSet(await freshStyle('blog-card-body'), 'blog-card-body', {
-        'padding-top': '32px', 'padding-bottom': '32px',
+        'padding-top': '28px', 'padding-bottom': '32px',
         'padding-left': '32px', 'padding-right': '32px',
         'display': 'flex', 'flex-direction': 'column',
-        'grid-row-gap': '12px', 'flex-grow': '1',
+        'grid-row-gap': '10px', 'flex-grow': '1',
     });
     await clearAndSet(await freshStyle('blog-card-date'), 'blog-card-date', {
         'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
-        'letter-spacing': '0.15em', 'text-transform': 'uppercase',
-        'opacity': '0.4', 'margin-top': '0px', 'margin-bottom': '0px',
-        'color': v['av-dark'],
+        'letter-spacing': '0.2em', 'text-transform': 'uppercase',
+        'color': 'rgba(240,237,232,0.3)',
+        'margin-top': '0px', 'margin-bottom': '0px',
     });
     await clearAndSet(await freshStyle('blog-card-title'), 'blog-card-title', {
-        'font-family': 'DM Serif Display', 'font-size': '22px',
-        'line-height': '1.25', 'font-weight': '400',
+        'font-family': 'DM Serif Display', 'font-size': '20px',
+        'line-height': '1.3', 'font-weight': '400',
         'margin-top': '0px', 'margin-bottom': '0px',
-        'color': v['av-dark'],
+        'color': v['av-cream'],
     });
     await clearAndSet(await freshStyle('blog-card-summary'), 'blog-card-summary', {
         'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
-        'line-height': '1.7', 'font-weight': '400',
-        'opacity': '0.6', 'margin-top': '0px', 'margin-bottom': '0px',
-        'color': v['av-dark'],
+        'line-height': '1.75', 'font-weight': '400',
+        'color': 'rgba(240,237,232,0.45)',
+        'margin-top': '0px', 'margin-bottom': '0px',
         'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
     await clearAndSet(await freshStyle('blog-card-link'), 'blog-card-link', {
-        'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
-        'color': v['av-dark'], 'opacity': '0.5',
-        'margin-top': 'auto', 'padding-top': '8px',
+        'font-family': 'DM Sans', 'font-size': '11px',
+        'letter-spacing': '0.12em', 'text-transform': 'uppercase',
+        'color': v['av-red'], 'opacity': '0.6',
+        'margin-top': 'auto', 'padding-top': '16px',
     });
     await wait(500);
     await applyCTAStyleProps(v);
@@ -399,15 +413,26 @@ async function buildBlogTemplate(v, s) {
     const btBackLink = await getOrCreateStyle('bt-back-link');
     const btDivider = await getOrCreateStyle('bt-divider');
     log('Building hero section...');
+    const svCanvasWrap = await getOrCreateStyle('sv-canvas-wrap');
     const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
     hero.setTag('section');
     hero.setStyles([btHero]);
+    hero.setAttribute('class', 'bt-hero');
+    // Three.js canvas container
+    const heroCanvas = hero.append(webflow.elementPresets.DOM);
+    heroCanvas.setTag('div');
+    heroCanvas.setStyles([svCanvasWrap]);
+    heroCanvas.setAttribute('id', 'hero-canvas');
+    heroCanvas.setAttribute('class', 'sv-canvas-wrap');
     const heroInner = hero.append(webflow.elementPresets.DOM);
     heroInner.setTag('div');
     heroInner.setStyles([btHeroInner]);
+    heroInner.setAttribute('class', 'bt-hero-inner');
     const labelRow = heroInner.append(webflow.elementPresets.DOM);
     labelRow.setTag('div');
     labelRow.setStyles([btLabel]);
+    labelRow.setAttribute('class', 'bt-label');
+    labelRow.setAttribute('data-animate', 'fade-up');
     const labelTxt = labelRow.append(webflow.elementPresets.DOM);
     labelTxt.setTag('div');
     labelTxt.setTextContent('BLOG');
@@ -418,9 +443,13 @@ async function buildBlogTemplate(v, s) {
     title.setTag('h1');
     title.setStyles([btTitle]);
     title.setTextContent('Blog Post Title');
+    title.setAttribute('class', 'bt-title');
+    title.setAttribute('data-animate', 'word-stagger-elastic');
     const meta = heroInner.append(webflow.elementPresets.DOM);
     meta.setTag('div');
     meta.setStyles([btMeta]);
+    meta.setAttribute('class', 'bt-meta');
+    meta.setAttribute('data-animate', 'fade-up');
     const authorWrap = meta.append(webflow.elementPresets.DOM);
     authorWrap.setTag('div');
     authorWrap.setStyles([btMetaItem]);
@@ -453,9 +482,12 @@ async function buildBlogTemplate(v, s) {
     const imgSection = webflow.elementBuilder(webflow.elementPresets.DOM);
     imgSection.setTag('section');
     imgSection.setStyles([btImgWrap]);
+    imgSection.setAttribute('class', 'bt-img-wrap');
     try {
         const img = imgSection.append(webflow.elementPresets.Image);
         img.setStyles([btFeaturedImg]);
+        img.setAttribute('class', 'bt-featured-img');
+        img.setAttribute('data-animate', 'fade-up');
         logDetail('Native Image element created — bind to CMS "Featured Image"', 'ok');
     }
     catch (_e) {
@@ -469,9 +501,11 @@ async function buildBlogTemplate(v, s) {
     const articleInner = article.append(webflow.elementPresets.DOM);
     articleInner.setTag('div');
     articleInner.setStyles([btArticleInner]);
+    articleInner.setAttribute('class', 'bt-article-inner');
     try {
         const richText = articleInner.append(webflow.elementPresets.RichText);
         richText.setStyles([btRichText]);
+        richText.setAttribute('class', 'bt-rich-text');
         logDetail('Native RichText element created — bind to CMS "Post Body"', 'ok');
     }
     catch (_e) {
@@ -480,11 +514,13 @@ async function buildBlogTemplate(v, s) {
     const divider = articleInner.append(webflow.elementPresets.DOM);
     divider.setTag('div');
     divider.setStyles([btDivider]);
+    divider.setAttribute('class', 'bt-divider');
     const backLink = articleInner.append(webflow.elementPresets.DOM);
     backLink.setTag('a');
     backLink.setStyles([btBackLink]);
     backLink.setTextContent('\u2190 Back to Blog');
     backLink.setAttribute('href', '/blog');
+    backLink.setAttribute('class', 'bt-back-link');
     await safeCall('append:article', () => body.append(article));
     log('Building CTA section...');
     await buildCTASection(body, v, 'Ready to Build Your Dream Home?', 'Get a Free Estimate', '/free-estimate');

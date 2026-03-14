@@ -8,7 +8,7 @@ const PAGE_NAME = 'ADU';
 const PAGE_SLUG = 'adu';
 const PAGE_TITLE = 'Custom ADU Builder in Orange County | Avorino';
 const PAGE_DESC = 'Build a custom accessory dwelling unit in Orange County. Detached, attached, garage conversion, and above-garage ADUs. Design, permits, and construction by Avorino.';
-const CDN = 'b0fca5b';
+const CDN = '7dbdec0';
 const HEAD_CODE = [
     `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
     `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
@@ -224,7 +224,7 @@ async function buildADUPage() {
         });
         await clearAndSet(await freshStyle('adu-tl-svg'), 'adu-tl-svg', {
             'position': 'absolute', 'left': '20px', 'top': '0px',
-            'height': '100%', 'width': '2px', 'overflow': 'visible',
+            'height': '100%', 'width': '2px', 'overflow-x': 'visible', 'overflow-y': 'visible',
         });
         await clearAndSet(await freshStyle('adu-tl-step'), 'adu-tl-step', {
             'position': 'relative', 'padding-bottom': '80px',

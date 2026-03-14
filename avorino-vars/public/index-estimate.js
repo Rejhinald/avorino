@@ -8,7 +8,7 @@ const PAGE_NAME = 'Free Estimate';
 const PAGE_SLUG = 'free-estimate';
 const PAGE_TITLE = 'Get Your Free Estimate — Avorino Construction';
 const PAGE_DESC = 'No obligations. Real numbers for your construction project in Orange County.';
-const CDN = '4533be4';
+const CDN = '7dbdec0';
 const HEAD_CODE = [
     `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
     `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
@@ -82,7 +82,7 @@ async function buildEstimatePage() {
             'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
             'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
             'background-color': v['av-dark'], 'color': v['av-cream'],
-            'text-align': 'center', 'position': 'relative', 'overflow': 'hidden',
+            'text-align': 'center', 'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
         });
         await clearAndSet(await freshStyle('sv-canvas-wrap'), 'sv-canvas-wrap', {
             'position': 'absolute', 'top': '0px', 'left': '0px',

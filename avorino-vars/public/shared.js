@@ -685,12 +685,17 @@ export async function buildServicePage(data) {
     const svTypeFeatureList = await getOrCreateStyle('sv-type-feature-list');
     // Process section
     const svProcessSection = await getOrCreateStyle('sv-process');
-    const svProcessRow = await getOrCreateStyle('sv-process-row');
-    const svProcessNum = await getOrCreateStyle('sv-process-num');
-    const svProcessContent = await getOrCreateStyle('sv-process-content');
-    const svProcessTitle = await getOrCreateStyle('sv-process-title');
-    const svProcessDesc = await getOrCreateStyle('sv-process-desc');
-    const svProcessDivider = await getOrCreateStyle('sv-process-divider');
+    const svProcessSteps = await getOrCreateStyle('sv-process-steps');
+    const svProcessStep = await getOrCreateStyle('sv-process-step');
+    const svProcessStepNum = await getOrCreateStyle('sv-process-step-num');
+    const svProcessStepBody = await getOrCreateStyle('sv-process-step-body');
+    const svProcessStepTitle = await getOrCreateStyle('sv-process-step-title');
+    const svProcessStepDesc = await getOrCreateStyle('sv-process-step-desc');
+    const svProcessBar = await getOrCreateStyle('sv-process-bar');
+    const svProcessBarTrack = await getOrCreateStyle('sv-process-bar-track');
+    const svProcessBarFill = await getOrCreateStyle('sv-process-bar-fill');
+    const svProcessBarDots = await getOrCreateStyle('sv-process-bar-dots');
+    const svProcessBarDot = await getOrCreateStyle('sv-process-bar-dot');
     // Why Avorino
     const svWhy = await getOrCreateStyle('sv-why');
     const svWhyContent = await getOrCreateStyle('sv-why-content');
@@ -818,31 +823,66 @@ export async function buildServicePage(data) {
             'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
             'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
             'background-color': v['av-dark'], 'color': v['av-cream'],
+            'min-height': '100vh', 'display': 'flex', 'flex-direction': 'column', 'align-items': 'center',
+            'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
         });
-        await clearAndSet(await freshStyle('sv-process-row'), 'sv-process-row', {
-            'display': 'grid', 'grid-template-columns': '80px 1fr',
-            'grid-column-gap': '40px', 'padding-top': '40px', 'padding-bottom': '40px',
-            'max-width': '900px', 'margin-left': 'auto', 'margin-right': 'auto',
-        });
-        await clearAndSet(await freshStyle('sv-process-num'), 'sv-process-num', {
-            'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
-            'letter-spacing': '0.2em', 'opacity': '0.3', 'padding-top': '6px',
-        });
-        await clearAndSet(await freshStyle('sv-process-content'), 'sv-process-content', {
-            'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '12px',
-        });
-        await clearAndSet(await freshStyle('sv-process-title'), 'sv-process-title', {
-            'font-family': 'DM Serif Display', 'font-size': '24px',
-            'line-height': '1.2', 'font-weight': '400',
-        });
-        await clearAndSet(await freshStyle('sv-process-desc'), 'sv-process-desc', {
-            'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
-            'line-height': '1.8', 'opacity': '0.5',
-        });
-        await clearAndSet(await freshStyle('sv-process-divider'), 'sv-process-divider', {
-            'height': '1px', 'background-color': v['av-cream'],
-            'opacity': '0.06', 'max-width': '900px',
+        await clearAndSet(await freshStyle('sv-process-steps'), 'sv-process-steps', {
+            'position': 'relative', 'width': '100%', 'max-width': '1100px',
+            'flex-grow': '1', 'flex-shrink': '1', 'flex-basis': 'auto',
             'margin-left': 'auto', 'margin-right': 'auto',
+            'border-top-width': '1px', 'border-top-style': 'solid', 'border-top-color': 'rgba(240,237,232,0.08)',
+            'border-bottom-width': '1px', 'border-bottom-style': 'solid', 'border-bottom-color': 'rgba(240,237,232,0.08)',
+        });
+        await clearAndSet(await freshStyle('sv-process-step'), 'sv-process-step', {
+            'display': 'grid', 'grid-template-columns': '80px 1fr 160px',
+            'grid-column-gap': '48px', 'padding-top': '48px', 'padding-bottom': '48px',
+            'align-items': 'center', 'position': 'absolute', 'top': '50%',
+            'left': '0', 'width': '100%', 'opacity': '0',
+            'transition-property': 'opacity', 'transition-duration': '0.5s', 'transition-timing-function': 'ease',
+            'pointer-events': 'none',
+        });
+        await clearAndSet(await freshStyle('sv-process-step-num'), 'sv-process-step-num', {
+            'font-family': 'DM Serif Display', 'font-size': '72px',
+            'line-height': '1', 'font-weight': '400', 'text-align': 'center',
+            'color': 'rgba(240,237,232,0.28)',
+        });
+        await clearAndSet(await freshStyle('sv-process-step-body'), 'sv-process-step-body', {
+            'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '10px',
+        });
+        await clearAndSet(await freshStyle('sv-process-step-title'), 'sv-process-step-title', {
+            'font-family': 'DM Serif Display', 'font-size': '28px',
+            'line-height': '1.2', 'font-weight': '400', 'color': v['av-cream'],
+            'margin-bottom': '0',
+        });
+        await clearAndSet(await freshStyle('sv-process-step-desc'), 'sv-process-step-desc', {
+            'font-family': 'DM Sans', 'font-size': '15px',
+            'line-height': '1.8', 'color': 'rgba(240,237,232,0.6)', 'max-width': '480px',
+        });
+        await clearAndSet(await freshStyle('sv-process-bar'), 'sv-process-bar', {
+            'position': 'relative', 'width': '100%', 'max-width': '1100px',
+            'margin-left': 'auto', 'margin-right': 'auto', 'margin-top': '48px',
+            'display': 'flex', 'align-items': 'center', 'height': '48px',
+        });
+        await clearAndSet(await freshStyle('sv-process-bar-track'), 'sv-process-bar-track', {
+            'position': 'absolute', 'top': '50%', 'left': '0', 'right': '0',
+            'height': '1px', 'background-color': 'rgba(240,237,232,0.08)',
+        });
+        await clearAndSet(await freshStyle('sv-process-bar-fill'), 'sv-process-bar-fill', {
+            'position': 'absolute', 'top': '50%', 'left': '0', 'right': '0',
+            'height': '1px', 'background-color': '#c8222a', 'opacity': '0.5',
+        });
+        await clearAndSet(await freshStyle('sv-process-bar-dots'), 'sv-process-bar-dots', {
+            'position': 'relative', 'width': '100%',
+            'display': 'flex', 'align-items': 'center', 'justify-content': 'space-between',
+        });
+        await clearAndSet(await freshStyle('sv-process-bar-dot'), 'sv-process-bar-dot', {
+            'position': 'relative', 'width': '10px', 'height': '10px',
+            'border-radius': '50%',
+            'border-top-width': '1.5px', 'border-top-style': 'solid', 'border-top-color': 'rgba(240,237,232,0.15)',
+            'border-right-width': '1.5px', 'border-right-style': 'solid', 'border-right-color': 'rgba(240,237,232,0.15)',
+            'border-bottom-width': '1.5px', 'border-bottom-style': 'solid', 'border-bottom-color': 'rgba(240,237,232,0.15)',
+            'border-left-width': '1.5px', 'border-left-style': 'solid', 'border-left-color': 'rgba(240,237,232,0.15)',
+            'background-color': '#111111', 'z-index': '1',
         });
         await wait(500);
         // Why Avorino
@@ -1029,7 +1069,7 @@ export async function buildServicePage(data) {
     });
     await safeCall('append:types', () => body.append(typesSection));
     logDetail('Section 3: Service Types appended', 'ok');
-    // SECTION 4: PROCESS — Dark bg, numbered rows
+    // SECTION 4: PROCESS — Dark bg, scroll-locked step carousel
     log('Building Section 4: Process...');
     const processSection = webflow.elementBuilder(webflow.elementPresets.DOM);
     processSection.setTag('section');
@@ -1048,37 +1088,55 @@ export async function buildServicePage(data) {
     const processH = processHeader.append(webflow.elementPresets.DOM);
     processH.setTag('h2');
     processH.setStyles([s.headingLG]);
-    processH.setTextContent('How We Build');
-    processH.setAttribute('data-animate', 'word-stagger-elastic');
+    processH.setTextContent('How It Works');
+    processH.setAttribute('data-animate', 'fade-up');
     await clearAndSet(await freshStyle('sv-process-header'), 'sv-process-header', {
-        'text-align': 'center', 'margin-bottom': '48px',
-        'max-width': '900px', 'margin-left': 'auto', 'margin-right': 'auto',
+        'text-align': 'center', 'padding-bottom': '64px',
     });
+    // Steps container (absolutely-positioned steps inside for scroll-driven carousel)
+    const stepsContainer = processSection.append(webflow.elementPresets.DOM);
+    stepsContainer.setTag('div');
+    stepsContainer.setStyles([svProcessSteps]);
     data.process.forEach((step, i) => {
-        if (i > 0) {
-            const divider = processSection.append(webflow.elementPresets.DOM);
-            divider.setTag('div');
-            divider.setStyles([svProcessDivider]);
-        }
-        const row = processSection.append(webflow.elementPresets.DOM);
-        row.setTag('div');
-        row.setStyles([svProcessRow]);
-        row.setAttribute('data-animate', 'fade-up');
-        const num = row.append(webflow.elementPresets.DOM);
-        num.setTag('div');
-        num.setStyles([svProcessNum]);
-        num.setTextContent(step.number);
-        const content = row.append(webflow.elementPresets.DOM);
-        content.setTag('div');
-        content.setStyles([svProcessContent]);
-        const titleEl = content.append(webflow.elementPresets.DOM);
+        const stepEl = stepsContainer.append(webflow.elementPresets.DOM);
+        stepEl.setTag('div');
+        stepEl.setStyles([svProcessStep]);
+        const numEl = stepEl.append(webflow.elementPresets.DOM);
+        numEl.setTag('div');
+        numEl.setStyles([svProcessStepNum]);
+        numEl.setTextContent(step.number);
+        const bodyEl = stepEl.append(webflow.elementPresets.DOM);
+        bodyEl.setTag('div');
+        bodyEl.setStyles([svProcessStepBody]);
+        const titleEl = bodyEl.append(webflow.elementPresets.DOM);
         titleEl.setTag('h3');
-        titleEl.setStyles([svProcessTitle]);
+        titleEl.setStyles([svProcessStepTitle]);
         titleEl.setTextContent(step.title);
-        const descEl = content.append(webflow.elementPresets.DOM);
+        const descEl = bodyEl.append(webflow.elementPresets.DOM);
         descEl.setTag('p');
-        descEl.setStyles([svProcessDesc]);
+        descEl.setStyles([svProcessStepDesc]);
         descEl.setTextContent(step.desc);
+    });
+    // Progress bar with dots
+    const barEl = processSection.append(webflow.elementPresets.DOM);
+    barEl.setTag('div');
+    barEl.setStyles([svProcessBar]);
+    const trackEl = barEl.append(webflow.elementPresets.DOM);
+    trackEl.setTag('div');
+    trackEl.setStyles([svProcessBarTrack]);
+    const fillEl = barEl.append(webflow.elementPresets.DOM);
+    fillEl.setTag('div');
+    fillEl.setStyles([svProcessBarFill]);
+    const dotsEl = barEl.append(webflow.elementPresets.DOM);
+    dotsEl.setTag('div');
+    dotsEl.setStyles([svProcessBarDots]);
+    data.process.forEach((step) => {
+        const dotEl = dotsEl.append(webflow.elementPresets.DOM);
+        dotEl.setTag('div');
+        dotEl.setStyles([svProcessBarDot]);
+        const dotSpan = dotEl.append(webflow.elementPresets.DOM);
+        dotSpan.setTag('span');
+        dotSpan.setTextContent(step.title);
     });
     await safeCall('append:process', () => body.append(processSection));
     logDetail('Section 4: Process appended', 'ok');

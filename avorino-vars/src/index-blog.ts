@@ -15,7 +15,7 @@ import {
 } from './shared.js';
 
 // ── CDN hash ──
-const CDN = '0561094';
+const CDN = '7dbdec0';
 const HEAD_CODE = [
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
@@ -34,6 +34,14 @@ const FOOTER_CODE = [
 
 // ── Blog post data (scraped from Wix) ──
 const BLOG_POSTS = [
+  {
+    title: 'The Complete Guide to Building an ADU in 2026: Costs, Benefits, and Planning Tips',
+    slug: 'the-complete-guide-to-building-an-adu-in-2026-costs-benefits-and-planning-tips',
+    date: '2026-03-06T00:00:00.000Z',
+    author: 'Avorino',
+    summary: 'Discover how to build an ADU in 2026. Learn planning tips, financing options, and estimate costs with our ADU calculators and ROI tools.',
+    image: 'https://static.wixstatic.com/media/e962d0f54c71471b8962607de56eaaff.jpg',
+  },
   {
     title: 'Maximizing Energy Efficiency in Your Custom Home',
     slug: 'maximizing-energy-efficiency-in-your-custom-home',
