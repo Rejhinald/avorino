@@ -67,6 +67,7 @@
         preloader.style.display = 'none';
         lenis.start();
         initScrollAnimations();
+        initHeroContentEntrance();
       }
     });
 
@@ -104,7 +105,6 @@
     tl.to(logoWrap, { opacity: 0, duration: 0.3, ease: 'power2.in' }, 3.4);
     tl.set(preloader, { background: 'transparent' });
     if (curtain) tl.to(curtain, { yPercent: -100, duration: 1, ease: 'power4.inOut' }, 3.4);
-    initHeroContentEntrance();
   }
 
   // HERO ENTRANCE (no-preloader fallback)
