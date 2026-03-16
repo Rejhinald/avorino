@@ -134,11 +134,12 @@ nav.site-nav .nav-burger span {
   background-color: #ffffff !important;
 }
 
-/* ── Scrolled State: frosted glass ── */
+/* ── Scrolled State: translucent frosted glass ── */
 nav.site-nav.nav--scrolled {
-  background-color: rgba(17, 17, 17, 0.65) !important;
-  backdrop-filter: blur(16px) saturate(1.4) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(1.4) !important;
+  background-color: rgba(240, 237, 232, 0.12) !important;
+  backdrop-filter: blur(20px) saturate(1.6) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(1.6) !important;
+  box-shadow: 0 1px 0 rgba(240, 237, 232, 0.08), 0 4px 24px rgba(0, 0, 0, 0.15);
 }
 
 /* ── Dropdown Open State: disable blend mode, frosted glass + dark text ── */
@@ -448,12 +449,28 @@ nav.site-nav.nav--dropdown-open .nav-link:hover {
 .nav-dropdown--resources {
   left: auto;
   right: 0;
-  width: 280px;
+  width: 320px;
   border-radius: 0 0 12px 12px;
+  background-color: rgba(17, 17, 17, 0.95) !important;
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
 }
 
 .nav-dropdown--resources .nav-dd-container {
   padding: 32px 36px;
+}
+
+.nav-dropdown--resources .nav-dd-link {
+  font-family: 'DM Serif Display', Georgia, serif !important;
+  font-size: 19px !important;
+  opacity: 0.75;
+  padding: 10px 0;
+  transition: opacity 0.25s ease, color 0.25s ease;
+}
+
+.nav-dropdown--resources .nav-dd-link:hover {
+  opacity: 1;
+  color: #c8222a !important;
 }
 
 /* ═══════════════════════════════════════════
