@@ -17,7 +17,7 @@ const PAGE_NAME = 'ADU Construction';
 const PAGE_SLUG = 'adu-construction';
 const PAGE_TITLE = 'ADU Construction in Orange County — Avorino';
 const PAGE_DESC = 'Detached, attached, and garage conversion ADUs in Orange County. Fully permitted, designed, and built by Avorino.';
-const CDN = '37e756c';
+const CDN = '0a5bf9d';
 const HEAD_CODE = [
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
