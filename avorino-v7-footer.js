@@ -56,6 +56,16 @@
     const grid = preloader.querySelector('[data-el="preloader-grid"]');
     const house = preloader.querySelector('[data-el="preloader-house"]');
     const logoWrap = preloader.querySelector('[data-el="preloader-logo-wrap"]');
+
+    // Guard: if old preloader HTML without blueprint SVG, skip animation gracefully
+    if (!house) {
+      preloader.style.display = 'none';
+      lenis.start();
+      initScrollAnimations();
+      initHeroContentEntrance();
+      return;
+    }
+
     const foundation = house.querySelector('.house-foundation');
     const walls = house.querySelectorAll('.house-wall');
     const roofLines = house.querySelectorAll('.house-roof');
@@ -681,6 +691,7 @@
     if (!card) return;
 
     var slidesWrap = card.querySelector('[data-el="testimonial-slides-wrap"]');
+    if (!slidesWrap) return; // Guard: old HTML without new testimonial structure
     var counterEl = card.querySelector('[data-el="testimonial-counter"]');
     var progressFill = card.querySelector('[data-el="testimonial-progress-fill"]');
     var arrows = card.querySelectorAll('[data-el="testimonial-arrow"]');
