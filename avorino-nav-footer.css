@@ -98,13 +98,20 @@ nav.site-nav .nav-logo {
 
 nav.site-nav .nav-link {
   font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: 17px;
-  font-weight: 400;
+  font-size: 13px !important;
+  font-weight: 500 !important;
   color: #ffffff !important;
-  letter-spacing: 0.04em;
-  opacity: 0.75;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  opacity: 0.85;
   text-decoration: none;
   transition: opacity 0.3s ease, color 0.4s ease;
+}
+
+/* Hide Reviews nav link */
+nav.site-nav .nav-link[href="/reviews"],
+nav.site-nav .nav-link[href="/reviews/"] {
+  display: none !important;
 }
 
 nav.site-nav .nav-link:hover {
@@ -142,6 +149,36 @@ nav.site-nav.nav--scrolled {
   box-shadow: 0 1px 0 rgba(240, 237, 232, 0.08), 0 4px 24px rgba(0, 0, 0, 0.15);
 }
 
+nav.site-nav.nav--scrolled .nav-logo,
+nav.site-nav.nav--scrolled .nav-link {
+  color: #111111 !important;
+}
+
+nav.site-nav.nav--scrolled .nav-link:hover {
+  color: #c8222a !important;
+}
+
+nav.site-nav.nav--scrolled .nav-cta {
+  color: #f0ede8 !important;
+  background-color: #111111 !important;
+}
+
+nav.site-nav.nav--scrolled .nav-cta:hover {
+  background-color: #c8222a !important;
+  color: #ffffff !important;
+}
+
+nav.site-nav.nav--scrolled .nav-burger span {
+  background-color: #111111 !important;
+}
+
+/* Invert div-based nav logo when scrolled (light bg = need dark logo) */
+nav.site-nav.nav--scrolled .nav-logo > div,
+nav.site-nav.nav--scrolled .nav-logo .nav-logo-div,
+nav.site-nav.nav--scrolled .nav-logo-img {
+  filter: none !important;
+}
+
 /* ── Dropdown Open State: disable blend mode, frosted glass + dark text ── */
 nav.site-nav.nav--dropdown-open {
   background-color: rgba(232, 228, 223, 0.95);
@@ -165,8 +202,9 @@ nav.site-nav.nav--dropdown-open .nav-link {
 
 /* Invert div-based nav logo when dropdown opens (cream bg = need dark logo) */
 nav.site-nav.nav--dropdown-open .nav-logo > div,
-nav.site-nav.nav--dropdown-open .nav-logo .nav-logo-div {
-  filter: none;
+nav.site-nav.nav--dropdown-open .nav-logo .nav-logo-div,
+nav.site-nav.nav--dropdown-open .nav-logo-img {
+  filter: none !important;
 }
 
 nav.site-nav.nav--dropdown-open .nav-cta {
@@ -441,36 +479,47 @@ nav.site-nav.nav--dropdown-open .nav-link:hover {
   color: #c8222a;
 }
 
-/* ── Resources Dropdown — compact, positioned relative to its nav-item ── */
+/* ── Resources Dropdown — full-width with card layout (matches Services) ── */
 .nav-item:has(.nav-dropdown--resources) {
-  position: relative;
+  position: static;
 }
 
 .nav-dropdown--resources {
-  left: auto;
-  right: 0;
-  width: 320px;
-  border-radius: 0 0 12px 12px;
-  background-color: rgba(17, 17, 17, 0.95) !important;
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  left: 0 !important;
+  right: 0 !important;
+  width: auto !important;
+  border-radius: 0 !important;
 }
 
 .nav-dropdown--resources .nav-dd-container {
-  padding: 32px 36px;
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 2px !important;
+  padding: 48px 64px !important;
 }
 
 .nav-dropdown--resources .nav-dd-link {
+  display: flex !important;
+  align-items: center !important;
   font-family: 'DM Serif Display', Georgia, serif !important;
   font-size: 19px !important;
-  opacity: 0.75;
-  padding: 10px 0;
-  transition: opacity 0.25s ease, color 0.25s ease;
+  font-weight: 400 !important;
+  color: #f0ede8 !important;
+  opacity: 0.85;
+  padding: 28px 24px !important;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: background-color 0.3s ease, opacity 0.3s ease, color 0.3s ease;
 }
 
 .nav-dropdown--resources .nav-dd-link:hover {
   opacity: 1;
-  color: #c8222a !important;
+  background-color: rgba(240, 237, 232, 0.05);
+  color: #ffffff !important;
+}
+
+.nav-dropdown--resources .nav-dd-divider {
+  display: none !important;
 }
 
 /* ═══════════════════════════════════════════
