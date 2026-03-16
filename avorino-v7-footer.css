@@ -40,6 +40,10 @@ ul,ol{list-style:none;margin:0;padding:0}
 .featured-grid-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(17,17,17,0) 0%,rgba(17,17,17,.1) 40%,rgba(17,17,17,.75) 100%);z-index:1;transition:opacity .5s ease}
 .hero-overlay{opacity:1 !important;position:relative}
 .hero-overlay::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.02) 0%,rgba(0,0,0,.35) 100%);z-index:1;pointer-events:none}
+/* Testimonial nav: counter grouped left of arrows, not spread across */
+.testimonial-nav{justify-content:flex-end !important;gap:16px !important}
+.testimonial-counter{order:0}
+.testimonial-arrows{order:1}
 /* Process section: alternate layout on step 2 (vis left, text right) */
 .process-stage.is-reversed .process-slides{grid-column:3 !important}
 .process-stage.is-reversed .process-vis{grid-column:2 !important}
