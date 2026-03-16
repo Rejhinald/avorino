@@ -505,6 +505,13 @@
           var prev = currentStep;
           currentStep = step;
 
+          // Alternate layout: step 2 (index 1) has vis on left, text on right
+          if (step % 2 === 1) {
+            stage.classList.add('is-reversed');
+          } else {
+            stage.classList.remove('is-reversed');
+          }
+
           // Number crossfade
           if (numEl) {
             gsap.to(numEl, { opacity: 0, y: -15, duration: 0.25, ease: 'power2.in', overwrite: true, onComplete: function() {
@@ -743,6 +750,10 @@
       var oldSlide = slides[current];
       var newSlide = slides[target];
 
+      // Update counter immediately (no lag)
+      current = target;
+      updateCounter();
+
       gsap.to(oldSlide, {
         opacity: 0, x: -20 * dir, duration: 0.35, ease: 'power2.in',
         onComplete: function() {
@@ -752,7 +763,7 @@
           gsap.fromTo(newSlide,
             { opacity: 0, x: 20 * dir },
             { opacity: 1, x: 0, duration: 0.45, ease: 'power3.out',
-              onComplete: function() { current = target; updateCounter(); isAnimating = false; }
+              onComplete: function() { isAnimating = false; }
             }
           );
         }

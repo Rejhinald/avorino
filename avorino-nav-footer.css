@@ -107,12 +107,12 @@ nav.site-nav .nav-link,
 nav.site-nav .nav-links .nav-link,
 nav.site-nav .nav-link.nav-link {
   font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: 13px !important;
-  font-weight: 500 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
   color: #111111 !important;
-  letter-spacing: 0.14em !important;
-  text-transform: uppercase !important;
-  opacity: 0.85;
+  letter-spacing: 0.04em !important;
+  text-transform: none !important;
+  opacity: 0.75;
   text-decoration: none;
   transition: opacity 0.3s ease, color 0.4s ease;
 }
@@ -139,14 +139,14 @@ nav.site-nav .nav-logo-img {
 
 nav.site-nav .nav-cta {
   font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: 11px !important;
-  font-weight: 600 !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
   color: #000000 !important;
   background-color: #ffffff !important;
   padding: 10px 24px !important;
   border-radius: 100px;
-  letter-spacing: 0.14em !important;
-  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  text-transform: none !important;
   text-decoration: none;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
