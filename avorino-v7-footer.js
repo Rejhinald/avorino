@@ -56,6 +56,7 @@
     const grid = preloader.querySelector('[data-el="preloader-grid"]');
     const house = preloader.querySelector('[data-el="preloader-house"]');
     const logoWrap = preloader.querySelector('[data-el="preloader-logo-wrap"]');
+    if (logoWrap) gsap.set(logoWrap, { xPercent: -50, yPercent: -50, scale: 0.9 });
 
     // Guard: if old preloader HTML without blueprint SVG, skip animation gracefully
     if (!house) {
@@ -108,11 +109,11 @@
     // 2.2s: Wireframe fades + scales down, logo fades in
     tl.to(house, { opacity: 0, scale: 0.8, duration: 0.4, ease: 'power2.in' }, 2.2);
     tl.to(grid, { opacity: 0, duration: 0.3 }, 2.2);
-    tl.to(logoWrap, { opacity: 1, scale: 1, duration: 0.6, ease: 'power3.out' }, 2.4);
+    tl.to(logoWrap, { opacity: 1, scale: 1, xPercent: -50, yPercent: -50, duration: 0.6, ease: 'power3.out' }, 2.4);
 
     // 3.0s: Hold logo briefly, then exit
     tl.to({}, { duration: 0.4 }, 3.0);
-    tl.to(logoWrap, { opacity: 0, duration: 0.3, ease: 'power2.in' }, 3.4);
+    tl.to(logoWrap, { opacity: 0, xPercent: -50, yPercent: -50, duration: 0.3, ease: 'power2.in' }, 3.4);
     tl.set(preloader, { background: 'transparent' });
     if (curtain) tl.to(curtain, { yPercent: -100, duration: 1, ease: 'power4.inOut' }, 3.4);
   }
