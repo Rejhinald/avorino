@@ -17,7 +17,7 @@ const PAGE_NAME = 'Services';
 const PAGE_SLUG = 'services';
 const PAGE_TITLE = 'Our Services — Avorino Construction in Orange County';
 const PAGE_DESC = 'ADU construction, custom homes, new builds, additions, garage conversions, and commercial projects in Orange County. Licensed, insured, and fully permitted.';
-const CDN = 'c4474c3';
+const CDN = 'a0b63f8';
 const HEAD_CODE = [
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
