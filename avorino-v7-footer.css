@@ -1,5 +1,10 @@
 /* Avorino v7 — Footer Embed CSS (externalized) */
 
+/* CURSOR OVERRIDE — Webflow Designer bakes cursor:none into element styles;
+   this global reset restores the default browser cursor across the site. */
+*,*::before,*::after{cursor:auto!important}
+a,button,[role="button"],[data-magnetic]{cursor:pointer!important}
+
 /* BASE TYPOGRAPHY */
 body{font-family:'DM Sans',system-ui,sans-serif;font-size:21px;font-weight:400;color:#111;background:#e8e4df;line-height:1.9;letter-spacing:.005em;word-spacing:.06em;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden}
 h1,h2,h3,h4{font-family:'DM Serif Display',Georgia,serif;font-weight:400;margin:0}
