@@ -109,6 +109,8 @@ nav.site-nav .nav-link {
 }
 
 /* Hide Reviews nav link */
+nav.site-nav .nav-link[href="/clientreviews"],
+nav.site-nav .nav-link[href="/clientreviews/"],
 nav.site-nav .nav-link[href="/reviews"],
 nav.site-nav .nav-link[href="/reviews/"] {
   display: none !important;
