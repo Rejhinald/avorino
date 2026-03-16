@@ -3,7 +3,7 @@
 // Rename this to index.ts to build the 3D Rendering service page.
 // ════════════════════════════════════════════════════════════════
 import { webflow, log, logDetail, clearErrorLog, createAllVariables, buildServicePage, CALENDLY_CSS, CALENDLY_JS, } from './shared.js';
-const CDN = 'a0b63f8';
+const CDN = '37e756c';
 const HEAD_CODE = [
     `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
     `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
