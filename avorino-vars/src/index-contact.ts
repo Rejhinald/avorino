@@ -19,7 +19,7 @@ const PAGE_NAME = 'Contact';
 const PAGE_SLUG = 'contact';
 const PAGE_TITLE = 'Contact Avorino — Orange County Construction & ADU Builders';
 const PAGE_DESC = 'Get in touch with Avorino Construction. Call (714) 900-3676 or fill out our contact form. Serving all 37 cities in Orange County.';
-const CDN = 'dbadc8f';
+const CDN = '428c0e0';
 const HEAD_CODE = [
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
