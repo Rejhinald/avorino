@@ -51,9 +51,37 @@
   .av-split-40-60,
   .fin-hero,
   .cy-hero,
-  .adu-hero {
+  .adu-hero,
+  .ct-hero {
     grid-template-columns: 1fr !important;
     grid-column-gap: 48px !important;
+  }
+
+  /* ── Contact hero: stack left/right, fix padding ── */
+  .ct-hero {
+    min-height: auto !important;
+  }
+  .ct-hero-left {
+    min-height: 55vh !important;
+    padding: 120px 48px 56px !important;
+  }
+  .ct-hero-right {
+    padding: 56px 48px !important;
+  }
+
+  /* ── Contact location grid → single column ── */
+  .ct-location-grid,
+  .ct-loc-grid {
+    grid-template-columns: 1fr !important;
+    grid-column-gap: 0 !important;
+    grid-row-gap: 48px !important;
+  }
+
+  /* ── Contact trust → 2 col ── */
+  .ct-trust-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-column-gap: 24px !important;
+    grid-row-gap: 24px !important;
   }
 
   /* ── Alternating image+text rows → single column ── */
@@ -500,6 +528,46 @@
   /* ── Form grids → 1-col ── */
   .av-form-grid-2 {
     grid-template-columns: 1fr !important;
+  }
+
+  /* ── Contact page mobile ── */
+  .ct-hero-left {
+    min-height: 50vh !important;
+    padding: 100px 24px 48px !important;
+  }
+  .ct-hero-right {
+    padding: 48px 24px !important;
+  }
+  .ct-hero-heading {
+    font-size: clamp(28px, 7vw, 42px) !important;
+  }
+  .ct-contact-row {
+    flex-direction: column !important;
+    gap: 20px !important;
+  }
+  .ct-hero-right input,
+  .ct-hero-right textarea,
+  .ct-hero-right select {
+    font-size: 19px !important;
+  }
+  .ct-hero-right button[type="submit"],
+  .ct-hero-right .av-submit-btn {
+    width: 100% !important;
+  }
+  .ct-trust {
+    padding: 48px 24px !important;
+  }
+  .ct-trust-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px !important;
+  }
+  .ct-location {
+    padding: 56px 24px !important;
+  }
+  .ct-location-grid,
+  .ct-loc-grid {
+    grid-template-columns: 1fr !important;
+    gap: 36px !important;
   }
 
   /* ── Definition rows → stacked ── */
@@ -955,6 +1023,48 @@
   .ct-info-heading,
   .est-info-heading {
     font-size: clamp(28px, 6.9vw, 36px) !important;
+  }
+
+  /* ── Contact v4: mobile portrait ── */
+  .ct-hero-left {
+    min-height: 45vh !important;
+    padding: 80px 16px 36px !important;
+  }
+  .ct-hero-right {
+    padding: 36px 16px !important;
+  }
+  .ct-hero-heading {
+    font-size: clamp(24px, 7vw, 36px) !important;
+  }
+  .ct-contact-row {
+    flex-direction: column !important;
+    gap: 16px !important;
+    margin-top: 24px !important;
+    padding-top: 24px !important;
+  }
+  .ct-contact-value {
+    font-size: 16px !important;
+  }
+  .ct-form-heading {
+    font-size: clamp(22px, 5vw, 28px) !important;
+  }
+  .ct-trust {
+    padding: 36px 16px !important;
+  }
+  .ct-trust-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+  .ct-trust-item {
+    padding: 24px 12px !important;
+  }
+  .ct-location {
+    padding: 40px 16px !important;
+  }
+  .ct-location-grid,
+  .ct-loc-grid {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
   }
   .est-step-item {
     flex-direction: column !important;
