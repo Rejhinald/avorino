@@ -1,7 +1,8 @@
 // ════════════════════════════════════════════════════════════════
-// Avorino Builder — CONTACT PAGE (v3 redesign)
-// Cream hero, warm 2-col (info left + form right), CTA
-// Form uses proper Webflow Form API presets
+// Avorino Builder — CONTACT PAGE (v4 complete rework)
+// Split hero (dark 3D left + cream form right), trust signals,
+// map + office info, CTA — no Calendly
+// All animations via CDN: avorino-contact-footer.js
 // ════════════════════════════════════════════════════════════════
 
 import {
@@ -10,27 +11,26 @@ import {
   clearAndSet, createSharedStyles, setSharedStyleProps,
   createAllVariables, createPageWithSlug,
   buildCTASection, applyCTAStyleProps,
-  buildCleanForm, FormField,
-  CALENDLY_CSS, CALENDLY_JS,
-  buildCalendlySection, applyCalendlyStyleProps,
 } from './shared.js';
 
 // ── Page config ──
 const PAGE_NAME = 'Contact';
 const PAGE_SLUG = 'contact';
-const PAGE_TITLE = 'Contact Avorino — Orange County Construction';
-const PAGE_DESC = 'Get in touch with Avorino Construction. Call (714) 900-3676 or fill out our contact form.';
+const PAGE_TITLE = 'Contact Avorino — Orange County Construction & ADU Builders';
+const PAGE_DESC = 'Get in touch with Avorino Construction. Call (714) 900-3676 or fill out our contact form. Serving all 37 cities in Orange County.';
+const CDN = '3cf6b06'; // Update after commit
 const HEAD_CODE = [
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@3cf6b06/avorino-responsive.css">',
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@3cf6b06/avorino-nav-footer.css">',
-  CALENDLY_CSS,
+  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
+  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
+  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-contact.css">`,
 ].join('\n');
 const FOOTER_CODE = [
   '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
-  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@3cf6b06/avorino-animations.js"><\/script>',
-  CALENDLY_JS,
+  '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
+  `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-animations.js"><\/script>`,
+  `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-contact-footer.js"><\/script>`,
 ].join('\n');
 
 // ── Update panel UI ──
@@ -40,8 +40,8 @@ const footerCodeEl = document.getElementById('footer-code');
 if (headCodeEl) headCodeEl.textContent = HEAD_CODE;
 if (footerCodeEl) footerCodeEl.textContent = FOOTER_CODE;
 
-// ── Form fields ──
-const FORM_FIELDS: FormField[] = [
+// ── Form fields config ──
+const FORM_FIELDS = [
   { name: 'name', label: 'Full Name', type: 'text', placeholder: 'Your full name' },
   { name: 'email', label: 'Email', type: 'email', placeholder: 'you@email.com', halfWidth: true },
   { name: 'phone', label: 'Phone', type: 'tel', placeholder: '(000) 000-0000', halfWidth: true },
@@ -50,220 +50,356 @@ const FORM_FIELDS: FormField[] = [
   { name: 'message', label: 'Message', type: 'textarea', placeholder: 'Tell us about your project' },
 ];
 
-const CONTACT_DETAILS = [
-  { label: 'Phone', value: '(714) 900-3676' },
-  { label: 'Email', value: 'construction@avorino.com' },
+// Trust signal data
+const TRUST_STATS = [
+  { value: '4.8', suffix: '', label: 'Yelp Rating' },
+  { value: '35', suffix: '+', label: '5-Star Reviews' },
+  { value: '10', suffix: '+', label: 'Years in OC' },
+  { value: '37', suffix: '', label: 'Cities Served' },
 ];
-const CONTACT_DETAILS_2 = [
-  { label: 'Location', value: 'Orange County, California' },
-  { label: 'License', value: 'General-B #1107538' },
+
+// Office info data
+const OFFICE_INFO = [
+  { label: 'Headquarters', lines: ['Irvine, California', 'Orange County'] },
+  { label: 'Business Hours', lines: ['Mon — Fri  8:00 AM – 6:00 PM', 'Sat  By appointment', 'Sun  Closed'] },
+  { label: 'License', lines: ['General-B #1107538', 'State of California'] },
+  { label: 'Direct Contact', lines: ['(714) 900-3676', 'construction@avorino.com'] },
 ];
+
+// Google Maps embed URL
+const MAP_URL = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d212828.43785693522!2d-118.0064652!3d33.7174708!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80dcdd0e689140e3%3A0xa77ab575604a9a39!2sOrange%20County%2C%20CA!5e0!3m2!1sen!2sus!4v1';
 
 // ── Build function ──
 async function buildContactPage() {
   clearErrorLog();
-  logDetail('Starting Contact page build (v3)...', 'info');
+  logDetail('Starting Contact page build (v4 rework)...', 'info');
   const v = await getAvorinVars();
   logDetail('Loaded Avorino variable collection', 'ok');
 
   log('Creating shared styles...');
   const s = await createSharedStyles();
 
-  // ── Page-specific styles ──
+  // ── Page-specific styles (minimal — CSS is in avorino-contact.css) ──
   log('Creating contact-specific styles...');
-  const ctHero = await getOrCreateStyle('ct-hero');
-  const ctHeroContent = await getOrCreateStyle('ct-hero-content');
-  const ctInfoCol = await getOrCreateStyle('ct-info-col');
-  const ctInfoHeading = await getOrCreateStyle('ct-info-heading');
-  const ctInfoBody = await getOrCreateStyle('ct-info-body');
-  const ctInfoPhone = await getOrCreateStyle('ct-info-phone');
-  const ctInfoDetail = await getOrCreateStyle('ct-info-detail');
-  const ctInfoLabel = await getOrCreateStyle('ct-info-label');
-  const ctFormCol = await getOrCreateStyle('ct-form-col');
+  // We only need styles for elements that use Webflow Designer API classes
+  // Most visual styling comes from avorino-contact.css via className attributes
 
   // ── Create page ──
   const { body } = await createPageWithSlug(PAGE_NAME, PAGE_SLUG, PAGE_TITLE, PAGE_DESC);
 
-  // ── Style properties ──
-  async function applyStyleProperties() {
-    log('Setting shared style properties...');
-    await setSharedStyleProps(s, v);
-    await wait(1000);
-
-    log('Setting contact-specific style properties...');
-
-    // Hero: cream bg, left-aligned, NOT dark — breaks the dark-hero-everywhere pattern
-    await clearAndSet(await freshStyle('ct-hero'), 'ct-hero', {
-      'min-height': '40vh', 'display': 'flex', 'align-items': 'flex-end',
-      'padding-top': '180px', 'padding-bottom': '64px',
-      'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
-      'background-color': v['av-cream'], 'color': v['av-dark'],
-    });
-    await clearAndSet(await freshStyle('ct-hero-content'), 'ct-hero-content', {
-      'max-width': '900px',
-    });
-    await wait(500);
-
-    // Info column (left side — sticky)
-    await clearAndSet(await freshStyle('ct-info-col'), 'ct-info-col', {
-      'display': 'flex', 'flex-direction': 'column', 'position': 'sticky', 'top': '160px',
-    });
-    await clearAndSet(await freshStyle('ct-info-heading'), 'ct-info-heading', {
-      'font-family': 'DM Serif Display', 'font-size': v['av-text-h2'],
-      'line-height': '1.08', 'letter-spacing': '-0.02em', 'font-weight': '400',
-      'margin-bottom': '16px',
-    });
-    await clearAndSet(await freshStyle('ct-info-body'), 'ct-info-body', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'line-height': '1.9', 'opacity': '0.6',
-    });
-    await clearAndSet(await freshStyle('ct-info-phone'), 'ct-info-phone', {
-      'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
-      'line-height': '1.2', 'font-weight': '400',
-    });
-    await clearAndSet(await freshStyle('ct-info-detail'), 'ct-info-detail', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'line-height': '1.7',
-    });
-    await clearAndSet(await freshStyle('ct-info-label'), 'ct-info-label', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-label'],
-      'letter-spacing': '0.3em', 'text-transform': 'uppercase', 'opacity': '0.3',
-      'margin-bottom': '8px',
-    });
-    await clearAndSet(await freshStyle('ct-form-col'), 'ct-form-col', {
-      'display': 'flex', 'flex-direction': 'column',
-    });
-    await wait(500);
-
-    await applyCTAStyleProps(v);
-  }
-
   // ═══════════════ BUILD ELEMENTS ═══════════════
 
-  // SECTION 1: HERO — cream bg, left-aligned, large heading
-  log('Building Section 1: Hero...');
+  // ──────────────────────────────────────────────
+  // SECTION 1: SPLIT HERO
+  // Left: dark bg + Three.js canvas + heading + contact info
+  // Right: cream bg + contact form
+  // ──────────────────────────────────────────────
+  log('Building Section 1: Split Hero...');
   const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
   hero.setTag('section');
-  hero.setStyles([ctHero]);
+  hero.setAttribute('class', 'ct-hero');
   hero.setAttribute('id', 'ct-hero');
 
-  const heroC = hero.append(webflow.elementPresets.DOM);
-  heroC.setTag('div');
-  heroC.setStyles([ctHeroContent]);
+  // ── Left side: 3D canvas + content ──
+  const heroLeft = hero.append(webflow.elementPresets.DOM);
+  heroLeft.setTag('div');
+  heroLeft.setAttribute('class', 'ct-hero-left');
 
-  const heroLabel = heroC.append(webflow.elementPresets.DOM);
+  // Canvas container (Three.js renders here via footer JS)
+  const canvasWrap = heroLeft.append(webflow.elementPresets.DOM);
+  canvasWrap.setTag('div');
+  canvasWrap.setAttribute('class', 'ct-canvas-wrap');
+  canvasWrap.setAttribute('id', 'ct-canvas');
+
+  // Content overlay
+  const heroContent = heroLeft.append(webflow.elementPresets.DOM);
+  heroContent.setTag('div');
+  heroContent.setAttribute('class', 'ct-hero-content');
+
+  // Label
+  const heroLabel = heroContent.append(webflow.elementPresets.DOM);
   heroLabel.setTag('div');
-  heroLabel.setStyles([s.label]);
-  heroLabel.setAttribute('data-animate', 'fade-up');
-  const heroLabelTxt = heroLabel.append(webflow.elementPresets.DOM);
-  heroLabelTxt.setTag('div');
-  heroLabelTxt.setTextContent('// Contact');
+  heroLabel.setAttribute('class', 'ct-hero-label');
+  heroLabel.setTextContent('// Contact');
 
-  const heroH = heroC.append(webflow.elementPresets.DOM);
+  // Heading
+  const heroH = heroContent.append(webflow.elementPresets.DOM);
   heroH.setTag('h1');
-  heroH.setStyles([s.headingXL]);
-  heroH.setTextContent("Let's build together");
-  heroH.setAttribute('data-animate', 'word-stagger-elastic');
+  heroH.setAttribute('class', 'ct-hero-heading');
+  heroH.setTextContent("Let's build something extraordinary");
 
-  const heroSub = heroC.append(webflow.elementPresets.DOM);
+  // Subtitle
+  const heroSub = heroContent.append(webflow.elementPresets.DOM);
   heroSub.setTag('p');
-  heroSub.setStyles([s.body, s.bodyMuted]);
-  heroSub.setTextContent("Your vision, our expertise. Orange County's trusted builder.");
-  heroSub.setAttribute('data-animate', 'fade-up');
+  heroSub.setAttribute('class', 'ct-hero-sub');
+  heroSub.setTextContent("Your vision, our expertise. Start your Orange County construction project with a conversation.");
+
+  // Contact row (phone + email)
+  const contactRow = heroContent.append(webflow.elementPresets.DOM);
+  contactRow.setTag('div');
+  contactRow.setAttribute('class', 'ct-contact-row');
+
+  // Phone
+  const phoneItem = contactRow.append(webflow.elementPresets.DOM);
+  phoneItem.setTag('div');
+  phoneItem.setAttribute('class', 'ct-contact-item');
+
+  const phoneLabel = phoneItem.append(webflow.elementPresets.DOM);
+  phoneLabel.setTag('div');
+  phoneLabel.setAttribute('class', 'ct-contact-label');
+  phoneLabel.setTextContent('Phone');
+
+  const phoneVal = phoneItem.append(webflow.elementPresets.DOM);
+  phoneVal.setTag('div');
+  phoneVal.setAttribute('class', 'ct-contact-value');
+
+  const phoneLink = phoneVal.append(webflow.elementPresets.DOM);
+  phoneLink.setTag('a');
+  phoneLink.setAttribute('href', 'tel:7149003676');
+  phoneLink.setTextContent('(714) 900-3676');
+
+  // Email
+  const emailItem = contactRow.append(webflow.elementPresets.DOM);
+  emailItem.setTag('div');
+  emailItem.setAttribute('class', 'ct-contact-item');
+
+  const emailLabel = emailItem.append(webflow.elementPresets.DOM);
+  emailLabel.setTag('div');
+  emailLabel.setAttribute('class', 'ct-contact-label');
+  emailLabel.setTextContent('Email');
+
+  const emailVal = emailItem.append(webflow.elementPresets.DOM);
+  emailVal.setTag('div');
+  emailVal.setAttribute('class', 'ct-contact-value');
+
+  const emailLink = emailVal.append(webflow.elementPresets.DOM);
+  emailLink.setTag('a');
+  emailLink.setAttribute('href', 'mailto:construction@avorino.com');
+  emailLink.setTextContent('construction@avorino.com');
+
+  // ── Right side: Form ──
+  const heroRight = hero.append(webflow.elementPresets.DOM);
+  heroRight.setTag('div');
+  heroRight.setAttribute('class', 'ct-hero-right');
+
+  const formHeading = heroRight.append(webflow.elementPresets.DOM);
+  formHeading.setTag('h2');
+  formHeading.setAttribute('class', 'ct-form-heading');
+  formHeading.setTextContent('Start your project');
+
+  const formSub = heroRight.append(webflow.elementPresets.DOM);
+  formSub.setTag('p');
+  formSub.setAttribute('class', 'ct-form-sub');
+  formSub.setTextContent("Fill out the form and we'll respond within 24 hours.");
+
+  // Form container (div, not form — Webflow auto-injects on <form>)
+  const formWrap = heroRight.append(webflow.elementPresets.DOM);
+  formWrap.setTag('div');
+  formWrap.setAttribute('class', 'ct-form');
+
+  // Helper: build a single field inside a parent
+  function buildField(parent: any, field: typeof FORM_FIELDS[number]) {
+    const group = parent.append(webflow.elementPresets.DOM);
+    group.setTag('div');
+    group.setAttribute('class', 'ct-form-group');
+
+    const label = group.append(webflow.elementPresets.DOM);
+    label.setTag('label');
+    label.setAttribute('class', 'ct-form-label');
+    label.setTextContent(field.label);
+
+    if (field.type === 'textarea') {
+      const ta = group.append(webflow.elementPresets.DOM);
+      ta.setTag('textarea');
+      ta.setAttribute('class', 'ct-form-textarea');
+      ta.setAttribute('name', field.name);
+      if (field.placeholder) ta.setAttribute('placeholder', field.placeholder);
+      ta.setAttribute('rows', '3');
+    } else if (field.type === 'select') {
+      const sel = group.append(webflow.elementPresets.DOM);
+      sel.setTag('select');
+      sel.setAttribute('class', 'ct-form-select');
+      sel.setAttribute('name', field.name);
+      const opt0 = sel.append(webflow.elementPresets.DOM);
+      opt0.setTag('option');
+      opt0.setTextContent('Select a service');
+      opt0.setAttribute('value', '');
+      opt0.setAttribute('disabled', '');
+      opt0.setAttribute('selected', '');
+      for (const optVal of (field.options || [])) {
+        const opt = sel.append(webflow.elementPresets.DOM);
+        opt.setTag('option');
+        opt.setTextContent(optVal);
+        opt.setAttribute('value', optVal);
+      }
+    } else {
+      const input = group.append(webflow.elementPresets.DOM);
+      input.setTag('input');
+      input.setAttribute('class', 'ct-form-input');
+      input.setAttribute('type', field.type);
+      input.setAttribute('name', field.name);
+      if (field.placeholder) input.setAttribute('placeholder', field.placeholder);
+    }
+  }
+
+  // Build fields in order, pairing halfWidth fields into rows
+  let i = 0;
+  const fields = [...FORM_FIELDS];
+  while (i < fields.length) {
+    const field = fields[i];
+    const next = fields[i + 1];
+
+    if (field.halfWidth && next?.halfWidth) {
+      // Two half-width fields → side-by-side row
+      const row = formWrap.append(webflow.elementPresets.DOM);
+      row.setTag('div');
+      row.setAttribute('class', 'ct-form-row');
+      buildField(row, field);
+      buildField(row, next);
+      i += 2;
+    } else {
+      // Full-width field
+      buildField(formWrap, field);
+      i += 1;
+    }
+  }
+
+  // Submit button
+  const submitBtn = formWrap.append(webflow.elementPresets.DOM);
+  submitBtn.setTag('button');
+  submitBtn.setAttribute('class', 'ct-form-submit');
+  submitBtn.setAttribute('type', 'submit');
+  submitBtn.setTextContent('Send Message');
 
   await safeCall('append:hero', () => body.append(hero));
-  logDetail('Section 1: Hero appended', 'ok');
+  logDetail('Section 1: Split Hero appended', 'ok');
 
-  // SECTION 2: CONTACT MAIN (warm bg, 2-col: info left + form right)
-  // Section appended to body FIRST, then form built inside (Webflow Form API requirement)
-  log('Building Section 2: Contact Main...');
-  const mainSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  mainSection.setTag('section');
-  mainSection.setStyles([s.section, s.sectionWarm]);
-  mainSection.setAttribute('id', 'ct-main');
+  // ──────────────────────────────────────────────
+  // SECTION 2: TRUST SIGNALS
+  // ──────────────────────────────────────────────
+  log('Building Section 2: Trust Signals...');
+  const trust = webflow.elementBuilder(webflow.elementPresets.DOM);
+  trust.setTag('section');
+  trust.setAttribute('class', 'ct-trust');
+  trust.setAttribute('id', 'ct-trust');
 
-  const grid = mainSection.append(webflow.elementPresets.DOM);
-  grid.setTag('div');
-  grid.setStyles([s.split4060]);
+  const trustGrid = trust.append(webflow.elementPresets.DOM);
+  trustGrid.setTag('div');
+  trustGrid.setAttribute('class', 'ct-trust-grid');
 
-  // LEFT: Info column
-  const infoCol = grid.append(webflow.elementPresets.DOM);
-  infoCol.setTag('div');
-  infoCol.setStyles([ctInfoCol]);
-  infoCol.setAttribute('data-animate', 'fade-up');
+  for (const stat of TRUST_STATS) {
+    const item = trustGrid.append(webflow.elementPresets.DOM);
+    item.setTag('div');
+    item.setAttribute('class', 'ct-trust-item');
+    item.setAttribute('data-animate', 'fade-up');
 
-  const infoH = infoCol.append(webflow.elementPresets.DOM);
-  infoH.setTag('h2');
-  infoH.setStyles([ctInfoHeading]);
-  infoH.setTextContent('Get in Touch');
-
-  const infoP = infoCol.append(webflow.elementPresets.DOM);
-  infoP.setTag('p');
-  infoP.setStyles([ctInfoBody]);
-  infoP.setTextContent('Call, email, or fill out the form. We respond within 24 hours.');
-
-  // Divider
-  const div1 = infoCol.append(webflow.elementPresets.DOM);
-  div1.setTag('div');
-  div1.setStyles([s.divider]);
-
-  // Phone + Email details
-  CONTACT_DETAILS.forEach(detail => {
-    const lbl = infoCol.append(webflow.elementPresets.DOM);
-    lbl.setTag('div');
-    lbl.setStyles([ctInfoLabel]);
-    lbl.setTextContent(detail.label);
-
-    const val = infoCol.append(webflow.elementPresets.DOM);
+    const val = item.append(webflow.elementPresets.DOM);
     val.setTag('div');
-    val.setStyles([detail.label === 'Phone' ? ctInfoPhone : ctInfoDetail]);
-    val.setTextContent(detail.value);
-  });
+    val.setAttribute('class', 'ct-trust-value');
+    val.setAttribute('data-value', stat.value);
+    val.setAttribute('data-suffix', stat.suffix);
+    val.setTextContent(stat.value + stat.suffix);
 
-  // Divider
-  const div2 = infoCol.append(webflow.elementPresets.DOM);
-  div2.setTag('div');
-  div2.setStyles([s.divider]);
-
-  // Location + License details
-  CONTACT_DETAILS_2.forEach(detail => {
-    const lbl = infoCol.append(webflow.elementPresets.DOM);
+    const lbl = item.append(webflow.elementPresets.DOM);
     lbl.setTag('div');
-    lbl.setStyles([ctInfoLabel]);
-    lbl.setTextContent(detail.label);
+    lbl.setAttribute('class', 'ct-trust-label');
+    lbl.setTextContent(stat.label);
+  }
 
-    const val = infoCol.append(webflow.elementPresets.DOM);
+  await safeCall('append:trust', () => body.append(trust));
+  logDetail('Section 2: Trust Signals appended', 'ok');
+
+  // ──────────────────────────────────────────────
+  // SECTION 3: MAP + OFFICE INFO
+  // ──────────────────────────────────────────────
+  log('Building Section 3: Map + Office Info...');
+  const location = webflow.elementBuilder(webflow.elementPresets.DOM);
+  location.setTag('section');
+  location.setAttribute('class', 'ct-location');
+  location.setAttribute('id', 'ct-location');
+
+  // Header
+  const locHeader = location.append(webflow.elementPresets.DOM);
+  locHeader.setTag('div');
+  locHeader.setAttribute('class', 'ct-location-header');
+
+  const locLabel = locHeader.append(webflow.elementPresets.DOM);
+  locLabel.setTag('div');
+  locLabel.setAttribute('class', 'ct-location-label');
+  locLabel.setTextContent('// Our Location');
+
+  const locH = locHeader.append(webflow.elementPresets.DOM);
+  locH.setTag('h2');
+  locH.setAttribute('class', 'ct-location-heading');
+  locH.setTextContent('Serving all of Orange County');
+  locH.setAttribute('data-animate', 'blur-focus');
+
+  // Grid
+  const locGrid = location.append(webflow.elementPresets.DOM);
+  locGrid.setTag('div');
+  locGrid.setAttribute('class', 'ct-location-grid');
+
+  // Map iframe wrapper
+  const mapWrap = locGrid.append(webflow.elementPresets.DOM);
+  mapWrap.setTag('div');
+  mapWrap.setAttribute('class', 'ct-map-wrapper');
+  mapWrap.setAttribute('data-animate', 'fade-up');
+
+  const mapFrame = mapWrap.append(webflow.elementPresets.DOM);
+  mapFrame.setTag('iframe');
+  mapFrame.setAttribute('src', MAP_URL);
+  mapFrame.setAttribute('loading', 'lazy');
+  mapFrame.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
+  mapFrame.setAttribute('title', 'Avorino service area — Orange County, CA');
+
+  // Office info column
+  const officeInfo = locGrid.append(webflow.elementPresets.DOM);
+  officeInfo.setTag('div');
+  officeInfo.setAttribute('class', 'ct-office-info');
+
+  for (let i = 0; i < OFFICE_INFO.length; i++) {
+    const info = OFFICE_INFO[i];
+
+    if (i > 0) {
+      const divider = officeInfo.append(webflow.elementPresets.DOM);
+      divider.setTag('div');
+      divider.setAttribute('class', 'ct-office-divider');
+    }
+
+    const block = officeInfo.append(webflow.elementPresets.DOM);
+    block.setTag('div');
+    block.setAttribute('class', 'ct-office-block');
+
+    const lbl = block.append(webflow.elementPresets.DOM);
+    lbl.setTag('div');
+    lbl.setAttribute('class', 'ct-office-label');
+    lbl.setTextContent(info.label);
+
+    const val = block.append(webflow.elementPresets.DOM);
     val.setTag('div');
-    val.setStyles([ctInfoDetail]);
-    val.setTextContent(detail.value);
-  });
+    val.setAttribute('class', 'ct-office-value');
+    val.setTextContent(info.lines.join('\n'));
+  }
 
-  // RIGHT: Form column
-  const formCol = grid.append(webflow.elementPresets.DOM);
-  formCol.setTag('div');
-  formCol.setStyles([ctFormCol]);
+  await safeCall('append:location', () => body.append(location));
+  logDetail('Section 3: Map + Office Info appended', 'ok');
 
-  buildCleanForm(formCol, FORM_FIELDS, s, 'Send Message');
-
-  await safeCall('append:contact', () => body.append(mainSection));
-  logDetail('Section 2: Contact Main appended', 'ok');
-
-  // SECTION 3: CALENDLY
-  log('Building Section 3: Calendly...');
-  await buildCalendlySection(body, v, 'Book a Free Consultation');
-
-  // SECTION 4: CTA
+  // ──────────────────────────────────────────────
+  // SECTION 4: CTA (uses shared builder — matches all other pages)
+  // ──────────────────────────────────────────────
   log('Building Section 4: CTA...');
   await buildCTASection(
     body, v,
-    'Schedule a free consultation',
+    'Ready to start building?',
     'Call (714) 900-3676', 'tel:7149003676',
-    'Schedule a Meeting', '/schedule-a-meeting',
+    'Fill Out the Form', '#ct-hero',
   );
 
   // ═══════════════ APPLY STYLES ═══════════════
-  await applyStyleProperties();
-  await applyCalendlyStyleProps(v);
+  log('Setting shared style properties...');
+  await setSharedStyleProps(s, v);
+  await wait(1000);
+  await applyCTAStyleProps(v);
 
   log('Contact page built!', 'success');
   await webflow.notify({ type: 'Success', message: 'Contact page created!' });
