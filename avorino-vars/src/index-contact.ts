@@ -519,10 +519,13 @@ async function buildContactPage() {
     lbl.setStyles([ctOfficeLabel]);
     lbl.setTextContent(info.label);
 
-    const val = block.append(webflow.elementPresets.DOM);
-    val.setTag('div');
-    val.setStyles([ctOfficeValue]);
-    val.setTextContent(info.lines.join('\n'));
+    // Each line as its own div for proper line breaks
+    for (const line of info.lines) {
+      const lineEl = block.append(webflow.elementPresets.DOM);
+      lineEl.setTag('div');
+      lineEl.setStyles([ctOfficeValue]);
+      lineEl.setTextContent(line);
+    }
   }
 
   await safeCall('append:location', () => body.append(location));

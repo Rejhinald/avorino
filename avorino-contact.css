@@ -156,10 +156,94 @@
 }
 
 /* ── Contact Form ── */
-.ct-form {
+/* Override shared Webflow form styles inside cream hero-right */
+.ct-form,
+.ct-hero-right [data-animate] {
   display: flex;
   flex-direction: column;
 }
+
+/* Target the shared Webflow form styles (av-input-clean etc.) inside hero-right */
+.ct-hero-right input,
+.ct-hero-right textarea,
+.ct-hero-right select {
+  width: 100% !important;
+  font-family: 'DM Sans', system-ui, sans-serif !important;
+  font-size: 16px !important;
+  color: #111111 !important;
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(17,17,17,0.15) !important;
+  padding: 12px 0 !important;
+  outline: none !important;
+  border-radius: 0 !important;
+  -webkit-appearance: none !important;
+  transition: border-color 0.3s;
+}
+.ct-hero-right input:focus,
+.ct-hero-right textarea:focus,
+.ct-hero-right select:focus {
+  border-bottom-color: #c8222a !important;
+}
+.ct-hero-right input::placeholder,
+.ct-hero-right textarea::placeholder {
+  color: rgba(17,17,17,0.3) !important;
+}
+.ct-hero-right select {
+  appearance: none !important;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23111111' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' opacity='0.3'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 4px center !important;
+  background-color: transparent !important;
+}
+.ct-hero-right textarea {
+  resize: none !important;
+  min-height: 80px !important;
+}
+.ct-hero-right label {
+  display: block !important;
+  font-family: 'DM Sans', system-ui, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.25em !important;
+  text-transform: uppercase !important;
+  color: rgba(17,17,17,0.4) !important;
+  margin-bottom: 10px !important;
+}
+/* Submit button inside form */
+.ct-hero-right button[type="submit"],
+.ct-hero-right .av-submit-btn {
+  align-self: flex-start !important;
+  font-family: 'DM Sans', system-ui, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: #f0ede8 !important;
+  background: #111111 !important;
+  border: none !important;
+  cursor: pointer;
+  padding: 18px 48px !important;
+  border-radius: 100px !important;
+  transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+  margin-top: 8px !important;
+  width: 100% !important;
+}
+.ct-hero-right button[type="submit"]:hover,
+.ct-hero-right .av-submit-btn:hover {
+  background: #c8222a !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(200,34,42,0.25);
+}
+/* Form grid (half-width pairs) */
+.ct-hero-right .av-form-grid-2 {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 20px !important;
+}
+
+/* Also support ct-form-* classes for the CDN form fallback */
 .ct-form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -167,52 +251,6 @@
 }
 .ct-form-group {
   margin-bottom: 24px;
-}
-.ct-form-label {
-  display: block;
-  font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: rgba(17,17,17,0.35);
-  margin-bottom: 10px;
-}
-.ct-form-input,
-.ct-form-select,
-.ct-form-textarea {
-  width: 100%;
-  font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: 16px;
-  color: #111111;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid rgba(17,17,17,0.12);
-  padding: 12px 0;
-  outline: none;
-  transition: border-color 0.3s;
-  border-radius: 0;
-  -webkit-appearance: none;
-}
-.ct-form-input:focus,
-.ct-form-select:focus,
-.ct-form-textarea:focus {
-  border-bottom-color: #c8222a;
-}
-.ct-form-input::placeholder,
-.ct-form-textarea::placeholder {
-  color: rgba(17,17,17,0.25);
-}
-.ct-form-select {
-  appearance: none;
-  cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23111111' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' opacity='0.3'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 4px center;
-}
-.ct-form-textarea {
-  resize: none;
-  min-height: 80px;
 }
 .ct-form-submit {
   align-self: flex-start;
@@ -414,9 +452,9 @@
   }
 
   /* Form: inputs stay readable */
-  .ct-form-input,
-  .ct-form-select,
-  .ct-form-textarea {
+  .ct-hero-right input,
+  .ct-hero-right textarea,
+  .ct-hero-right select {
     font-size: 17px !important;
   }
 }
@@ -448,19 +486,22 @@
 
   /* Form: half-width fields stack */
   .ct-form-row,
-  .av-form-grid-2 {
+  .av-form-grid-2,
+  .ct-hero-right .av-form-grid-2 {
     grid-template-columns: 1fr !important;
     gap: 0 !important;
   }
-  .ct-form-input,
-  .ct-form-select,
-  .ct-form-textarea {
+  .ct-hero-right input,
+  .ct-hero-right textarea,
+  .ct-hero-right select {
     font-size: 19px !important; /* prevent iOS zoom */
   }
+  .ct-hero-right button[type="submit"],
+  .ct-hero-right .av-submit-btn,
   .ct-form-submit {
     width: 100% !important;
-    text-align: center;
-    justify-content: center;
+    text-align: center !important;
+    justify-content: center !important;
   }
   .ct-form-heading {
     font-size: clamp(24px, 5vw, 32px);
