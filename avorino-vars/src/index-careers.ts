@@ -19,7 +19,7 @@ const PAGE_NAME = 'Careers';
 const PAGE_SLUG = 'careers';
 const PAGE_TITLE = 'Careers at Avorino — Join Our Team | Orange County Construction';
 const PAGE_DESC = 'Join the Avorino team. We build luxury homes, ADUs, and commercial projects across Orange County. Explore open positions and apply today.';
-const CDN = 'bf75cec';
+const CDN = '75864a2';
 const HEAD_CODE = [
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
