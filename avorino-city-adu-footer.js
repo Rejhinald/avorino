@@ -1022,6 +1022,182 @@
   }
 
   /* ═══════════════════════════════════════════════
+     DISCLAIMER — injected via JS on all city pages
+     ═══════════════════════════════════════════════ */
+  function initDisclaimer() {
+    // Find the CTA section to insert before it
+    var ctaWrap = document.querySelector('.av-cta') || document.querySelector('[class*="city-cta"]');
+    if (!ctaWrap) return;
+
+    // Build disclaimer HTML
+    var section = document.createElement('section');
+    section.id = 'city-disclaimer';
+    section.style.cssText = [
+      'background:#0d0d0d;',
+      'padding:80px 80px;',
+      'position:relative;',
+      'overflow:hidden;',
+      'border-top:1px solid rgba(240,237,232,0.06);',
+    ].join('');
+
+    // Canvas for subtle animated bg
+    var canvas = document.createElement('canvas');
+    canvas.id = 'disclaimer-canvas';
+    canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0.4;';
+    section.appendChild(canvas);
+
+    // Content wrapper
+    var content = document.createElement('div');
+    content.style.cssText = [
+      'position:relative;z-index:1;',
+      'max-width:800px;margin:0 auto;text-align:center;',
+    ].join('');
+
+    // Label
+    var label = document.createElement('div');
+    label.textContent = '// Disclaimer';
+    label.style.cssText = [
+      'font-family:"DM Sans",sans-serif;font-size:11px;font-weight:500;',
+      'letter-spacing:0.2em;text-transform:uppercase;',
+      'color:#f0ede8;opacity:0.3;margin-bottom:20px;',
+    ].join('');
+    content.appendChild(label);
+
+    // Heading
+    var heading = document.createElement('h3');
+    heading.textContent = 'Important notice';
+    heading.style.cssText = [
+      'font-family:"DM Serif Display",serif;font-size:clamp(24px,3vw,36px);',
+      'font-weight:400;line-height:1.2;color:#f0ede8;margin-bottom:24px;',
+    ].join('');
+    content.appendChild(heading);
+
+    // Body text
+    var body = document.createElement('p');
+    body.textContent = 'The information on this page is for general informational purposes only. Regulations, zoning requirements, and permit processes may change. Contact your local building department or consult with Avorino for the most current requirements.';
+    body.style.cssText = [
+      'font-family:"DM Sans",sans-serif;font-size:15px;line-height:1.8;',
+      'color:#f0ede8;opacity:0.45;max-width:640px;margin:0 auto 24px;',
+    ].join('');
+    content.appendChild(body);
+
+    // License line
+    var license = document.createElement('div');
+    license.textContent = 'Avorino Custom Home & ADU Builders — General-B #1107538 — State of California';
+    license.style.cssText = [
+      'font-family:"DM Sans",sans-serif;font-size:12px;',
+      'letter-spacing:0.1em;color:#f0ede8;opacity:0.2;',
+    ].join('');
+    content.appendChild(license);
+
+    section.appendChild(content);
+
+    // Insert before CTA
+    ctaWrap.parentNode.insertBefore(section, ctaWrap);
+
+    // ── Responsive overrides ──
+    var mq768 = window.matchMedia('(max-width: 767px)');
+    var mq478 = window.matchMedia('(max-width: 478px)');
+    function applyResponsive() {
+      if (mq478.matches) {
+        section.style.padding = '48px 16px';
+      } else if (mq768.matches) {
+        section.style.padding = '56px 24px';
+      } else {
+        section.style.padding = '80px 80px';
+      }
+    }
+    applyResponsive();
+    window.addEventListener('resize', applyResponsive);
+
+    // ── Simple Three.js animated bg: floating grid dots ──
+    if (typeof THREE !== 'undefined') {
+      var w = canvas.offsetWidth || section.offsetWidth;
+      var h = canvas.offsetHeight || section.offsetHeight;
+      var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+      renderer.setSize(w, h);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      var scene = new THREE.Scene();
+      var camera = new THREE.PerspectiveCamera(50, w / h, 0.1, 100);
+      camera.position.set(0, 0, 20);
+
+      // Create floating dots grid
+      var dotGeo = new THREE.BufferGeometry();
+      var positions = [];
+      var cols = 20, rows = 10;
+      for (var r = 0; r < rows; r++) {
+        for (var c = 0; c < cols; c++) {
+          positions.push((c - cols / 2) * 2.2, (r - rows / 2) * 2.2, 0);
+        }
+      }
+      dotGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      var dotMat = new THREE.PointsMaterial({ color: 0xf0ede8, size: 0.08, transparent: true, opacity: 0.15 });
+      var dots = new THREE.Points(dotGeo, dotMat);
+      scene.add(dots);
+
+      // Subtle connecting lines
+      var lineGeo = new THREE.BufferGeometry();
+      var linePositions = [];
+      for (var r = 0; r < rows; r++) {
+        for (var c = 0; c < cols - 1; c++) {
+          var idx = r * cols + c;
+          linePositions.push(positions[idx * 3], positions[idx * 3 + 1], 0);
+          linePositions.push(positions[(idx + 1) * 3], positions[(idx + 1) * 3 + 1], 0);
+        }
+      }
+      lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+      var lineMat = new THREE.LineBasicMaterial({ color: 0xf0ede8, transparent: true, opacity: 0.04 });
+      scene.add(new THREE.LineSegments(lineGeo, lineMat));
+
+      var time = 0;
+      var animId;
+      function animateDisclaimer() {
+        animId = requestAnimationFrame(animateDisclaimer);
+        time += 0.008;
+        var pos = dotGeo.attributes.position.array;
+        for (var i = 0; i < pos.length; i += 3) {
+          pos[i + 2] = Math.sin(time + pos[i] * 0.3 + pos[i + 1] * 0.2) * 0.8;
+        }
+        dotGeo.attributes.position.needsUpdate = true;
+        renderer.render(scene, camera);
+      }
+
+      // Only animate when visible
+      var observer = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting) { animateDisclaimer(); }
+        else { cancelAnimationFrame(animId); }
+      }, { threshold: 0.1 });
+      observer.observe(section);
+
+      window.addEventListener('resize', function() {
+        var w2 = section.offsetWidth, h2 = section.offsetHeight;
+        camera.aspect = w2 / h2;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w2, h2);
+      });
+    }
+
+    // ── GSAP entrance ──
+    gsap.from(label, {
+      scrollTrigger: { trigger: section, start: 'top 85%' },
+      opacity: 0, y: 15, duration: 0.6
+    });
+    gsap.from(heading, {
+      scrollTrigger: { trigger: section, start: 'top 80%' },
+      opacity: 0, filter: 'blur(8px)', duration: 0.8, delay: 0.15
+    });
+    gsap.from(body, {
+      scrollTrigger: { trigger: section, start: 'top 80%' },
+      opacity: 0, y: 20, duration: 0.7, delay: 0.3
+    });
+    gsap.from(license, {
+      scrollTrigger: { trigger: section, start: 'top 80%' },
+      opacity: 0, duration: 0.6, delay: 0.5
+    });
+  }
+
+  /* ═══════════════════════════════════════════════
      INIT
      ═══════════════════════════════════════════════ */
   window.addEventListener('DOMContentLoaded', function () {
@@ -1031,6 +1207,7 @@
     initRequirements();
     initScrollAnimations();
     initCTA();
+    initDisclaimer();
   });
 
 })();
