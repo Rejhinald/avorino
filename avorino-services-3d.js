@@ -115,106 +115,104 @@
       return [x0, y, z, x1, y, z];
     }
 
-    /* ── TARGET 0: ADU — Clean small unit with pitched roof ── */
+    /* ══════════════════════════════════════════════════
+       MORPH TARGETS — 6 clean architectural wireframes
+       All coordinates must match boxSegs corners exactly.
+       boxSegs(cx,cy,cz, w,h,d) → corners at cx±w/2, cy±h/2, cz±d/2
+       ══════════════════════════════════════════════════ */
+
+    /* ── TARGET 0: ADU — box(0,3,0, 8,6,6) → x:-4..4, y:0..6, z:-3..3 ── */
     var aduPts = [].concat(
-      boxSegs(0, 3, 0, 8, 6, 6),             // main volume
-      // Pitched roof
-      [0, 6, -3, 0, 8, 0],  [0, 8, 0, 0, 6, 3],   // left gable
-      [8, 6, -3, 8, 8, 0],  [8, 8, 0, 8, 6, 3],   // right gable (swapped to match)
-      [-4, 6, -3, -4, 8, 0], [-4, 8, 0, -4, 6, 3], // front gable
-      [4, 6, -3, 4, 8, 0],  [4, 8, 0, 4, 6, 3],   // back gable
-      hLine(-4, 4, 8, 0),                            // ridge
-      // Door
-      vLine(1, 0, 4.5, -3.01), vLine(3, 0, 4.5, -3.01), hLine(1, 3, 4.5, -3.01),
-      // One window
+      boxSegs(0, 3, 0, 8, 6, 6),
+      // Pitched roof — gables at x=-4 and x=4, ridge at z=0
+      [-4, 6, -3, -4, 8, 0], [-4, 8, 0, -4, 6, 3],  // left gable
+      [4, 6, -3, 4, 8, 0],   [4, 8, 0, 4, 6, 3],    // right gable
+      [-4, 8, 0, 4, 8, 0],                            // ridge
+      // Door on front face (z=-3)
+      [1, 0, -3.01, 1, 4.5, -3.01], [3, 0, -3.01, 3, 4.5, -3.01], [1, 4.5, -3.01, 3, 4.5, -3.01],
+      // Window on front face
       windowSegs(-3, 2, -3.01, -1, 4)
     );
 
-    /* ── TARGET 1: Garage Conversion — Wide low box ── */
+    /* ── TARGET 1: Garage — box(0,2.5,0, 10,5,7) → x:-5..5, y:0..5, z:-3.5..3.5 ── */
     var garagePts = [].concat(
-      boxSegs(0, 2.5, 0, 10, 5, 7),          // main volume
-      // Flat roof overhang
-      hLine(-5.5, 5.5, 5.2, -4), hLine(-5.5, 5.5, 5.2, 4),
-      hLine(-5.5, -5.5, 5.2, -4), hLine(5.5, 5.5, 5.2, 4),
-      // Former garage door (X cross = sealed)
+      boxSegs(0, 2.5, 0, 10, 5, 7),
+      // Flat roof overhang — slightly wider/deeper
+      [-5.5, 5.2, -4, 5.5, 5.2, -4], [5.5, 5.2, -4, 5.5, 5.2, 4],
+      [5.5, 5.2, 4, -5.5, 5.2, 4],   [-5.5, 5.2, 4, -5.5, 5.2, -4],
+      // Former garage door sealed (X on front)
       [-3, 0.2, -3.51, 3, 4, -3.51], [3, 0.2, -3.51, -3, 4, -3.51],
       // New windows
-      windowSegs(-4, 1.5, -3.51, -2, 3.5),
-      windowSegs(2, 1.5, -3.51, 4, 3.5),
-      // New door
-      vLine(-1, 0, 3.5, -3.51), vLine(1, 0, 3.5, -3.51), hLine(-1, 1, 3.5, -3.51)
+      windowSegs(-4.5, 1.5, -3.51, -2.5, 3.5),
+      windowSegs(2.5, 1.5, -3.51, 4.5, 3.5)
     );
 
-    /* ── TARGET 2: Custom Home — L-shape with tower ── */
+    /* ── TARGET 2: Custom Home — main box(-1,4,0, 10,8,6) → x:-6..4, y:0..8, z:-3..3
+                                   wing box(6,2.5,0, 4,5,5) → x:4..8, y:0..5, z:-2.5..2.5 ── */
     var customPts = [].concat(
-      boxSegs(-1, 4, 0, 10, 8, 6),           // main volume
-      boxSegs(6, 2.5, 0, 4, 5, 5),           // wing
-      // Pitched roof main
-      hLine(-6, 4, 8.5, 0),                  // ridge
-      [-6, 8, -3, -6, 8.5, 0], [-6, 8.5, 0, -6, 8, 3],
-      [4, 8, -3, 4, 8.5, 0],  [4, 8.5, 0, 4, 8, 3],
+      boxSegs(-1, 4, 0, 10, 8, 6),
+      boxSegs(6, 2.5, 0, 4, 5, 5),
+      // Pitched roof main — gables at x=-6 and x=4, ridge at z=0
+      [-6, 8, -3, -6, 9.5, 0], [-6, 9.5, 0, -6, 8, 3],
+      [4, 8, -3, 4, 9.5, 0],   [4, 9.5, 0, 4, 8, 3],
+      [-6, 9.5, 0, 4, 9.5, 0],                        // ridge
       // Wing flat roof
-      hLine(3.5, 8.5, 5.3, -3), hLine(3.5, 8.5, 5.3, 3),
+      [3.5, 5.3, -3, 8.5, 5.3, -3], [8.5, 5.3, -3, 8.5, 5.3, 3],
+      [8.5, 5.3, 3, 3.5, 5.3, 3],   [3.5, 5.3, 3, 3.5, 5.3, -3],
       // Door
-      vLine(-1, 0, 4, -3.01), vLine(1, 0, 4, -3.01), hLine(-1, 1, 4, -3.01),
-      // Windows
-      windowSegs(-5, 3, -3.01, -3, 6),
-      windowSegs(2, 3, -3.01, 3.5, 6)
+      [-1, 0, -3.01, -1, 4, -3.01], [1, 0, -3.01, 1, 4, -3.01], [-1, 4, -3.01, 1, 4, -3.01]
     );
 
-    /* ── TARGET 3: New Construction — Structure + crane ── */
+    /* ── TARGET 3: New Construction — box(0,4,0, 9,8,6) → x:-4.5..4.5, y:0..8, z:-3..3 ── */
     var newbuildPts = [].concat(
-      boxSegs(0, 4, 0, 9, 8, 6),             // main structure
-      // Foundation pad
-      hLine(-5, 5, 0, -4), hLine(-5, 5, 0, 4),
-      hLine(-5, -5, 0, -4), hLine(5, 5, 0, 4),
-      // Roof
-      hLine(-5, 5, 8.3, 0),                  // ridge
-      [-4.5, 8, -3, -4.5, 8.3, 0], [-4.5, 8.3, 0, -4.5, 8, 3],
-      [4.5, 8, -3, 4.5, 8.3, 0],  [4.5, 8.3, 0, 4.5, 8, 3],
+      boxSegs(0, 4, 0, 9, 8, 6),
+      // Foundation pad outline on ground
+      [-5.5, 0.01, -4, 5.5, 0.01, -4], [5.5, 0.01, -4, 5.5, 0.01, 4],
+      [5.5, 0.01, 4, -5.5, 0.01, 4],   [-5.5, 0.01, 4, -5.5, 0.01, -4],
+      // Pitched roof — gables at x=-4.5 and x=4.5
+      [-4.5, 8, -3, -4.5, 9.5, 0], [-4.5, 9.5, 0, -4.5, 8, 3],
+      [4.5, 8, -3, 4.5, 9.5, 0],   [4.5, 9.5, 0, 4.5, 8, 3],
+      [-4.5, 9.5, 0, 4.5, 9.5, 0],                    // ridge
       // Crane
-      vLine(-7, 0, 12, -4),                  // mast
-      hLine(-7, 4, 12, -4),                  // jib
-      hLine(-7, -9, 12, -4),                 // counter-jib
-      [-7, 12, -4, 4, 11, -4],              // cable
-      // Door
-      vLine(-1, 0, 4, -3.01), vLine(1, 0, 4, -3.01), hLine(-1, 1, 4, -3.01)
+      [-7, 0, -4, -7, 12, -4],                         // mast
+      [-7, 12, -4, 4, 12, -4],                         // jib
+      [-7, 12, -4, -9, 12, -4],                        // counter-jib
+      [-7, 12, -4, 4, 10.5, -4]                        // cable
     );
 
-    /* ── TARGET 4: Addition — House + new wing ── */
+    /* ── TARGET 4: Addition — house box(-2,3.5,0, 7,7,6) → x:-5.5..1.5, y:0..7, z:-3..3
+                                add box(5.5,3,0, 5,6,6)  → x:3..8, y:0..6, z:-3..3 ── */
     var additionPts = [].concat(
-      boxSegs(-2, 3.5, 0, 7, 7, 6),          // existing house
-      boxSegs(5.5, 3, 0, 5, 6, 6),           // new addition
-      // Existing roof
-      hLine(-5.5, 1.5, 7.3, 0),              // ridge
-      [-5.5, 7, -3, -5.5, 7.3, 0], [-5.5, 7.3, 0, -5.5, 7, 3],
-      [1.5, 7, -3, 1.5, 7.3, 0],  [1.5, 7.3, 0, 1.5, 7, 3],
-      // Addition flat roof
-      hLine(2.5, 8.5, 6.2, -3.5), hLine(2.5, 8.5, 6.2, 3.5),
-      // Dashed connection (two short lines)
-      hLine(1.5, 3, 3, -3), hLine(1.5, 3, 3, 3),
-      // Windows
-      windowSegs(-4.5, 2.5, -3.01, -2.5, 5),
-      windowSegs(4, 1.5, -3.01, 5.5, 4),
-      windowSegs(6, 1.5, -3.01, 7.5, 4)
+      boxSegs(-2, 3.5, 0, 7, 7, 6),
+      boxSegs(5.5, 3, 0, 5, 6, 6),
+      // Existing pitched roof — gables at x=-5.5 and x=1.5
+      [-5.5, 7, -3, -5.5, 8.5, 0], [-5.5, 8.5, 0, -5.5, 7, 3],
+      [1.5, 7, -3, 1.5, 8.5, 0],   [1.5, 8.5, 0, 1.5, 7, 3],
+      [-5.5, 8.5, 0, 1.5, 8.5, 0],                    // ridge
+      // Addition flat roof overhang
+      [2.5, 6.2, -3.5, 8.5, 6.2, -3.5], [8.5, 6.2, -3.5, 8.5, 6.2, 3.5],
+      [8.5, 6.2, 3.5, 2.5, 6.2, 3.5],   [2.5, 6.2, 3.5, 2.5, 6.2, -3.5],
+      // Connection at junction
+      [1.5, 3, -3, 3, 3, -3], [1.5, 3, 3, 3, 3, 3],
+      // Window on addition
+      windowSegs(4, 1.5, -3.01, 6, 4)
     );
 
-    /* ── TARGET 5: Commercial — Tall clean multi-story ── */
+    /* ── TARGET 5: Commercial — box(0,5,0, 12,10,7) → x:-6..6, y:0..10, z:-3.5..3.5 ── */
     var commercialPts = [].concat(
-      boxSegs(0, 5, 0, 12, 10, 7),           // main volume
-      // Floor plates (3 floors)
-      hLine(-6, 6, 3.3, -3.5), hLine(-6, 6, 3.3, 3.5),
-      hLine(-6, 6, 6.6, -3.5), hLine(-6, 6, 6.6, 3.5),
+      boxSegs(0, 5, 0, 12, 10, 7),
+      // Floor plates (visible through front face)
+      [-6, 3.3, -3.5, 6, 3.3, -3.5],  [-6, 3.3, 3.5, 6, 3.3, 3.5],
+      [-6, 6.6, -3.5, 6, 6.6, -3.5],  [-6, 6.6, 3.5, 6, 6.6, 3.5],
       // Flat roof overhang
-      hLine(-6.5, 6.5, 10.2, -4), hLine(-6.5, 6.5, 10.2, 4),
-      hLine(-6.5, -6.5, 10.2, -4), hLine(6.5, 6.5, 10.2, 4),
+      [-6.5, 10.2, -4, 6.5, 10.2, -4], [6.5, 10.2, -4, 6.5, 10.2, 4],
+      [6.5, 10.2, 4, -6.5, 10.2, 4],   [-6.5, 10.2, 4, -6.5, 10.2, -4],
       // Entrance
-      vLine(-1.5, 0, 3, -3.51), vLine(1.5, 0, 3, -3.51), hLine(-1.5, 1.5, 3, -3.51),
-      // Curtain wall verticals (clean facade lines)
-      vLine(-4, 0.5, 9.5, -3.51),
-      vLine(-1.5, 0.5, 9.5, -3.51),
-      vLine(1.5, 0.5, 9.5, -3.51),
-      vLine(4, 0.5, 9.5, -3.51)
+      [-1.5, 0, -3.51, -1.5, 3, -3.51], [1.5, 0, -3.51, 1.5, 3, -3.51], [-1.5, 3, -3.51, 1.5, 3, -3.51],
+      // Facade verticals
+      [-4, 0.5, -3.51, -4, 9.5, -3.51],
+      [0, 0.5, -3.51, 0, 9.5, -3.51],
+      [4, 0.5, -3.51, 4, 9.5, -3.51]
     );
 
     /* Flatten nested arrays in morph targets */
