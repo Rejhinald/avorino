@@ -1074,7 +1074,7 @@
 
     // Body text
     var body = document.createElement('p');
-    body.textContent = 'The information on this page is for general informational purposes only. Regulations, zoning requirements, and permit processes may change. Contact your local building department or consult with Avorino for the most current requirements.';
+    body.innerHTML = 'The information on this page is for general informational purposes only and may not reflect the most current regulations, zoning requirements, or permit processes. For accurate and up-to-date information, please visit your city\u2019s official government website or contact your local building and planning department directly.';
     body.style.cssText = [
       'font-family:"DM Sans",sans-serif;font-size:15px;line-height:1.8;',
       'color:#f0ede8;opacity:0.45;max-width:640px;margin:0 auto 24px;',
