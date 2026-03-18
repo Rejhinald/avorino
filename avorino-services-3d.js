@@ -115,144 +115,106 @@
       return [x0, y, z, x1, y, z];
     }
 
-    /* ── TARGET 0: ADU — Small single-story unit ── */
+    /* ── TARGET 0: ADU — Clean small unit with pitched roof ── */
     var aduPts = [].concat(
-      boxSegs(0, 3.5, 0, 8, 7, 6),          // main volume (12 segs)
-      // Foundation slab
-      hLine(-4, 4, 0, -3), hLine(-4, 4, 0, 3),
-      hLine(-4, -4, 0, -3), hLine(4, 4, 0, 3), // error: let's fix. Foundation perimeter at ground
-      // Interior division
-      vLine(0, 0, 7, -1), vLine(0, 0, 7, 1),
-      hLine(-4, 0, 3.5, -3), hLine(0, 4, 3.5, -3),
-      // Door opening
-      vLine(-1, 0, 5, -3.01), vLine(1, 0, 5, -3.01), hLine(-1, 1, 5, -3.01),
-      // Windows
-      windowSegs(-3.5, 2, -3.01, -1.5, 4.5),
-      windowSegs(1.5, 2, -3.01, 3.5, 4.5),
-      windowSegs(-3.5, 2, 3.01, -1.5, 4.5),
-      windowSegs(1.5, 2, 3.01, 3.5, 4.5),
-      // Roof ridge
-      hLine(-4.5, 4.5, 7.2, 0),
-      // Dimension marks
-      hLine(-4.5, 4.5, 0, -3.5), hLine(-4.5, 4.5, 0, 3.5)
+      boxSegs(0, 3, 0, 8, 6, 6),             // main volume
+      // Pitched roof
+      [0, 6, -3, 0, 8, 0],  [0, 8, 0, 0, 6, 3],   // left gable
+      [8, 6, -3, 8, 8, 0],  [8, 8, 0, 8, 6, 3],   // right gable (swapped to match)
+      [-4, 6, -3, -4, 8, 0], [-4, 8, 0, -4, 6, 3], // front gable
+      [4, 6, -3, 4, 8, 0],  [4, 8, 0, 4, 6, 3],   // back gable
+      hLine(-4, 4, 8, 0),                            // ridge
+      // Door
+      vLine(1, 0, 4.5, -3.01), vLine(3, 0, 4.5, -3.01), hLine(1, 3, 4.5, -3.01),
+      // One window
+      windowSegs(-3, 2, -3.01, -1, 4)
     );
 
-    /* ── TARGET 1: Garage Conversion ── */
+    /* ── TARGET 1: Garage Conversion — Wide low box ── */
     var garagePts = [].concat(
-      boxSegs(0, 2.5, 0, 10, 5, 7),          // wider, lower box (12 segs)
-      // Garage door opening (front face)
-      windowSegs(-3, 0.1, -3.51, 3, 4.2),
-      // New conversion wall (splits interior)
-      vLine(0, 0, 5, -3.5), vLine(0, 0, 5, 3.5),
-      hLine(-5, 0, 5, -3.5), hLine(-5, 0, 5, 3.5),
-      hLine(0, 5, 5, -3.5), hLine(0, 5, 5, 3.5),
-      // New windows on former garage door side
+      boxSegs(0, 2.5, 0, 10, 5, 7),          // main volume
+      // Flat roof overhang
+      hLine(-5.5, 5.5, 5.2, -4), hLine(-5.5, 5.5, 5.2, 4),
+      hLine(-5.5, -5.5, 5.2, -4), hLine(5.5, 5.5, 5.2, 4),
+      // Former garage door (X cross = sealed)
+      [-3, 0.2, -3.51, 3, 4, -3.51], [3, 0.2, -3.51, -3, 4, -3.51],
+      // New windows
       windowSegs(-4, 1.5, -3.51, -2, 3.5),
       windowSegs(2, 1.5, -3.51, 4, 3.5),
-      // Side windows
-      windowSegs(-5.01, 1.5, -2, -5.01, 3.5, 1),
-      // Interior fixtures hint
-      hLine(-3, -1, 2, 0), hLine(1, 3, 2, 0),
-      vLine(-3, 0, 2, 0), vLine(3, 0, 2, 0),
-      // Roof line
-      hLine(-5.5, 5.5, 5.2, 0),
-      hLine(-5.5, 5.5, 5.2, -3.5), hLine(-5.5, 5.5, 5.2, 3.5)
+      // New door
+      vLine(-1, 0, 3.5, -3.51), vLine(1, 0, 3.5, -3.51), hLine(-1, 1, 3.5, -3.51)
     );
 
-    /* ── TARGET 2: Custom Home — Multi-volume ── */
+    /* ── TARGET 2: Custom Home — L-shape with tower ── */
     var customPts = [].concat(
-      boxSegs(-1, 4, 0, 10, 8, 6),           // main volume (12 segs)
-      boxSegs(6, 2.5, 0.5, 4, 5, 5),         // wing volume (12 segs)
-      boxSegs(-5, 5.5, -1, 3, 3, 3),         // tower element (12 segs)
-      // Floor plates
-      hLine(-6, 4, 4, -3), hLine(-6, 4, 4, 3),
-      hLine(4, 8, 2.5, -2), hLine(4, 8, 2.5, 3),
-      // Windows — main
-      windowSegs(-5, 2, -3.01, -3, 5),
-      windowSegs(-2, 2, -3.01, 1, 5),
-      windowSegs(2, 2, -3.01, 4, 5),
-      // Windows — wing
-      windowSegs(5, 1, -2.51, 7, 3.5),
-      // Roof overhangs
-      hLine(-7, 5, 8.2, -3.5), hLine(-7, 5, 8.2, 3.5),
-      hLine(3.5, 8.5, 5.2, -3), hLine(3.5, 8.5, 5.2, 3.5),
-      // Interior walls
-      vLine(-1, 0, 8, 0), vLine(2, 0, 8, 0),
-      vLine(-1, 0, 8, -2)
-    );
-
-    /* ── TARGET 3: New Construction — Building on pad + crane ── */
-    var newbuildPts = [].concat(
-      boxSegs(0, 4.5, 0, 9, 9, 6),           // main structure (12 segs)
-      // Raised foundation pad
-      boxSegs(0, 0.3, 0, 11, 0.6, 8),        // (12 segs)
-      // Site grading lines
-      hLine(-7, 7, -0.1, -5), hLine(-7, 7, -0.1, 5),
-      hLine(-7, -7, -0.1, -5), hLine(7, 7, -0.1, 5),
+      boxSegs(-1, 4, 0, 10, 8, 6),           // main volume
+      boxSegs(6, 2.5, 0, 4, 5, 5),           // wing
+      // Pitched roof main
+      hLine(-6, 4, 8.5, 0),                  // ridge
+      [-6, 8, -3, -6, 8.5, 0], [-6, 8.5, 0, -6, 8, 3],
+      [4, 8, -3, 4, 8.5, 0],  [4, 8.5, 0, 4, 8, 3],
+      // Wing flat roof
+      hLine(3.5, 8.5, 5.3, -3), hLine(3.5, 8.5, 5.3, 3),
+      // Door
+      vLine(-1, 0, 4, -3.01), vLine(1, 0, 4, -3.01), hLine(-1, 1, 4, -3.01),
       // Windows
-      windowSegs(-3.5, 2, -3.01, -1, 5),
-      windowSegs(1, 2, -3.01, 3.5, 5),
-      windowSegs(-3.5, 5.5, -3.01, -1, 7.5),
-      windowSegs(1, 5.5, -3.01, 3.5, 7.5),
-      // Interior
-      vLine(0, 0, 9, 0), hLine(-4.5, 4.5, 4.5, 0),
-      // Small crane arm
-      vLine(-6, 0, 12, -4), // mast
-      hLine(-6, 3, 11.5, -4), // jib
-      hLine(-6, -8, 11.5, -4), // counter-jib
-      // Tie lines
-      [-6, 12, -4, 3, 11.5, -4],
-      [-6, 12, -4, -8, 11.5, -4]
+      windowSegs(-5, 3, -3.01, -3, 6),
+      windowSegs(2, 3, -3.01, 3.5, 6)
     );
 
-    /* ── TARGET 4: Addition — Existing house + new wing ── */
+    /* ── TARGET 3: New Construction — Structure + crane ── */
+    var newbuildPts = [].concat(
+      boxSegs(0, 4, 0, 9, 8, 6),             // main structure
+      // Foundation pad
+      hLine(-5, 5, 0, -4), hLine(-5, 5, 0, 4),
+      hLine(-5, -5, 0, -4), hLine(5, 5, 0, 4),
+      // Roof
+      hLine(-5, 5, 8.3, 0),                  // ridge
+      [-4.5, 8, -3, -4.5, 8.3, 0], [-4.5, 8.3, 0, -4.5, 8, 3],
+      [4.5, 8, -3, 4.5, 8.3, 0],  [4.5, 8.3, 0, 4.5, 8, 3],
+      // Crane
+      vLine(-7, 0, 12, -4),                  // mast
+      hLine(-7, 4, 12, -4),                  // jib
+      hLine(-7, -9, 12, -4),                 // counter-jib
+      [-7, 12, -4, 4, 11, -4],              // cable
+      // Door
+      vLine(-1, 0, 4, -3.01), vLine(1, 0, 4, -3.01), hLine(-1, 1, 4, -3.01)
+    );
+
+    /* ── TARGET 4: Addition — House + new wing ── */
     var additionPts = [].concat(
-      boxSegs(-2, 3.5, 0, 7, 7, 6),          // existing house (12 segs)
-      boxSegs(5, 3, 0, 5, 6, 6),             // new addition (12 segs)
-      // Connection line
-      hLine(1.5, 2.5, 3.5, -3), hLine(1.5, 2.5, 3.5, 3),
-      hLine(1.5, 2.5, 7, -3), hLine(1.5, 2.5, 7, 3),
-      // Existing windows
-      windowSegs(-4.5, 2, -3.01, -2.5, 5),
-      windowSegs(-1.5, 2, -3.01, 0.5, 5),
-      // New addition windows (will be gold in accent layer)
-      windowSegs(3.5, 1.5, -3.01, 5, 4),
-      windowSegs(5.5, 1.5, -3.01, 7, 4),
-      // Scaffolding on new addition
-      vLine(2.5, 0, 7, -3), vLine(7.5, 0, 7, -3),
-      vLine(2.5, 0, 7, 3), vLine(7.5, 0, 7, 3),
-      hLine(2.5, 7.5, 3, -3), hLine(2.5, 7.5, 3, 3),
-      hLine(2.5, 7.5, 5, -3), hLine(2.5, 7.5, 5, 3),
-      // Roof lines
-      hLine(-6, 1.5, 7.2, 0), hLine(2.5, 7.5, 6.2, 0)
+      boxSegs(-2, 3.5, 0, 7, 7, 6),          // existing house
+      boxSegs(5.5, 3, 0, 5, 6, 6),           // new addition
+      // Existing roof
+      hLine(-5.5, 1.5, 7.3, 0),              // ridge
+      [-5.5, 7, -3, -5.5, 7.3, 0], [-5.5, 7.3, 0, -5.5, 7, 3],
+      [1.5, 7, -3, 1.5, 7.3, 0],  [1.5, 7.3, 0, 1.5, 7, 3],
+      // Addition flat roof
+      hLine(2.5, 8.5, 6.2, -3.5), hLine(2.5, 8.5, 6.2, 3.5),
+      // Dashed connection (two short lines)
+      hLine(1.5, 3, 3, -3), hLine(1.5, 3, 3, 3),
+      // Windows
+      windowSegs(-4.5, 2.5, -3.01, -2.5, 5),
+      windowSegs(4, 1.5, -3.01, 5.5, 4),
+      windowSegs(6, 1.5, -3.01, 7.5, 4)
     );
 
-    /* ── TARGET 5: Commercial — Tall multi-story ── */
+    /* ── TARGET 5: Commercial — Tall clean multi-story ── */
     var commercialPts = [].concat(
-      boxSegs(0, 5, 0, 12, 10, 7),           // main volume (12 segs)
-      // Floor plates
-      hLine(-6, 6, 2.5, -3.5), hLine(-6, 6, 2.5, 3.5),
-      hLine(-6, 6, 5, -3.5), hLine(-6, 6, 5, 3.5),
-      hLine(-6, 6, 7.5, -3.5), hLine(-6, 6, 7.5, 3.5),
-      // Window grid — floor 1
-      windowSegs(-5, 1, -3.51, -3, 2.2),
-      windowSegs(-2, 1, -3.51, 0, 2.2),
-      windowSegs(1, 1, -3.51, 3, 2.2),
-      windowSegs(4, 1, -3.51, 5.5, 2.2),
-      // Window grid — floor 2
-      windowSegs(-5, 3, -3.51, -3, 4.5),
-      windowSegs(-2, 3, -3.51, 0, 4.5),
-      windowSegs(1, 3, -3.51, 3, 4.5),
-      windowSegs(4, 3, -3.51, 5.5, 4.5),
-      // Window grid — floor 3
-      windowSegs(-5, 5.5, -3.51, -3, 7),
-      windowSegs(-2, 5.5, -3.51, 0, 7),
-      windowSegs(1, 5.5, -3.51, 3, 7),
-      windowSegs(4, 5.5, -3.51, 5.5, 7),
+      boxSegs(0, 5, 0, 12, 10, 7),           // main volume
+      // Floor plates (3 floors)
+      hLine(-6, 6, 3.3, -3.5), hLine(-6, 6, 3.3, 3.5),
+      hLine(-6, 6, 6.6, -3.5), hLine(-6, 6, 6.6, 3.5),
+      // Flat roof overhang
+      hLine(-6.5, 6.5, 10.2, -4), hLine(-6.5, 6.5, 10.2, 4),
+      hLine(-6.5, -6.5, 10.2, -4), hLine(6.5, 6.5, 10.2, 4),
       // Entrance
       vLine(-1.5, 0, 3, -3.51), vLine(1.5, 0, 3, -3.51), hLine(-1.5, 1.5, 3, -3.51),
-      // Flat roof overhang
-      hLine(-6.5, 6.5, 10.2, -4), hLine(-6.5, 6.5, 10.2, 4)
+      // Curtain wall verticals (clean facade lines)
+      vLine(-4, 0.5, 9.5, -3.51),
+      vLine(-1.5, 0.5, 9.5, -3.51),
+      vLine(1.5, 0.5, 9.5, -3.51),
+      vLine(4, 0.5, 9.5, -3.51)
     );
 
     /* Flatten nested arrays in morph targets */
