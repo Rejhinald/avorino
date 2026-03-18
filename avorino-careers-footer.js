@@ -177,7 +177,7 @@
   function initPositions() {
     // Slide-in animation
     gsap.from('.cr-pos-item', {
-      scrollTrigger: { trigger: '.cr-positions, #cr-positions', start: 'top 75%' },
+      scrollTrigger: { trigger: '#cr-positions', start: 'top 75%' },
       opacity: 0, x: -30, duration: 0.6, stagger: 0.1, ease: 'power3.out'
     });
 
@@ -255,10 +255,12 @@
   // ═══════════════════════════════════════════════
   function initFormAnimations() {
     gsap.from('.cr-apply-left', {
-      scrollTrigger: { trigger: '.cr-apply, #cr-apply', start: 'top 75%' },
+      scrollTrigger: { trigger: '#cr-apply', start: 'top 75%' },
       opacity: 0, y: 40, duration: 0.8, ease: 'power3.out'
     });
-    gsap.from('.cr-form .av-form-group', {
+    // Target actual form field wrappers (direct children of the form flex-col div)
+    var formFields = document.querySelectorAll('.cr-form input, .cr-form select, .cr-form textarea');
+    gsap.from(formFields, {
       scrollTrigger: { trigger: '.cr-form', start: 'top 80%' },
       opacity: 0, y: 20, duration: 0.5, stagger: 0.08, ease: 'power3.out'
     });
@@ -394,7 +396,82 @@
     });
   }
 
+  // ═══════════════════════════════════════════════
+  // STYLE OVERRIDES — Fix shared styles for dark bg
+  // ═══════════════════════════════════════════════
+  function initStyleOverrides() {
+    // Submit button: shared style is dark bg — invert for dark section
+    var submitBtn = document.querySelector('.cr-form .av-submit-btn') || document.querySelector('.cr-form button[type="submit"]');
+    if (submitBtn) {
+      submitBtn.style.background = '#f0ede8';
+      submitBtn.style.color = '#111111';
+      submitBtn.style.fontSize = '15px';
+      submitBtn.style.fontWeight = '500';
+      submitBtn.style.letterSpacing = '0.12em';
+      submitBtn.style.textTransform = 'uppercase';
+      submitBtn.style.padding = '18px 48px';
+      submitBtn.style.width = '100%';
+      submitBtn.style.marginTop = '36px';
+      submitBtn.style.border = 'none';
+      submitBtn.style.cursor = 'pointer';
+      submitBtn.style.transition = 'all 0.3s ease';
+      submitBtn.addEventListener('mouseenter', function() {
+        submitBtn.style.background = '#c8222a';
+        submitBtn.style.color = '#f0ede8';
+        submitBtn.style.transform = 'translateY(-2px)';
+      });
+      submitBtn.addEventListener('mouseleave', function() {
+        submitBtn.style.background = '#f0ede8';
+        submitBtn.style.color = '#111111';
+        submitBtn.style.transform = '';
+      });
+    }
+
+    // Form labels on dark bg need light color
+    document.querySelectorAll('.cr-form .av-form-label, .cr-form label').forEach(function(lbl) {
+      lbl.style.color = '#f0ede8';
+      lbl.style.opacity = '0.4';
+      lbl.style.fontSize = '10px';
+      lbl.style.textTransform = 'uppercase';
+      lbl.style.letterSpacing = '0.2em';
+    });
+
+    // Input fields: transparent bg with bottom border only (match preview design)
+    document.querySelectorAll('.cr-form input, .cr-form select, .cr-form textarea').forEach(function(input) {
+      input.style.background = 'transparent';
+      input.style.color = '#f0ede8';
+      input.style.border = 'none';
+      input.style.borderBottom = '1px solid rgba(240,237,232,0.12)';
+      input.style.borderRadius = '0';
+      input.style.padding = '12px 0';
+      input.style.fontSize = '17px';
+      input.style.outline = 'none';
+      input.addEventListener('focus', function() {
+        input.style.borderBottomColor = '#c8222a';
+      });
+      input.addEventListener('blur', function() {
+        input.style.borderBottomColor = 'rgba(240,237,232,0.12)';
+      });
+    });
+
+    // Select dropdown arrow
+    document.querySelectorAll('.cr-form select').forEach(function(sel) {
+      sel.style.webkitAppearance = 'none';
+      sel.style.appearance = 'none';
+      sel.style.backgroundImage = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23f0ede8' stroke-width='1.5' fill='none' opacity='.3'/%3E%3C/svg%3E\")";
+      sel.style.backgroundRepeat = 'no-repeat';
+      sel.style.backgroundPosition = 'right 4px center';
+    });
+
+    // Select options
+    document.querySelectorAll('.cr-form select option').forEach(function(opt) {
+      opt.style.background = '#1a1917';
+      opt.style.color = '#f0ede8';
+    });
+  }
+
   // ── Initialize everything ──
+  initStyleOverrides();
   initCareersHero();
   initHeroAnimations();
   initPositions();
