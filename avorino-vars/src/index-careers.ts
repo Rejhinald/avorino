@@ -151,11 +151,11 @@ async function buildCareersPage() {
     log('Setting careers-specific style properties...');
 
     // ── HERO ──
-    await clearAndSet(await freshStyle('cr-hero'), 'cr-hero', {
+    await clearAndSet(crHero, 'cr-hero', {
       'display': 'grid', 'grid-template-columns': '1fr 1fr',
       'min-height': '100vh',
     });
-    await clearAndSet(await freshStyle('cr-hero-left'), 'cr-hero-left', {
+    await clearAndSet(crHeroLeft, 'cr-hero-left', {
       'position': 'relative',
       'display': 'flex', 'flex-direction': 'column', 'justify-content': 'flex-end',
       'padding-top': '180px', 'padding-bottom': '80px',
@@ -163,25 +163,25 @@ async function buildCareersPage() {
       'background-color': v['av-dark'],
       'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
-    await clearAndSet(await freshStyle('cr-canvas-wrap'), 'cr-canvas-wrap', {
+    await clearAndSet(crCanvasWrap, 'cr-canvas-wrap', {
       'position': 'absolute', 'top': '0px', 'left': '0px',
       'width': '100%', 'height': '100%',
       'z-index': '0', 'pointer-events': 'none', 'opacity': '0.6',
     });
-    await clearAndSet(await freshStyle('cr-hero-content'), 'cr-hero-content', {
+    await clearAndSet(crHeroContent, 'cr-hero-content', {
       'position': 'relative', 'z-index': '2',
     });
-    await clearAndSet(await freshStyle('cr-hero-label'), 'cr-hero-label', {
+    await clearAndSet(crHeroLabel, 'cr-hero-label', {
       'font-family': 'DM Sans', 'font-size': '12px', 'font-weight': '500',
       'letter-spacing': '0.2em', 'text-transform': 'uppercase',
       'color': v['av-cream'], 'opacity': '0.4', 'margin-bottom': '20px',
     });
-    await clearAndSet(await freshStyle('cr-hero-heading'), 'cr-hero-heading', {
+    await clearAndSet(crHeroHeading, 'cr-hero-heading', {
       'font-family': 'DM Serif Display', 'font-size': v['av-text-h1'],
       'font-weight': '400', 'line-height': '1.05', 'letter-spacing': '-0.02em',
       'color': v['av-cream'], 'margin-bottom': '20px',
     });
-    await clearAndSet(await freshStyle('cr-hero-sub'), 'cr-hero-sub', {
+    await clearAndSet(crHeroSub, 'cr-hero-sub', {
       'font-family': 'DM Sans', 'font-size': v['av-text-body'],
       'line-height': '1.7', 'color': v['av-cream'], 'opacity': '0.5',
       'max-width': '480px',
@@ -189,73 +189,74 @@ async function buildCareersPage() {
     await wait(500);
 
     // ── RIGHT: Culture values ──
-    await clearAndSet(await freshStyle('cr-hero-right'), 'cr-hero-right', {
+    await clearAndSet(crHeroRight, 'cr-hero-right', {
       'background-color': v['av-cream'], 'color': v['av-dark'],
       'display': 'flex', 'flex-direction': 'column', 'justify-content': 'center',
       'padding-top': '120px', 'padding-bottom': '120px',
       'padding-left': '80px', 'padding-right': '80px',
     });
-    await clearAndSet(await freshStyle('cr-values-label'), 'cr-values-label', {
+    await clearAndSet(crValuesLabel, 'cr-values-label', {
       'font-family': 'DM Sans', 'font-size': '11px', 'font-weight': '500',
       'letter-spacing': '0.2em', 'text-transform': 'uppercase',
       'opacity': '0.35', 'margin-bottom': '48px',
     });
-    await clearAndSet(await freshStyle('cr-value-item'), 'cr-value-item', {
+    await clearAndSet(crValueItem, 'cr-value-item', {
       'padding-top': '36px', 'padding-bottom': '36px',
       'border-bottom-width': '1px', 'border-bottom-style': 'solid',
       'border-bottom-color': 'rgba(17,17,17,0.1)',
     });
-    await clearAndSet(await freshStyle('cr-value-number'), 'cr-value-number', {
+    await clearAndSet(crValueNum, 'cr-value-number', {
       'font-family': 'DM Serif Display', 'font-size': '14px',
       'opacity': '0.25', 'margin-bottom': '12px',
     });
-    await clearAndSet(await freshStyle('cr-value-heading'), 'cr-value-heading', {
+    await clearAndSet(crValueHeading, 'cr-value-heading', {
       'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
       'font-weight': '400', 'line-height': '1.2', 'margin-bottom': '10px',
     });
-    await clearAndSet(await freshStyle('cr-value-body'), 'cr-value-body', {
+    await clearAndSet(crValueBody, 'cr-value-body', {
       'font-family': 'DM Sans', 'font-size': '16px',
       'line-height': '1.7', 'opacity': '0.5', 'max-width': '400px',
     });
     await wait(500);
 
     // ── POSITIONS ──
-    await clearAndSet(await freshStyle('cr-positions'), 'cr-positions', {
+    await clearAndSet(crPositions, 'cr-positions', {
       'background-color': v['av-dark'],
       'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
     });
-    await clearAndSet(await freshStyle('cr-positions-label'), 'cr-positions-label', {
+    await clearAndSet(crPosLabel, 'cr-positions-label', {
       'font-family': 'DM Sans', 'font-size': '11px', 'font-weight': '500',
       'letter-spacing': '0.2em', 'text-transform': 'uppercase',
       'color': v['av-cream'], 'opacity': '0.35', 'margin-bottom': '16px',
     });
-    await clearAndSet(await freshStyle('cr-positions-heading'), 'cr-positions-heading', {
+    await clearAndSet(crPosHeading, 'cr-positions-heading', {
       'font-family': 'DM Serif Display', 'font-size': v['av-text-h2'],
       'font-weight': '400', 'line-height': '1.1',
       'color': v['av-cream'], 'margin-bottom': '64px', 'max-width': '700px',
     });
-    await clearAndSet(await freshStyle('cr-pos-list'), 'cr-pos-list', {
+    await wait(300);
+    await clearAndSet(crPosList, 'cr-pos-list', {
       'max-width': '900px',
     });
-    await clearAndSet(await freshStyle('cr-pos-item'), 'cr-pos-item', {
+    await clearAndSet(crPosItem, 'cr-pos-item', {
       'border-top-width': '1px', 'border-top-style': 'solid',
       'border-top-color': 'rgba(240,237,232,0.08)',
       'padding-top': '32px', 'padding-bottom': '32px',
       'cursor': 'pointer',
     });
-    await clearAndSet(await freshStyle('cr-pos-header'), 'cr-pos-header', {
+    await clearAndSet(crPosHeader, 'cr-pos-header', {
       'display': 'flex', 'align-items': 'center', 'justify-content': 'space-between',
       'grid-column-gap': '24px',
     });
-    await clearAndSet(await freshStyle('cr-pos-title'), 'cr-pos-title', {
+    await clearAndSet(crPosTitle, 'cr-pos-title', {
       'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
       'font-weight': '400', 'line-height': '1.3', 'color': v['av-cream'],
     });
-    await clearAndSet(await freshStyle('cr-pos-tags'), 'cr-pos-tags', {
+    await clearAndSet(crPosTags, 'cr-pos-tags', {
       'display': 'flex', 'grid-column-gap': '12px', 'flex-shrink': '0',
     });
-    await clearAndSet(await freshStyle('cr-pos-tag'), 'cr-pos-tag', {
+    await clearAndSet(crPosTag, 'cr-pos-tag', {
       'font-family': 'DM Sans', 'font-size': '11px',
       'text-transform': 'uppercase', 'letter-spacing': '0.15em',
       'padding-top': '6px', 'padding-bottom': '6px',
@@ -266,7 +267,7 @@ async function buildCareersPage() {
       'border-bottom-left-radius': '100px', 'border-bottom-right-radius': '100px',
       'color': v['av-cream'], 'opacity': '0.4',
     });
-    await clearAndSet(await freshStyle('cr-pos-desc'), 'cr-pos-desc', {
+    await clearAndSet(crPosDesc, 'cr-pos-desc', {
       'font-family': 'DM Sans', 'font-size': '15px',
       'line-height': '1.7', 'color': v['av-cream'], 'opacity': '0.5',
       'margin-top': '16px', 'padding-right': '60px',
@@ -274,47 +275,48 @@ async function buildCareersPage() {
     await wait(500);
 
     // ── APPLY SECTION ──
-    await clearAndSet(await freshStyle('cr-apply'), 'cr-apply', {
+    await clearAndSet(crApply, 'cr-apply', {
       'background-color': '#1a1917',
       'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
     });
-    await clearAndSet(await freshStyle('cr-apply-grid'), 'cr-apply-grid', {
+    await clearAndSet(crApplyGrid, 'cr-apply-grid', {
       'display': 'grid', 'grid-template-columns': '1fr 1.2fr',
       'grid-column-gap': '80px', 'max-width': '1200px',
     });
-    await clearAndSet(await freshStyle('cr-apply-label'), 'cr-apply-label', {
+    await clearAndSet(crApplyLabel, 'cr-apply-label', {
       'font-family': 'DM Sans', 'font-size': '11px', 'font-weight': '500',
       'letter-spacing': '0.2em', 'text-transform': 'uppercase',
       'color': v['av-cream'], 'opacity': '0.35', 'margin-bottom': '16px',
     });
-    await clearAndSet(await freshStyle('cr-apply-heading'), 'cr-apply-heading', {
+    await clearAndSet(crApplyHeading, 'cr-apply-heading', {
       'font-family': 'DM Serif Display', 'font-size': v['av-text-h2'],
       'font-weight': '400', 'line-height': '1.1',
       'color': v['av-cream'], 'margin-bottom': '24px',
     });
-    await clearAndSet(await freshStyle('cr-apply-body'), 'cr-apply-body', {
+    await clearAndSet(crApplyBody, 'cr-apply-body', {
       'font-family': 'DM Sans', 'font-size': '17px',
       'line-height': '1.7', 'color': v['av-cream'], 'opacity': '0.45',
       'max-width': '420px', 'margin-bottom': '48px',
     });
-    await clearAndSet(await freshStyle('cr-apply-perks'), 'cr-apply-perks', {
+    await wait(300);
+    await clearAndSet(crApplyPerks, 'cr-apply-perks', {
       'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '20px',
     });
-    await clearAndSet(await freshStyle('cr-perk'), 'cr-perk', {
+    await clearAndSet(crPerk, 'cr-perk', {
       'display': 'flex', 'align-items': 'flex-start', 'grid-column-gap': '16px',
     });
-    await clearAndSet(await freshStyle('cr-perk-text'), 'cr-perk-text', {
+    await clearAndSet(crPerkText, 'cr-perk-text', {
       'font-family': 'DM Sans', 'font-size': '15px',
       'line-height': '1.5', 'color': v['av-cream'], 'opacity': '0.6',
     });
-    await clearAndSet(await freshStyle('cr-form-col'), 'cr-form-col', {
+    await clearAndSet(crFormCol, 'cr-form-col', {
       'display': 'flex', 'flex-direction': 'column',
     });
     await wait(500);
 
     // ── STATS ──
-    await clearAndSet(await freshStyle('cr-stats'), 'cr-stats', {
+    await clearAndSet(crStats, 'cr-stats', {
       'background-color': v['av-dark'],
       'padding-top': '96px', 'padding-bottom': '96px',
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
@@ -323,17 +325,17 @@ async function buildCareersPage() {
       'border-bottom-width': '1px', 'border-bottom-style': 'solid',
       'border-bottom-color': 'rgba(240,237,232,0.06)',
     });
-    await clearAndSet(await freshStyle('cr-stats-grid'), 'cr-stats-grid', {
+    await clearAndSet(crStatsGrid, 'cr-stats-grid', {
       'display': 'grid', 'grid-template-columns': '1fr 1fr 1fr 1fr',
       'grid-column-gap': '48px', 'max-width': '1100px',
       'margin-left': 'auto', 'margin-right': 'auto', 'text-align': 'center',
     });
-    await clearAndSet(await freshStyle('cr-stat-value'), 'cr-stat-value', {
+    await clearAndSet(crStatValue, 'cr-stat-value', {
       'font-family': 'DM Serif Display', 'font-size': v['av-text-h2'],
       'font-weight': '400', 'line-height': '1',
       'color': v['av-cream'], 'margin-bottom': '8px',
     });
-    await clearAndSet(await freshStyle('cr-stat-label'), 'cr-stat-label', {
+    await clearAndSet(crStatLabel, 'cr-stat-label', {
       'font-family': 'DM Sans', 'font-size': '13px', 'font-weight': '500',
       'letter-spacing': '0.15em', 'text-transform': 'uppercase',
       'color': v['av-cream'], 'opacity': '0.35',
