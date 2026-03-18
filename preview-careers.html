@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avorino — Careers Preview</title>
+<style>
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: #111111; color: #f0ede8; font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Serif+Display&display=swap');
+
+/* ═══════════════════════════════════════════════════
+   SECTION 1: SPLIT HERO — 3D Left + Culture Right
+   ═══════════════════════════════════════════════════ */
+.cr-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+/* LEFT: Dark side with 3D wireframe */
+.cr-hero-left {
+  position: relative;
+  background: #111111;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 180px 80px 80px;
+  overflow: hidden;
+}
+.cr-canvas-wrap {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 0;
+}
+.cr-canvas-wrap::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 50%;
+  background: linear-gradient(to top, #111111, transparent);
+  z-index: 1;
+}
+.cr-hero-content {
+  position: relative;
+  z-index: 2;
+}
+.cr-hero-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  opacity: 0.4;
+  margin-bottom: 20px;
+}
+.cr-hero-heading {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(42px, 4vw, 72px);
+  line-height: 1.05;
+  font-weight: 400;
+  margin-bottom: 20px;
+}
+.cr-hero-heading em {
+  color: #c8222a;
+  font-style: normal;
+}
+.cr-hero-sub {
+  font-size: 18px;
+  line-height: 1.7;
+  opacity: 0.5;
+  max-width: 480px;
+}
+
+/* RIGHT: Cream side with culture values */
+.cr-hero-right {
+  background: #f0ede8;
+  color: #111111;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 120px 80px;
+}
+.cr-values-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  opacity: 0.35;
+  margin-bottom: 48px;
+}
+.cr-value-item {
+  padding: 36px 0;
+  border-bottom: 1px solid rgba(17, 17, 17, 0.1);
+}
+.cr-value-item:first-of-type {
+  border-top: 1px solid rgba(17, 17, 17, 0.1);
+}
+.cr-value-number {
+  font-family: 'DM Serif Display', serif;
+  font-size: 14px;
+  opacity: 0.25;
+  margin-bottom: 12px;
+}
+.cr-value-heading {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(24px, 2.2vw, 36px);
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+.cr-value-body {
+  font-size: 16px;
+  line-height: 1.7;
+  opacity: 0.5;
+  max-width: 400px;
+}
+
+/* ═══════════════════════════════════════════════════
+   SECTION 2: OPEN POSITIONS — Dark bg, accordion
+   ═══════════════════════════════════════════════════ */
+.cr-positions {
+  background: #111111;
+  padding: 128px 80px;
+}
+.cr-positions-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  opacity: 0.35;
+  margin-bottom: 16px;
+}
+.cr-positions-heading {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(32px, 3.5vw, 56px);
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 64px;
+  max-width: 700px;
+}
+.cr-pos-list {
+  max-width: 900px;
+}
+.cr-pos-item {
+  border-top: 1px solid rgba(240, 237, 232, 0.08);
+  padding: 32px 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.cr-pos-item:last-child {
+  border-bottom: 1px solid rgba(240, 237, 232, 0.08);
+}
+.cr-pos-item:hover {
+  padding-left: 16px;
+}
+.cr-pos-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.cr-pos-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(20px, 2vw, 28px);
+  font-weight: 400;
+  line-height: 1.3;
+}
+.cr-pos-tags {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.cr-pos-tag {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  padding: 6px 16px;
+  border: 1px solid rgba(240, 237, 232, 0.12);
+  border-radius: 100px;
+  opacity: 0.4;
+}
+.cr-pos-arrow {
+  width: 20px;
+  height: 20px;
+  opacity: 0.3;
+  flex-shrink: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.cr-pos-item:hover .cr-pos-arrow {
+  opacity: 0.7;
+  transform: translateX(4px);
+}
+.cr-pos-desc {
+  font-size: 15px;
+  line-height: 1.7;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  padding-right: 60px;
+  color: rgba(240, 237, 232, 0.5);
+}
+.cr-pos-item.active .cr-pos-desc {
+  opacity: 1;
+  max-height: 200px;
+  margin-top: 16px;
+}
+.cr-pos-item.active .cr-pos-arrow {
+  transform: rotate(90deg);
+  opacity: 0.7;
+}
+
+/* ═══════════════════════════════════════════════════
+   SECTION 3: APPLICATION FORM — Warm bg
+   ═══════════════════════════════════════════════════ */
+.cr-apply {
+  background: #1a1917;
+  padding: 128px 80px;
+}
+.cr-apply-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 80px;
+  max-width: 1200px;
+}
+.cr-apply-left {}
+.cr-apply-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  opacity: 0.35;
+  margin-bottom: 16px;
+}
+.cr-apply-heading {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(28px, 3vw, 48px);
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+.cr-apply-body {
+  font-size: 17px;
+  line-height: 1.7;
+  opacity: 0.45;
+  max-width: 420px;
+  margin-bottom: 48px;
+}
+.cr-apply-perks {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.cr-perk {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.cr-perk-icon {
+  width: 20px;
+  height: 20px;
+  color: #c8222a;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.cr-perk-text {
+  font-size: 15px;
+  line-height: 1.5;
+  opacity: 0.6;
+}
+
+/* Form */
+.cr-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.cr-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 32px;
+}
+.cr-form-group {
+  position: relative;
+  margin-bottom: 0;
+}
+.cr-form-group label {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  opacity: 0.35;
+  margin-bottom: 8px;
+  padding-top: 28px;
+}
+.cr-form-group input,
+.cr-form-group select,
+.cr-form-group textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(240, 237, 232, 0.12);
+  color: #f0ede8;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 17px;
+  padding: 12px 0;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+.cr-form-group input:focus,
+.cr-form-group select:focus,
+.cr-form-group textarea:focus {
+  border-color: #c8222a;
+}
+.cr-form-group select {
+  -webkit-appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23f0ede8' stroke-width='1.5' fill='none' opacity='.3'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 4px center;
+}
+.cr-form-group select option {
+  background: #1a1917;
+  color: #f0ede8;
+}
+.cr-form-group textarea {
+  resize: none;
+  min-height: 80px;
+}
+.cr-form-submit {
+  margin-top: 36px;
+  display: inline-block;
+  background: #f0ede8;
+  color: #111111;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 18px 48px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  text-align: center;
+}
+.cr-form-submit:hover {
+  background: #c8222a;
+  color: #f0ede8;
+  transform: translateY(-2px);
+}
+
+/* ═══════════════════════════════════════════════════
+   SECTION 4: WHY AVORINO — Stats strip
+   ═══════════════════════════════════════════════════ */
+.cr-stats {
+  background: #111111;
+  padding: 96px 80px;
+  border-top: 1px solid rgba(240, 237, 232, 0.06);
+  border-bottom: 1px solid rgba(240, 237, 232, 0.06);
+}
+.cr-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 48px;
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+.cr-stat-item {}
+.cr-stat-value {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(36px, 4vw, 56px);
+  font-weight: 400;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.cr-stat-accent {
+  color: #c8222a;
+}
+.cr-stat-label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  opacity: 0.35;
+}
+
+/* ═══════════════════════════════════════════════════
+   SECTION 5: CTA
+   ═══════════════════════════════════════════════════ */
+.cr-cta {
+  background: #111111;
+  padding: 20px;
+}
+.cr-cta-inner {
+  background: #1a1917;
+  border-radius: 16px;
+  padding: 96px 80px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.cr-cta-heading {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(28px, 3.5vw, 52px);
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 32px;
+  max-width: 700px;
+}
+.cr-cta-buttons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.cr-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 36px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+}
+.cr-cta-btn-primary {
+  background: #f0ede8;
+  color: #111111;
+}
+.cr-cta-btn-primary:hover {
+  background: #c8222a;
+  color: #f0ede8;
+  transform: translateY(-2px);
+}
+.cr-cta-btn-secondary {
+  background: transparent;
+  color: #f0ede8;
+  border: 1px solid rgba(240, 237, 232, 0.15);
+}
+.cr-cta-btn-secondary:hover {
+  border-color: #c8222a;
+  color: #c8222a;
+}
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════ */
+@media (max-width: 991px) {
+  .cr-hero { grid-template-columns: 1fr; }
+  .cr-hero-left { min-height: 55vh; padding: 120px 48px 56px; }
+  .cr-hero-right { padding: 64px 48px; }
+  .cr-positions { padding: 80px 48px; }
+  .cr-apply { padding: 80px 48px; }
+  .cr-apply-grid { grid-template-columns: 1fr; gap: 48px; }
+  .cr-stats { padding: 64px 48px; }
+  .cr-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 36px; }
+  .cr-cta-inner { padding: 64px 48px; }
+}
+@media (max-width: 767px) {
+  .cr-hero-left { min-height: 50vh; padding: 100px 24px 48px; }
+  .cr-hero-right { padding: 48px 24px; }
+  .cr-positions { padding: 56px 24px; }
+  .cr-pos-tags { display: none; }
+  .cr-apply { padding: 56px 24px; }
+  .cr-apply-grid { gap: 36px; }
+  .cr-form-row { grid-template-columns: 1fr; }
+  .cr-stats { padding: 48px 24px; }
+  .cr-cta { padding: 12px; }
+  .cr-cta-inner { padding: 48px 24px; border-radius: 12px; }
+}
+@media (max-width: 478px) {
+  .cr-hero-left { min-height: 45vh; padding: 80px 16px 36px; }
+  .cr-hero-right { padding: 36px 16px; }
+  .cr-hero-heading { font-size: clamp(28px, 8vw, 42px); }
+  .cr-positions { padding: 40px 16px; }
+  .cr-positions-heading { font-size: clamp(24px, 6vw, 36px); }
+  .cr-apply { padding: 40px 16px; }
+  .cr-stats { padding: 36px 16px; }
+  .cr-stats-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+  .cr-cta { padding: 8px; }
+  .cr-cta-inner { padding: 36px 16px; }
+  .cr-cta-heading { font-size: clamp(22px, 6vw, 32px); }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════ SECTION 1: SPLIT HERO ═══════ -->
+<section class="cr-hero">
+  <!-- LEFT: Dark + 3D -->
+  <div class="cr-hero-left">
+    <div class="cr-canvas-wrap" id="cr-canvas"></div>
+    <div class="cr-hero-content">
+      <div class="cr-hero-label">// Careers</div>
+      <h1 class="cr-hero-heading">Build your<br>future <em>with us</em></h1>
+      <p class="cr-hero-sub">Join Orange County's trusted builder of luxury homes, ADUs, and commercial projects. We're growing — and hiring.</p>
+    </div>
+  </div>
+
+  <!-- RIGHT: Culture values -->
+  <div class="cr-hero-right">
+    <div class="cr-values-label">Why Avorino</div>
+
+    <div class="cr-value-item">
+      <div class="cr-value-number">01</div>
+      <h3 class="cr-value-heading">Build extraordinary</h3>
+      <p class="cr-value-body">Work on luxury custom homes, ADUs, and commercial projects across Orange County. Every project is built to last.</p>
+    </div>
+
+    <div class="cr-value-item">
+      <div class="cr-value-number">02</div>
+      <h3 class="cr-value-heading">Grow with us</h3>
+      <p class="cr-value-body">Training, certifications, and career advancement are part of the job. We invest in our people.</p>
+    </div>
+
+    <div class="cr-value-item">
+      <div class="cr-value-number">03</div>
+      <h3 class="cr-value-heading">Competitive pay</h3>
+      <p class="cr-value-body">Market-rate compensation, benefits, and consistent year-round work across Orange County.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ SECTION 2: OPEN POSITIONS ═══════ -->
+<section class="cr-positions">
+  <div class="cr-positions-label">// Open Positions</div>
+  <h2 class="cr-positions-heading">We're looking for people who take pride in their craft</h2>
+
+  <div class="cr-pos-list">
+    <div class="cr-pos-item">
+      <div class="cr-pos-header">
+        <div class="cr-pos-title">Project Manager</div>
+        <div class="cr-pos-tags">
+          <span class="cr-pos-tag">Full-time</span>
+          <span class="cr-pos-tag">On-site</span>
+        </div>
+        <svg class="cr-pos-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+      <div class="cr-pos-desc">Oversee residential and commercial builds from pre-construction through closeout. 5+ years construction management experience required. PMP or equivalent preferred.</div>
+    </div>
+
+    <div class="cr-pos-item">
+      <div class="cr-pos-header">
+        <div class="cr-pos-title">Site Superintendent</div>
+        <div class="cr-pos-tags">
+          <span class="cr-pos-tag">Full-time</span>
+          <span class="cr-pos-tag">On-site</span>
+        </div>
+        <svg class="cr-pos-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+      <div class="cr-pos-desc">Direct daily field operations, coordinate subcontractors, and ensure quality standards. OSHA 30 certification and 3+ years experience required.</div>
+    </div>
+
+    <div class="cr-pos-item">
+      <div class="cr-pos-header">
+        <div class="cr-pos-title">Carpenter / Framer</div>
+        <div class="cr-pos-tags">
+          <span class="cr-pos-tag">Full-time</span>
+          <span class="cr-pos-tag">On-site</span>
+        </div>
+        <svg class="cr-pos-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+      <div class="cr-pos-desc">Rough and finish carpentry for custom homes and ADUs. Must read blueprints. 2+ years residential framing experience.</div>
+    </div>
+
+    <div class="cr-pos-item">
+      <div class="cr-pos-header">
+        <div class="cr-pos-title">Estimator</div>
+        <div class="cr-pos-tags">
+          <span class="cr-pos-tag">Full-time</span>
+          <span class="cr-pos-tag">Hybrid</span>
+        </div>
+        <svg class="cr-pos-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+      <div class="cr-pos-desc">Prepare accurate cost estimates for residential and commercial projects. Bluebeam/PlanSwift proficiency required. RSMeans knowledge a plus.</div>
+    </div>
+
+    <div class="cr-pos-item">
+      <div class="cr-pos-header">
+        <div class="cr-pos-title">General Laborer</div>
+        <div class="cr-pos-tags">
+          <span class="cr-pos-tag">Full-time</span>
+          <span class="cr-pos-tag">On-site</span>
+        </div>
+        <svg class="cr-pos-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+      <div class="cr-pos-desc">Support skilled trades on active job sites. Reliable transportation required. Great entry point for construction careers.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ SECTION 3: APPLICATION FORM ═══════ -->
+<section class="cr-apply">
+  <div class="cr-apply-grid">
+    <!-- Left: Info -->
+    <div class="cr-apply-left">
+      <div class="cr-apply-label">// Apply Now</div>
+      <h2 class="cr-apply-heading">Ready to join the team?</h2>
+      <p class="cr-apply-body">Fill out the form and we'll get back to you within 48 hours. You can also email us directly at construction@avorino.com</p>
+
+      <div class="cr-apply-perks">
+        <div class="cr-perk">
+          <svg class="cr-perk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 13l4 4L19 7"/></svg>
+          <span class="cr-perk-text">Year-round work across Orange County</span>
+        </div>
+        <div class="cr-perk">
+          <svg class="cr-perk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 13l4 4L19 7"/></svg>
+          <span class="cr-perk-text">Health benefits & competitive compensation</span>
+        </div>
+        <div class="cr-perk">
+          <svg class="cr-perk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 13l4 4L19 7"/></svg>
+          <span class="cr-perk-text">Training, certifications & career advancement</span>
+        </div>
+        <div class="cr-perk">
+          <svg class="cr-perk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 13l4 4L19 7"/></svg>
+          <span class="cr-perk-text">Work on luxury custom homes & commercial builds</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Form -->
+    <div class="cr-form">
+      <div class="cr-form-row">
+        <div class="cr-form-group">
+          <label>Full Name</label>
+          <input type="text" name="name" placeholder="Your full name">
+        </div>
+        <div class="cr-form-group">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="you@email.com">
+        </div>
+      </div>
+      <div class="cr-form-row">
+        <div class="cr-form-group">
+          <label>Phone</label>
+          <input type="tel" name="phone" placeholder="(000) 000-0000">
+        </div>
+        <div class="cr-form-group">
+          <label>Position of Interest</label>
+          <select name="position">
+            <option value="" disabled selected>Select a position</option>
+            <option>Project Manager</option>
+            <option>Site Superintendent</option>
+            <option>Carpenter / Framer</option>
+            <option>Electrician</option>
+            <option>Plumber</option>
+            <option>General Laborer</option>
+            <option>Estimator</option>
+            <option>Architect / Designer</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="cr-form-group">
+        <label>Years of Experience</label>
+        <select name="experience">
+          <option value="" disabled selected>Select experience level</option>
+          <option>0–2 years</option>
+          <option>3–5 years</option>
+          <option>5–10 years</option>
+          <option>10+ years</option>
+        </select>
+      </div>
+      <div class="cr-form-group">
+        <label>Tell Us About Yourself</label>
+        <textarea name="message" placeholder="Relevant experience, certifications, availability, etc." rows="3"></textarea>
+      </div>
+      <button class="cr-form-submit" type="button">Submit Application</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ SECTION 4: STATS ═══════ -->
+<section class="cr-stats">
+  <div class="cr-stats-grid">
+    <div class="cr-stat-item">
+      <div class="cr-stat-value" data-value="4.8" data-suffix="/5">0</div>
+      <div class="cr-stat-label">Yelp Rating</div>
+    </div>
+    <div class="cr-stat-item">
+      <div class="cr-stat-value" data-value="35" data-suffix="+">0</div>
+      <div class="cr-stat-label">5-Star Reviews</div>
+    </div>
+    <div class="cr-stat-item">
+      <div class="cr-stat-value" data-value="10" data-suffix="+">0</div>
+      <div class="cr-stat-label">Years in OC</div>
+    </div>
+    <div class="cr-stat-item">
+      <div class="cr-stat-value" data-value="37" data-suffix="">0</div>
+      <div class="cr-stat-label">Cities Served</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ SECTION 5: CTA ═══════ -->
+<section class="cr-cta">
+  <div class="cr-cta-inner">
+    <h2 class="cr-cta-heading">Ready to build something extraordinary?</h2>
+    <div class="cr-cta-buttons">
+      <a href="tel:7149003676" class="cr-cta-btn cr-cta-btn-primary">Call (714) 900-3676</a>
+      <a href="/contact" class="cr-cta-btn cr-cta-btn-secondary">Contact Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ SCRIPTS ═══════ -->
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // ── Lenis ──
+  var lenis = new Lenis({ duration: 1.2, easing: function(t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); }, smoothWheel: true });
+  function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+  requestAnimationFrame(raf);
+  gsap.ticker.lagSmoothing(0);
+
+  // ═══════ THREE.JS — Construction scaffolding wireframe ═══════
+  function initCareersHero() {
+    var container = document.getElementById('cr-canvas');
+    if (!container || typeof THREE === 'undefined') return;
+
+    var w = container.offsetWidth, h = container.offsetHeight;
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
+    camera.position.set(14, 10, 16);
+    camera.lookAt(0, 3, 0);
+
+    var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(w, h);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+
+    // Materials
+    var lineMat = new THREE.LineBasicMaterial({ color: 0xf0ede8, opacity: 0.15, transparent: true });
+    var lineAccent = new THREE.LineBasicMaterial({ color: 0xc8222a, opacity: 0.3, transparent: true });
+    var lineGold = new THREE.LineBasicMaterial({ color: 0xc9a96e, opacity: 0.2, transparent: true });
+    var dimMat = new THREE.LineBasicMaterial({ color: 0xf0ede8, opacity: 0.05, transparent: true });
+    var gridMat = new THREE.LineBasicMaterial({ color: 0xf0ede8, opacity: 0.03, transparent: true });
+
+    function makeLine(points, material) {
+      var vecs = points.map(function(p) { return new THREE.Vector3(p[0], p[1], p[2]); });
+      var geo = new THREE.BufferGeometry().setFromPoints(vecs);
+      scene.add(new THREE.Line(geo, material));
+    }
+
+    // ── House under construction (partially framed) ──
+    // Foundation slab
+    makeLine([[0,0,0],[10,0,0],[10,0,8],[0,0,8],[0,0,0]], lineMat);
+    // Wall studs - front wall
+    for (var i = 0; i <= 10; i += 2) {
+      makeLine([[i,0,0],[i,6,0]], lineMat);
+    }
+    // Wall studs - back wall
+    for (var i = 0; i <= 10; i += 2) {
+      makeLine([[i,0,8],[i,6,8]], lineMat);
+    }
+    // Wall studs - left
+    makeLine([[0,0,0],[0,6,0]], lineMat);
+    makeLine([[0,0,4],[0,6,4]], lineMat);
+    makeLine([[0,0,8],[0,6,8]], lineMat);
+    // Wall studs - right
+    makeLine([[10,0,0],[10,6,0]], lineMat);
+    makeLine([[10,0,4],[10,6,4]], lineMat);
+    makeLine([[10,0,8],[10,6,8]], lineMat);
+
+    // Top plates
+    makeLine([[0,6,0],[10,6,0]], lineMat);
+    makeLine([[0,6,8],[10,6,8]], lineMat);
+    makeLine([[0,6,0],[0,6,8]], lineMat);
+    makeLine([[10,6,0],[10,6,8]], lineMat);
+
+    // Roof trusses (partially done — construction in progress)
+    makeLine([[0,6,4],[0,9,4]], lineAccent);
+    makeLine([[0,6,0],[0,9,4]], lineAccent);
+    makeLine([[0,6,8],[0,9,4]], lineAccent);
+
+    makeLine([[3,6,4],[3,9,4]], lineAccent);
+    makeLine([[3,6,0],[3,9,4]], lineAccent);
+    makeLine([[3,6,8],[3,9,4]], lineAccent);
+
+    makeLine([[6,6,4],[6,9,4]], lineAccent);
+    makeLine([[6,6,0],[6,9,4]], lineAccent);
+    makeLine([[6,6,8],[6,9,4]], lineAccent);
+
+    // Ridge beam (partial — only first 3 trusses connected)
+    makeLine([[0,9,4],[6,9,4]], lineAccent);
+
+    // Scaffolding (gold — team building!)
+    // Left scaffold tower
+    makeLine([[- 1.5,0,1],[-1.5,8,1]], lineGold);
+    makeLine([[-1.5,0,3],[-1.5,8,3]], lineGold);
+    makeLine([[-1.5,2,1],[-1.5,2,3]], lineGold);
+    makeLine([[-1.5,4,1],[-1.5,4,3]], lineGold);
+    makeLine([[-1.5,6,1],[-1.5,6,3]], lineGold);
+    makeLine([[-1.5,8,1],[-1.5,8,3]], lineGold);
+    // Scaffold platform
+    makeLine([[-1.5,6,1],[0,6,1]], lineGold);
+    makeLine([[-1.5,6,3],[0,6,3]], lineGold);
+
+    // Right scaffold tower
+    makeLine([[11.5,0,2],[11.5,7,2]], lineGold);
+    makeLine([[11.5,0,5],[11.5,7,5]], lineGold);
+    makeLine([[11.5,2,2],[11.5,2,5]], lineGold);
+    makeLine([[11.5,4,2],[11.5,4,5]], lineGold);
+    makeLine([[11.5,6,2],[11.5,6,5]], lineGold);
+
+    // Door opening
+    makeLine([[4,0,0],[5.5,0,0],[5.5,4,0],[4,4,0],[4,0,0]], dimMat);
+
+    // Window openings
+    makeLine([[1,2,0],[3,2,0],[3,4.5,0],[1,4.5,0],[1,2,0]], dimMat);
+    makeLine([[7,2,0],[9,2,0],[9,4.5,0],[7,4.5,0],[7,2,0]], dimMat);
+
+    // Ground grid
+    for (var g = -4; g <= 18; g += 2) {
+      makeLine([[g,0,-4],[g,0,14]], gridMat);
+      makeLine([[-4,0,g],[18,0,g]], gridMat);
+    }
+
+    // Orbit
+    var time = 0, animId;
+    function animate() {
+      animId = requestAnimationFrame(animate);
+      time += 0.002;
+      camera.position.x = 14 * Math.cos(time * 0.25) + 5;
+      camera.position.z = 16 * Math.sin(time * 0.25) + 4;
+      camera.lookAt(5, 3, 4);
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', function() {
+      var w2 = container.offsetWidth, h2 = container.offsetHeight;
+      camera.aspect = w2 / h2;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w2, h2);
+    });
+    document.addEventListener('visibilitychange', function() {
+      if (document.hidden) cancelAnimationFrame(animId); else animate();
+    });
+  }
+
+  // ═══════ GSAP — Hero entrance ═══════
+  function initHeroAnimations() {
+    gsap.from('.cr-hero-label', { opacity: 0, y: 30, duration: 0.8, delay: 0.3 });
+    gsap.from('.cr-hero-heading', { opacity: 0, y: 40, duration: 1, delay: 0.5, ease: 'power3.out' });
+    gsap.from('.cr-hero-sub', { opacity: 0, y: 20, duration: 0.8, delay: 0.8 });
+
+    gsap.from('.cr-hero-right', { opacity: 0, x: 60, duration: 1, delay: 0.4, ease: 'power3.out' });
+    gsap.from('.cr-value-item', { opacity: 0, y: 30, duration: 0.6, stagger: 0.15, delay: 0.7 });
+  }
+
+  // ═══════ GSAP — Positions accordion + animations ═══════
+  function initPositions() {
+    gsap.from('.cr-pos-item', {
+      scrollTrigger: { trigger: '.cr-positions', start: 'top 75%' },
+      opacity: 0, x: -30, duration: 0.6, stagger: 0.1, ease: 'power3.out'
+    });
+
+    document.querySelectorAll('.cr-pos-item').forEach(function(item) {
+      item.addEventListener('click', function() {
+        var isActive = item.classList.contains('active');
+        document.querySelectorAll('.cr-pos-item').forEach(function(i) { i.classList.remove('active'); });
+        if (!isActive) item.classList.add('active');
+      });
+    });
+  }
+
+  // ═══════ GSAP — Form section ═══════
+  function initFormAnimations() {
+    gsap.from('.cr-apply-left', {
+      scrollTrigger: { trigger: '.cr-apply', start: 'top 75%' },
+      opacity: 0, y: 40, duration: 0.8, ease: 'power3.out'
+    });
+    gsap.from('.cr-form-group', {
+      scrollTrigger: { trigger: '.cr-form', start: 'top 80%' },
+      opacity: 0, y: 20, duration: 0.5, stagger: 0.08, ease: 'power3.out'
+    });
+    gsap.from('.cr-perk', {
+      scrollTrigger: { trigger: '.cr-apply-perks', start: 'top 85%' },
+      opacity: 0, x: -20, duration: 0.5, stagger: 0.1, ease: 'power3.out'
+    });
+  }
+
+  // ═══════ GSAP — Stats counter ═══════
+  function initStats() {
+    document.querySelectorAll('.cr-stat-value').forEach(function(el) {
+      ScrollTrigger.create({
+        trigger: el, start: 'top 85%', once: true,
+        onEnter: function() {
+          var raw = el.getAttribute('data-value');
+          if (!raw) return;
+          var target = parseFloat(raw);
+          var isFloat = raw.indexOf('.') !== -1;
+          var suffix = el.getAttribute('data-suffix') || '';
+          var counter = { val: 0 };
+          gsap.fromTo(el, { scale: 0.8, opacity: 0 }, {
+            scale: 1, opacity: 1, duration: 0.6, ease: 'back.out(1.4)',
+            onStart: function() {
+              gsap.to(counter, {
+                val: target, duration: 1.5, ease: 'power2.out',
+                onUpdate: function() {
+                  var num = isFloat ? counter.val.toFixed(1) : Math.round(counter.val);
+                  el.innerHTML = num + '<span class="cr-stat-accent">' + suffix + '</span>';
+                }
+              });
+            }
+          });
+        }
+      });
+    });
+  }
+
+  // ═══════ Form submission ═══════
+  function initFormSubmission() {
+    var form = document.querySelector('.cr-form');
+    if (!form) return;
+    var btn = form.querySelector('.cr-form-submit');
+    if (!btn) return;
+
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      var fields = form.querySelectorAll('input, select, textarea');
+      var data = {};
+      var hasEmpty = false;
+      fields.forEach(function(f) {
+        var name = f.getAttribute('name');
+        if (!name) return;
+        data[name] = f.value.trim();
+        if ((name === 'name' || name === 'email') && !data[name]) hasEmpty = true;
+      });
+
+      if (hasEmpty) {
+        btn.textContent = 'Please fill required fields';
+        btn.style.background = '#c8222a';
+        btn.style.color = '#f0ede8';
+        setTimeout(function() { btn.textContent = 'Submit Application'; btn.style.background = ''; btn.style.color = ''; }, 2500);
+        return;
+      }
+
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+
+      var formData = new FormData();
+      for (var key in data) formData.append(key, data[key]);
+      formData.append('form-name', 'careers');
+
+      fetch(window.location.pathname, {
+        method: 'POST', headers: { 'Accept': 'application/json' }, body: formData
+      }).then(function(r) {
+        if (r.ok || r.status === 302) {
+          btn.textContent = 'Application Sent!';
+          btn.style.background = '#1a7a3a';
+          btn.style.color = '#f0ede8';
+          fields.forEach(function(f) { f.value = ''; });
+          gsap.from(btn, { scale: 0.9, duration: 0.3, ease: 'back.out(2)' });
+        } else { throw new Error('fail'); }
+      }).catch(function() {
+        var subject = encodeURIComponent('Career Application — ' + (data.name || 'Website'));
+        var body = encodeURIComponent('Name: ' + (data.name||'') + '\nEmail: ' + (data.email||'') + '\nPhone: ' + (data.phone||'') + '\nPosition: ' + (data.position||'') + '\nExperience: ' + (data.experience||'') + '\n\n' + (data.message||''));
+        window.location.href = 'mailto:construction@avorino.com?subject=' + subject + '&body=' + body;
+        btn.textContent = 'Opening Email...';
+        setTimeout(function() { btn.textContent = 'Submit Application'; btn.style.background = ''; btn.style.color = ''; btn.disabled = false; }, 3000);
+      });
+    });
+  }
+
+  // ── Init ──
+  initCareersHero();
+  initHeroAnimations();
+  initPositions();
+  initFormAnimations();
+  initStats();
+  initFormSubmission();
+  ScrollTrigger.refresh();
+})();
+</script>
+</body>
+</html>

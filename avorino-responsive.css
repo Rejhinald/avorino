@@ -84,6 +84,44 @@
     grid-row-gap: 24px !important;
   }
 
+  /* ── Careers hero: stack ── */
+  .cr-hero {
+    grid-template-columns: 1fr !important;
+    min-height: auto !important;
+  }
+  .cr-hero-left {
+    min-height: 55vh !important;
+    padding: 120px 48px 56px !important;
+  }
+  .cr-hero-right {
+    padding: 64px 48px !important;
+  }
+
+  /* ── Careers apply grid → single column ── */
+  .cr-apply-grid {
+    grid-template-columns: 1fr !important;
+    grid-column-gap: 0 !important;
+    grid-row-gap: 48px !important;
+  }
+
+  /* ── Careers stats → 2 col ── */
+  .cr-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-column-gap: 36px !important;
+    grid-row-gap: 36px !important;
+  }
+
+  /* ── Careers positions padding ── */
+  .cr-positions {
+    padding: 80px 48px !important;
+  }
+  .cr-apply {
+    padding: 80px 48px !important;
+  }
+  .cr-stats {
+    padding: 64px 48px !important;
+  }
+
   /* ── Alternating image+text rows → single column ── */
   .adu-type-row,
   .svsub-narr-row {
@@ -568,6 +606,33 @@
   .ct-loc-grid {
     grid-template-columns: 1fr !important;
     gap: 36px !important;
+  }
+
+  /* ── Careers page mobile landscape ── */
+  .cr-hero-left {
+    min-height: 50vh !important;
+    padding: 100px 24px 48px !important;
+  }
+  .cr-hero-right {
+    padding: 48px 24px !important;
+  }
+  .cr-hero-heading {
+    font-size: clamp(28px, 7vw, 42px) !important;
+  }
+  .cr-positions {
+    padding: 56px 24px !important;
+  }
+  .cr-pos-tags {
+    display: none !important;
+  }
+  .cr-apply {
+    padding: 56px 24px !important;
+  }
+  .cr-apply-grid {
+    gap: 36px !important;
+  }
+  .cr-stats {
+    padding: 48px 24px !important;
   }
 
   /* ── Definition rows → stacked ── */
@@ -1073,6 +1138,34 @@
   }
   .est-step-note {
     margin-left: 0 !important;
+  }
+
+  /* ── Careers v2: mobile portrait ── */
+  .cr-hero-left {
+    min-height: 45vh !important;
+    padding: 80px 16px 36px !important;
+  }
+  .cr-hero-right {
+    padding: 36px 16px !important;
+  }
+  .cr-hero-heading {
+    font-size: clamp(24px, 7vw, 36px) !important;
+  }
+  .cr-positions {
+    padding: 40px 16px !important;
+  }
+  .cr-positions-heading {
+    font-size: clamp(24px, 6vw, 36px) !important;
+  }
+  .cr-apply {
+    padding: 40px 16px !important;
+  }
+  .cr-stats {
+    padding: 36px 16px !important;
+  }
+  .cr-stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 24px !important;
   }
 
   /* ── Financing: compact ── */
