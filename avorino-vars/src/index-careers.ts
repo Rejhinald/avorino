@@ -57,14 +57,7 @@ const CULTURE_VALUES = [
   { num: '03', heading: 'Competitive pay', body: 'Market-rate compensation, benefits, and consistent year-round work across Orange County.' },
 ];
 
-// ── Open positions ──
-const POSITIONS = [
-  { title: 'Project Manager', tags: ['Full-time', 'On-site'], desc: 'Oversee residential and commercial builds from pre-construction through closeout. 5+ years construction management experience required. PMP or equivalent preferred.' },
-  { title: 'Site Superintendent', tags: ['Full-time', 'On-site'], desc: 'Direct daily field operations, coordinate subcontractors, and ensure quality standards. OSHA 30 certification and 3+ years experience required.' },
-  { title: 'Carpenter / Framer', tags: ['Full-time', 'On-site'], desc: 'Rough and finish carpentry for custom homes and ADUs. Must read blueprints. 2+ years residential framing experience.' },
-  { title: 'Estimator', tags: ['Full-time', 'Hybrid'], desc: 'Prepare accurate cost estimates for residential and commercial projects. Bluebeam/PlanSwift proficiency required. RSMeans knowledge a plus.' },
-  { title: 'General Laborer', tags: ['Full-time', 'On-site'], desc: 'Support skilled trades on active job sites. Reliable transportation required. Great entry point for construction careers.' },
-];
+// ── Open positions (currently none) ──
 
 // ── Stats ──
 const STATS = [
@@ -237,7 +230,7 @@ async function buildCareersPage() {
     });
     await wait(300);
     await clearAndSet(crPosList, 'cr-pos-list', {
-      'max-width': '900px',
+      'max-width': '900px', 'margin-left': 'auto', 'margin-right': 'auto',
     });
     await clearAndSet(crPosItem, 'cr-pos-item', {
       'border-top-width': '1px', 'border-top-style': 'solid',
@@ -268,9 +261,9 @@ async function buildCareersPage() {
       'color': v['av-cream'], 'opacity': '0.4',
     });
     await clearAndSet(crPosDesc, 'cr-pos-desc', {
-      'font-family': 'DM Sans', 'font-size': '15px',
-      'line-height': '1.7', 'color': v['av-cream'], 'opacity': '0.5',
-      'margin-top': '16px', 'padding-right': '60px',
+      'font-family': 'DM Sans', 'font-size': '17px',
+      'line-height': '1.8', 'color': v['av-cream'], 'opacity': '0.5',
+      'margin-top': '20px', 'max-width': '600px',
     });
     await wait(500);
 
@@ -283,6 +276,7 @@ async function buildCareersPage() {
     await clearAndSet(crApplyGrid, 'cr-apply-grid', {
       'display': 'grid', 'grid-template-columns': '1fr 1.2fr',
       'grid-column-gap': '80px', 'max-width': '1200px',
+      'margin-left': 'auto', 'margin-right': 'auto',
     });
     await clearAndSet(crApplyLabel, 'cr-apply-label', {
       'font-family': 'DM Sans', 'font-size': '11px', 'font-weight': '500',
@@ -428,7 +422,7 @@ async function buildCareersPage() {
   logDetail('Section 1: Split Hero appended', 'ok');
 
   // ──────────────────────────────────────────────
-  // SECTION 2: OPEN POSITIONS
+  // SECTION 2: OPEN POSITIONS (currently none)
   // ──────────────────────────────────────────────
   log('Building Section 2: Open Positions...');
   const posSection = webflow.elementBuilder(webflow.elementPresets.DOM);
@@ -436,65 +430,24 @@ async function buildCareersPage() {
   posSection.setStyles([crPositions]);
   posSection.setAttribute('id', 'cr-positions');
 
-  const posLabel = posSection.append(webflow.elementPresets.DOM);
+  const posInner = posSection.append(webflow.elementPresets.DOM);
+  posInner.setTag('div');
+  posInner.setStyles([crPosList]);
+
+  const posLabel = posInner.append(webflow.elementPresets.DOM);
   posLabel.setTag('div');
   posLabel.setStyles([crPosLabel]);
   posLabel.setTextContent('// Open Positions');
 
-  const posH = posSection.append(webflow.elementPresets.DOM);
+  const posH = posInner.append(webflow.elementPresets.DOM);
   posH.setTag('h2');
   posH.setStyles([crPosHeading]);
-  posH.setTextContent("We\u2019re looking for people who take pride in their craft");
+  posH.setTextContent("We\u2019re always looking for skilled professionals");
 
-  const posList = posSection.append(webflow.elementPresets.DOM);
-  posList.setTag('div');
-  posList.setStyles([crPosList]);
-
-  for (const pos of POSITIONS) {
-    const item = posList.append(webflow.elementPresets.DOM);
-    item.setTag('div');
-    item.setStyles([crPosItem]);
-    item.setAttribute('class', 'cr-pos-item');
-
-    const header = item.append(webflow.elementPresets.DOM);
-    header.setTag('div');
-    header.setStyles([crPosHeader]);
-
-    const title = header.append(webflow.elementPresets.DOM);
-    title.setTag('div');
-    title.setStyles([crPosTitle]);
-    title.setTextContent(pos.title);
-
-    const tags = header.append(webflow.elementPresets.DOM);
-    tags.setTag('div');
-    tags.setStyles([crPosTags]);
-    tags.setAttribute('class', 'cr-pos-tags');
-
-    for (const tagText of pos.tags) {
-      const tag = tags.append(webflow.elementPresets.DOM);
-      tag.setTag('span');
-      tag.setStyles([crPosTag]);
-      tag.setTextContent(tagText);
-    }
-
-    // Arrow icon (→ text, styled by footer JS)
-    const arrow = header.append(webflow.elementPresets.DOM);
-    arrow.setTag('div');
-    arrow.setTextContent('\u2192');
-    arrow.setAttribute('class', 'cr-pos-arrow');
-
-    // Description (hidden by default, shown on click via footer JS)
-    const desc = item.append(webflow.elementPresets.DOM);
-    desc.setTag('div');
-    desc.setStyles([crPosDesc]);
-    desc.setTextContent(pos.desc);
-    desc.setAttribute('class', 'cr-pos-desc');
-  }
-
-  // Last item needs bottom border
-  const lastBorder = posList.append(webflow.elementPresets.DOM);
-  lastBorder.setTag('div');
-  lastBorder.setAttribute('style', 'border-top:1px solid rgba(240,237,232,0.08);');
+  const posBody = posInner.append(webflow.elementPresets.DOM);
+  posBody.setTag('p');
+  posBody.setStyles([crPosDesc]);
+  posBody.setTextContent("There are no current open positions right now, but we\u2019re always interested in hearing from talented people. Submit your application below and we\u2019ll reach out when a role opens up.");
 
   await safeCall('append:positions', () => body.append(posSection));
   logDetail('Section 2: Open Positions appended', 'ok');
