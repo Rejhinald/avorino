@@ -40,10 +40,10 @@ const SERVICE_DATA: ServiceData = {
     heading: 'The value-add flip strategy',
     body: 'Traditional flips compete on cosmetics — kitchens, bathrooms, curb appeal. But in Orange County\'s $1M+ market, the highest-margin strategy is adding permitted living space. A 600–1,200 sqft ADU adds more appraised value than any interior remodel, and California\'s streamlined ADU laws make it faster than ever. We handle the entire build so you can focus on acquisition and disposition.',
     highlights: [
-      'Add $150K–$350K in appraised value with a single permitted ADU — far exceeding cosmetic renovation ROI',
-      'California\'s ADU fast-track permitting means 60-day approvals in most OC cities',
-      'Standardized floor plans reduce design costs and accelerate construction timelines',
-      'Dual-income potential: sell the property or hold it — the ADU generates income either way',
+      'Add $150K–$350K in appraised value with a single permitted ADU — far exceeding cosmetic renovation ROI.',
+      'California\'s ADU fast-track permitting means 60-day approvals in most OC cities.',
+      'Standardized floor plans reduce design costs and accelerate construction timelines.',
+      'Dual-income potential: sell the property or hold it — the ADU generates income either way.',
     ],
   },
 

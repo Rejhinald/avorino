@@ -40,10 +40,10 @@ const SERVICE_DATA: ServiceData = {
     heading: 'Visualization as a design tool',
     body: 'Our 3D renderings aren\'t just pretty pictures — they\'re decision-making tools. When you can see exactly how a marble countertop looks next to oak cabinetry, or how afternoon light falls through a west-facing window, you make better choices. Every render we produce is architecturally accurate, built from real construction documents, and designed to help you and your builder align on the final result.',
     highlights: [
-      'Built from actual construction documents — dimensions, materials, and details match what will be built',
-      'Accurate sun position and natural light simulation based on your property\'s GPS coordinates and orientation',
-      'Material libraries with real manufacturer products — see actual tile, stone, wood, and fixture options in context',
-      'Interactive revision process — make material swaps and layout changes and see results within 48 hours',
+      'Built from actual construction documents — dimensions, materials, and details match what will be built.',
+      'Accurate sun position and natural light simulation based on your property\'s GPS coordinates and orientation.',
+      'Material libraries with real manufacturer products — see actual tile, stone, wood, and fixture options in context.',
+      'Interactive revision process — make material swaps and layout changes and see results within 48 hours.',
     ],
   },
 

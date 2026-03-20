@@ -1,16 +1,19 @@
 // ════════════════════════════════════════════════════════════════
-// Avorino Builder — Blog CMS Migration
-// Creates "Blog Posts" CMS collection via Webflow Data API,
-// populates with blog posts migrated from Wix.
+// Avorino Builder — CAREERS PAGE (v2 complete rework)
+// Split hero (dark 3D left + cream culture right), positions
+// accordion, application form, stats strip, CTA
+// All animations via CDN: avorino-careers-footer.js
 // ════════════════════════════════════════════════════════════════
-import { webflow, log, logDetail, clearErrorLog, wait, safeCall, getAvorinVars, getOrCreateStyle, clearAndSet, freshStyle, createSharedStyles, setSharedStyleProps, createAllVariables, createPageWithSlug, buildCTASection, applyCTAStyleProps, CALENDLY_CSS, CALENDLY_JS, } from './shared.js';
-// ── CDN hash ──
-const CDN = '0a5bf9d';
+import { webflow, log, logDetail, clearErrorLog, wait, safeCall, getAvorinVars, getOrCreateStyle, clearAndSet, createSharedStyles, setSharedStyleProps, createAllVariables, createPageWithSlug, buildCTASection, applyCTAStyleProps, buildCleanForm, } from './shared.js';
+// ── Page config ──
+const PAGE_NAME = 'Careers';
+const PAGE_SLUG = 'careers';
+const PAGE_TITLE = 'Careers at Avorino — Join Our Team | Orange County Construction';
+const PAGE_DESC = 'Join the Avorino team. We build luxury homes, ADUs, and commercial projects across Orange County. Explore open positions and apply today.';
+const CDN = '75864a2';
 const HEAD_CODE = [
     `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
     `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
-    `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-blog.css">`,
-    CALENDLY_CSS,
 ].join('\n');
 const FOOTER_CODE = [
     '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
@@ -18,624 +21,462 @@ const FOOTER_CODE = [
     '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
     '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
     `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-animations.js"><\/script>`,
-    `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-blog-footer.js"><\/script>`,
-    CALENDLY_JS,
+    `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-careers-footer.js"><\/script>`,
 ].join('\n');
-// ── Blog post data (scraped from Wix) ──
-const BLOG_POSTS = [
-    {
-        title: 'The Complete Guide to Building an ADU in 2026: Costs, Benefits, and Planning Tips',
-        slug: 'the-complete-guide-to-building-an-adu-in-2026-costs-benefits-and-planning-tips',
-        date: '2026-03-06T00:00:00.000Z',
-        author: 'Avorino',
-        summary: 'Discover how to build an ADU in 2026. Learn planning tips, financing options, and estimate costs with our ADU calculators and ROI tools.',
-        image: 'https://static.wixstatic.com/media/e962d0f54c71471b8962607de56eaaff.jpg',
-    },
-    {
-        title: 'Maximizing Energy Efficiency in Your Custom Home',
-        slug: 'maximizing-energy-efficiency-in-your-custom-home',
-        date: '2025-03-27T00:00:00.000Z',
-        author: 'Admin Avorino',
-        summary: 'How to reduce utility costs, improve comfort, and lower environmental impact? Key energy-efficient features to consider.',
-        image: 'https://static.wixstatic.com/media/11062b_c68182fbfc224eee8aa7825605dcb461~mv2.jpg',
-    },
-    {
-        title: 'How Potential Tariffs Could Impact the ADU Market',
-        slug: 'how-potential-tariffs-could-impact-the-adu-market-and-micro-construction-industry',
-        date: '2025-02-19T00:00:00.000Z',
-        author: 'Admin Avorino',
-        summary: 'This will help you understand how the potential tariff will affect building ADU in your property.',
-        image: 'https://static.wixstatic.com/media/11062b_b4fd5956141849c781c58d3c109c145c~mv2.jpeg',
-    },
-    {
-        title: 'Rebuilding After Fire: A Chance to Build Luxurious, Safe, and Sustainable Custom Homes',
-        slug: 'rebuilding-after-fire-a-chance-to-build-luxurious-safe-and-sustainable-custom-homes',
-        date: '2025-02-10T00:00:00.000Z',
-        author: 'Admin Avorino',
-        summary: 'The opportunity to rebuild after the wildfire comes with the chance to reimagine your home and tailor it to your lifestyle.',
-        image: 'https://static.wixstatic.com/media/b3a9a1_2f5f778c7e124ff79f87a3062380b07d~mv2.jpg',
-    },
-    {
-        title: 'Custom Home Builder Orange County: Custom vs Spec Homes Explained',
-        slug: 'custom-home-builder-orange-county-custom-vs-spec-homes-explained',
-        date: '2025-02-07T00:00:00.000Z',
-        author: 'Avorino',
-        summary: 'Compare custom vs spec homes in Orange County. Hire a trusted custom home builder Orange County to build your dream home today.',
-        image: 'https://static.wixstatic.com/media/5a3eca_aa34e6b7a8d441f4b5b4527332cda458~mv2.png',
-    },
-    {
-        title: 'Wildfire-Resistant Landscaping for Custom Homes',
-        slug: 'wildfire-resistant-landscaping-for-custom-homes',
-        date: '2025-01-31T00:00:00.000Z',
-        author: 'Admin Avorino',
-        summary: 'Wildfires are a growing concern in many regions. Creating a landscape that prioritizes safety without compromising beauty is essential.',
-        image: 'https://static.wixstatic.com/media/06e87b_392f96af6f4f49ebb9d5fa4378a5ea81~mv2.jpg',
-    },
-    {
-        title: 'Shaping the Future of Construction: The Fascinating Impact of 3D Renderings on ADU Projects',
-        slug: 'shaping-the-future-of-construction-the-fascinating-impact-of-3d-renderings-on-adu-projects',
-        date: '2024-03-31T00:00:00.000Z',
-        author: 'Avo Rino',
-        summary: 'In the dynamic landscape of home expansion and construction, 3D renderings have emerged as a game-changer for ADUs in Orange County.',
-        image: 'https://static.wixstatic.com/media/06e87b_663ad4dffe8149ebadf65a1102e6cc8e~mv2.jpg',
-    },
-    {
-        title: "Avorino's Guide to ADU Construction in Orange County: What You Need to Know",
-        slug: 'avorino-s-guide-to-adu-construction-in-orange-county-what-you-need-to-know',
-        date: '2023-07-19T00:00:00.000Z',
-        author: 'Avorino',
-        summary: 'Learn everything about ADU construction in Orange County with Avorino. From foundation to finish, increase property value and rental income.',
-        image: 'https://static.wixstatic.com/media/e962d0f54c71471b8962607de56eaaff.jpg',
-    },
-    {
-        title: 'Understanding the Process of Obtaining Building Permits in Orange County, CA',
-        slug: 'understanding-the-process-of-obtaining-building-permits-in-orange-county-ca',
-        date: '2023-05-21T00:00:00.000Z',
-        author: 'Avo Rino',
-        summary: 'Building permits are essential documents that ensure compliance with local regulations and the safety of structures being built or modified.',
-        image: 'https://static.wixstatic.com/media/06e87b_2cca91b00cde44908ed48a8c9d49664b~mv2.png',
-    },
-    {
-        title: 'How to Choose the Right Construction Company for Your Project: Why Avorino is the Right Choice in OC',
-        slug: 'how-to-choose-the-right-construction-company-for-your-project-why-avorino-is-the-right-choice-in-oc',
-        date: '2023-05-20T00:00:00.000Z',
-        author: 'Avo Rino',
-        summary: 'Choosing the right construction company for your project is a crucial decision that can greatly impact the outcome and success of your endeavor.',
-        image: 'https://static.wixstatic.com/media/06e87b_e22f81b1a1844287bd57f2db7ff2d2fa~mv2.jpg',
-    },
-    {
-        title: 'The Importance of Proper Planning in Construction Projects in Orange County, CA',
-        slug: 'the-importance-of-proper-planning-in-construction-projects-in-orange-county-ca',
-        date: '2023-04-15T00:00:00.000Z',
-        author: 'Admin Avorino',
-        summary: 'Proper planning is the foundation of any successful construction project. Learn why thorough preparation is critical for building in Orange County.',
-        image: 'https://static.wixstatic.com/media/78d045_bd3b500c853c4af4a99079daf3ac4a2a~mv2.jpg',
-    },
-];
-// ── Webflow Data API helpers ──
-const API_BASE = 'https://api.webflow.com/v2';
-async function apiCall(method, path, token, body) {
-    const opts = {
-        method,
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-            'accept': 'application/json',
-        },
-    };
-    if (body)
-        opts.body = JSON.stringify(body);
-    const res = await fetch(`${API_BASE}${path}`, opts);
-    const data = await res.json();
-    if (!res.ok) {
-        throw new Error(`API ${res.status}: ${data?.message || data?.msg || JSON.stringify(data)}`);
-    }
-    return data;
-}
-// ── Create CMS collection ──
-async function createBlogCollection(siteId, token) {
-    logDetail('Creating "Blog Posts" CMS collection...', 'info');
-    const collection = await apiCall('POST', `/sites/${siteId}/collections`, token, {
-        displayName: 'Blog Posts',
-        singularName: 'Blog Post',
-        slug: 'blog-posts',
-        fields: [
-            { displayName: 'Post Summary', type: 'PlainText', isRequired: false, slug: 'post-summary' },
-            { displayName: 'Post Body', type: 'RichText', isRequired: false, slug: 'post-body' },
-            { displayName: 'Thumbnail', type: 'ImageRef', isRequired: false, slug: 'thumbnail' },
-            { displayName: 'Author', type: 'PlainText', isRequired: false, slug: 'author' },
-            { displayName: 'Publish Date', type: 'Date', isRequired: false, slug: 'publish-date' },
-        ],
-    });
-    logDetail(`Collection created: ${collection.id}`, 'ok');
-    return collection.id;
-}
-// ── Populate blog posts ──
-async function populateBlogPosts(collectionId, token) {
-    logDetail(`Populating ${BLOG_POSTS.length} blog posts...`, 'info');
-    for (let i = 0; i < BLOG_POSTS.length; i++) {
-        const post = BLOG_POSTS[i];
-        try {
-            await apiCall('POST', `/collections/${collectionId}/items`, token, {
-                isArchived: false,
-                isDraft: false,
-                fieldData: {
-                    name: post.title,
-                    slug: post.slug,
-                    'post-summary': post.summary,
-                    'post-body': `<p>${post.summary}</p><p><em>Full article content to be added.</em></p>`,
-                    'author': post.author,
-                    'publish-date': post.date,
-                },
-            });
-            logDetail(`  ${i + 1}/${BLOG_POSTS.length} — ${post.title}`, 'ok');
-        }
-        catch (err) {
-            logDetail(`  FAILED ${i + 1}/${BLOG_POSTS.length} — ${post.title}: ${err.message}`, 'err');
-        }
-        await wait(300);
-    }
-    logDetail('Blog posts populated!', 'ok');
-}
-// ── Build blog listing page ──
-async function buildBlogPage(v, s) {
-    const { body } = await createPageWithSlug('Blog', 'blog', 'Blog | Avorino Construction', 'Insights on custom homes, ADUs, and construction in Orange County from the Avorino team.');
-    // ── Page styles ──
-    const blogHero = await getOrCreateStyle('blog-hero');
-    const svCanvasWrap = await getOrCreateStyle('sv-canvas-wrap');
-    const svContentOverlay = await getOrCreateStyle('sv-content-overlay');
-    const blogHeroContent = await getOrCreateStyle('blog-hero-content');
-    const blogHeroSubtitle = await getOrCreateStyle('blog-hero-subtitle');
-    const labelLine = await getOrCreateStyle('blog-label-line');
-    const blogGridWrap = await getOrCreateStyle('blog-grid-wrap');
-    const blogGrid = await getOrCreateStyle('blog-grid');
-    const blogCard = await getOrCreateStyle('blog-card');
-    const blogCardImgWrap = await getOrCreateStyle('blog-card-img-wrap');
-    const blogCardImg = await getOrCreateStyle('blog-card-img');
-    const blogCardBody = await getOrCreateStyle('blog-card-body');
-    const blogCardDate = await getOrCreateStyle('blog-card-date');
-    const blogCardTitle = await getOrCreateStyle('blog-card-title');
-    const blogCardSummary = await getOrCreateStyle('blog-card-summary');
-    const blogCardLink = await getOrCreateStyle('blog-card-link');
-    // ── Build DOM ──
-    log('Building blog page elements...');
-    // ═══ HERO ═══
-    const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
-    hero.setTag('section');
-    hero.setStyles([blogHero]);
-    hero.setAttribute('id', 'blog-hero');
-    // Three.js canvas container
-    const canvasWrap = hero.append(webflow.elementPresets.DOM);
-    canvasWrap.setTag('div');
-    canvasWrap.setStyles([svCanvasWrap]);
-    canvasWrap.setAttribute('id', 'hero-canvas');
-    canvasWrap.setAttribute('class', 'sv-canvas-wrap');
-    // Content overlay
-    const heroContent = hero.append(webflow.elementPresets.DOM);
-    heroContent.setTag('div');
-    heroContent.setStyles([svContentOverlay, blogHeroContent]);
-    heroContent.setAttribute('class', 'sv-content-overlay');
-    // Label with line
-    const heroLbl = heroContent.append(webflow.elementPresets.DOM);
-    heroLbl.setTag('div');
-    heroLbl.setStyles([s.label]);
-    heroLbl.setAttribute('data-animate', 'fade-up');
-    const heroLblTxt = heroLbl.append(webflow.elementPresets.DOM);
-    heroLblTxt.setTag('div');
-    heroLblTxt.setTextContent('// Insights');
-    const heroLblLine = heroLbl.append(webflow.elementPresets.DOM);
-    heroLblLine.setTag('div');
-    heroLblLine.setStyles([labelLine]);
-    // Heading
-    const heroHeading = heroContent.append(webflow.elementPresets.DOM);
-    heroHeading.setTag('h1');
-    heroHeading.setStyles([s.headingXL]);
-    heroHeading.setTextContent('Blog');
-    heroHeading.setAttribute('data-animate', 'word-stagger-elastic');
-    // Subtitle
-    const heroSub = heroContent.append(webflow.elementPresets.DOM);
-    heroSub.setTag('p');
-    heroSub.setStyles([blogHeroSubtitle]);
-    heroSub.setTextContent('Expert insights on custom homes, ADUs, building permits, and construction trends in Orange County.');
-    heroSub.setAttribute('data-animate', 'fade-up');
-    await safeCall('append:hero', () => body.append(hero));
-    // ═══ BLOG GRID ═══
-    const gridSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-    gridSection.setTag('section');
-    gridSection.setStyles([blogGridWrap]);
-    const grid = gridSection.append(webflow.elementPresets.DOM);
-    grid.setTag('div');
-    grid.setStyles([blogGrid]);
-    for (const post of BLOG_POSTS) {
-        const card = grid.append(webflow.elementPresets.DOM);
-        card.setTag('a');
-        card.setStyles([blogCard]);
-        card.setAttribute('href', `/blog-posts/${post.slug}`);
-        card.setAttribute('class', 'blog-card');
-        const imgWrap = card.append(webflow.elementPresets.DOM);
-        imgWrap.setTag('div');
-        imgWrap.setStyles([blogCardImgWrap]);
-        const img = imgWrap.append(webflow.elementPresets.DOM);
-        img.setTag('img');
-        img.setStyles([blogCardImg]);
-        img.setAttribute('src', post.image);
-        img.setAttribute('alt', post.title);
-        const cardBody = card.append(webflow.elementPresets.DOM);
-        cardBody.setTag('div');
-        cardBody.setStyles([blogCardBody]);
-        const date = cardBody.append(webflow.elementPresets.DOM);
-        date.setTag('p');
-        date.setStyles([blogCardDate]);
-        date.setTextContent(new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
-        const title = cardBody.append(webflow.elementPresets.DOM);
-        title.setTag('h3');
-        title.setStyles([blogCardTitle]);
-        title.setTextContent(post.title);
-        const summary = cardBody.append(webflow.elementPresets.DOM);
-        summary.setTag('p');
-        summary.setStyles([blogCardSummary]);
-        summary.setTextContent(post.summary);
-        const readMore = cardBody.append(webflow.elementPresets.DOM);
-        readMore.setTag('span');
-        readMore.setStyles([blogCardLink]);
-        readMore.setTextContent('Read Article \u2192');
-    }
-    await safeCall('append:grid', () => body.append(gridSection));
-    // ═══ CTA ═══
-    await buildCTASection(body, v, 'Ready to Build Your Dream Home?', 'Get a Free Estimate', '/free-estimate');
-    logDetail('Blog page elements built', 'ok');
-    // ── Apply style properties ──
-    log('Applying blog style properties...');
-    await clearAndSet(await freshStyle('blog-hero'), 'blog-hero', {
-        'min-height': '75vh', 'display': 'flex', 'align-items': 'flex-end',
-        'padding-top': '180px', 'padding-bottom': v['av-section-pad-y'],
-        'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
-        'background-color': v['av-dark'], 'color': v['av-cream'],
-        'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
-    });
-    await clearAndSet(await freshStyle('sv-canvas-wrap'), 'sv-canvas-wrap', {
-        'position': 'absolute', 'top': '0px', 'left': '0px',
-        'width': '100%', 'height': '100%',
-        'z-index': '1', 'pointer-events': 'none',
-        'overflow-x': 'hidden', 'overflow-y': 'hidden',
-    });
-    await clearAndSet(await freshStyle('sv-content-overlay'), 'sv-content-overlay', {
-        'position': 'relative', 'z-index': '2',
-    });
-    await clearAndSet(await freshStyle('blog-hero-content'), 'blog-hero-content', {
-        'max-width': '900px',
-    });
-    await clearAndSet(await freshStyle('blog-hero-subtitle'), 'blog-hero-subtitle', {
-        'font-family': 'DM Sans', 'font-size': '17px',
-        'line-height': '1.8', 'color': 'rgba(240,237,232,0.55)',
-        'margin-top': '28px', 'max-width': '520px',
-    });
-    await clearAndSet(await freshStyle('blog-label-line'), 'blog-label-line', {
-        'flex-grow': '1', 'height': '1px', 'background-color': v['av-dark-15'],
-    });
-    await wait(500);
-    await clearAndSet(await freshStyle('blog-grid-wrap'), 'blog-grid-wrap', {
-        'padding-top': v['av-section-pad-y'], 'padding-bottom': '120px',
-        'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
-        'background-color': v['av-dark'], 'position': 'relative',
-    });
-    await clearAndSet(await freshStyle('blog-grid'), 'blog-grid', {
-        'display': 'grid',
-        'grid-template-columns': '1fr 1fr 1fr',
-        'grid-column-gap': '1px', 'grid-row-gap': '1px',
-        'max-width': '1200px', 'margin-left': 'auto', 'margin-right': 'auto',
-        'background-color': 'rgba(240,237,232,0.05)',
-        'border-top-width': '1px', 'border-bottom-width': '1px',
-        'border-left-width': '1px', 'border-right-width': '1px',
-        'border-top-style': 'solid', 'border-bottom-style': 'solid',
-        'border-left-style': 'solid', 'border-right-style': 'solid',
-        'border-top-color': 'rgba(240,237,232,0.05)',
-        'border-bottom-color': 'rgba(240,237,232,0.05)',
-        'border-left-color': 'rgba(240,237,232,0.05)',
-        'border-right-color': 'rgba(240,237,232,0.05)',
-    });
-    await clearAndSet(await freshStyle('blog-card'), 'blog-card', {
-        'background-color': '#141414',
-        'overflow-x': 'hidden', 'overflow-y': 'hidden',
-        'display': 'flex', 'flex-direction': 'column',
-        'text-decoration': 'none', 'color': v['av-cream'],
-        'position': 'relative',
-    });
-    await clearAndSet(await freshStyle('blog-card-img-wrap'), 'blog-card-img-wrap', {
-        'overflow-x': 'hidden', 'overflow-y': 'hidden',
-        'height': '220px', 'position': 'relative',
-    });
-    await clearAndSet(await freshStyle('blog-card-img'), 'blog-card-img', {
-        'width': '100%', 'height': '100%',
-        'object-fit': 'cover',
-    });
-    await wait(500);
-    await clearAndSet(await freshStyle('blog-card-body'), 'blog-card-body', {
-        'padding-top': '28px', 'padding-bottom': '32px',
-        'padding-left': '32px', 'padding-right': '32px',
-        'display': 'flex', 'flex-direction': 'column',
-        'grid-row-gap': '10px', 'flex-grow': '1',
-    });
-    await clearAndSet(await freshStyle('blog-card-date'), 'blog-card-date', {
-        'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
-        'letter-spacing': '0.2em', 'text-transform': 'uppercase',
-        'color': 'rgba(240,237,232,0.3)',
-        'margin-top': '0px', 'margin-bottom': '0px',
-    });
-    await clearAndSet(await freshStyle('blog-card-title'), 'blog-card-title', {
-        'font-family': 'DM Serif Display', 'font-size': '20px',
-        'line-height': '1.3', 'font-weight': '400',
-        'margin-top': '0px', 'margin-bottom': '0px',
-        'color': v['av-cream'],
-    });
-    await clearAndSet(await freshStyle('blog-card-summary'), 'blog-card-summary', {
-        'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
-        'line-height': '1.75', 'font-weight': '400',
-        'color': 'rgba(240,237,232,0.45)',
-        'margin-top': '0px', 'margin-bottom': '0px',
-        'overflow-x': 'hidden', 'overflow-y': 'hidden',
-    });
-    await clearAndSet(await freshStyle('blog-card-link'), 'blog-card-link', {
-        'font-family': 'DM Sans', 'font-size': '11px',
-        'letter-spacing': '0.12em', 'text-transform': 'uppercase',
-        'color': v['av-red'], 'opacity': '0.6',
-        'margin-top': 'auto', 'padding-top': '16px',
-    });
-    await wait(500);
-    await applyCTAStyleProps(v);
-    logDetail('Blog style properties applied', 'ok');
-}
-// ── Build Blog Post Template (individual post page) ──
-async function buildBlogTemplate(v, s) {
-    log('Building blog post template on current page...');
-    const allElements = await safeCall('getAllElements', () => webflow.getAllElements());
-    const body = allElements[0];
-    const children = await body.getChildren();
-    if (children && children.length > 0) {
-        log('Page already has content — undo first or use a blank page.');
-        return;
-    }
-    logDetail(`Got body element (${allElements.length} elements on page)`, 'ok');
-    const btHero = await getOrCreateStyle('bt-hero');
-    const btHeroInner = await getOrCreateStyle('bt-hero-inner');
-    const btLabel = await getOrCreateStyle('bt-label');
-    const btLabelLine = await getOrCreateStyle('bt-label-line');
-    const btMeta = await getOrCreateStyle('bt-meta');
-    const btMetaItem = await getOrCreateStyle('bt-meta-item');
-    const btMetaLabel = await getOrCreateStyle('bt-meta-label');
-    const btMetaValue = await getOrCreateStyle('bt-meta-value');
-    const btTitle = await getOrCreateStyle('bt-title');
-    const btFeaturedImg = await getOrCreateStyle('bt-featured-img');
-    const btImgWrap = await getOrCreateStyle('bt-img-wrap');
-    const btArticle = await getOrCreateStyle('bt-article');
-    const btArticleInner = await getOrCreateStyle('bt-article-inner');
-    const btRichText = await getOrCreateStyle('bt-rich-text');
-    const btBackLink = await getOrCreateStyle('bt-back-link');
-    const btDivider = await getOrCreateStyle('bt-divider');
-    log('Building hero section...');
-    const svCanvasWrap = await getOrCreateStyle('sv-canvas-wrap');
-    const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
-    hero.setTag('section');
-    hero.setStyles([btHero]);
-    hero.setAttribute('class', 'bt-hero');
-    // Three.js canvas container
-    const heroCanvas = hero.append(webflow.elementPresets.DOM);
-    heroCanvas.setTag('div');
-    heroCanvas.setStyles([svCanvasWrap]);
-    heroCanvas.setAttribute('id', 'hero-canvas');
-    heroCanvas.setAttribute('class', 'sv-canvas-wrap');
-    const heroInner = hero.append(webflow.elementPresets.DOM);
-    heroInner.setTag('div');
-    heroInner.setStyles([btHeroInner]);
-    heroInner.setAttribute('class', 'bt-hero-inner');
-    const labelRow = heroInner.append(webflow.elementPresets.DOM);
-    labelRow.setTag('div');
-    labelRow.setStyles([btLabel]);
-    labelRow.setAttribute('class', 'bt-label');
-    labelRow.setAttribute('data-animate', 'fade-up');
-    const labelTxt = labelRow.append(webflow.elementPresets.DOM);
-    labelTxt.setTag('div');
-    labelTxt.setTextContent('BLOG');
-    const labelLine2 = labelRow.append(webflow.elementPresets.DOM);
-    labelLine2.setTag('div');
-    labelLine2.setStyles([btLabelLine]);
-    const title = heroInner.append(webflow.elementPresets.DOM);
-    title.setTag('h1');
-    title.setStyles([btTitle]);
-    title.setTextContent('Blog Post Title');
-    title.setAttribute('class', 'bt-title');
-    title.setAttribute('data-animate', 'word-stagger-elastic');
-    const meta = heroInner.append(webflow.elementPresets.DOM);
-    meta.setTag('div');
-    meta.setStyles([btMeta]);
-    meta.setAttribute('class', 'bt-meta');
-    meta.setAttribute('data-animate', 'fade-up');
-    const authorWrap = meta.append(webflow.elementPresets.DOM);
-    authorWrap.setTag('div');
-    authorWrap.setStyles([btMetaItem]);
-    const authorLbl = authorWrap.append(webflow.elementPresets.DOM);
-    authorLbl.setTag('span');
-    authorLbl.setStyles([btMetaLabel]);
-    authorLbl.setTextContent('Written by');
-    const authorVal = authorWrap.append(webflow.elementPresets.DOM);
-    authorVal.setTag('span');
-    authorVal.setStyles([btMetaValue]);
-    authorVal.setTextContent('Author Name');
-    const dot = meta.append(webflow.elementPresets.DOM);
-    dot.setTag('span');
-    dot.setStyles([btMetaLabel]);
-    dot.setTextContent('\u00B7');
-    const dateWrap = meta.append(webflow.elementPresets.DOM);
-    dateWrap.setTag('div');
-    dateWrap.setStyles([btMetaItem]);
-    const dateLbl = dateWrap.append(webflow.elementPresets.DOM);
-    dateLbl.setTag('span');
-    dateLbl.setStyles([btMetaLabel]);
-    dateLbl.setTextContent('Published');
-    const dateVal = dateWrap.append(webflow.elementPresets.DOM);
-    dateVal.setTag('span');
-    dateVal.setStyles([btMetaValue]);
-    dateVal.setTextContent('January 1, 2025');
-    await safeCall('append:hero', () => body.append(hero));
-    logDetail('Hero section appended', 'ok');
-    log('Building featured image section...');
-    const imgSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-    imgSection.setTag('section');
-    imgSection.setStyles([btImgWrap]);
-    imgSection.setAttribute('class', 'bt-img-wrap');
-    try {
-        const img = imgSection.append(webflow.elementPresets.Image);
-        img.setStyles([btFeaturedImg]);
-        img.setAttribute('class', 'bt-featured-img');
-        img.setAttribute('data-animate', 'fade-up');
-        logDetail('Native Image element created — bind to CMS "Featured Image"', 'ok');
-    }
-    catch (_e) {
-        logDetail('Image preset not supported — drag Image into bt-img-wrap in Designer', 'err');
-    }
-    await safeCall('append:img', () => body.append(imgSection));
-    log('Building article body section...');
-    const article = webflow.elementBuilder(webflow.elementPresets.DOM);
-    article.setTag('section');
-    article.setStyles([btArticle]);
-    const articleInner = article.append(webflow.elementPresets.DOM);
-    articleInner.setTag('div');
-    articleInner.setStyles([btArticleInner]);
-    articleInner.setAttribute('class', 'bt-article-inner');
-    try {
-        const richText = articleInner.append(webflow.elementPresets.RichText);
-        richText.setStyles([btRichText]);
-        richText.setAttribute('class', 'bt-rich-text');
-        logDetail('Native RichText element created — bind to CMS "Post Body"', 'ok');
-    }
-    catch (_e) {
-        logDetail('RichText preset not supported — drag Rich Text into bt-article-inner in Designer', 'err');
-    }
-    const divider = articleInner.append(webflow.elementPresets.DOM);
-    divider.setTag('div');
-    divider.setStyles([btDivider]);
-    divider.setAttribute('class', 'bt-divider');
-    const backLink = articleInner.append(webflow.elementPresets.DOM);
-    backLink.setTag('a');
-    backLink.setStyles([btBackLink]);
-    backLink.setTextContent('\u2190 Back to Blog');
-    backLink.setAttribute('href', '/blog');
-    backLink.setAttribute('class', 'bt-back-link');
-    await safeCall('append:article', () => body.append(article));
-    log('Building CTA section...');
-    await buildCTASection(body, v, 'Ready to Build Your Dream Home?', 'Get a Free Estimate', '/free-estimate');
-    log('Applying template style properties...');
-    await clearAndSet(await freshStyle('bt-hero'), 'bt-hero', {
-        'min-height': '50vh', 'display': 'flex', 'align-items': 'flex-end',
-        'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
-        'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
-        'background-color': v['av-dark'], 'color': v['av-cream'],
-    });
-    await clearAndSet(await freshStyle('bt-hero-inner'), 'bt-hero-inner', {
-        'max-width': '800px', 'margin-left': 'auto', 'margin-right': 'auto',
-        'text-align': 'center', 'width': '100%',
-    });
-    await clearAndSet(await freshStyle('bt-label'), 'bt-label', {
-        'display': 'flex', 'align-items': 'center', 'grid-column-gap': '16px',
-        'font-family': 'DM Sans', 'font-size': '11px',
-        'letter-spacing': '0.25em', 'text-transform': 'uppercase',
-        'opacity': '0.4', 'margin-bottom': '32px',
-        'justify-content': 'center',
-    });
-    await clearAndSet(await freshStyle('bt-label-line'), 'bt-label-line', {
-        'width': '48px', 'height': '1px', 'background-color': v['av-dark-15'],
-    });
-    await clearAndSet(await freshStyle('bt-title'), 'bt-title', {
-        'font-family': 'DM Serif Display', 'font-size': 'clamp(32px, 5vw, 56px)',
-        'line-height': '1.15', 'letter-spacing': '-0.02em', 'font-weight': '400',
-        'margin-top': '0px', 'margin-bottom': '40px', 'color': v['av-cream'],
-    });
-    await clearAndSet(await freshStyle('bt-meta'), 'bt-meta', {
-        'display': 'flex', 'justify-content': 'center', 'align-items': 'center',
-        'grid-column-gap': '20px', 'grid-row-gap': '12px',
-        'flex-wrap': 'wrap',
-    });
-    await clearAndSet(await freshStyle('bt-meta-item'), 'bt-meta-item', {
-        'display': 'flex', 'align-items': 'center', 'grid-column-gap': '8px',
-        'font-family': 'DM Sans', 'font-size': '14px',
-    });
-    await clearAndSet(await freshStyle('bt-meta-label'), 'bt-meta-label', {
-        'opacity': '0.4', 'font-family': 'DM Sans', 'font-size': '14px',
-    });
-    await clearAndSet(await freshStyle('bt-meta-value'), 'bt-meta-value', {
-        'opacity': '0.7', 'font-weight': '500',
-    });
-    await wait(500);
-    await clearAndSet(await freshStyle('bt-img-wrap'), 'bt-img-wrap', {
-        'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
-        'padding-top': v['av-gap-lg'], 'padding-bottom': '0px',
-        'background-color': v['av-cream'],
-        'display': 'flex', 'justify-content': 'center',
-    });
-    await clearAndSet(await freshStyle('bt-featured-img'), 'bt-featured-img', {
-        'width': '100%', 'max-width': '900px',
-        'padding-bottom': '56.25%',
-        'background-position': '50% 50%', 'background-size': 'cover',
-        'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
-        'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
-        'display': 'block',
-    });
-    await clearAndSet(await freshStyle('bt-article'), 'bt-article', {
-        'padding-top': v['av-gap-xl'], 'padding-bottom': v['av-section-pad-y'],
-        'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
-        'background-color': v['av-cream'], 'color': v['av-dark'],
-    });
-    await clearAndSet(await freshStyle('bt-article-inner'), 'bt-article-inner', {
-        'max-width': '720px', 'margin-left': 'auto', 'margin-right': 'auto',
-    });
-    await clearAndSet(await freshStyle('bt-rich-text'), 'bt-rich-text', {
-        'font-family': 'DM Sans', 'font-size': '18px',
-        'line-height': '2.6', 'color': v['av-dark'],
-        'letter-spacing': '0.01em',
-    });
-    await clearAndSet(await freshStyle('bt-divider'), 'bt-divider', {
-        'width': '80px', 'height': '1px',
-        'background-color': v['av-dark-15'],
-        'margin-top': '64px', 'margin-bottom': '40px',
-    });
-    await clearAndSet(await freshStyle('bt-back-link'), 'bt-back-link', {
-        'display': 'inline-block',
-        'font-family': 'DM Sans', 'font-size': '15px',
-        'font-weight': '500', 'letter-spacing': '0.02em',
-        'color': v['av-dark'], 'opacity': '0.45',
-        'text-decoration': 'none',
-    });
-    await wait(500);
-    await applyCTAStyleProps(v);
-    logDetail('Template style properties applied', 'ok');
-    log('Blog post template built! Now bind CMS fields to each element.', 'success');
-}
-// ── UI: Add template builder + API token input ──
-function addExtraUI() {
-    const statusEl = document.getElementById('status');
-    const extraUI = document.createElement('div');
-    extraUI.innerHTML = `
-    <div class="divider"></div>
-    <div class="section-label">Blog Post Template</div>
-    <p style="font-size:12px;opacity:0.6;margin:0 0 8px;">Open the "Blog Posts Template" page first, then click below.</p>
-    <button id="build-template" class="btn-secondary" style="width:100%;margin-bottom:16px;">Build Blog Post Template</button>
-    <div class="divider"></div>
-    <div class="section-label">CMS Migration (Webflow API)</div>
-    <input id="api-token" type="text" placeholder="Webflow API Token" style="width:100%;padding:8px 12px;margin-bottom:8px;border:1px solid #ccc;border-radius:6px;font-size:13px;box-sizing:border-box;">
-    <input id="site-id" type="text" placeholder="Site ID" style="width:100%;padding:8px 12px;margin-bottom:8px;border:1px solid #ccc;border-radius:6px;font-size:13px;box-sizing:border-box;">
-    <button id="migrate-cms" class="btn-secondary" style="width:100%;">Create Collection + Populate Posts</button>
-  `;
-    statusEl.parentNode.insertBefore(extraUI, statusEl);
-}
-// ── Panel UI ──
-document.getElementById('page-name').textContent = 'Blog';
+// ── Update panel UI ──
+document.getElementById('page-name').textContent = PAGE_NAME;
 const headCodeEl = document.getElementById('head-code');
 const footerCodeEl = document.getElementById('footer-code');
 if (headCodeEl)
     headCodeEl.textContent = HEAD_CODE;
 if (footerCodeEl)
     footerCodeEl.textContent = FOOTER_CODE;
-addExtraUI();
+// ── Form fields ──
+const FORM_FIELDS = [
+    { name: 'name', label: 'Full Name', type: 'text', placeholder: 'Your full name', halfWidth: true },
+    { name: 'email', label: 'Email', type: 'email', placeholder: 'you@email.com', halfWidth: true },
+    { name: 'phone', label: 'Phone', type: 'tel', placeholder: '(000) 000-0000', halfWidth: true },
+    { name: 'position', label: 'Position of Interest', type: 'select', halfWidth: true, options: ['Project Manager', 'Site Superintendent', 'Carpenter / Framer', 'Electrician', 'Plumber', 'General Laborer', 'Estimator', 'Architect / Designer', 'Other'] },
+    { name: 'experience', label: 'Years of Experience', type: 'select', options: ['0–2 years', '3–5 years', '5–10 years', '10+ years'] },
+    { name: 'message', label: 'Tell Us About Yourself', type: 'textarea', placeholder: 'Relevant experience, certifications, availability, etc.' },
+];
+// ── Culture values (removed per client request) ──
+// ── Open positions (currently none) ──
+// ── Stats ──
+const STATS = [
+    { value: '4.8', suffix: '/5', label: 'Yelp Rating' },
+    { value: '35', suffix: '+', label: '5-Star Reviews' },
+    { value: '50', suffix: '+', label: 'Projects Completed' },
+    { value: '37', suffix: '', label: 'Cities Served' },
+];
+// ── Perks ──
+const PERKS = [
+    'Year-round work across Orange County',
+    'Work on luxury custom homes & commercial builds',
+];
+// ── Build function ──
+async function buildCareersPage() {
+    clearErrorLog();
+    logDetail('Starting Careers page build (v2 rework)...', 'info');
+    const v = await getAvorinVars();
+    logDetail('Loaded Avorino variable collection', 'ok');
+    log('Creating shared styles...');
+    const s = await createSharedStyles();
+    // ── Page-specific styles (all via Webflow Designer API) ──
+    log('Creating careers-specific styles...');
+    // Hero
+    const crHero = await getOrCreateStyle('cr-hero');
+    const crHeroLeft = await getOrCreateStyle('cr-hero-left');
+    const crCanvasWrap = await getOrCreateStyle('cr-canvas-wrap');
+    const crHeroContent = await getOrCreateStyle('cr-hero-content');
+    const crHeroLabel = await getOrCreateStyle('cr-hero-label');
+    const crHeroHeading = await getOrCreateStyle('cr-hero-heading');
+    const crHeroSub = await getOrCreateStyle('cr-hero-sub');
+    const crHeroRight = await getOrCreateStyle('cr-hero-right');
+    const crValuesLabel = await getOrCreateStyle('cr-values-label');
+    const crValueItem = await getOrCreateStyle('cr-value-item');
+    const crValueNum = await getOrCreateStyle('cr-value-number');
+    const crValueHeading = await getOrCreateStyle('cr-value-heading');
+    const crValueBody = await getOrCreateStyle('cr-value-body');
+    // Positions
+    const crPositions = await getOrCreateStyle('cr-positions');
+    const crPosLabel = await getOrCreateStyle('cr-positions-label');
+    const crPosHeading = await getOrCreateStyle('cr-positions-heading');
+    const crPosList = await getOrCreateStyle('cr-pos-list');
+    const crPosItem = await getOrCreateStyle('cr-pos-item');
+    const crPosHeader = await getOrCreateStyle('cr-pos-header');
+    const crPosTitle = await getOrCreateStyle('cr-pos-title');
+    const crPosTags = await getOrCreateStyle('cr-pos-tags');
+    const crPosTag = await getOrCreateStyle('cr-pos-tag');
+    const crPosDesc = await getOrCreateStyle('cr-pos-desc');
+    // Apply section
+    const crApply = await getOrCreateStyle('cr-apply');
+    const crApplyGrid = await getOrCreateStyle('cr-apply-grid');
+    const crApplyLabel = await getOrCreateStyle('cr-apply-label');
+    const crApplyHeading = await getOrCreateStyle('cr-apply-heading');
+    const crApplyBody = await getOrCreateStyle('cr-apply-body');
+    const crApplyPerks = await getOrCreateStyle('cr-apply-perks');
+    const crPerk = await getOrCreateStyle('cr-perk');
+    const crPerkText = await getOrCreateStyle('cr-perk-text');
+    const crFormCol = await getOrCreateStyle('cr-form-col');
+    // Stats
+    const crStats = await getOrCreateStyle('cr-stats');
+    const crStatsGrid = await getOrCreateStyle('cr-stats-grid');
+    const crStatValue = await getOrCreateStyle('cr-stat-value');
+    const crStatLabel = await getOrCreateStyle('cr-stat-label');
+    // ── Create page ──
+    const { body } = await createPageWithSlug(PAGE_NAME, PAGE_SLUG, PAGE_TITLE, PAGE_DESC);
+    // ── Style properties ──
+    async function applyStyleProperties() {
+        log('Setting shared style properties...');
+        await setSharedStyleProps(s, v);
+        await wait(1000);
+        log('Setting careers-specific style properties...');
+        // ── HERO ──
+        await clearAndSet(crHero, 'cr-hero', {
+            'display': 'grid', 'grid-template-columns': '1fr 1fr',
+            'min-height': '100vh',
+        });
+        await clearAndSet(crHeroLeft, 'cr-hero-left', {
+            'position': 'relative',
+            'display': 'flex', 'flex-direction': 'column', 'justify-content': 'flex-end',
+            'padding-top': '180px', 'padding-bottom': '80px',
+            'padding-left': '80px', 'padding-right': '80px',
+            'background-color': v['av-dark'],
+            'overflow-x': 'hidden', 'overflow-y': 'hidden',
+        });
+        await clearAndSet(crCanvasWrap, 'cr-canvas-wrap', {
+            'position': 'absolute', 'top': '0px', 'left': '0px',
+            'width': '100%', 'height': '100%',
+            'z-index': '0', 'pointer-events': 'none', 'opacity': '0.6',
+        });
+        await clearAndSet(crHeroContent, 'cr-hero-content', {
+            'position': 'relative', 'z-index': '2',
+        });
+        await clearAndSet(crHeroLabel, 'cr-hero-label', {
+            'font-family': 'DM Sans', 'font-size': '12px', 'font-weight': '500',
+            'letter-spacing': '0.2em', 'text-transform': 'uppercase',
+            'color': v['av-cream'], 'opacity': '0.4', 'margin-bottom': '20px',
+        });
+        await clearAndSet(crHeroHeading, 'cr-hero-heading', {
+            'font-family': 'DM Serif Display', 'font-size': v['av-text-h1'],
+            'font-weight': '400', 'line-height': '1.05', 'letter-spacing': '-0.02em',
+            'color': v['av-cream'], 'margin-bottom': '20px',
+        });
+        await clearAndSet(crHeroSub, 'cr-hero-sub', {
+            'font-family': 'DM Sans', 'font-size': v['av-text-body'],
+            'line-height': '1.7', 'color': v['av-cream'], 'opacity': '0.5',
+            'max-width': '480px',
+        });
+        await wait(500);
+        // ── RIGHT: Culture values ──
+        await clearAndSet(crHeroRight, 'cr-hero-right', {
+            'background-color': v['av-cream'], 'color': v['av-dark'],
+            'display': 'flex', 'flex-direction': 'column', 'justify-content': 'center',
+            'padding-top': '120px', 'padding-bottom': '120px',
+            'padding-left': '80px', 'padding-right': '80px',
+        });
+        await clearAndSet(crValuesLabel, 'cr-values-label', {
+            'font-family': 'DM Sans', 'font-size': '11px', 'font-weight': '500',
+            'letter-spacing': '0.2em', 'text-transform': 'uppercase',
+            'opacity': '0.35', 'margin-bottom': '48px',
+        });
+        await clearAndSet(crValueItem, 'cr-value-item', {
+            'padding-top': '36px', 'padding-bottom': '36px',
+            'border-bottom-width': '1px', 'border-bottom-style': 'solid',
+            'border-bottom-color': 'rgba(17,17,17,0.1)',
+        });
+        await clearAndSet(crValueNum, 'cr-value-number', {
+            'font-family': 'DM Serif Display', 'font-size': '14px',
+            'opacity': '0.25', 'margin-bottom': '12px',
+        });
+        await clearAndSet(crValueHeading, 'cr-value-heading', {
+            'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
+            'font-weight': '400', 'line-height': '1.2', 'margin-bottom': '10px',
+        });
+        await clearAndSet(crValueBody, 'cr-value-body', {
+            'font-family': 'DM Sans', 'font-size': '16px',
+            'line-height': '1.7', 'opacity': '0.5', 'max-width': '400px',
+        });
+        await wait(500);
+        // ── POSITIONS ──
+        await clearAndSet(crPositions, 'cr-positions', {
+            'background-color': v['av-dark'],
+            'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
+            'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
+        });
+        await clearAndSet(crPosLabel, 'cr-positions-label', {
+            'font-family': 'DM Sans', 'font-size': '11px', 'font-weight': '500',
+            'letter-spacing': '0.2em', 'text-transform': 'uppercase',
+            'color': v['av-cream'], 'opacity': '0.35', 'margin-bottom': '16px',
+        });
+        await clearAndSet(crPosHeading, 'cr-positions-heading', {
+            'font-family': 'DM Serif Display', 'font-size': v['av-text-h2'],
+            'font-weight': '400', 'line-height': '1.1',
+            'color': v['av-cream'], 'margin-bottom': '64px', 'max-width': '700px',
+        });
+        await wait(300);
+        await clearAndSet(crPosList, 'cr-pos-list', {
+            'max-width': '900px', 'margin-left': 'auto', 'margin-right': 'auto',
+        });
+        await clearAndSet(crPosItem, 'cr-pos-item', {
+            'border-top-width': '1px', 'border-top-style': 'solid',
+            'border-top-color': 'rgba(240,237,232,0.08)',
+            'padding-top': '32px', 'padding-bottom': '32px',
+            'cursor': 'pointer',
+        });
+        await clearAndSet(crPosHeader, 'cr-pos-header', {
+            'display': 'flex', 'align-items': 'center', 'justify-content': 'space-between',
+            'grid-column-gap': '24px',
+        });
+        await clearAndSet(crPosTitle, 'cr-pos-title', {
+            'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
+            'font-weight': '400', 'line-height': '1.3', 'color': v['av-cream'],
+        });
+        await clearAndSet(crPosTags, 'cr-pos-tags', {
+            'display': 'flex', 'grid-column-gap': '12px', 'flex-shrink': '0',
+        });
+        await clearAndSet(crPosTag, 'cr-pos-tag', {
+            'font-family': 'DM Sans', 'font-size': '11px',
+            'text-transform': 'uppercase', 'letter-spacing': '0.15em',
+            'padding-top': '6px', 'padding-bottom': '6px',
+            'padding-left': '16px', 'padding-right': '16px',
+            'border-width': '1px', 'border-style': 'solid',
+            'border-color': 'rgba(240,237,232,0.12)',
+            'border-top-left-radius': '100px', 'border-top-right-radius': '100px',
+            'border-bottom-left-radius': '100px', 'border-bottom-right-radius': '100px',
+            'color': v['av-cream'], 'opacity': '0.4',
+        });
+        await clearAndSet(crPosDesc, 'cr-pos-desc', {
+            'font-family': 'DM Sans', 'font-size': '17px',
+            'line-height': '1.8', 'color': v['av-cream'], 'opacity': '0.5',
+            'margin-top': '20px', 'max-width': '600px',
+        });
+        await wait(500);
+        // ── APPLY SECTION ──
+        await clearAndSet(crApply, 'cr-apply', {
+            'background-color': '#1a1917',
+            'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
+            'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
+        });
+        await clearAndSet(crApplyGrid, 'cr-apply-grid', {
+            'display': 'grid', 'grid-template-columns': '1fr 1.2fr',
+            'grid-column-gap': '80px', 'max-width': '1200px',
+            'margin-left': 'auto', 'margin-right': 'auto',
+        });
+        await clearAndSet(crApplyLabel, 'cr-apply-label', {
+            'font-family': 'DM Sans', 'font-size': '11px', 'font-weight': '500',
+            'letter-spacing': '0.2em', 'text-transform': 'uppercase',
+            'color': v['av-cream'], 'opacity': '0.35', 'margin-bottom': '16px',
+        });
+        await clearAndSet(crApplyHeading, 'cr-apply-heading', {
+            'font-family': 'DM Serif Display', 'font-size': v['av-text-h2'],
+            'font-weight': '400', 'line-height': '1.1',
+            'color': v['av-cream'], 'margin-bottom': '24px',
+        });
+        await clearAndSet(crApplyBody, 'cr-apply-body', {
+            'font-family': 'DM Sans', 'font-size': '17px',
+            'line-height': '1.7', 'color': v['av-cream'], 'opacity': '0.45',
+            'max-width': '420px', 'margin-bottom': '48px',
+        });
+        await wait(300);
+        await clearAndSet(crApplyPerks, 'cr-apply-perks', {
+            'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '20px',
+        });
+        await clearAndSet(crPerk, 'cr-perk', {
+            'display': 'flex', 'align-items': 'flex-start', 'grid-column-gap': '16px',
+        });
+        await clearAndSet(crPerkText, 'cr-perk-text', {
+            'font-family': 'DM Sans', 'font-size': '15px',
+            'line-height': '1.5', 'color': v['av-cream'], 'opacity': '0.6',
+        });
+        await clearAndSet(crFormCol, 'cr-form-col', {
+            'display': 'flex', 'flex-direction': 'column',
+        });
+        await wait(500);
+        // ── STATS ──
+        await clearAndSet(crStats, 'cr-stats', {
+            'background-color': v['av-dark'],
+            'padding-top': '96px', 'padding-bottom': '96px',
+            'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
+            'border-top-width': '1px', 'border-top-style': 'solid',
+            'border-top-color': 'rgba(240,237,232,0.06)',
+            'border-bottom-width': '1px', 'border-bottom-style': 'solid',
+            'border-bottom-color': 'rgba(240,237,232,0.06)',
+        });
+        await clearAndSet(crStatsGrid, 'cr-stats-grid', {
+            'display': 'grid', 'grid-template-columns': '1fr 1fr 1fr 1fr',
+            'grid-column-gap': '48px', 'max-width': '1100px',
+            'margin-left': 'auto', 'margin-right': 'auto', 'text-align': 'center',
+        });
+        await clearAndSet(crStatValue, 'cr-stat-value', {
+            'font-family': 'DM Serif Display', 'font-size': v['av-text-h2'],
+            'font-weight': '400', 'line-height': '1',
+            'color': v['av-cream'], 'margin-bottom': '8px',
+        });
+        await clearAndSet(crStatLabel, 'cr-stat-label', {
+            'font-family': 'DM Sans', 'font-size': '13px', 'font-weight': '500',
+            'letter-spacing': '0.15em', 'text-transform': 'uppercase',
+            'color': v['av-cream'], 'opacity': '0.35',
+        });
+        await wait(500);
+        await applyCTAStyleProps(v);
+    }
+    // ═══════════════ BUILD ELEMENTS ═══════════════
+    // ──────────────────────────────────────────────
+    // SECTION 1: SPLIT HERO
+    // ──────────────────────────────────────────────
+    log('Building Section 1: Split Hero...');
+    const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
+    hero.setTag('section');
+    hero.setStyles([crHero]);
+    hero.setAttribute('id', 'cr-hero');
+    // Left: dark + 3D canvas
+    const heroLeft = hero.append(webflow.elementPresets.DOM);
+    heroLeft.setTag('div');
+    heroLeft.setStyles([crHeroLeft]);
+    heroLeft.setAttribute('class', 'cr-hero-left');
+    const canvasWrap = heroLeft.append(webflow.elementPresets.DOM);
+    canvasWrap.setTag('div');
+    canvasWrap.setStyles([crCanvasWrap]);
+    canvasWrap.setAttribute('id', 'cr-canvas');
+    canvasWrap.setAttribute('class', 'cr-canvas-wrap');
+    const heroContent = heroLeft.append(webflow.elementPresets.DOM);
+    heroContent.setTag('div');
+    heroContent.setStyles([crHeroContent]);
+    const heroLabel = heroContent.append(webflow.elementPresets.DOM);
+    heroLabel.setTag('div');
+    heroLabel.setStyles([crHeroLabel]);
+    heroLabel.setTextContent('// Careers');
+    heroLabel.setAttribute('class', 'cr-hero-label');
+    const heroH = heroContent.append(webflow.elementPresets.DOM);
+    heroH.setTag('h1');
+    heroH.setStyles([crHeroHeading]);
+    heroH.setTextContent('Build your future with us');
+    heroH.setAttribute('class', 'cr-hero-heading');
+    const heroSub = heroContent.append(webflow.elementPresets.DOM);
+    heroSub.setTag('p');
+    heroSub.setStyles([crHeroSub]);
+    heroSub.setTextContent("Join Orange County\u2019s trusted builder of luxury homes, ADUs, and commercial projects. We\u2019re growing \u2014 and hiring.");
+    heroSub.setAttribute('class', 'cr-hero-sub');
+    // Right: culture values
+    const heroRight = hero.append(webflow.elementPresets.DOM);
+    heroRight.setTag('div');
+    heroRight.setStyles([crHeroRight]);
+    heroRight.setAttribute('class', 'cr-hero-right');
+    const valLabel = heroRight.append(webflow.elementPresets.DOM);
+    valLabel.setTag('div');
+    valLabel.setStyles([crValuesLabel]);
+    valLabel.setTextContent('// Why Avorino');
+    valLabel.setAttribute('class', 'cr-values-label');
+    const valH = heroRight.append(webflow.elementPresets.DOM);
+    valH.setTag('h2');
+    valH.setStyles([crValueHeading]);
+    valH.setTextContent('We build luxury homes, ADUs, and commercial projects across Orange County.');
+    const valB = heroRight.append(webflow.elementPresets.DOM);
+    valB.setTag('p');
+    valB.setStyles([crValueBody]);
+    valB.setTextContent('Every project is built to last. If you take pride in your craft and want to be part of a growing team, we want to hear from you.');
+    await safeCall('append:hero', () => body.append(hero));
+    logDetail('Section 1: Split Hero appended', 'ok');
+    // ──────────────────────────────────────────────
+    // SECTION 2: OPEN POSITIONS (currently none)
+    // ──────────────────────────────────────────────
+    log('Building Section 2: Open Positions...');
+    const posSection = webflow.elementBuilder(webflow.elementPresets.DOM);
+    posSection.setTag('section');
+    posSection.setStyles([crPositions]);
+    posSection.setAttribute('id', 'cr-positions');
+    const posInner = posSection.append(webflow.elementPresets.DOM);
+    posInner.setTag('div');
+    posInner.setStyles([crPosList]);
+    const posLabel = posInner.append(webflow.elementPresets.DOM);
+    posLabel.setTag('div');
+    posLabel.setStyles([crPosLabel]);
+    posLabel.setTextContent('// Open Positions');
+    const posH = posInner.append(webflow.elementPresets.DOM);
+    posH.setTag('h2');
+    posH.setStyles([crPosHeading]);
+    posH.setTextContent("We\u2019re always looking for skilled professionals");
+    const posBody = posInner.append(webflow.elementPresets.DOM);
+    posBody.setTag('p');
+    posBody.setStyles([crPosDesc]);
+    posBody.setTextContent("There are no current open positions right now, but we\u2019re always interested in hearing from talented people. Submit your application below and we\u2019ll reach out when a role opens up.");
+    await safeCall('append:positions', () => body.append(posSection));
+    logDetail('Section 2: Open Positions appended', 'ok');
+    // ──────────────────────────────────────────────
+    // SECTION 3: APPLICATION FORM
+    // ──────────────────────────────────────────────
+    log('Building Section 3: Application Form...');
+    const applySection = webflow.elementBuilder(webflow.elementPresets.DOM);
+    applySection.setTag('section');
+    applySection.setStyles([crApply]);
+    applySection.setAttribute('id', 'cr-apply');
+    const applyGrid = applySection.append(webflow.elementPresets.DOM);
+    applyGrid.setTag('div');
+    applyGrid.setStyles([crApplyGrid]);
+    // Left: info + perks
+    const applyLeft = applyGrid.append(webflow.elementPresets.DOM);
+    applyLeft.setTag('div');
+    applyLeft.setAttribute('class', 'cr-apply-left');
+    const apLabel = applyLeft.append(webflow.elementPresets.DOM);
+    apLabel.setTag('div');
+    apLabel.setStyles([crApplyLabel]);
+    apLabel.setTextContent('// Apply Now');
+    const apH = applyLeft.append(webflow.elementPresets.DOM);
+    apH.setTag('h2');
+    apH.setStyles([crApplyHeading]);
+    apH.setTextContent('Ready to join the team?');
+    const apBody = applyLeft.append(webflow.elementPresets.DOM);
+    apBody.setTag('p');
+    apBody.setStyles([crApplyBody]);
+    apBody.setTextContent("Fill out the form and we\u2019ll get back to you within 48 hours. You can also email us directly at construction@avorino.com.");
+    const perksWrap = applyLeft.append(webflow.elementPresets.DOM);
+    perksWrap.setTag('div');
+    perksWrap.setStyles([crApplyPerks]);
+    perksWrap.setAttribute('class', 'cr-apply-perks');
+    for (const perkText of PERKS) {
+        const perkEl = perksWrap.append(webflow.elementPresets.DOM);
+        perkEl.setTag('div');
+        perkEl.setStyles([crPerk]);
+        perkEl.setAttribute('class', 'cr-perk');
+        // Checkmark (text, no SVG since Webflow DOM doesn't support inline SVG easily)
+        const check = perkEl.append(webflow.elementPresets.DOM);
+        check.setTag('span');
+        check.setTextContent('\u2713');
+        check.setAttribute('style', 'color:#c8222a;font-size:16px;flex-shrink:0;margin-top:2px;');
+        const text = perkEl.append(webflow.elementPresets.DOM);
+        text.setTag('span');
+        text.setStyles([crPerkText]);
+        text.setTextContent(perkText);
+    }
+    // Right: form
+    const formCol = applyGrid.append(webflow.elementPresets.DOM);
+    formCol.setTag('div');
+    formCol.setStyles([crFormCol]);
+    formCol.setAttribute('class', 'cr-form');
+    buildCleanForm(formCol, FORM_FIELDS, s, 'Submit Application');
+    await safeCall('append:apply', () => body.append(applySection));
+    logDetail('Section 3: Application Form appended', 'ok');
+    // ──────────────────────────────────────────────
+    // SECTION 4: STATS
+    // ──────────────────────────────────────────────
+    log('Building Section 4: Stats...');
+    const statsSection = webflow.elementBuilder(webflow.elementPresets.DOM);
+    statsSection.setTag('section');
+    statsSection.setStyles([crStats]);
+    statsSection.setAttribute('id', 'cr-stats');
+    const statsGrid = statsSection.append(webflow.elementPresets.DOM);
+    statsGrid.setTag('div');
+    statsGrid.setStyles([crStatsGrid]);
+    for (const stat of STATS) {
+        const item = statsGrid.append(webflow.elementPresets.DOM);
+        item.setTag('div');
+        item.setAttribute('class', 'cr-stat-item');
+        const val = item.append(webflow.elementPresets.DOM);
+        val.setTag('div');
+        val.setStyles([crStatValue]);
+        val.setAttribute('class', 'cr-stat-value');
+        val.setAttribute('data-value', stat.value);
+        val.setAttribute('data-suffix', stat.suffix);
+        val.setTextContent(stat.value + stat.suffix);
+        const lbl = item.append(webflow.elementPresets.DOM);
+        lbl.setTag('div');
+        lbl.setStyles([crStatLabel]);
+        lbl.setTextContent(stat.label);
+    }
+    await safeCall('append:stats', () => body.append(statsSection));
+    logDetail('Section 4: Stats appended', 'ok');
+    // ──────────────────────────────────────────────
+    // SECTION 5: CTA (shared builder)
+    // ──────────────────────────────────────────────
+    log('Building Section 5: CTA...');
+    await buildCTASection(body, v, 'Ready to build something extraordinary?', 'Call (714) 900-3676', 'tel:7149003676', 'Contact Us', '/contact');
+    // ═══════════════ APPLY STYLES ═══════════════
+    await applyStyleProperties();
+    log('Careers page built!', 'success');
+    await webflow.notify({ type: 'Success', message: 'Careers page created!' });
+}
 // ── Event listeners ──
 document.getElementById('inject-btn')?.addEventListener('click', async () => {
     const btn = document.getElementById('inject-btn');
@@ -660,57 +501,11 @@ document.querySelectorAll('.copy-btn').forEach(btn => {
         });
     });
 });
-// Build template button (for Blog Posts Template page)
-document.getElementById('build-template')?.addEventListener('click', async () => {
-    clearErrorLog();
-    try {
-        log('Loading variables...', 'info');
-        const v = await getAvorinVars();
-        log('Creating shared styles...', 'info');
-        const s = await createSharedStyles();
-        log('Setting shared style properties...', 'info');
-        await setSharedStyleProps(s, v);
-        await buildBlogTemplate(v, s);
-    }
-    catch (err) {
-        log(`Template error: ${err.message}`, 'error');
-    }
-});
-// CMS migration button
-document.getElementById('migrate-cms')?.addEventListener('click', async () => {
-    const token = document.getElementById('api-token').value.trim();
-    const siteId = document.getElementById('site-id').value.trim();
-    if (!token || !siteId) {
-        log('Enter both API Token and Site ID', 'error');
-        return;
-    }
-    clearErrorLog();
-    try {
-        log('Creating CMS collection...', 'info');
-        const collectionId = await createBlogCollection(siteId, token);
-        log('Populating blog posts...', 'info');
-        await populateBlogPosts(collectionId, token);
-        log('CMS migration complete!', 'success');
-    }
-    catch (err) {
-        log(`CMS Error: ${err.message}`, 'error');
-    }
-});
-// Build page button
 document.getElementById('build-page')?.addEventListener('click', async () => {
     const btn = document.getElementById('build-page');
     btn.disabled = true;
-    clearErrorLog();
     try {
-        log('Loading variables...', 'info');
-        const v = await getAvorinVars();
-        log('Creating shared styles...', 'info');
-        const s = await createSharedStyles();
-        log('Setting shared style properties...', 'info');
-        await setSharedStyleProps(s, v);
-        await buildBlogPage(v, s);
-        log('Blog page built!', 'success');
-        await webflow.notify({ type: 'Success', message: 'Blog page created!' });
+        await buildCareersPage();
     }
     catch (err) {
         log(`Error: ${err.message || err}`, 'error');

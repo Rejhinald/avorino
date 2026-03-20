@@ -31,10 +31,10 @@ const SERVICE_DATA = {
         heading: 'Engineering before everything',
         body: 'New construction demands precision from the start. We begin with geotechnical reports, structural calculations, and code analysis before the first design line is drawn. This engineering-first approach means fewer surprises during construction, fewer change orders, and a building that performs for decades.',
         highlights: [
-            'Geotechnical analysis and structural engineering completed before design finalization',
-            'Full Title 24 energy compliance modeling integrated into architectural plans',
-            'Value engineering identifies cost savings without compromising structural integrity',
-            'Phased construction scheduling with milestone tracking and weekly progress reporting',
+            'Geotechnical analysis and structural engineering completed before design finalization.',
+            'Full Title 24 energy compliance modeling integrated into architectural plans.',
+            'Value engineering identifies cost savings without compromising structural integrity.',
+            'Phased construction scheduling with milestone tracking and weekly progress reporting.',
         ],
     },
     serviceTypes: [

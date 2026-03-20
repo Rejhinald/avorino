@@ -130,7 +130,7 @@
     camera.position.set(14, 8, 18);
     camera.lookAt(0, 3.5, 0);
 
-    var renderer = new THREE.WebGLRenderer({ antialias: !isMobile, alpha: true });
+    var renderer = new THREE.WebGLRenderer({ powerPreference: 'high-performance', antialias: !isMobile, alpha: true });
     renderer.setSize(w, h); renderer.setPixelRatio(dpr);
     renderer.setClearColor(0x000000, 0);
     canvasWrap.appendChild(renderer.domElement);
@@ -399,7 +399,7 @@
     procScene = new THREE.Scene();
     procScene.background = new THREE.Color(0x0B0E18);
 
-    procRenderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false });
+    procRenderer = new THREE.WebGLRenderer({ powerPreference: 'high-performance', canvas: canvas, antialias: true, alpha: false });
     procRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     procRenderer.toneMapping = THREE.ACESFilmicToneMapping;
     procRenderer.toneMappingExposure = 0.9;

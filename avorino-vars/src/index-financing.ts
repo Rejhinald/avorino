@@ -40,10 +40,10 @@ const SERVICE_DATA: ServiceData = {
     heading: 'Financing that makes building possible',
     body: 'Most homeowners have the equity to build but not the cash on hand. Our lending partners specialize in construction financing — not generic home equity lines. They understand construction draws, permit timelines, and project phases. That means faster approvals, better terms, and a financing structure designed for how construction actually works.',
     highlights: [
-      'Up to 100% project financing — cover your entire build cost without a large down payment',
-      'Construction-specific loan structures with draw schedules that match project milestones',
-      'Pre-qualification in 48 hours so you know your budget before design begins',
-      'Competitive rates from lending partners who specialize in Orange County construction',
+      'Up to 100% project financing — cover your entire build cost without a large down payment.',
+      'Construction-specific loan structures with draw schedules that match project milestones.',
+      'Pre-qualification in 48 hours so you know your budget before design begins.',
+      'Competitive rates from lending partners who specialize in Orange County construction.',
     ],
   },
 

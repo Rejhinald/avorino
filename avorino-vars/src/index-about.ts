@@ -386,7 +386,7 @@ async function buildAboutPage() {
   const mvPhrase = mvPhraseLayer.append(webflow.elementPresets.DOM);
   mvPhrase.setTag('div'); mvPhrase.setAttribute('class', 'mv-phrase');
   mvPhrase.setAttribute('data-mv-phrase', '');
-  mvPhrase.setTextContent('Bringing visionary dreams to life');
+  mvPhrase.setTextContent('Bringing visionary dreams to life.');
 
   // Mission panel
   const missionPanel = mv.append(webflow.elementPresets.DOM);
@@ -396,7 +396,7 @@ async function buildAboutPage() {
   mLabel.setTag('div'); mLabel.setAttribute('class', 'mv-panel-label'); mLabel.setTextContent('Mission');
   const mHeading = missionPanel.append(webflow.elementPresets.DOM);
   mHeading.setTag('h3'); mHeading.setAttribute('class', 'mv-panel-heading');
-  mHeading.setTextContent('Bringing visionary dreams to life');
+  mHeading.setTextContent('Bringing visionary dreams to life.');
   const mLine = missionPanel.append(webflow.elementPresets.DOM);
   mLine.setTag('div'); mLine.setAttribute('class', 'mv-panel-line');
   const mBody = missionPanel.append(webflow.elementPresets.DOM);
@@ -411,7 +411,7 @@ async function buildAboutPage() {
   vLabel.setTag('div'); vLabel.setAttribute('class', 'mv-panel-label'); vLabel.setTextContent('Vision');
   const vHeading = visionPanel.append(webflow.elementPresets.DOM);
   vHeading.setTag('h3'); vHeading.setAttribute('class', 'mv-panel-heading');
-  vHeading.setTextContent('The catalyst for transformation');
+  vHeading.setTextContent('The catalyst for transformation.');
   const vLine = visionPanel.append(webflow.elementPresets.DOM);
   vLine.setTag('div'); vLine.setAttribute('class', 'mv-panel-line');
   const vBody = visionPanel.append(webflow.elementPresets.DOM);
@@ -476,7 +476,7 @@ async function buildAboutPage() {
 
   const ctaH = ctaContentEl.append(webflow.elementPresets.DOM);
   ctaH.setTag('h2'); ctaH.setStyles([ctaHeading]);
-  ctaH.setTextContent("Let's build something remarkable");
+  ctaH.setTextContent("Let's build something remarkable.");
   ctaH.setAttribute('data-animate', 'word-stagger-elastic');
 
   const ctaBtnEl = ctaContentEl.append(webflow.elementPresets.DOM);

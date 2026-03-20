@@ -40,10 +40,10 @@ const SERVICE_DATA: ServiceData = {
     heading: 'Real estate investing from your own backyard',
     body: 'You don\'t need to buy a second property to build rental income. California law now allows ADUs on most single-family lots — and Orange County\'s rental market is one of the strongest in the country. A well-designed ADU generates $2K–$4.5K/month in rental income, increases your property value by 20–35%, and often pays for itself within 5–7 years.',
     highlights: [
-      'Monthly rental income of $2,000–$4,500+ in Orange County — often exceeding your construction loan payment',
-      'Property value increase of 20–35% with a permitted, professionally-built ADU',
-      'Tax advantages including depreciation, mortgage interest deductions, and operating expense write-offs',
-      'No landlord experience needed — we connect you with property management partners',
+      'Monthly rental income of $2,000–$4,500+ in Orange County — often exceeding your construction loan payment.',
+      'Property value increase of 20–35% with a permitted, professionally-built ADU.',
+      'Tax advantages including depreciation, mortgage interest deductions, and operating expense write-offs.',
+      'No landlord experience needed — we connect you with property management partners.',
     ],
   },
 

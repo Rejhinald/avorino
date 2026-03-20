@@ -40,10 +40,10 @@ const SERVICE_DATA: ServiceData = {
     heading: 'Expand without compromise',
     body: 'Adding onto an existing home is more complex than new construction — the new must integrate perfectly with the old. We start with a structural assessment of your existing home, then engineer the addition to tie in seamlessly. Matching rooflines, siding, and finishes so the addition looks like it was always there.',
     highlights: [
-      'Structural assessment of existing home before design — identify load paths, foundation capacity, and framing connections',
-      'Roofline matching and exterior finish integration so the addition looks original, not bolted on',
-      'Phased construction minimizes disruption — you stay in your home through most of the project',
-      'Foundation engineering matched to existing conditions — pier, slab, or stem wall as appropriate',
+      'Structural assessment of existing home before design — identify load paths, foundation capacity, and framing connections.',
+      'Roofline matching and exterior finish integration so the addition looks original, not bolted on.',
+      'Phased construction minimizes disruption — you stay in your home through most of the project.',
+      'Foundation engineering matched to existing conditions — pier, slab, or stem wall as appropriate.',
     ],
   },
 

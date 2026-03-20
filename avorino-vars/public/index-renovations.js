@@ -31,10 +31,10 @@ const SERVICE_DATA = {
         heading: 'Renovation, not demolition',
         body: 'Great renovations honor the bones of the original home while reimagining everything else. We assess structural conditions, identify what should stay and what should go, then design a transformation that feels intentional — not patched together. Every material choice, every layout decision, every finish is selected for how it works in your specific space.',
         highlights: [
-            'Pre-renovation structural and systems assessment — know the true condition before committing to a scope',
-            'Design decisions made in context of your home\'s existing character, proportions, and natural light',
-            'Material selection guided by longevity and livability — not just trend cycles',
-            'Phased renovation plans that let you stay home during construction when possible',
+            'Pre-renovation structural and systems assessment — know the true condition before committing to a scope.',
+            'Design decisions made in context of your home\'s existing character, proportions, and natural light.',
+            'Material selection guided by longevity and livability — not just trend cycles.',
+            'Phased renovation plans that let you stay home during construction when possible.',
         ],
     },
     serviceTypes: [

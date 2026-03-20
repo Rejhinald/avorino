@@ -269,7 +269,7 @@ async function buildAboutPage() {
     const heroSub = heroC.append(webflow.elementPresets.DOM);
     heroSub.setTag('p');
     heroSub.setStyles([heroSubtitle]);
-    heroSub.setTextContent('Custom home and ADU builder in Orange County since 2023');
+    heroSub.setTextContent('Custom home and ADU builder in Orange County since 2023.');
     heroSub.setAttribute('data-animate', 'fade-up');
     await safeCall('append:hero', () => body.append(hero));
     // STORY
@@ -403,7 +403,7 @@ async function buildAboutPage() {
     mvPhrase.setTag('div');
     mvPhrase.setAttribute('class', 'mv-phrase');
     mvPhrase.setAttribute('data-mv-phrase', '');
-    mvPhrase.setTextContent('Bringing visionary dreams to life');
+    mvPhrase.setTextContent('Bringing visionary dreams to life.');
     // Mission panel
     const missionPanel = mv.append(webflow.elementPresets.DOM);
     missionPanel.setTag('div');
@@ -416,7 +416,7 @@ async function buildAboutPage() {
     const mHeading = missionPanel.append(webflow.elementPresets.DOM);
     mHeading.setTag('h3');
     mHeading.setAttribute('class', 'mv-panel-heading');
-    mHeading.setTextContent('Bringing visionary dreams to life');
+    mHeading.setTextContent('Bringing visionary dreams to life.');
     const mLine = missionPanel.append(webflow.elementPresets.DOM);
     mLine.setTag('div');
     mLine.setAttribute('class', 'mv-panel-line');
@@ -436,7 +436,7 @@ async function buildAboutPage() {
     const vHeading = visionPanel.append(webflow.elementPresets.DOM);
     vHeading.setTag('h3');
     vHeading.setAttribute('class', 'mv-panel-heading');
-    vHeading.setTextContent('The catalyst for transformation');
+    vHeading.setTextContent('The catalyst for transformation.');
     const vLine = visionPanel.append(webflow.elementPresets.DOM);
     vLine.setTag('div');
     vLine.setAttribute('class', 'mv-panel-line');
@@ -523,7 +523,7 @@ async function buildAboutPage() {
     const ctaH = ctaContentEl.append(webflow.elementPresets.DOM);
     ctaH.setTag('h2');
     ctaH.setStyles([ctaHeading]);
-    ctaH.setTextContent("Let's build something remarkable");
+    ctaH.setTextContent("Let's build something remarkable.");
     ctaH.setAttribute('data-animate', 'word-stagger-elastic');
     const ctaBtnEl = ctaContentEl.append(webflow.elementPresets.DOM);
     ctaBtnEl.setTag('a');

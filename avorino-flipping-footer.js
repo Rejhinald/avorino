@@ -132,7 +132,7 @@
     camera.position.set(0, 2, 40);
     camera.lookAt(0, 0, 0);
 
-    var renderer = new THREE.WebGLRenderer({ antialias: !isMobile, alpha: true });
+    var renderer = new THREE.WebGLRenderer({ powerPreference: 'high-performance', antialias: !isMobile, alpha: true });
     renderer.setSize(w, h); renderer.setPixelRatio(dpr);
     renderer.setClearColor(0x000000, 0);
     canvasWrap.appendChild(renderer.domElement);
@@ -551,7 +551,7 @@
     var ph = section.clientHeight || window.innerHeight;
     var pScene    = new THREE.Scene();
     var pCam      = new THREE.OrthographicCamera(-pw/2, pw/2, ph/2, -ph/2, -1, 1);
-    var pRenderer = new THREE.WebGLRenderer({ canvas: pCanvas, antialias: false, alpha: true });
+    var pRenderer = new THREE.WebGLRenderer({ powerPreference: 'high-performance', canvas: pCanvas, antialias: false, alpha: true });
     pRenderer.setSize(pw, ph);
     pRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     pRenderer.setClearColor(0x000000, 0);

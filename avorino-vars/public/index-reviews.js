@@ -38,7 +38,7 @@ const FEATURED = [REVIEWS[0], REVIEWS[1], REVIEWS[3], REVIEWS[5], REVIEWS[8], RE
 const PAGE_NAME = 'Client Reviews';
 const PAGE_SLUG = 'clientreviews';
 const PAGE_TITLE = 'Client Reviews — Avorino Construction';
-const PAGE_DESC = '4.9 average rating from 35+ reviews. See what Orange County homeowners say about working with Avorino.';
+const PAGE_DESC = '4.8 average rating from 35+ reviews. See what Orange County homeowners say about working with Avorino.';
 const HEAD_CODE = [
     '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@e1e2a6d/avorino-responsive.css">',
     '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@e1e2a6d/avorino-nav-footer.css">',
@@ -107,7 +107,7 @@ async function buildReviewsPage() {
     statsStars.setTextContent('\u2605\u2605\u2605\u2605\u2605');
     const statsText = stats.append(webflow.elementPresets.DOM);
     statsText.setTag('span');
-    statsText.setTextContent('4.9 average from 35+ reviews');
+    statsText.setTextContent('4.8 average from 35+ reviews');
     const counter = header.append(webflow.elementPresets.DOM);
     counter.setTag('div');
     counter.setAttribute('class', 'rv-counter');

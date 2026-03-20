@@ -40,10 +40,10 @@ const SERVICE_DATA: ServiceData = {
     heading: 'Conversion, not just renovation',
     body: 'A garage conversion isn\'t simply finishing a garage — it\'s transforming a non-habitable structure into a code-compliant dwelling unit. This requires structural upgrades, insulation, ventilation, plumbing, electrical service, and fire separation. We handle the engineering and code compliance so the finished unit passes inspection and qualifies as legal habitable space.',
     highlights: [
-      'Structural assessment of existing garage — verify slab thickness, wall framing, and roof capacity for habitable-space code requirements',
-      'Full MEP design — new electrical sub-panel, plumbing for kitchen and bathroom, HVAC for year-round comfort',
-      'Fire separation and egress engineering — required when converting attached garages per California Building Code',
-      'Parking replacement solutions — tandem parking, carport, or permeable driveway paving to satisfy replacement parking requirements',
+      'Structural assessment of existing garage — verify slab thickness, wall framing, and roof capacity for habitable-space code requirements.',
+      'Full MEP design — new electrical sub-panel, plumbing for kitchen and bathroom, HVAC for year-round comfort.',
+      'Fire separation and egress engineering — required when converting attached garages per California Building Code.',
+      'Parking replacement solutions — tandem parking, carport, or permeable driveway paving to satisfy replacement parking requirements.',
     ],
   },
 

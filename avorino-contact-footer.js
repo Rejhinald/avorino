@@ -27,7 +27,7 @@
     camera.position.set(12, 8, 14);
     camera.lookAt(0, 2, 0);
 
-    var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    var renderer = new THREE.WebGLRenderer({ powerPreference: 'high-performance', antialias: true, alpha: true });
     renderer.setSize(w, h);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);

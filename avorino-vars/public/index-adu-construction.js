@@ -585,7 +585,7 @@ async function buildADUConstructionPage() {
     const htlNote = htlWrap.append(webflow.elementPresets.DOM);
     htlNote.setTag('p');
     htlNote.setStyles([aducHtlNote]);
-    htlNote.setTextContent('Total timeline: 10–14 months from design to move-in');
+    htlNote.setTextContent('Total timeline: 10–14 months from design to move-in.');
     await safeCall('append:process', () => body.append(procSection));
     logDetail('Section 4: Process appended', 'ok');
     // SECTION 5: CTA

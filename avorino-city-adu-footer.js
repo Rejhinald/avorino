@@ -140,7 +140,7 @@
     if (!wrap) return;
 
     /* ── Renderer ── */
-    var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    var renderer = new THREE.WebGLRenderer({ powerPreference: 'high-performance', antialias: true, alpha: true });
     renderer.setPixelRatio(window.innerWidth < 768 ? Math.min(window.devicePixelRatio, 1.5) : Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
     renderer.setSize(wrap.clientWidth, wrap.clientHeight);
@@ -639,7 +639,7 @@
     if (!wrap) return;
 
     /* ── Renderer ── */
-    var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    var renderer = new THREE.WebGLRenderer({ powerPreference: 'high-performance', antialias: true, alpha: true });
     renderer.setPixelRatio(window.innerWidth < 768 ? Math.min(window.devicePixelRatio, 1.5) : Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
     renderer.setSize(wrap.clientWidth, wrap.clientHeight);
@@ -1114,7 +1114,7 @@
     if (typeof THREE !== 'undefined') {
       var w = canvas.offsetWidth || section.offsetWidth;
       var h = canvas.offsetHeight || section.offsetHeight;
-      var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+      var renderer = new THREE.WebGLRenderer({ powerPreference: 'high-performance', canvas: canvas, antialias: true, alpha: true });
       renderer.setSize(w, h);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 

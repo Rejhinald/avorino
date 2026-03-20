@@ -641,6 +641,15 @@ function _buildField(parent, field, s) {
         el.setStyles([s.selectClean]);
         el.setAttribute('name', field.name);
     }
+    else if (field.type === 'file') {
+        const el = wrap.append(webflow.elementPresets.DOM);
+        el.setTag('input');
+        el.setStyles([s.inputClean]);
+        el.setAttribute('type', 'file');
+        el.setAttribute('name', field.name);
+        el.setAttribute('accept', '.pdf,.jpg,.jpeg,.png,.doc,.docx,.dwg');
+        el.setAttribute('multiple', 'true');
+    }
     else {
         const el = wrap.append(webflow.elementPresets.DOM);
         el.setTag('input');

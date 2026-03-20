@@ -136,7 +136,7 @@
     camera.position.set(3, 5, 14);
     camera.lookAt(0, 1.2, 0);
 
-    var renderer = new THREE.WebGLRenderer({ antialias: !isMobile, alpha: true });
+    var renderer = new THREE.WebGLRenderer({ powerPreference: 'high-performance', antialias: !isMobile, alpha: true });
     renderer.setSize(w, h); renderer.setPixelRatio(dpr);
     renderer.setClearColor(0x000000, 0);
     renderer.shadowMap.enabled = true;
@@ -853,7 +853,7 @@
     var revScene = new THREE.Scene();
     revScene.background = new THREE.Color(0x0B0E18);
 
-    var revRenderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: !isMobile, alpha: false });
+    var revRenderer = new THREE.WebGLRenderer({ powerPreference: 'high-performance', canvas: canvas, antialias: !isMobile, alpha: false });
     revRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     revRenderer.toneMapping = THREE.ACESFilmicToneMapping;
     revRenderer.toneMappingExposure = 0.9;

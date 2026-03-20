@@ -30,7 +30,7 @@
     var camera = new THREE.PerspectiveCamera(60, w / h, 0.1, 100);
     camera.position.set(0, 0, 8);
 
-    var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    var renderer = new THREE.WebGLRenderer({ powerPreference: 'high-performance', alpha: true, antialias: true });
     renderer.setSize(w, h);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
@@ -179,7 +179,7 @@
     var camera = new THREE.PerspectiveCamera(60, w / h, 0.1, 100);
     camera.position.set(0, 0, 10);
 
-    var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    var renderer = new THREE.WebGLRenderer({ powerPreference: 'high-performance', alpha: true, antialias: true });
     renderer.setSize(w, h);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);

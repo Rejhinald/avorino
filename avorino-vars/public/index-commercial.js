@@ -31,10 +31,10 @@ const SERVICE_DATA = {
         heading: 'Commercial demands a different standard',
         body: 'Commercial construction operates under different codes, different timelines, and different stakes than residential. ADA compliance, fire-rated assemblies, commercial HVAC, grease traps, Type I hoods — we navigate the complexity so you can focus on your business. Every day of delay costs you revenue, which is why we build to schedules, not estimates.',
         highlights: [
-            'ADA accessibility compliance from design through final inspection — no costly retrofits',
-            'Commercial building code expertise — CBC, CFC, CPC, CMC, and CEC requirements understood and built to',
-            'Health department coordination for restaurant and food-service projects',
-            'Phased construction schedules that minimize revenue disruption for operating businesses',
+            'ADA accessibility compliance from design through final inspection — no costly retrofits.',
+            'Commercial building code expertise — CBC, CFC, CPC, CMC, and CEC requirements understood and built to.',
+            'Health department coordination for restaurant and food-service projects.',
+            'Phased construction schedules that minimize revenue disruption for operating businesses.',
         ],
     },
     serviceTypes: [

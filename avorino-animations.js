@@ -208,17 +208,32 @@
         });
         lineEls = el.querySelectorAll('.line');
       }
+      var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
       lineEls.forEach(function (line, i) {
-        gsap.set(line, { clipPath: 'inset(0 100% 0 0)' });
-        gsap.to(line, {
-          clipPath: 'inset(0 0% 0 0)', ease: 'power3.inOut',
-          scrollTrigger: {
-            trigger: el,
-            start: 'top ' + (85 - i * 12) + '%',
-            end: 'top ' + (65 - i * 12) + '%',
-            scrub: 1,
-          },
-        });
+        if (isSafari) {
+          /* Safari clip-path fallback: use opacity + translate instead */
+          gsap.set(line, { opacity: 0, x: -30 });
+          gsap.to(line, {
+            opacity: 1, x: 0, ease: 'power3.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top ' + (85 - i * 12) + '%',
+              end: 'top ' + (65 - i * 12) + '%',
+              scrub: 1,
+            },
+          });
+        } else {
+          gsap.set(line, { clipPath: 'inset(0 100% 0 0)' });
+          gsap.to(line, {
+            clipPath: 'inset(0 0% 0 0)', ease: 'power3.inOut',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top ' + (85 - i * 12) + '%',
+              end: 'top ' + (65 - i * 12) + '%',
+              scrub: 1,
+            },
+          });
+        }
       });
     });
 

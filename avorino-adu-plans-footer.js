@@ -162,7 +162,7 @@
     camera.position.set(20, 16, 26);
     camera.lookAt(0, 2, 0);
 
-    var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    var renderer = new THREE.WebGLRenderer({ powerPreference: 'high-performance', antialias: true, alpha: true });
     renderer.setPixelRatio(window.innerWidth < 768 ? Math.min(window.devicePixelRatio, 1.5) : Math.min(window.devicePixelRatio, 2));
     renderer.setSize(wrap.clientWidth, wrap.clientHeight);
     renderer.setClearColor(0x000000, 0);
@@ -669,7 +669,7 @@
     if (!wrap) return;
 
     /* ── Renderer ── */
-    var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    var renderer = new THREE.WebGLRenderer({ powerPreference: 'high-performance', alpha: true, antialias: true });
     renderer.setClearColor(0x000000, 0);
     renderer.setPixelRatio(window.innerWidth < 768 ? Math.min(window.devicePixelRatio, 1.5) : Math.min(window.devicePixelRatio, 2));
     wrap.appendChild(renderer.domElement);

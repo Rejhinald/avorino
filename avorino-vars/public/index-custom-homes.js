@@ -31,10 +31,10 @@ const SERVICE_DATA = {
         heading: 'Design-build, not design-then-build',
         body: 'Most builders separate design and construction into disconnected phases. We integrate them. Your architect and your builder work as one team from day one — eliminating miscommunication, reducing change orders, and delivering a home that matches what was promised. Every home we build starts with your goals and your site conditions — not a catalog template.',
         highlights: [
-            'Single point of accountability from concept to certificate of occupancy — no finger-pointing between architect and contractor',
-            'Real-time cost visibility during design so you make material and layout decisions with budget clarity',
-            'Structural engineering integrated from day one — bold architectural concepts are buildable, not just renderable',
-            'Site-specific design that accounts for soil conditions, topography, views, solar orientation, and local code',
+            'Single point of accountability from concept to certificate of occupancy — no finger-pointing between architect and contractor.',
+            'Real-time cost visibility during design so you make material and layout decisions with budget clarity.',
+            'Structural engineering integrated from day one — bold architectural concepts are buildable, not just renderable.',
+            'Site-specific design that accounts for soil conditions, topography, views, solar orientation, and local code.',
         ],
     },
     serviceTypes: [
