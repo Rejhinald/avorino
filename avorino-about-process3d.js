@@ -108,13 +108,17 @@
     scene.background = new THREE.Color(0x0B0E18); // dark night sky
 
     // Renderer
-    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false });
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.9;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     resizeRenderer();
+
+    // WebGL context loss recovery (Safari)
+    canvas.addEventListener('webglcontextlost', function (e) { e.preventDefault(); if (animFrameId) cancelAnimationFrame(animFrameId); }, false);
+    canvas.addEventListener('webglcontextrestored', function () { renderLoop(); }, false);
 
     // Camera — angled view looking at ADU center
     camera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 300);

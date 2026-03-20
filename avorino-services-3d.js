@@ -13,7 +13,7 @@
     if (!wrap) return;
 
     /* ── Renderer ── */
-    var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' });
     renderer.setClearColor(0x000000, 0);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     wrap.appendChild(renderer.domElement);
@@ -317,7 +317,6 @@
     var baseAngle = 0;
 
     function animate() {
-      requestAnimationFrame(animate);
       if (!visible) return;
 
       scroll += (scrollTarget - scroll) * 0.06;
@@ -372,7 +371,21 @@
       renderer.render(scene, camera);
     }
 
-    animate();
+    var animId;
+    function startLoop() { animId = requestAnimationFrame(function loop() { animate(); animId = requestAnimationFrame(loop); }); }
+    function stopLoop() { if (animId) cancelAnimationFrame(animId); }
+
+    /* WebGL context loss recovery (Safari) */
+    renderer.domElement.addEventListener('webglcontextlost', function (e) { e.preventDefault(); stopLoop(); }, false);
+    renderer.domElement.addEventListener('webglcontextrestored', function () { startLoop(); }, false);
+
+    startLoop();
+
+    /* Cleanup on page unload */
+    window.addEventListener('beforeunload', function () {
+      stopLoop();
+      renderer.dispose();
+    });
 
     /* Signal ready */
     showcase.dispatchEvent(new CustomEvent('sv3d-ready'));

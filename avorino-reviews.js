@@ -89,7 +89,7 @@
     statsStars.className = 'rv-stats-stars';
     statsStars.textContent = '\u2605\u2605\u2605\u2605\u2605';
     var statsText = document.createElement('span');
-    statsText.textContent = '4.9 average from 35+ reviews';
+    statsText.textContent = '4.8 average from 35+ reviews';
     stats.appendChild(statsStars);
     stats.appendChild(statsText);
 

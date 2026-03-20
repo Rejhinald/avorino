@@ -281,7 +281,7 @@ async function buildAboutPage() {
   const heroH = heroC.append(webflow.elementPresets.DOM); heroH.setTag('h1'); heroH.setStyles([s.headingXL]);
   heroH.setTextContent('About Avorino'); heroH.setAttribute('data-animate', 'char-cascade');
   const heroSub = heroC.append(webflow.elementPresets.DOM); heroSub.setTag('p'); heroSub.setStyles([heroSubtitle]);
-  heroSub.setTextContent('Custom home and ADU builder in Orange County since 2023'); heroSub.setAttribute('data-animate', 'fade-up');
+  heroSub.setTextContent('Custom home and ADU builder in Orange County since 2023.'); heroSub.setAttribute('data-animate', 'fade-up');
   await safeCall('append:hero', () => body.append(hero));
 
   // STORY

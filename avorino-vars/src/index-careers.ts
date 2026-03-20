@@ -50,12 +50,7 @@ const FORM_FIELDS: FormField[] = [
   { name: 'message', label: 'Tell Us About Yourself', type: 'textarea', placeholder: 'Relevant experience, certifications, availability, etc.' },
 ];
 
-// ── Culture values ──
-const CULTURE_VALUES = [
-  { num: '01', heading: 'Build extraordinary', body: 'Work on luxury custom homes, ADUs, and commercial projects across Orange County. Every project is built to last.' },
-  { num: '02', heading: 'Grow with us', body: 'Training, certifications, and career advancement are part of the job. We invest in our people.' },
-  { num: '03', heading: 'Competitive pay', body: 'Market-rate compensation, benefits, and consistent year-round work across Orange County.' },
-];
+// ── Culture values (removed per client request) ──
 
 // ── Open positions (currently none) ──
 
@@ -63,15 +58,13 @@ const CULTURE_VALUES = [
 const STATS = [
   { value: '4.8', suffix: '/5', label: 'Yelp Rating' },
   { value: '35', suffix: '+', label: '5-Star Reviews' },
-  { value: '10', suffix: '+', label: 'Years in OC' },
+  { value: '50', suffix: '+', label: 'Projects Completed' },
   { value: '37', suffix: '', label: 'Cities Served' },
 ];
 
 // ── Perks ──
 const PERKS = [
   'Year-round work across Orange County',
-  'Health benefits & competitive compensation',
-  'Training, certifications & career advancement',
   'Work on luxury custom homes & commercial builds',
 ];
 
@@ -393,30 +386,18 @@ async function buildCareersPage() {
   const valLabel = heroRight.append(webflow.elementPresets.DOM);
   valLabel.setTag('div');
   valLabel.setStyles([crValuesLabel]);
-  valLabel.setTextContent('Why Avorino');
+  valLabel.setTextContent('// Why Avorino');
   valLabel.setAttribute('class', 'cr-values-label');
 
-  for (const val of CULTURE_VALUES) {
-    const item = heroRight.append(webflow.elementPresets.DOM);
-    item.setTag('div');
-    item.setStyles([crValueItem]);
-    item.setAttribute('class', 'cr-value-item');
+  const valH = heroRight.append(webflow.elementPresets.DOM);
+  valH.setTag('h2');
+  valH.setStyles([crValueHeading]);
+  valH.setTextContent('We build luxury homes, ADUs, and commercial projects across Orange County.');
 
-    const num = item.append(webflow.elementPresets.DOM);
-    num.setTag('div');
-    num.setStyles([crValueNum]);
-    num.setTextContent(val.num);
-
-    const h = item.append(webflow.elementPresets.DOM);
-    h.setTag('h3');
-    h.setStyles([crValueHeading]);
-    h.setTextContent(val.heading);
-
-    const b = item.append(webflow.elementPresets.DOM);
-    b.setTag('p');
-    b.setStyles([crValueBody]);
-    b.setTextContent(val.body);
-  }
+  const valB = heroRight.append(webflow.elementPresets.DOM);
+  valB.setTag('p');
+  valB.setStyles([crValueBody]);
+  valB.setTextContent('Every project is built to last. If you take pride in your craft and want to be part of a growing team, we want to hear from you.');
 
   await safeCall('append:hero', () => body.append(hero));
   logDetail('Section 1: Split Hero appended', 'ok');
@@ -483,7 +464,7 @@ async function buildCareersPage() {
   const apBody = applyLeft.append(webflow.elementPresets.DOM);
   apBody.setTag('p');
   apBody.setStyles([crApplyBody]);
-  apBody.setTextContent("Fill out the form and we\u2019ll get back to you within 48 hours. You can also email us directly at construction@avorino.com");
+  apBody.setTextContent("Fill out the form and we\u2019ll get back to you within 48 hours. You can also email us directly at construction@avorino.com.");
 
   const perksWrap = applyLeft.append(webflow.elementPresets.DOM);
   perksWrap.setTag('div');

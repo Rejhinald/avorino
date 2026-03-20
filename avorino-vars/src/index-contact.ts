@@ -49,13 +49,14 @@ const FORM_FIELDS: FormField[] = [
   { name: 'address', label: 'Property Address', type: 'text', placeholder: 'Street address, City, CA' },
   { name: 'service', label: 'Service Type', type: 'select', options: ['ADU', 'Custom Home', 'Renovation', 'Addition', 'Garage Conversion', 'Commercial', 'Other'] },
   { name: 'message', label: 'Message', type: 'textarea', placeholder: 'Tell us about your project' },
+  { name: 'attachments', label: 'Attach Blueprints / Documents', type: 'file' },
 ];
 
 // Trust signal data
 const TRUST_STATS = [
   { value: '4.8', suffix: '', label: 'Yelp Rating' },
   { value: '35', suffix: '+', label: '5-Star Reviews' },
-  { value: '10', suffix: '+', label: 'Years in OC' },
+  { value: '50', suffix: '+', label: 'Projects Completed' },
   { value: '37', suffix: '', label: 'Cities Served' },
 ];
 

@@ -655,7 +655,7 @@ export async function applyCalendlyStyleProps(v: Record<string, any>) {
 export interface FormField {
   name: string;
   label: string;
-  type: 'text' | 'email' | 'tel' | 'select' | 'textarea';
+  type: 'text' | 'email' | 'tel' | 'select' | 'textarea' | 'file';
   placeholder?: string;
   options?: string[];
   halfWidth?: boolean; // pair with next field in 2-col row
@@ -722,6 +722,14 @@ function _buildField(parent: any, field: FormField, s: Record<string, any>) {
     el.setTag('select');
     el.setStyles([s.selectClean]);
     el.setAttribute('name', field.name);
+  } else if (field.type === 'file') {
+    const el = wrap.append(webflow.elementPresets.DOM);
+    el.setTag('input');
+    el.setStyles([s.inputClean]);
+    el.setAttribute('type', 'file');
+    el.setAttribute('name', field.name);
+    el.setAttribute('accept', '.pdf,.jpg,.jpeg,.png,.doc,.docx,.dwg');
+    el.setAttribute('multiple', 'true');
   } else {
     const el = wrap.append(webflow.elementPresets.DOM);
     el.setTag('input');
