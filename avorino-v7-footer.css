@@ -388,6 +388,11 @@ ul,ol{list-style:none;margin:0;padding:0}
 .footer-bottom-links{gap:16px}
 .footer-bottom{gap:16px;flex-direction:column}
 .process-stage{min-height:auto}
-.press-item{flex:0 0 120px;height:120px;margin-left:16px;margin-right:16px}
-.press-item img{width:120px;height:120px}
+.press-item{flex:0 0 80px;height:80px;margin-left:12px;margin-right:12px}
+.press-item img{width:80px;height:80px}
+.featured-panel{overflow:hidden}
+.featured-panel-title{word-break:break-word;overflow-wrap:break-word}
+.featured-grid-card{overflow:hidden}
+.featured-grid-card-content{overflow:hidden}
+.featured-grid-card-title{font-size:clamp(18px,5vw,24px);word-break:break-word;overflow-wrap:break-word}
 }
