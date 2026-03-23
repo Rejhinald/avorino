@@ -40,21 +40,25 @@
   function splitIntoWords(el) {
     var computed = getComputedStyle(el);
     var textAlign = computed.textAlign;
-    // Get text — if already split into spans (baked by Webflow), collect from each span
+    // Get text — if already split into spans (baked by Webflow), collect from each
     var text = '';
     var existingSpans = el.querySelectorAll('span > span');
     if (existingSpans.length > 0) {
-      // Already split — reconstruct with spaces
       var pieces = [];
       existingSpans.forEach(function(s) { pieces.push(s.textContent); });
-      text = pieces.join(' ');
+      // Check if pieces are single characters (letter-split) vs words
+      var allSingle = pieces.every(function(p) { return p.length <= 1; });
+      if (allSingle) {
+        // Letters were split individually — join back, treat spaces as word breaks
+        text = pieces.join('');
+      } else {
+        text = pieces.join(' ');
+      }
     } else {
       text = el.textContent;
     }
-    // If text is one big camelCase/mashed blob, try to split on capital letters after lowercase
-    // e.g. "Let'stalkaboutyournextproject" → detect no spaces
+    // If text is one big mashed blob with no spaces, check known phrases
     if (text.indexOf(' ') === -1 && text.length > 15) {
-      // Known CTA phrases — hardcoded fallback
       var knownPhrases = {
         "let'stalkaboutyournextproject": "Let's talk about your next project",
         "readytobuildyourdreamhome": "Ready to build your dream home",
@@ -62,7 +66,8 @@
         "readytotransformyourproperty": "Ready to transform your property",
         "getyourfreeestimate": "Get your free estimate",
         "let'sbuildtogether": "Let's build together",
-        "startbuildingtoday": "Start building today"
+        "startbuildingtoday": "Start building today",
+        "readytobuildyouradu": "Ready to build your ADU"
       };
       var lower = text.toLowerCase().replace(/[?.!]/g, '');
       if (knownPhrases[lower]) text = knownPhrases[lower];
