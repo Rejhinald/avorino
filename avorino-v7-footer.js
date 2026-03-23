@@ -12,10 +12,16 @@
     s.id = 'av-mobile-fix';
     s.textContent = [
       '@media(max-width:767px){',
-      // Hero
-      '  .hero { height: calc(100vh - 56px) !important; padding: 12px !important; position: relative !important; overflow: hidden !important; }',
-      '  .hero-overlay { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; }',
-      '  .hero-overlay > * { width: 100% !important; height: 100% !important; object-fit: cover !important; }',
+      // Hero — full bleed, no padding, overlay covers everything
+      '  .hero { height: 100vh !important; padding: 0 !important; position: relative !important; overflow: hidden !important; }',
+      '  .hero-container { width: 100% !important; height: 100% !important; padding: 0 !important; position: relative !important; }',
+      '  .hero-overlay { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; z-index: 0 !important; }',
+      '  .hero-overlay > * { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; }',
+      '  .hero-overlay .div-block-2 { background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.2) 40%, transparent 100%) !important; z-index: 2 !important; }',
+      '  .hero-overlay .w-background-video { z-index: 1 !important; }',
+      '  .hero-overlay .w-background-video video { width: 100% !important; height: 100% !important; object-fit: cover !important; }',
+      '  .hero-content { position: absolute !important; bottom: 24px !important; left: 16px !important; right: 16px !important; z-index: 3 !important; }',
+      '  .hero-scroll-indicator { z-index: 3 !important; }',
       // Stats
       '  .stats { padding: 48px 16px !important; }',
       '  .stats-grid { grid-template-columns: 1fr 1fr !important; gap: 28px 20px !important; }',
@@ -32,7 +38,9 @@
       '  .featured-image-wrap > * { width: 100% !important; height: 100% !important; object-fit: cover !important; background-size: cover !important; background-position: center !important; transform: none !important; }',
       '  .featured-panel { margin: 0 !important; padding: 24px 0 !important; max-width: 100% !important; width: 100% !important; box-sizing: border-box !important; overflow: hidden !important; background: transparent !important; opacity: 1 !important; transform: none !important; translate: none !important; color: #111 !important; }',
       '  .featured-panel-title { font-size: clamp(24px, 6vw, 32px) !important; word-break: break-word !important; color: #111 !important; width: 100% !important; }',
-      '  .featured-panel-meta { flex-direction: column !important; gap: 8px !important; width: 100% !important; color: #555 !important; font-size: 15px !important; }',
+      '  .featured-panel-meta { flex-direction: column !important; gap: 4px !important; width: 100% !important; color: #444 !important; font-size: 15px !important; }',
+      '  .featured-panel-meta span { display: block !important; }',
+      '  .featured-panel-meta .featured-panel-label { font-size: 11px !important; letter-spacing: .1em !important; text-transform: uppercase !important; color: #999 !important; margin-top: 12px !important; }',
       '  .featured-grid { grid-template-columns: 1fr !important; width: 100% !important; gap: 16px !important; margin-top: 24px !important; }',
       '  .featured-grid-card { width: 100% !important; height: 240px !important; min-height: auto !important; max-height: none !important; overflow: hidden !important; opacity: 1 !important; transform: none !important; translate: none !important; }',
       '  .featured-grid-card-content { padding: 20px !important; }',
