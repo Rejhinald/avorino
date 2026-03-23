@@ -58,8 +58,17 @@
       text = el.textContent;
     }
     // If text is one big mashed blob with no spaces, check known phrases
-    if (text.indexOf(' ') === -1 && text.length > 15) {
+    if (text.indexOf(' ') === -1 && text.length > 5) {
       var knownPhrases = {
+        "ourservices": "Our Services",
+        "ourprocess": "Our Process",
+        "ourwork": "Our Work",
+        "ourteam": "Our Team",
+        "ourstory": "Our Story",
+        "aboutavorino": "About Avorino",
+        "aboutus": "About Us",
+        "getintouch": "Get in Touch",
+        "contactus": "Contact Us",
         "let'stalkaboutyournextproject": "Let's talk about your next project",
         "readytobuildyourdreamhome": "Ready to build your dream home",
         "let'sstartyourproject": "Let's start your project",
@@ -67,7 +76,12 @@
         "getyourfreeestimate": "Get your free estimate",
         "let'sbuildtogether": "Let's build together",
         "startbuildingtoday": "Start building today",
-        "readytobuildyouradu": "Ready to build your ADU"
+        "readytobuildyouradu": "Ready to build your ADU",
+        "readytojointheteam": "Ready to join the team",
+        "buildyourfuturewithus": "Build your future with us",
+        "let'sbuildsomethingextraordinary": "Let's build something extraordinary",
+        "shareyourexperience": "Share your experience",
+        "avorino'sprocess": "Avorino's Process"
       };
       var lower = text.toLowerCase().replace(/[?.!]/g, '');
       if (knownPhrases[lower]) text = knownPhrases[lower];
@@ -284,6 +298,18 @@
           toggleActions: 'play none none reverse',
         },
       });
+    });
+
+    /* Fix already-baked mashed text (Webflow saved the split DOM) */
+    document.querySelectorAll('.av-heading-xl, .av-heading-lg, .av-cta-heading').forEach(function (el) {
+      if (el.getAttribute('data-animate')) return; // will be handled by animation
+      var text = el.textContent.trim();
+      if (text.indexOf(' ') === -1 && text.length > 5) {
+        // Text is mashed — re-split it
+        var words = splitIntoWords(el);
+        // Show immediately (no animation since it already played)
+        gsap.set(words, { yPercent: 0, opacity: 1 });
+      }
     });
 
     /* Label line expand (generic — matches any class containing "label-line") */
