@@ -12,16 +12,17 @@
     s.id = 'av-mobile-fix';
     s.textContent = [
       '@media(max-width:767px){',
-      // Hero — full bleed, no padding, overlay covers everything
-      '  .hero { height: 100vh !important; padding: 0 !important; position: relative !important; overflow: hidden !important; }',
-      '  .hero-container { width: 100% !important; height: 100% !important; padding: 0 !important; position: relative !important; }',
-      '  .hero-overlay { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; z-index: 0 !important; }',
+      // Hero — keep Webflow padding, overlay matches the rounded image area
+      '  .hero { height: calc(100vh - 56px) !important; position: relative !important; overflow: hidden !important; }',
+      '  .hero-container { width: 100% !important; height: 100% !important; position: relative !important; overflow: hidden !important; border-radius: inherit !important; }',
+      '  .hero-overlay { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; z-index: 0 !important; overflow: hidden !important; }',
+      '  .hero-overlay::after { content: "" !important; position: absolute !important; inset: 0 !important; background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.2) 50%, transparent 100%) !important; z-index: 3 !important; pointer-events: none !important; }',
       '  .hero-overlay > * { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: cover !important; }',
-      '  .hero-overlay .div-block-2 { background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.15) 100%) !important; z-index: 2 !important; }',
+      '  .hero-overlay .div-block-2 { display: none !important; }',
       '  .hero-overlay .w-background-video { z-index: 1 !important; }',
       '  .hero-overlay .w-background-video video { width: 100% !important; height: 100% !important; object-fit: cover !important; }',
-      '  .hero-content { position: absolute !important; bottom: 24px !important; left: 16px !important; right: 16px !important; z-index: 3 !important; }',
-      '  .hero-scroll-indicator { z-index: 3 !important; }',
+      '  .hero-content { position: absolute !important; bottom: 24px !important; left: 16px !important; right: 16px !important; z-index: 4 !important; }',
+      '  .hero-scroll-indicator { z-index: 4 !important; }',
       // Stats
       '  .stats { padding: 48px 16px !important; }',
       '  .stats-grid { grid-template-columns: 1fr 1fr !important; gap: 28px 20px !important; }',
