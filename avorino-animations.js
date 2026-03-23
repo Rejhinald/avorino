@@ -301,13 +301,12 @@
     });
 
     /* Fix already-baked mashed text (Webflow saved the split DOM) */
-    document.querySelectorAll('.av-heading-xl, .av-heading-lg, .av-cta-heading').forEach(function (el) {
-      if (el.getAttribute('data-animate')) return; // will be handled by animation
+    /* Only target hero headings and CTA — NOT .av-heading-lg (used by process3d) */
+    document.querySelectorAll('.av-heading-xl, .av-cta-heading').forEach(function (el) {
+      if (el.getAttribute('data-animate')) return;
       var text = el.textContent.trim();
       if (text.indexOf(' ') === -1 && text.length > 5) {
-        // Text is mashed — re-split it
         var words = splitIntoWords(el);
-        // Show immediately (no animation since it already played)
         gsap.set(words, { yPercent: 0, opacity: 1 });
       }
     });
