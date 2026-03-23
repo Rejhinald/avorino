@@ -15,10 +15,11 @@
       // Hero — overlay is a sibling of .w-background-video inside .hero-container
       '  .hero { height: calc(100vh - 56px) !important; position: relative !important; overflow: hidden !important; }',
       '  .hero-container { width: 100% !important; height: 100% !important; position: relative !important; overflow: hidden !important; border-radius: 8px !important; }',
-      '  .hero-container .w-background-video { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; z-index: 0 !important; }',
-      '  .hero-container .w-background-video video { width: 100% !important; height: 100% !important; object-fit: cover !important; }',
-      '  .hero-overlay { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; background-color: #000 !important; opacity: 0.25 !important; z-index: 1 !important; }',
+      '  .hero-overlay { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; background: transparent !important; opacity: 1 !important; z-index: 0 !important; }',
+      '  .hero-overlay::after { content: "" !important; position: absolute !important; inset: 0 !important; background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0.05) 100%) !important; z-index: 2 !important; pointer-events: none !important; }',
       '  .div-block-2 { display: none !important; }',
+      '  .hero-overlay .w-background-video { position: absolute !important; inset: 0 !important; z-index: 1 !important; }',
+      '  .hero-overlay .w-background-video video { width: 100% !important; height: 100% !important; object-fit: cover !important; }',
       '  .hero-content { position: absolute !important; bottom: 24px !important; left: 16px !important; right: 16px !important; z-index: 2 !important; }',
       '  .hero-scroll-indicator { z-index: 2 !important; position: absolute !important; bottom: 20px !important; right: 16px !important; left: auto !important; transform: none !important; }',
       // Stats
