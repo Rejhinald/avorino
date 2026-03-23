@@ -6,38 +6,96 @@
   // MOBILE LAYOUT FIXER — override Webflow's baked-in element styles
   function fixMobileLayout() {
     if (window.innerWidth > 767) return;
-    // Fix the featured SECTION padding first — Webflow bakes 80px padding
+
+    // Hero — force full viewport coverage
+    var hero = document.querySelector('.hero');
+    if (hero) {
+      hero.style.setProperty('height', 'calc(100vh - 56px)', 'important');
+      hero.style.setProperty('padding', '12px', 'important');
+      hero.style.setProperty('overflow', 'hidden', 'important');
+    }
+    var heroOverlay = document.querySelector('.hero-overlay');
+    if (heroOverlay) {
+      heroOverlay.style.setProperty('width', '100%', 'important');
+      heroOverlay.style.setProperty('height', '100%', 'important');
+      heroOverlay.style.setProperty('position', 'absolute', 'important');
+      heroOverlay.style.setProperty('inset', '0', 'important');
+      var heroImg = heroOverlay.querySelector('img');
+      if (heroImg) {
+        heroImg.style.setProperty('width', '100%', 'important');
+        heroImg.style.setProperty('height', '100%', 'important');
+        heroImg.style.setProperty('object-fit', 'cover', 'important');
+      }
+    }
+
+    // Stats — fix alignment
+    var stats = document.querySelector('.stats');
+    if (stats) {
+      stats.style.setProperty('padding', '48px 16px', 'important');
+    }
+    var statsGrid = document.querySelector('.stats-grid');
+    if (statsGrid) {
+      statsGrid.style.setProperty('grid-template-columns', '1fr 1fr', 'important');
+      statsGrid.style.setProperty('gap', '32px 16px', 'important');
+      statsGrid.style.setProperty('justify-items', 'center', 'important');
+    }
+    document.querySelectorAll('.stat-item').forEach(function(item) {
+      item.style.setProperty('display', 'flex', 'important');
+      item.style.setProperty('flex-direction', 'column', 'important');
+      item.style.setProperty('align-items', 'center', 'important');
+    });
+
+    // Featured — fix section padding
     var featured = document.querySelector('.featured');
     if (featured) {
-      featured.style.setProperty('padding-left', '16px', 'important');
-      featured.style.setProperty('padding-right', '16px', 'important');
-      featured.style.setProperty('padding-top', '48px', 'important');
-      featured.style.setProperty('padding-bottom', '48px', 'important');
+      featured.style.setProperty('padding', '48px 16px', 'important');
       featured.style.setProperty('overflow', 'hidden', 'important');
     }
+
+    // Featured image — force visible with explicit height
+    var imgWrap = document.querySelector('.featured-image-wrap');
+    if (imgWrap) {
+      imgWrap.style.setProperty('width', '100%', 'important');
+      imgWrap.style.setProperty('height', '55vw', 'important');
+      imgWrap.style.setProperty('min-height', '200px', 'important');
+      imgWrap.style.setProperty('max-height', '300px', 'important');
+      imgWrap.style.setProperty('overflow', 'hidden', 'important');
+      imgWrap.style.setProperty('border-radius', '8px', 'important');
+      imgWrap.style.setProperty('clip-path', 'none', 'important');
+      var img = imgWrap.querySelector('img');
+      if (img) {
+        img.style.setProperty('width', '100%', 'important');
+        img.style.setProperty('height', '100%', 'important');
+        img.style.setProperty('object-fit', 'cover', 'important');
+        img.style.setProperty('transform', 'none', 'important');
+      }
+    }
+
+    // Featured panel — full width, no margin
     var panel = document.querySelector('.featured-panel');
     if (panel) {
       panel.style.setProperty('margin', '0', 'important');
-      panel.style.setProperty('padding', '28px 16px', 'important');
+      panel.style.setProperty('padding', '24px 0', 'important');
       panel.style.setProperty('max-width', '100%', 'important');
       panel.style.setProperty('width', '100%', 'important');
       panel.style.setProperty('box-sizing', 'border-box', 'important');
       panel.style.setProperty('overflow', 'hidden', 'important');
-    }
-    var imgWrap = document.querySelector('.featured-image-wrap');
-    if (imgWrap) {
-      imgWrap.style.cssText += 'width:100% !important;height:auto !important;min-height:220px !important;max-height:320px !important;overflow:hidden !important;';
-      var img = imgWrap.querySelector('img');
-      if (img) img.style.cssText += 'width:100% !important;height:100% !important;object-fit:cover !important;';
+      panel.style.setProperty('background', 'transparent', 'important');
     }
     var title = document.querySelector('.featured-panel-title');
     if (title) {
-      title.style.cssText += 'width:100% !important;word-break:break-word !important;overflow-wrap:break-word !important;white-space:normal !important;';
+      title.style.setProperty('width', '100%', 'important');
+      title.style.setProperty('word-break', 'break-word', 'important');
+      title.style.setProperty('font-size', 'clamp(24px, 6vw, 32px)', 'important');
     }
     var meta = document.querySelector('.featured-panel-meta');
     if (meta) {
-      meta.style.cssText += 'width:100% !important;flex-direction:column !important;gap:12px !important;';
+      meta.style.setProperty('width', '100%', 'important');
+      meta.style.setProperty('flex-direction', 'column', 'important');
+      meta.style.setProperty('gap', '12px', 'important');
     }
+
+    // Featured grid — 1 column
     var grid = document.querySelector('.featured-grid');
     if (grid) {
       grid.style.setProperty('grid-template-columns', '1fr', 'important');
@@ -46,14 +104,11 @@
     }
     document.querySelectorAll('.featured-grid-card').forEach(function(card) {
       card.style.setProperty('width', '100%', 'important');
+      card.style.setProperty('height', '240px', 'important');
       card.style.setProperty('overflow', 'hidden', 'important');
     });
-    // Stats centering
-    var statsGrid = document.querySelector('.stats-grid');
-    if (statsGrid) {
-      statsGrid.style.setProperty('justify-items', 'center', 'important');
-    }
-    // Fix process section padding
+
+    // Process — fix padding
     var process = document.querySelector('.process');
     if (process) {
       process.style.setProperty('padding-left', '16px', 'important');
@@ -488,8 +543,22 @@
     const image = document.querySelector('.featured-image');
     const panel = document.querySelector('.featured-panel');
     var isMobile = window.innerWidth <= 767;
-    if (imageWrap && !isMobile) gsap.set(imageWrap, { clipPath: 'inset(100% 0 0 0)' });
-    if (image && !isMobile) gsap.set(image, { scale: 1.3 });
+
+    if (isMobile) {
+      // Mobile: no GSAP transforms — just show everything
+      if (imageWrap) gsap.set(imageWrap, { clipPath: 'none', clearProps: 'clipPath' });
+      if (image) gsap.set(image, { scale: 1, clearProps: 'scale,transform' });
+      if (panel) gsap.set(panel, { opacity: 1, y: 0, clearProps: 'opacity,y,transform' });
+      // Force grid cards visible
+      document.querySelectorAll('.featured-grid-card').forEach(function(card) {
+        gsap.set(card, { opacity: 1, y: 0, clearProps: 'opacity,y,transform' });
+      });
+      return;
+    }
+
+    // Desktop: animated reveal
+    if (imageWrap) gsap.set(imageWrap, { clipPath: 'inset(100% 0 0 0)' });
+    if (image) gsap.set(image, { scale: 1.3 });
     if (imageWrap) {
       gsap.to(imageWrap, { clipPath: 'inset(0% 0 0 0)', duration: 1.4, ease: 'power4.inOut', scrollTrigger: { trigger: imageWrap, start: 'top 70%' } });
       if (image) {
@@ -499,11 +568,7 @@
       }
     }
     if (panel) {
-      if (isMobile) {
-        gsap.set(panel, { opacity: 1, y: 0 });
-      } else {
-        gsap.to(panel, { opacity: 1, y: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: panel, start: 'top 90%' } });
-      }
+      gsap.to(panel, { opacity: 1, y: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: panel, start: 'top 90%' } });
     }
   }
 
