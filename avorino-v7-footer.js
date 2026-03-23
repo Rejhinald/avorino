@@ -71,7 +71,7 @@
       }
     }
 
-    // Featured panel — full width, no margin
+    // Featured panel — full width, no margin, VISIBLE
     var panel = document.querySelector('.featured-panel');
     if (panel) {
       panel.style.setProperty('margin', '0', 'important');
@@ -81,6 +81,9 @@
       panel.style.setProperty('box-sizing', 'border-box', 'important');
       panel.style.setProperty('overflow', 'hidden', 'important');
       panel.style.setProperty('background', 'transparent', 'important');
+      panel.style.setProperty('opacity', '1', 'important');
+      panel.style.setProperty('transform', 'none', 'important');
+      panel.style.setProperty('color', '#111', 'important');
     }
     var title = document.querySelector('.featured-panel-title');
     if (title) {
@@ -116,6 +119,10 @@
     }
   }
   fixMobileLayout();
+  // Re-apply after GSAP init to override any gsap.set calls
+  setTimeout(fixMobileLayout, 100);
+  setTimeout(fixMobileLayout, 500);
+  setTimeout(fixMobileLayout, 1500);
   window.addEventListener('resize', fixMobileLayout);
 
   // Lenis Smooth Scroll
@@ -545,13 +552,28 @@
     var isMobile = window.innerWidth <= 767;
 
     if (isMobile) {
-      // Mobile: no GSAP transforms — just show everything
-      if (imageWrap) gsap.set(imageWrap, { clipPath: 'none', clearProps: 'clipPath' });
-      if (image) gsap.set(image, { scale: 1, clearProps: 'scale,transform' });
-      if (panel) gsap.set(panel, { opacity: 1, y: 0, clearProps: 'opacity,y,transform' });
+      // Mobile: no GSAP transforms — force everything visible via inline styles
+      if (imageWrap) {
+        imageWrap.style.setProperty('clip-path', 'none', 'important');
+        imageWrap.style.setProperty('opacity', '1', 'important');
+      }
+      if (image) {
+        image.style.setProperty('transform', 'none', 'important');
+      }
+      if (panel) {
+        panel.style.setProperty('opacity', '1', 'important');
+        panel.style.setProperty('transform', 'none', 'important');
+        panel.style.setProperty('background', 'transparent', 'important');
+        panel.style.setProperty('color', '#111', 'important');
+      }
+      var panelTitle = panel ? panel.querySelector('.featured-panel-title') : null;
+      if (panelTitle) panelTitle.style.setProperty('color', '#111', 'important');
+      var panelMeta = panel ? panel.querySelector('.featured-panel-meta') : null;
+      if (panelMeta) panelMeta.style.setProperty('color', '#111', 'important');
       // Force grid cards visible
       document.querySelectorAll('.featured-grid-card').forEach(function(card) {
-        gsap.set(card, { opacity: 1, y: 0, clearProps: 'opacity,y,transform' });
+        card.style.setProperty('opacity', '1', 'important');
+        card.style.setProperty('transform', 'none', 'important');
       });
       return;
     }
