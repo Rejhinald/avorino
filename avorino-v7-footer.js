@@ -22,7 +22,7 @@
       '  .hero-overlay .w-background-video { z-index: 1 !important; }',
       '  .hero-overlay .w-background-video video { width: 100% !important; height: 100% !important; object-fit: cover !important; }',
       '  .hero-content { position: absolute !important; bottom: 24px !important; left: 16px !important; right: 16px !important; z-index: 4 !important; }',
-      '  .hero-scroll-indicator { z-index: 4 !important; }',
+      '  .hero-scroll-indicator { z-index: 4 !important; position: absolute !important; bottom: 20px !important; right: 16px !important; left: auto !important; }',
       // Stats
       '  .stats { padding: 48px 16px !important; }',
       '  .stats-grid { grid-template-columns: 1fr 1fr !important; gap: 28px 20px !important; }',
