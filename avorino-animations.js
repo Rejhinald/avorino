@@ -40,67 +40,33 @@
   function splitIntoWords(el) {
     var computed = getComputedStyle(el);
     var textAlign = computed.textAlign;
-    // Get text — if already split into spans (baked by Webflow), collect from each
-    var text = '';
-    var existingSpans = el.querySelectorAll('span > span');
-    if (existingSpans.length > 0) {
-      var pieces = [];
-      existingSpans.forEach(function(s) { pieces.push(s.textContent); });
-      // Check if pieces are single characters (letter-split) vs words
-      var allSingle = pieces.every(function(p) { return p.length <= 1; });
-      if (allSingle) {
-        // Letters were split individually — join back, treat spaces as word breaks
-        text = pieces.join('');
-      } else {
-        text = pieces.join(' ');
-      }
-    } else {
-      text = el.textContent;
-    }
-    // If text is one big mashed blob with no spaces, check known phrases
+    var text = el.textContent.trim();
+    // Fix mashed text baked by Webflow (e.g. "OurServices" → "Our Services")
     if (text.indexOf(' ') === -1 && text.length > 5) {
-      var knownPhrases = {
-        "ourservices": "Our Services",
-        "ourprocess": "Our Process",
-        "ourwork": "Our Work",
-        "ourteam": "Our Team",
-        "ourstory": "Our Story",
-        "aboutavorino": "About Avorino",
-        "aboutus": "About Us",
-        "getintouch": "Get in Touch",
-        "contactus": "Contact Us",
-        "let'stalkaboutyournextproject": "Let's talk about your next project",
-        "readytobuildyourdreamhome": "Ready to build your dream home",
-        "let'sstartyourproject": "Let's start your project",
-        "readytotransformyourproperty": "Ready to transform your property",
-        "getyourfreeestimate": "Get your free estimate",
-        "let'sbuildtogether": "Let's build together",
-        "startbuildingtoday": "Start building today",
-        "readytobuildyouradu": "Ready to build your ADU",
-        "readytojointheteam": "Ready to join the team",
-        "buildyourfuturewithus": "Build your future with us",
-        "let'sbuildsomethingextraordinary": "Let's build something extraordinary",
-        "shareyourexperience": "Share your experience",
-        "avorino'sprocess": "Avorino's Process"
+      var p = {
+        "ourservices":"Our Services","let'stalkaboutyournextproject":"Let's talk about your next project",
+        "readytobuildyourdreamhome":"Ready to build your dream home","let'sstartyourproject":"Let's start your project",
+        "getyourfreeestimate":"Get your free estimate","let'sbuildtogether":"Let's build together",
+        "readytobuildyouradu":"Ready to build your ADU","shareyourexperience":"Share your experience",
+        "readytojointheteam":"Ready to join the team","let'sbuildsomethingextraordinary":"Let's build something extraordinary",
+        "readytotransformyourproperty":"Ready to transform your property","getintouch":"Get in Touch",
+        "startbuildingtoday":"Start building today","contactus":"Contact Us","aboutavorino":"About Avorino"
       };
-      var lower = text.toLowerCase().replace(/[?.!]/g, '');
-      if (knownPhrases[lower]) text = knownPhrases[lower];
+      var k = text.toLowerCase().replace(/[?.!]/g, '');
+      if (p[k]) text = p[k];
     }
-    text = text.trim();
     el.innerHTML = '';
     el.style.display = 'flex';
     el.style.flexWrap = 'wrap';
-    el.style.gap = '0';
+    el.style.gap = '0 0.3em';
     if (textAlign === 'center') el.style.justifyContent = 'center';
     else if (textAlign === 'right' || textAlign === 'end') el.style.justifyContent = 'flex-end';
-    var words = text.split(/\s+/);
     var wordEls = [];
-    words.forEach(function (word, i) {
+    text.split(/\s+/).forEach(function (word) {
       var wrapper = document.createElement('span');
       wrapper.style.display = 'inline-block';
       wrapper.style.overflow = 'hidden';
       wrapper.style.verticalAlign = 'top';
-      if (i < words.length - 1) wrapper.style.marginRight = '0.07em';
       var inner = document.createElement('span');
       inner.style.display = 'inline-block';
       inner.textContent = word;
@@ -256,32 +222,17 @@
         });
         lineEls = el.querySelectorAll('.line');
       }
-      var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
       lineEls.forEach(function (line, i) {
-        if (isSafari) {
-          /* Safari clip-path fallback: use opacity + translate instead */
-          gsap.set(line, { opacity: 0, x: -30 });
-          gsap.to(line, {
-            opacity: 1, x: 0, ease: 'power3.out',
-            scrollTrigger: {
-              trigger: el,
-              start: 'top ' + (85 - i * 12) + '%',
-              end: 'top ' + (65 - i * 12) + '%',
-              scrub: 1,
-            },
-          });
-        } else {
-          gsap.set(line, { clipPath: 'inset(0 100% 0 0)' });
-          gsap.to(line, {
-            clipPath: 'inset(0 0% 0 0)', ease: 'power3.inOut',
-            scrollTrigger: {
-              trigger: el,
-              start: 'top ' + (85 - i * 12) + '%',
-              end: 'top ' + (65 - i * 12) + '%',
-              scrub: 1,
-            },
-          });
-        }
+        gsap.set(line, { clipPath: 'inset(0 100% 0 0)' });
+        gsap.to(line, {
+          clipPath: 'inset(0 0% 0 0)', ease: 'power3.inOut',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top ' + (85 - i * 12) + '%',
+            end: 'top ' + (65 - i * 12) + '%',
+            scrub: 1,
+          },
+        });
       });
     });
 
@@ -298,17 +249,6 @@
           toggleActions: 'play none none reverse',
         },
       });
-    });
-
-    /* Fix already-baked mashed text (Webflow saved the split DOM) */
-    /* Only target hero headings and CTA — NOT .av-heading-lg (used by process3d) */
-    document.querySelectorAll('.av-heading-xl, .av-cta-heading').forEach(function (el) {
-      if (el.getAttribute('data-animate')) return;
-      var text = el.textContent.trim();
-      if (text.indexOf(' ') === -1 && text.length > 5) {
-        var words = splitIntoWords(el);
-        gsap.set(words, { yPercent: 0, opacity: 1 });
-      }
     });
 
     /* Label line expand (generic — matches any class containing "label-line") */
