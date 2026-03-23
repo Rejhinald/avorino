@@ -6,9 +6,23 @@
   // MOBILE LAYOUT FIXER — override Webflow's baked-in element styles
   function fixMobileLayout() {
     if (window.innerWidth > 767) return;
+    // Fix the featured SECTION padding first — Webflow bakes 80px padding
+    var featured = document.querySelector('.featured');
+    if (featured) {
+      featured.style.setProperty('padding-left', '16px', 'important');
+      featured.style.setProperty('padding-right', '16px', 'important');
+      featured.style.setProperty('padding-top', '48px', 'important');
+      featured.style.setProperty('padding-bottom', '48px', 'important');
+      featured.style.setProperty('overflow', 'hidden', 'important');
+    }
     var panel = document.querySelector('.featured-panel');
     if (panel) {
-      panel.style.cssText += 'margin:0 !important;padding:28px 16px !important;max-width:100% !important;width:100% !important;box-sizing:border-box !important;overflow:hidden !important;';
+      panel.style.setProperty('margin', '0', 'important');
+      panel.style.setProperty('padding', '28px 16px', 'important');
+      panel.style.setProperty('max-width', '100%', 'important');
+      panel.style.setProperty('width', '100%', 'important');
+      panel.style.setProperty('box-sizing', 'border-box', 'important');
+      panel.style.setProperty('overflow', 'hidden', 'important');
     }
     var imgWrap = document.querySelector('.featured-image-wrap');
     if (imgWrap) {
@@ -26,15 +40,24 @@
     }
     var grid = document.querySelector('.featured-grid');
     if (grid) {
-      grid.style.cssText += 'grid-template-columns:1fr !important;width:100% !important;gap:16px !important;';
+      grid.style.setProperty('grid-template-columns', '1fr', 'important');
+      grid.style.setProperty('width', '100%', 'important');
+      grid.style.setProperty('gap', '16px', 'important');
     }
     document.querySelectorAll('.featured-grid-card').forEach(function(card) {
-      card.style.cssText += 'width:100% !important;overflow:hidden !important;';
+      card.style.setProperty('width', '100%', 'important');
+      card.style.setProperty('overflow', 'hidden', 'important');
     });
     // Stats centering
     var statsGrid = document.querySelector('.stats-grid');
     if (statsGrid) {
-      statsGrid.style.cssText += 'justify-items:center !important;';
+      statsGrid.style.setProperty('justify-items', 'center', 'important');
+    }
+    // Fix process section padding
+    var process = document.querySelector('.process');
+    if (process) {
+      process.style.setProperty('padding-left', '16px', 'important');
+      process.style.setProperty('padding-right', '16px', 'important');
     }
   }
   fixMobileLayout();
