@@ -71,6 +71,7 @@
     el.innerHTML = '';
     el.style.display = 'flex';
     el.style.flexWrap = 'wrap';
+    el.style.gap = '0';
     if (textAlign === 'center') el.style.justifyContent = 'center';
     else if (textAlign === 'right' || textAlign === 'end') el.style.justifyContent = 'flex-end';
     var words = text.split(/\s+/);
@@ -80,7 +81,7 @@
       wrapper.style.display = 'inline-block';
       wrapper.style.overflow = 'hidden';
       wrapper.style.verticalAlign = 'top';
-      if (i < words.length - 1) wrapper.style.marginRight = '0.12em';
+      if (i < words.length - 1) wrapper.style.marginRight = '0.07em';
       var inner = document.createElement('span');
       inner.style.display = 'inline-block';
       inner.textContent = word;
