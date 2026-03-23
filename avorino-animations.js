@@ -40,7 +40,34 @@
   function splitIntoWords(el) {
     var computed = getComputedStyle(el);
     var textAlign = computed.textAlign;
-    var text = el.textContent.trim();
+    // Get text — if already split into spans (baked by Webflow), collect from each span
+    var text = '';
+    var existingSpans = el.querySelectorAll('span > span');
+    if (existingSpans.length > 0) {
+      // Already split — reconstruct with spaces
+      var pieces = [];
+      existingSpans.forEach(function(s) { pieces.push(s.textContent); });
+      text = pieces.join(' ');
+    } else {
+      text = el.textContent;
+    }
+    // If text is one big camelCase/mashed blob, try to split on capital letters after lowercase
+    // e.g. "Let'stalkaboutyournextproject" → detect no spaces
+    if (text.indexOf(' ') === -1 && text.length > 15) {
+      // Known CTA phrases — hardcoded fallback
+      var knownPhrases = {
+        "let'stalkaboutyournextproject": "Let's talk about your next project",
+        "readytobuildyourdreamhome": "Ready to build your dream home",
+        "let'sstartyourproject": "Let's start your project",
+        "readytotransformyourproperty": "Ready to transform your property",
+        "getyourfreeestimate": "Get your free estimate",
+        "let'sbuildtogether": "Let's build together",
+        "startbuildingtoday": "Start building today"
+      };
+      var lower = text.toLowerCase().replace(/[?.!]/g, '');
+      if (knownPhrases[lower]) text = knownPhrases[lower];
+    }
+    text = text.trim();
     el.innerHTML = '';
     el.style.display = 'flex';
     el.style.flexWrap = 'wrap';
