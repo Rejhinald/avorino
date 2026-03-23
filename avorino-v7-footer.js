@@ -4,126 +4,58 @@
   gsap.registerPlugin(ScrollTrigger);
 
   // MOBILE LAYOUT FIXER — override Webflow's baked-in element styles
-  function fixMobileLayout() {
+  // MOBILE OVERRIDE — inject a <style> tag that beats Webflow's specificity
+  function injectMobileStyles() {
     if (window.innerWidth > 767) return;
-
-    // Hero — force full viewport coverage
-    var hero = document.querySelector('.hero');
-    if (hero) {
-      hero.style.setProperty('height', 'calc(100vh - 56px)', 'important');
-      hero.style.setProperty('padding', '12px', 'important');
-      hero.style.setProperty('overflow', 'hidden', 'important');
-    }
-    var heroOverlay = document.querySelector('.hero-overlay');
-    if (heroOverlay) {
-      heroOverlay.style.setProperty('width', '100%', 'important');
-      heroOverlay.style.setProperty('height', '100%', 'important');
-      heroOverlay.style.setProperty('position', 'absolute', 'important');
-      heroOverlay.style.setProperty('inset', '0', 'important');
-      var heroImg = heroOverlay.querySelector('img');
-      if (heroImg) {
-        heroImg.style.setProperty('width', '100%', 'important');
-        heroImg.style.setProperty('height', '100%', 'important');
-        heroImg.style.setProperty('object-fit', 'cover', 'important');
-      }
-    }
-
-    // Stats — fix alignment
-    var stats = document.querySelector('.stats');
-    if (stats) {
-      stats.style.setProperty('padding', '48px 16px', 'important');
-    }
-    var statsGrid = document.querySelector('.stats-grid');
-    if (statsGrid) {
-      statsGrid.style.setProperty('grid-template-columns', '1fr 1fr', 'important');
-      statsGrid.style.setProperty('gap', '32px 16px', 'important');
-      statsGrid.style.setProperty('justify-items', 'center', 'important');
-    }
-    document.querySelectorAll('.stat-item').forEach(function(item) {
-      item.style.setProperty('display', 'flex', 'important');
-      item.style.setProperty('flex-direction', 'column', 'important');
-      item.style.setProperty('align-items', 'center', 'important');
-    });
-
-    // Featured — fix section padding
-    var featured = document.querySelector('.featured');
-    if (featured) {
-      featured.style.setProperty('padding', '48px 16px', 'important');
-      featured.style.setProperty('overflow', 'hidden', 'important');
-    }
-
-    // Featured image — force visible with explicit height
-    var imgWrap = document.querySelector('.featured-image-wrap');
-    if (imgWrap) {
-      imgWrap.style.setProperty('width', '100%', 'important');
-      imgWrap.style.setProperty('height', '55vw', 'important');
-      imgWrap.style.setProperty('min-height', '200px', 'important');
-      imgWrap.style.setProperty('max-height', '300px', 'important');
-      imgWrap.style.setProperty('overflow', 'hidden', 'important');
-      imgWrap.style.setProperty('border-radius', '8px', 'important');
-      imgWrap.style.setProperty('clip-path', 'none', 'important');
-      var img = imgWrap.querySelector('img');
-      if (img) {
-        img.style.setProperty('width', '100%', 'important');
-        img.style.setProperty('height', '100%', 'important');
-        img.style.setProperty('object-fit', 'cover', 'important');
-        img.style.setProperty('transform', 'none', 'important');
-      }
-    }
-
-    // Featured panel — full width, no margin, VISIBLE
-    var panel = document.querySelector('.featured-panel');
-    if (panel) {
-      panel.style.setProperty('margin', '0', 'important');
-      panel.style.setProperty('padding', '24px 0', 'important');
-      panel.style.setProperty('max-width', '100%', 'important');
-      panel.style.setProperty('width', '100%', 'important');
-      panel.style.setProperty('box-sizing', 'border-box', 'important');
-      panel.style.setProperty('overflow', 'hidden', 'important');
-      panel.style.setProperty('background', 'transparent', 'important');
-      panel.style.setProperty('opacity', '1', 'important');
-      panel.style.setProperty('transform', 'none', 'important');
-      panel.style.setProperty('color', '#111', 'important');
-    }
-    var title = document.querySelector('.featured-panel-title');
-    if (title) {
-      title.style.setProperty('width', '100%', 'important');
-      title.style.setProperty('word-break', 'break-word', 'important');
-      title.style.setProperty('font-size', 'clamp(24px, 6vw, 32px)', 'important');
-    }
-    var meta = document.querySelector('.featured-panel-meta');
-    if (meta) {
-      meta.style.setProperty('width', '100%', 'important');
-      meta.style.setProperty('flex-direction', 'column', 'important');
-      meta.style.setProperty('gap', '12px', 'important');
-    }
-
-    // Featured grid — 1 column
-    var grid = document.querySelector('.featured-grid');
-    if (grid) {
-      grid.style.setProperty('grid-template-columns', '1fr', 'important');
-      grid.style.setProperty('width', '100%', 'important');
-      grid.style.setProperty('gap', '16px', 'important');
-    }
-    document.querySelectorAll('.featured-grid-card').forEach(function(card) {
-      card.style.setProperty('width', '100%', 'important');
-      card.style.setProperty('height', '240px', 'important');
-      card.style.setProperty('overflow', 'hidden', 'important');
-    });
-
-    // Process — fix padding
-    var process = document.querySelector('.process');
-    if (process) {
-      process.style.setProperty('padding-left', '16px', 'important');
-      process.style.setProperty('padding-right', '16px', 'important');
-    }
+    if (document.getElementById('av-mobile-fix')) return;
+    var s = document.createElement('style');
+    s.id = 'av-mobile-fix';
+    s.textContent = [
+      '@media(max-width:767px){',
+      // Hero
+      '  .hero { height: calc(100vh - 56px) !important; padding: 12px !important; position: relative !important; overflow: hidden !important; }',
+      '  .hero-overlay { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; }',
+      '  .hero-overlay > * { width: 100% !important; height: 100% !important; object-fit: cover !important; }',
+      // Stats
+      '  .stats { padding: 48px 16px !important; }',
+      '  .stats-grid { grid-template-columns: 1fr 1fr !important; gap: 28px 20px !important; }',
+      '  .stat-item { display: flex !important; flex-direction: column !important; align-items: center !important; text-align: center !important; }',
+      '  .stat-digits { justify-content: center !important; }',
+      '  .flip-card { width: 36px !important; height: 50px !important; }',
+      '  .flip-card-top, .flip-card-bottom, .flip-card-flip-top, .flip-card-flip-bottom { font-size: 26px !important; }',
+      '  .stat-suffix, .stat-separator { font-size: 22px !important; }',
+      '  .stat-label { font-size: 10px !important; letter-spacing: .15em !important; margin-top: 10px !important; text-align: center !important; }',
+      // Featured section
+      '  .featured { padding: 48px 16px !important; overflow: hidden !important; }',
+      '  .featured-label { margin-bottom: 24px !important; }',
+      '  .featured-image-wrap { width: 100% !important; height: 60vw !important; min-height: 220px !important; max-height: 300px !important; overflow: hidden !important; border-radius: 8px !important; clip-path: none !important; }',
+      '  .featured-image-wrap > * { width: 100% !important; height: 100% !important; object-fit: cover !important; background-size: cover !important; background-position: center !important; transform: none !important; }',
+      '  .featured-panel { margin: 0 !important; padding: 24px 0 !important; max-width: 100% !important; width: 100% !important; box-sizing: border-box !important; overflow: hidden !important; background: transparent !important; opacity: 1 !important; transform: none !important; translate: none !important; color: #111 !important; }',
+      '  .featured-panel-title { font-size: clamp(24px, 6vw, 32px) !important; word-break: break-word !important; color: #111 !important; width: 100% !important; }',
+      '  .featured-panel-meta { flex-direction: column !important; gap: 8px !important; width: 100% !important; color: #555 !important; font-size: 15px !important; }',
+      '  .featured-grid { grid-template-columns: 1fr !important; width: 100% !important; gap: 16px !important; margin-top: 24px !important; }',
+      '  .featured-grid-card { width: 100% !important; height: 240px !important; min-height: auto !important; max-height: none !important; overflow: hidden !important; opacity: 1 !important; transform: none !important; translate: none !important; }',
+      '  .featured-grid-card-content { padding: 20px !important; }',
+      '  .featured-grid-card-title { font-size: clamp(18px, 5vw, 22px) !important; }',
+      // Process
+      '  .process { padding: 64px 16px !important; }',
+      '  .process-heading { font-size: clamp(28px, 7vw, 36px) !important; }',
+      '  .process-header p { font-size: 17px !important; }',
+      '  .process-slide-title { font-size: clamp(22px, 5.5vw, 28px) !important; }',
+      '  .process-slide-body { font-size: 16px !important; line-height: 1.6 !important; }',
+      '  .process-vis { display: none !important; }',
+      '  .process-num { display: none !important; }',
+      '  .process-stage { grid-template-columns: 1fr !important; min-height: auto !important; }',
+      '  .process-slides { min-height: auto !important; }',
+      // Press logos
+      '  .press-item { flex: 0 0 80px !important; height: 80px !important; }',
+      '  .press-item img { width: 80px !important; height: 80px !important; }',
+      '}'
+    ].join('\n');
+    document.head.appendChild(s);
   }
-  fixMobileLayout();
-  // Re-apply after GSAP init to override any gsap.set calls
-  setTimeout(fixMobileLayout, 100);
-  setTimeout(fixMobileLayout, 500);
-  setTimeout(fixMobileLayout, 1500);
-  window.addEventListener('resize', fixMobileLayout);
+  injectMobileStyles();
+  window.addEventListener('resize', injectMobileStyles);
 
   // Lenis Smooth Scroll
   const lenis = new Lenis({
@@ -552,29 +484,7 @@
     var isMobile = window.innerWidth <= 767;
 
     if (isMobile) {
-      // Mobile: no GSAP transforms — force everything visible via inline styles
-      if (imageWrap) {
-        imageWrap.style.setProperty('clip-path', 'none', 'important');
-        imageWrap.style.setProperty('opacity', '1', 'important');
-      }
-      if (image) {
-        image.style.setProperty('transform', 'none', 'important');
-      }
-      if (panel) {
-        panel.style.setProperty('opacity', '1', 'important');
-        panel.style.setProperty('transform', 'none', 'important');
-        panel.style.setProperty('background', 'transparent', 'important');
-        panel.style.setProperty('color', '#111', 'important');
-      }
-      var panelTitle = panel ? panel.querySelector('.featured-panel-title') : null;
-      if (panelTitle) panelTitle.style.setProperty('color', '#111', 'important');
-      var panelMeta = panel ? panel.querySelector('.featured-panel-meta') : null;
-      if (panelMeta) panelMeta.style.setProperty('color', '#111', 'important');
-      // Force grid cards visible
-      document.querySelectorAll('.featured-grid-card').forEach(function(card) {
-        card.style.setProperty('opacity', '1', 'important');
-        card.style.setProperty('transform', 'none', 'important');
-      });
+      // Mobile: CSS handles everything via injected <style>, skip all GSAP
       return;
     }
 
