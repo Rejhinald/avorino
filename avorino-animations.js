@@ -50,7 +50,9 @@
         "readytobuildyouradu":"Ready to build your ADU","shareyourexperience":"Share your experience",
         "readytojointheteam":"Ready to join the team","let'sbuildsomethingextraordinary":"Let's build something extraordinary",
         "readytotransformyourproperty":"Ready to transform your property","getintouch":"Get in Touch",
-        "startbuildingtoday":"Start building today","contactus":"Contact Us","aboutavorino":"About Avorino"
+        "startbuildingtoday":"Start building today","contactus":"Contact Us","aboutavorino":"About Avorino",
+        "let'sbuildsomethingremarkable":"Let's build something remarkable","let'sbuildsomethingextraordinary":"Let's build something extraordinary",
+        "buildyourfuturewithus":"Build your future with us","whatwestandfor":"What We Stand For"
       };
       var k = text.toLowerCase().replace(/[?.!]/g, '');
       if (p[k]) text = p[k];
