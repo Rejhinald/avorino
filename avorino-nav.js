@@ -7,6 +7,8 @@
 (function () {
   'use strict';
 
+  function init() {
+
   // ── Config ──
   var HOVER_ENTER  = 80;    // ms before dropdown opens (prevents accidental triggers)
   var HOVER_LEAVE  = 350;   // ms grace period before closing (prevents flicker between items)
@@ -166,6 +168,13 @@
       accordion.classList.toggle('is-open');
       accBody.classList.toggle('is-open');
     });
+  }
+
+  // Run when DOM is ready — Webflow symbols may not exist when sitewide footer code executes
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
 
 })();
