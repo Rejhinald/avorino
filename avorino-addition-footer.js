@@ -1604,6 +1604,7 @@
         start: 'top top',
         end: '+=' + (window.innerHeight * totalSteps * 2),
         pin: true,
+        pinSpacing: true,
         scrub: 0.5,
         onUpdate: function(self) {
           var progress = self.progress;
