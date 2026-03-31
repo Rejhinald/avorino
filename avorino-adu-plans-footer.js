@@ -744,19 +744,21 @@
     }
 
     function goToSlide(idx) {
-      if (idx === currentSlide || isAnimating || idx < 0 || idx >= numSlides) return;
-      isAnimating = true;
+      if (idx === currentSlide || idx < 0 || idx >= numSlides) return;
       var prev = currentSlide;
       currentSlide = idx;
       updateUI(idx);
 
-      /* Crossfade */
-      gsap.to(sections[prev], { opacity: 0, duration: 0.4, ease: 'power2.inOut', onComplete: function() {
-        sections[prev].style.pointerEvents = 'none';
-      }});
-      gsap.to(sections[idx], { opacity: 1, duration: 0.4, ease: 'power2.inOut', delay: 0.1, onStart: function() {
-        sections[idx].style.pointerEvents = 'auto';
-      }, onComplete: function() { isAnimating = false; }});
+      /* Hide all, show target */
+      sections.forEach(function(s, i) {
+        if (i === idx) {
+          gsap.to(s, { opacity: 1, duration: 0.4, ease: 'power2.inOut' });
+          s.style.pointerEvents = 'auto';
+        } else {
+          gsap.to(s, { opacity: 0, duration: 0.3, ease: 'power2.inOut' });
+          s.style.pointerEvents = 'none';
+        }
+      });
 
       /* Panel slide-in */
       var stage = sections[idx].querySelector('[data-adu-role="plan-stage"]');

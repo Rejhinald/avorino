@@ -314,7 +314,7 @@
     // Camera - perspective from above
     const camHeight = Math.max(bounds.width, bounds.depth) + 20;
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500);
-    camera.position.set(bounds.centerX + 2, camHeight * 1.1, bounds.centerZ + 3);
+    camera.position.set(bounds.centerX, camHeight * 1.4, bounds.centerZ + 0.1);
 
     // OrbitControls
     const controls = new OrbitControls(camera, renderer.domElement);
