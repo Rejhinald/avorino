@@ -11,7 +11,7 @@ const PAGE_NAME = 'ADU Plan Samples';
 const PAGE_SLUG = 'adu-plan-samples';
 const PAGE_TITLE = 'ADU Floor Plans & Designs | Avorino Orange County';
 const PAGE_DESC = 'Explore Bellecielo, Casielo, and Elega with interactive 3D floor plans and matched room render references.';
-const CDN = 'dba8a32';
+const CDN = '1cbf558';
 const HEAD_CODE = [
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
@@ -570,7 +570,7 @@ async function buildPlansPage() {
   const heroH = heroInner.append(webflow.elementPresets.DOM);
   heroH.setTag('h1');
   heroH.setStyles([s.headingXL]);
-  heroH.setTextContent('ADU Plan\nSamples');
+  heroH.setTextContent('ADU Plan Samples');
   heroH.setAttribute('data-animate', 'char-cascade');
 
   const heroGoldLine = heroInner.append(webflow.elementPresets.DOM);
