@@ -47,21 +47,36 @@
       '[data-adu-plan-section]{background:var(--adu-plans-cream);padding:48px 64px 80px !important;}',
       '[data-adu-plan-section="casielo"]{background:var(--adu-plans-warm);}',
       '[data-adu-plan-section] [data-adu-role="plan-layout"]{align-items:flex-start;height:100%;max-width:1440px;margin:0 auto;}',
-      '[data-adu-plan-section] [data-adu-role="plan-stage"]{width:60% !important;flex-shrink:0;will-change:transform,opacity;}',
-      '[data-adu-plan-section] [data-adu-role="plan-panel"]{width:40% !important;will-change:transform,opacity;overflow-y:auto;max-height:calc(100vh - 160px);}',
+      '[data-adu-plan-section] [data-adu-role="plan-stage"]{width:58% !important;flex-shrink:0;will-change:transform,opacity;}',
+      '[data-adu-plan-section] [data-adu-role="plan-panel"]{width:42% !important;will-change:transform,opacity;overflow-y:auto;max-height:calc(100vh - 160px);}',
       '[data-adu-plan-section] [data-adu-role="plan-stage"] iframe{display:block;width:100% !important;height:calc(100vh - 200px) !important;min-height:500px !important;background:var(--adu-plans-surface) !important;}',
 
-      /* Hide gallery/thumbs below use cases */
-      '[data-adu-gallery-hero],[data-adu-main-image],[data-adu-thumbs]{display:none !important;}',
+      /* Alternate layout for Casielo (flip columns) */
+      '[data-adu-plan-section="casielo"] [data-adu-role="plan-layout"]{flex-direction:row-reverse !important;}',
+
+      /* Gallery images — show statically */
+      '[data-adu-gallery-hero]{pointer-events:none;}',
+      '[data-adu-main-image]{display:block;width:100% !important;height:100% !important;object-fit:cover;cursor:default !important;}',
+      '[data-adu-thumbs]{display:grid !important;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px !important;}',
+      '[data-adu-thumb]{cursor:default !important;border:1px solid rgba(200,168,110,0.12);border-radius:6px;overflow:hidden;}',
+      '[data-adu-thumb]:hover{transform:none !important;}',
+      '[data-adu-thumb] img{display:block;width:100%;height:100%;object-fit:cover;}',
 
       /* Horizontal progress bar */
       '.adu-plans-bar{position:absolute;bottom:24px;left:64px;right:64px;display:flex;align-items:center;justify-content:space-between;height:36px;z-index:10;}',
       '.adu-plans-bar-track{position:absolute;top:50%;left:0;right:0;height:3px;background:rgba(17,17,17,0.08);transform:translateY(-50%);}',
-      '.adu-plans-bar-fill{position:absolute;top:50%;left:0;right:0;height:3px;background:#c8222a;opacity:0.55;transform:translateY(-50%) scaleX(0);transform-origin:left center;}',
-      '.adu-plans-bar-dot{position:relative;width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(17,17,17,0.12);background:var(--adu-plans-cream);z-index:1;transition:background .4s ease,border-color .4s ease,box-shadow .4s ease;}',
+      '.adu-plans-bar-fill{position:absolute;top:50%;left:0;right:0;height:3px;background:#c8222a;opacity:0.55;transform:translateY(-50%) scaleX(0);transform-origin:left center;transition:transform .45s ease;}',
+      '.adu-plans-bar-dot{position:relative;width:12px;height:12px;border-radius:50%;border:1.5px solid rgba(17,17,17,0.12);background:var(--adu-plans-cream);z-index:1;cursor:pointer;transition:background .4s ease,border-color .4s ease,box-shadow .4s ease;}',
       '.adu-plans-bar-dot.is-active{background:#c8222a;border-color:#c8222a;box-shadow:0 0 0 4px rgba(200,34,42,0.12);}',
       '.adu-plans-bar-dot span{position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);font:500 11px/1 "DM Sans",system-ui,sans-serif;letter-spacing:0.12em;text-transform:uppercase;color:rgba(17,17,17,0.35);white-space:nowrap;transition:opacity .3s ease,color .3s ease;}',
       '.adu-plans-bar-dot.is-active span{opacity:1;color:rgba(17,17,17,0.65);}',
+
+      /* Navigation arrows */
+      '.adu-plans-nav-arrow{position:absolute;top:50%;z-index:10;width:48px;height:48px;border-radius:50%;border:1px solid rgba(17,17,17,0.1);background:rgba(255,255,255,0.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;color:var(--adu-plans-dark);transition:background .3s ease,border-color .3s ease,transform .3s ease;}',
+      '.adu-plans-nav-arrow:hover{background:rgba(255,255,255,0.95);border-color:rgba(17,17,17,0.2);transform:translateY(-50%) scale(1.06);}',
+      '.adu-plans-nav-arrow--prev{left:20px;transform:translateY(-50%);}',
+      '.adu-plans-nav-arrow--next{right:20px;transform:translateY(-50%);}',
+      '.adu-plans-nav-arrow.is-hidden{opacity:0;pointer-events:none;}',
 
       /* Lightbox (still functional from room clicks) */
       '#adu-plans-lightbox{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;}',
@@ -83,24 +98,31 @@
       '  #adu-plans-hero{padding:120px 24px 56px !important;min-height:72vh !important;}',
       '  #adu-plans-hero h1{font-size:clamp(48px,11vw,64px) !important;max-width:10ch !important;}',
       '  #adu-plans-hero p{max-width:540px !important;}',
-      '  [data-adu-plan-section]{padding:32px 24px 72px !important;}',
-      '  [data-adu-plan-section] [data-adu-role="plan-layout"]{display:flex !important;flex-direction:column !important;gap:24px !important;}',
+      '  [data-adu-plan-section]{padding:24px 24px 64px !important;}',
+      '  [data-adu-plan-section] [data-adu-role="plan-layout"]{display:flex !important;flex-direction:column !important;gap:20px !important;}',
+      '  [data-adu-plan-section="casielo"] [data-adu-role="plan-layout"]{flex-direction:column !important;}',
       '  [data-adu-plan-section] [data-adu-role="plan-stage"],[data-adu-plan-section] [data-adu-role="plan-panel"]{width:100% !important;}',
       '  [data-adu-plan-section] [data-adu-role="plan-panel"]{max-height:none !important;overflow-y:visible !important;}',
-      '  [data-adu-plan-section] [data-adu-role="plan-stage"] iframe{min-height:45vh !important;height:45vh !important;}',
-      '  .adu-plans-bar{left:24px;right:24px;bottom:16px;}',
+      '  [data-adu-plan-section] [data-adu-role="plan-stage"] iframe{min-height:42vh !important;height:42vh !important;}',
+      '  .adu-plans-bar{left:24px;right:24px;bottom:12px;}',
       '  .adu-plans-bar-dot span{font-size:9px;bottom:calc(100% + 6px);}',
+      '  .adu-plans-nav-arrow{width:38px;height:38px;font-size:16px;}',
+      '  .adu-plans-nav-arrow--prev{left:12px;}',
+      '  .adu-plans-nav-arrow--next{right:12px;}',
+      '  [data-adu-gallery-hero]{display:none !important;}',
+      '  [data-adu-thumbs]{display:none !important;}',
       '}',
       '@media (max-width: 767px){',
       '  #adu-plans-hero{padding:104px 16px 44px !important;min-height:66vh !important;}',
       '  #adu-plans-hero h1{font-size:clamp(40px,13vw,52px) !important;line-height:1.02 !important;}',
       '  #adu-plans-hero p{font-size:16px !important;line-height:1.7 !important;max-width:none !important;}',
-      '  [data-adu-plan-section]{padding:20px 16px 64px !important;overflow-y:auto !important;}',
-      '  [data-adu-plan-section] [data-adu-role="plan-stage"] iframe{min-height:38vh !important;height:38vh !important;}',
+      '  [data-adu-plan-section]{padding:16px 16px 56px !important;overflow-y:auto !important;}',
+      '  [data-adu-plan-section] [data-adu-role="plan-stage"] iframe{min-height:36vh !important;height:36vh !important;}',
       '  [data-adu-plan-section] h2{font-size:clamp(28px,8vw,36px) !important;line-height:1.08 !important;}',
       '  [data-adu-plan-section] p{font-size:14px !important;line-height:1.65 !important;}',
-      '  .adu-plans-bar{left:16px;right:16px;bottom:10px;}',
+      '  .adu-plans-bar{left:16px;right:16px;bottom:8px;}',
       '  .adu-plans-bar-dot span{font-size:8px;}',
+      '  .adu-plans-nav-arrow{width:32px;height:32px;font-size:14px;}',
       '}',
       '@media (prefers-reduced-motion: reduce){',
       '  [data-adu-thumb],#adu-plans-lightbox .adu-plans-lightbox-btn{transition:none !important;}',
@@ -646,7 +668,7 @@
     }
 
     /* ═══════════════════════════════════════════════
-       PLAN SECTIONS — 100vh scroll-locked slides
+       PLAN SECTIONS — 100vh pinned, arrow/dot navigation
        ═══════════════════════════════════════════════ */
     var sections = Array.prototype.slice.call(document.querySelectorAll('[data-adu-plan-section]'));
     if (!sections.length) return;
@@ -659,7 +681,6 @@
     var viewport = document.createElement('div');
     viewport.className = 'adu-plans-viewport';
 
-    /* Insert wrapper before the first section */
     sections[0].parentNode.insertBefore(wrapper, sections[0]);
     wrapper.appendChild(viewport);
 
@@ -674,11 +695,23 @@
       section.style.alignItems = 'center';
       section.style.opacity = i === 0 ? '1' : '0';
       section.style.pointerEvents = i === 0 ? 'auto' : 'none';
-      section.style.transition = 'none';
       viewport.appendChild(section);
     });
 
-    /* ── Build horizontal progress bar ── */
+    /* ── Navigation arrows ── */
+    var prevArrow = document.createElement('button');
+    prevArrow.className = 'adu-plans-nav-arrow adu-plans-nav-arrow--prev is-hidden';
+    prevArrow.innerHTML = '&#8249;';
+    prevArrow.setAttribute('aria-label', 'Previous plan');
+    viewport.appendChild(prevArrow);
+
+    var nextArrow = document.createElement('button');
+    nextArrow.className = 'adu-plans-nav-arrow adu-plans-nav-arrow--next';
+    nextArrow.innerHTML = '&#8250;';
+    nextArrow.setAttribute('aria-label', 'Next plan');
+    viewport.appendChild(nextArrow);
+
+    /* ── Horizontal progress bar ── */
     var bar = document.createElement('div');
     bar.className = 'adu-plans-bar';
     bar.innerHTML = '<div class="adu-plans-bar-track"></div><div class="adu-plans-bar-fill"></div>';
@@ -688,6 +721,7 @@
       var dot = document.createElement('div');
       dot.className = 'adu-plans-bar-dot' + (i === 0 ? ' is-active' : '');
       dot.innerHTML = '<span>' + (labels[key] || key) + '</span>';
+      dot.addEventListener('click', function() { goToSlide(i); });
       bar.appendChild(dot);
       dots.push(dot);
     });
@@ -695,49 +729,62 @@
 
     var fill = bar.querySelector('.adu-plans-bar-fill');
     var numSlides = sections.length;
-
-    /* ── Pin the wrapper and drive slide transitions ── */
     var currentSlide = 0;
+    var isAnimating = false;
 
-    function showSlide(idx) {
-      if (idx === currentSlide) return;
-      /* Crossfade */
-      gsap.to(sections[currentSlide], { opacity: 0, duration: 0.45, ease: 'power2.inOut', onComplete: function() {
-        sections[currentSlide].style.pointerEvents = 'none';
-      }});
-      gsap.to(sections[idx], { opacity: 1, duration: 0.45, ease: 'power2.inOut', onStart: function() {
-        sections[idx].style.pointerEvents = 'auto';
-      }});
-
-      /* Animate panel entrance */
-      var stage = sections[idx].querySelector('[data-adu-role="plan-stage"]');
-      var panel = sections[idx].querySelector('[data-adu-role="plan-panel"]');
-      if (stage) gsap.fromTo(stage, { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.7, ease: 'power3.out', delay: 0.15 });
-      if (panel) gsap.fromTo(panel, { x: 30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.7, ease: 'power3.out', delay: 0.2 });
-
-      currentSlide = idx;
+    function updateUI(idx) {
+      /* Progress bar fill */
+      var prog = idx / (numSlides - 1);
+      if (fill) fill.style.transform = 'translateY(-50%) scaleX(' + prog + ')';
+      /* Dots */
+      dots.forEach(function(d, di) { d.classList.toggle('is-active', di === idx); });
+      /* Arrows */
+      prevArrow.classList.toggle('is-hidden', idx === 0);
+      nextArrow.classList.toggle('is-hidden', idx === numSlides - 1);
     }
 
+    function goToSlide(idx) {
+      if (idx === currentSlide || isAnimating || idx < 0 || idx >= numSlides) return;
+      isAnimating = true;
+      var prev = currentSlide;
+      currentSlide = idx;
+      updateUI(idx);
+
+      /* Crossfade */
+      gsap.to(sections[prev], { opacity: 0, duration: 0.4, ease: 'power2.inOut', onComplete: function() {
+        sections[prev].style.pointerEvents = 'none';
+      }});
+      gsap.to(sections[idx], { opacity: 1, duration: 0.4, ease: 'power2.inOut', delay: 0.1, onStart: function() {
+        sections[idx].style.pointerEvents = 'auto';
+      }, onComplete: function() { isAnimating = false; }});
+
+      /* Panel slide-in */
+      var stage = sections[idx].querySelector('[data-adu-role="plan-stage"]');
+      var panel = sections[idx].querySelector('[data-adu-role="plan-panel"]');
+      var dir = idx > prev ? 1 : -1;
+      if (stage) gsap.fromTo(stage, { x: -30 * dir, opacity: 0 }, { x: 0, opacity: 1, duration: 0.65, ease: 'power3.out', delay: 0.15 });
+      if (panel) gsap.fromTo(panel, { x: 30 * dir, opacity: 0 }, { x: 0, opacity: 1, duration: 0.65, ease: 'power3.out', delay: 0.2 });
+    }
+
+    prevArrow.addEventListener('click', function() { goToSlide(currentSlide - 1); });
+    nextArrow.addEventListener('click', function() { goToSlide(currentSlide + 1); });
+
+    /* Keyboard navigation */
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowLeft') goToSlide(currentSlide - 1);
+      if (e.key === 'ArrowRight') goToSlide(currentSlide + 1);
+    });
+
+    /* Pin the wrapper in place */
     ScrollTrigger.create({
       trigger: wrapper,
       start: 'top top',
-      end: '+=' + (numSlides * 100) + '%',
+      end: 'bottom bottom',
       pin: true,
-      pinSpacing: true,
-      scrub: 0,
-      onUpdate: function(self) {
-        var prog = self.progress;
-        /* Progress bar fill */
-        if (fill) fill.style.transform = 'translateY(-50%) scaleX(' + prog + ')';
-        /* Determine active slide */
-        var idx = Math.min(Math.floor(prog * numSlides), numSlides - 1);
-        if (idx !== currentSlide) showSlide(idx);
-        /* Update dots */
-        dots.forEach(function(d, di) {
-          d.classList.toggle('is-active', di === idx);
-        });
-      }
+      pinSpacing: true
     });
+
+    updateUI(0);
 
     requestAnimationFrame(function() {
       requestAnimationFrame(function() { ScrollTrigger.refresh(); });
