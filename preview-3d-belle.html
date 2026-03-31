@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Belle Cielo - 3D Floor Plan</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { overflow: hidden; background: #f2ede5; }
+    canvas { display: block; width: 100vw; height: 100vh; }
+    #info {
+      position: absolute; bottom: 16px; left: 16px; z-index: 10;
+      background: rgba(17,17,17,0.58); color: #f0ede8; padding: 8px 14px;
+      border-radius: 8px; font: 14px/1.4 system-ui, sans-serif;
+    }
+    #title {
+      position: absolute; top: 16px; left: 16px; z-index: 10;
+      color: #2a2118; font: 600 18px/1 system-ui, sans-serif;
+      text-shadow: 0 1px 4px rgba(0,0,0,.5);
+    }
+  </style>
+</head>
+<body>
+  <div id="title">Belle Cielo &mdash; 3D Floor Plan</div>
+  <div id="info">Scroll to zoom &bull; Drag to orbit &bull; Right-drag to pan</div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.149.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.149.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    const EMBED_MODE =
+      new URLSearchParams(window.location.search).get('embed') === '1' ||
+      window.location.hash.indexOf('embed=1') !== -1;
+    const PLAN_SLUG = 'belle';
+    if (EMBED_MODE) {
+      const titleEl = document.getElementById('title');
+      const infoEl = document.getElementById('info');
+      if (titleEl) titleEl.style.display = 'none';
+      if (infoEl) infoEl.style.display = 'none';
+    }
+
+    // ============================================
+    // Constants (exact copy from ADU Visualizer)
+    // ============================================
+    const DIMENSIONS = {
+      WALL_THICKNESS: 0.5,
+      WALL_HEIGHT: 9,
+      DOOR_WIDTH: 3,
+      DOOR_HEIGHT: 6.67,
+      WINDOW_WIDTH: 3,
+      WINDOW_HEIGHT: 4,
+      WINDOW_SILL_HEIGHT: 3,
+    };
+
+    const COLORS = {
+      WALL: "#D5D0CA",
+      WALL_INTERIOR: "#E0DBD5",
+      WALL_PARTITION: "#E8DFD4",
+      FLOOR_DEFAULT: "#E8E4E1",
+      DOOR_FRAME: "#8B7355",
+      DOOR_PANEL: "#A68B5B",
+      WINDOW_FRAME: "#6B7280",
+      WINDOW_GLASS: "#87CEEB",
+      FURNITURE_DEFAULT: "#D4A574",
+      GROUND: "#C8C8C8",
+      ROOM_TYPES: {
+        bedroom: "#E8DFD5",
+        bathroom: "#D9E7ED",
+        kitchen: "#F0E6D3",
+        living: "#EBE5DB",
+        dining: "#E8E0D0",
+        closet: "#D8D8D8",
+        laundry: "#E0E6EC",
+        entry: "#E5E0D8",
+        corridor: "#E8E8E8",
+        office: "#E5E2DD",
+        other: "#E0E0E0",
+      },
+    };
+
+    const MATERIALS = {
+      WALL: { roughness: 0.9, metalness: 0 },
+      FLOOR: { roughness: 0.8, metalness: 0 },
+      DOOR: { roughness: 0.6, metalness: 0 },
+      WINDOW_FRAME: { roughness: 0.4, metalness: 0.2 },
+      WINDOW_GLASS: { roughness: 0.1, metalness: 0.1, opacity: 0.4, transparent: true },
+      FURNITURE: { roughness: 0.7, metalness: 0 },
+    };
+
+    const FURNITURE_HEIGHTS = {
+      bed_queen: { height: 2.5, color: "#8B7355" },
+      bed_king: { height: 2.5, color: "#8B7355" },
+      bed_twin: { height: 2.5, color: "#8B7355" },
+      dresser: { height: 3.5, color: "#A68B5B" },
+      nightstand: { height: 2, color: "#A68B5B" },
+      toilet: { height: 2.5, color: "#FFFFFF" },
+      sink: { height: 3, color: "#FFFFFF" },
+      bathtub: { height: 2, color: "#FFFFFF" },
+      shower: { height: 7, color: "#E0E0E0" },
+      refrigerator: { height: 6, color: "#C0C0C0" },
+      stove: { height: 3, color: "#404040" },
+      dishwasher: { height: 3, color: "#C0C0C0" },
+      kitchen_sink: { height: 3, color: "#C0C0C0" },
+      sofa_3seat: { height: 2.5, color: "#6B8E9F" },
+      sofa_2seat: { height: 2.5, color: "#6B8E9F" },
+      armchair: { height: 2.5, color: "#6B8E9F" },
+      coffee_table: { height: 1.5, color: "#8B7355" },
+      dining_table: { height: 2.5, color: "#8B7355" },
+      dining_chair: { height: 3, color: "#A68B5B" },
+      desk: { height: 2.5, color: "#A68B5B" },
+      office_chair: { height: 3.5, color: "#404040" },
+      bookshelf: { height: 6, color: "#8B7355" },
+      tall_closet: { height: 8.8, color: "#C8B79B" },
+      laundry_tower: { height: 7, color: "#E3E5E8" },
+    };
+
+    // ============================================
+    // Blueprint data (embedded from belle-blueprint-raw.json)
+    // ============================================
+    const blueprint = {"corners":[{"id":"c6e5d3ef-ed58-4f95-aabe-416da328c62f","x":-22,"y":-13.5},{"id":"dac1451f-5cf6-494c-9cb6-6a198ab47dc3","x":-12,"y":-13.5},{"id":"5f6273a7-452f-4205-82ee-0e837272becc","x":-12,"y":-1.5},{"id":"daf1162b-f1ed-4e6c-a011-ffe16b1caf7c","x":-22,"y":-1.5},{"id":"e3ea8879-0f70-458c-8871-cb5d4a651dcf","x":18.5,"y":-13.5},{"id":"781c612a-650c-448a-9816-98a84441f6fa","x":8.5,"y":-13.5},{"id":"4fbba0e4-f2d8-473c-aa1f-d438e9d65ce5","x":-12,"y":5},{"id":"b823af84-995c-4b2c-a441-871231e221fc","x":8.5,"y":5},{"id":"583311b7-bfd6-4d7a-ae52-d66acf0b0820","x":-22,"y":5},{"id":"d6482616-f957-4fdc-8538-1299dbb8337b","x":-20.5,"y":5},{"id":"b3940ea1-1409-427e-b364-564c9a8fe76e","x":-20.5,"y":3},{"id":"9024fbb5-0533-4329-bb5f-6455508153cf","x":-17,"y":3},{"id":"58dfd361-e063-4028-8cdb-82c3221648f3","x":-17,"y":-1.5},{"id":"d9960336-ce95-4cde-b1fd-71e100cb5a4c","x":-17,"y":5},{"id":"2d28f6d9-1ee4-4240-a905-83bc23e4b5f7","x":18.5,"y":5},{"id":"602a05b0-4d9f-4ce1-8ecf-27cb9ae2c875","x":8.5,"y":-1.5},{"id":"99e20b4a-7598-4668-9fa6-4d91bb46892e","x":18.5,"y":-1.5},{"id":"b7bf7153-6fb3-4829-8197-8a649ac83afa","x":13.5,"y":-1.5},{"id":"76b1f526-ec4d-48f7-89d0-bb6d8c18b0d2","x":13.5,"y":5},{"id":"652775c1-d508-45ff-9975-29b9682ebe1d","x":13.5,"y":2.5},{"id":"58959241-4bb2-479d-bcad-9927ad2f4222","x":8.5,"y":2.5}],"walls":[{"id":"d42e33d1-0b3e-4cfb-9059-a738e162a6a4","startCornerId":"e3ea8879-0f70-458c-8871-cb5d4a651dcf","endCornerId":"99e20b4a-7598-4668-9fa6-4d91bb46892e","thickness":0.5,"height":9,"wallType":"solid"},{"id":"e38566f1-f711-4a30-9f25-d95eeee26ebb","startCornerId":"99e20b4a-7598-4668-9fa6-4d91bb46892e","endCornerId":"2d28f6d9-1ee4-4240-a905-83bc23e4b5f7","thickness":0.5,"height":9,"wallType":"solid"},{"id":"5a1fbacb-73cf-42cd-b9bb-be3b45e43539","startCornerId":"602a05b0-4d9f-4ce1-8ecf-27cb9ae2c875","endCornerId":"b7bf7153-6fb3-4829-8197-8a649ac83afa","thickness":0.5,"height":9,"wallType":"solid"},{"id":"bee93d0f-9292-43ba-842a-5e4851f983f2","startCornerId":"b7bf7153-6fb3-4829-8197-8a649ac83afa","endCornerId":"99e20b4a-7598-4668-9fa6-4d91bb46892e","thickness":0.5,"height":9,"wallType":"solid"},{"id":"f1ae3f46-6a94-4f06-8f1d-1b3da00a7899","startCornerId":"b823af84-995c-4b2c-a441-871231e221fc","endCornerId":"76b1f526-ec4d-48f7-89d0-bb6d8c18b0d2","thickness":0.5,"height":9,"wallType":"solid"},{"id":"b4bf8fb6-b4f8-4859-b746-93cb23654d23","startCornerId":"76b1f526-ec4d-48f7-89d0-bb6d8c18b0d2","endCornerId":"2d28f6d9-1ee4-4240-a905-83bc23e4b5f7","thickness":0.5,"height":9,"wallType":"solid"},{"id":"88dd413c-4650-4408-90fd-715e3ef26d08","startCornerId":"b7bf7153-6fb3-4829-8197-8a649ac83afa","endCornerId":"652775c1-d508-45ff-9975-29b9682ebe1d","thickness":0.5,"height":9,"wallType":"solid"},{"id":"144a8c7c-bd66-45d6-ac79-fc81393d8bc9","startCornerId":"652775c1-d508-45ff-9975-29b9682ebe1d","endCornerId":"76b1f526-ec4d-48f7-89d0-bb6d8c18b0d2","thickness":0.5,"height":9,"wallType":"solid"},{"id":"825ca126-9b69-455a-bc0e-9b2094c3d6eb","startCornerId":"b823af84-995c-4b2c-a441-871231e221fc","endCornerId":"58959241-4bb2-479d-bcad-9927ad2f4222","thickness":0.5,"height":9,"wallType":"solid"},{"id":"bd365e18-ca33-4cce-a0a9-8b8620930f06","startCornerId":"58959241-4bb2-479d-bcad-9927ad2f4222","endCornerId":"602a05b0-4d9f-4ce1-8ecf-27cb9ae2c875","thickness":0.5,"height":9,"wallType":"solid"},{"id":"1fd3e6fe-4819-420d-b292-aba691635fa0","startCornerId":"652775c1-d508-45ff-9975-29b9682ebe1d","endCornerId":"58959241-4bb2-479d-bcad-9927ad2f4222","thickness":0.5,"height":9,"wallType":"solid"},{"id":"3494704d-6195-4288-a842-a198591cf86b","startCornerId":"c6e5d3ef-ed58-4f95-aabe-416da328c62f","endCornerId":"dac1451f-5cf6-494c-9cb6-6a198ab47dc3","thickness":0.5,"height":9,"wallType":"solid"},{"id":"4549aad4-8457-4282-8391-8938bec27b94","startCornerId":"dac1451f-5cf6-494c-9cb6-6a198ab47dc3","endCornerId":"5f6273a7-452f-4205-82ee-0e837272becc","thickness":0.5,"height":9,"wallType":"solid"},{"id":"43a12adb-3f4e-4193-8863-8c977fc0e5a6","startCornerId":"daf1162b-f1ed-4e6c-a011-ffe16b1caf7c","endCornerId":"c6e5d3ef-ed58-4f95-aabe-416da328c62f","thickness":0.5,"height":9,"wallType":"solid"},{"id":"110190fd-4aba-47bd-ba9f-259cd97e0924","startCornerId":"e3ea8879-0f70-458c-8871-cb5d4a651dcf","endCornerId":"781c612a-650c-448a-9816-98a84441f6fa","thickness":0.5,"height":9,"wallType":"solid"},{"id":"c6183cdf-9082-4ae7-89a9-df8d6f3735c2","startCornerId":"781c612a-650c-448a-9816-98a84441f6fa","endCornerId":"dac1451f-5cf6-494c-9cb6-6a198ab47dc3","thickness":0.5,"height":9,"wallType":"solid"},{"id":"59aa5a41-9420-4f8d-a9d0-fe9e497dc53b","startCornerId":"dac1451f-5cf6-494c-9cb6-6a198ab47dc3","endCornerId":"4fbba0e4-f2d8-473c-aa1f-d438e9d65ce5","thickness":0.5,"height":9,"wallType":"solid"},{"id":"ad46f74c-dcd5-4a48-aeac-f01560b60208","startCornerId":"4fbba0e4-f2d8-473c-aa1f-d438e9d65ce5","endCornerId":"b823af84-995c-4b2c-a441-871231e221fc","thickness":0.5,"height":9,"wallType":"solid"},{"id":"2151c2d9-e6ee-4292-ba02-51f6e213ef86","startCornerId":"daf1162b-f1ed-4e6c-a011-ffe16b1caf7c","endCornerId":"583311b7-bfd6-4d7a-ae52-d66acf0b0820","thickness":0.5,"height":9,"wallType":"solid"},{"id":"11fe3ff6-3080-4fd2-b10f-17e2f7362728","startCornerId":"583311b7-bfd6-4d7a-ae52-d66acf0b0820","endCornerId":"d6482616-f957-4fdc-8538-1299dbb8337b","thickness":0.5,"height":9,"wallType":"solid"},{"id":"20b8e266-905a-4f06-bc49-53bc0b8af4cc","startCornerId":"d6482616-f957-4fdc-8538-1299dbb8337b","endCornerId":"b3940ea1-1409-427e-b364-564c9a8fe76e","thickness":0.5,"height":9,"wallType":"solid"},{"id":"0a817720-e77d-49de-a105-88a711563fcb","startCornerId":"b3940ea1-1409-427e-b364-564c9a8fe76e","endCornerId":"9024fbb5-0533-4329-bb5f-6455508153cf","thickness":0.5,"height":9,"wallType":"solid"},{"id":"6569dd58-171d-43b7-bb5c-5c040667be81","startCornerId":"5f6273a7-452f-4205-82ee-0e837272becc","endCornerId":"58dfd361-e063-4028-8cdb-82c3221648f3","thickness":0.5,"height":9,"wallType":"solid"},{"id":"6be9f332-a19a-4b8a-9493-b6ad71d58b63","startCornerId":"58dfd361-e063-4028-8cdb-82c3221648f3","endCornerId":"daf1162b-f1ed-4e6c-a011-ffe16b1caf7c","thickness":0.5,"height":9,"wallType":"solid"},{"id":"9d532c9e-8e07-4729-9db2-18d4d5a119e4","startCornerId":"9024fbb5-0533-4329-bb5f-6455508153cf","endCornerId":"58dfd361-e063-4028-8cdb-82c3221648f3","thickness":0.5,"height":9,"wallType":"solid"},{"id":"9f07d354-35aa-4a06-a9cd-774bbfadf788","startCornerId":"d6482616-f957-4fdc-8538-1299dbb8337b","endCornerId":"d9960336-ce95-4cde-b1fd-71e100cb5a4c","thickness":0.5,"height":9,"wallType":"solid"},{"id":"cc23e113-73cc-439a-984e-914862f1b0c3","startCornerId":"d9960336-ce95-4cde-b1fd-71e100cb5a4c","endCornerId":"9024fbb5-0533-4329-bb5f-6455508153cf","thickness":0.5,"height":9,"wallType":"solid"},{"id":"dccb1b68-21e5-470d-8ef0-62eb69517484","startCornerId":"d9960336-ce95-4cde-b1fd-71e100cb5a4c","endCornerId":"4fbba0e4-f2d8-473c-aa1f-d438e9d65ce5","thickness":0.5,"height":9,"wallType":"solid"},{"id":"3241c564-b723-4479-b4b1-b7bc938469be","startCornerId":"602a05b0-4d9f-4ce1-8ecf-27cb9ae2c875","endCornerId":"781c612a-650c-448a-9816-98a84441f6fa","thickness":0.5,"height":9,"wallType":"solid"}],"doors":[{"id":"f8741251-ecaf-4566-88a4-e794e3692650","wallId":"4549aad4-8457-4282-8391-8938bec27b94","position":0.8992880344700096,"type":"single","width":2,"height":6.67},{"id":"a47c5c06-ab42-4aa0-9622-73f7f83e831b","wallId":"6569dd58-171d-43b7-bb5c-5c040667be81","position":0.31420141785363853,"type":"single","width":2,"height":6.67},{"id":"b23916f9-f1e0-49df-a2ab-8e6f361a331c","wallId":"59aa5a41-9420-4f8d-a9d0-fe9e497dc53b","position":0.8144258180784528,"type":"single","width":2,"height":6.67},{"id":"e914ec6c-28d2-4e7b-9d2c-2c88ef88dff2","wallId":"9f07d354-35aa-4a06-a9cd-774bbfadf788","position":0.469435817370259,"type":"single","width":2,"height":6.67},{"id":"ec90c755-dcdc-4f1f-a15a-0c38bddd5354","wallId":"ad46f74c-dcd5-4a48-aeac-f01560b60208","position":0.14664960365620372,"type":"single","width":2.5,"height":6.67},{"id":"e0733f3c-4bcd-4efd-9fa3-e08427009d13","wallId":"825ca126-9b69-455a-bc0e-9b2094c3d6eb","position":0.4993670721553519,"type":"single","width":2,"height":6.67},{"id":"e18cfb58-6b77-4a3f-b56d-e902c8183bc1","wallId":"5a1fbacb-73cf-42cd-b9bb-be3b45e43539","position":0.3025887930421913,"type":"single","width":2,"height":6.67},{"id":"2bec8a61-9d90-43c1-86a0-b6155142268c","wallId":"bee93d0f-9292-43ba-842a-5e4851f983f2","position":0.7322408643390901,"type":"single","width":2,"height":6.67},{"id":"55004f88-30d8-4e16-9b42-d1b8f65d3de3","wallId":"3241c564-b723-4479-b4b1-b7bc938469be","position":0.8982111366932344,"type":"single","width":2,"height":6.67}],"windows":[{"id":"847d0880-ece4-422c-b377-5a7d35868b6e","wallId":"43a12adb-3f4e-4193-8863-8c977fc0e5a6","position":0.48316253230266526,"type":"standard","width":3,"height":4,"sillHeight":3},{"id":"5b6d7272-b4cc-4684-9586-44c93da2a013","wallId":"3494704d-6195-4288-a842-a198591cf86b","position":0.35098120507161995,"type":"standard","width":3,"height":4,"sillHeight":3},{"id":"40f3e5d0-15e7-4567-baa0-4ad6cbe23a1e","wallId":"3494704d-6195-4288-a842-a198591cf86b","position":0.6503937570270238,"type":"standard","width":3,"height":4,"sillHeight":3},{"id":"9d5de513-12a7-4f26-ba74-f4832a9ec1b0","wallId":"110190fd-4aba-47bd-ba9f-259cd97e0924","position":0.6435962174937067,"type":"standard","width":3,"height":4,"sillHeight":3},{"id":"d8474177-73ad-4414-a209-86ca16ec5bf1","wallId":"110190fd-4aba-47bd-ba9f-259cd97e0924","position":0.3441836655383025,"type":"standard","width":3,"height":4,"sillHeight":3},{"id":"86ea6bfc-a6a9-4003-8c5a-0acff53f033e","wallId":"d42e33d1-0b3e-4cfb-9059-a738e162a6a4","position":0.49522551994846115,"type":"standard","width":3,"height":4,"sillHeight":3},{"id":"4c511291-edff-42e2-ab28-d885708f8600","wallId":"ad46f74c-dcd5-4a48-aeac-f01560b60208","position":0.8265438436249942,"type":"standard","width":3,"height":4,"sillHeight":3},{"id":"35caa61e-9eb9-4219-8aa5-234442569e6a","wallId":"ad46f74c-dcd5-4a48-aeac-f01560b60208","position":0.6804889402321143,"type":"standard","width":3,"height":4,"sillHeight":3},{"id":"c27931f2-3752-4862-8070-b8b2cace79ee","wallId":"ad46f74c-dcd5-4a48-aeac-f01560b60208","position":0.5344340368392342,"type":"standard","width":3,"height":4,"sillHeight":3},{"id":"7e1537a4-62b8-4197-b4d2-4712978db923","wallId":"c6183cdf-9082-4ae7-89a9-df8d6f3735c2","position":0.7806765421343808,"type":"standard","width":3,"height":4,"sillHeight":3}],"furniture":[{"id":"9de9a927-19f7-4c57-8e5a-32992a9a5be2","type":"bed_queen","x":-15.5,"y":-8.5,"width":5,"depth":6.67,"rotation":90},{"id":"1bdd0a91-3222-4858-be41-1ce94a0b5bde","type":"nightstand","x":-13,"y":-12,"width":2,"depth":1.5,"rotation":90},{"id":"2ca6850b-42d1-48bf-8dd3-54a450b65c7e","type":"nightstand","x":-13,"y":-5,"width":2,"depth":1.5,"rotation":90},{"id":"b45c5861-0fc2-4558-a8d8-69909551b79b","type":"bed_queen","x":12,"y":-6.5,"width":5,"depth":6.67,"rotation":270},{"id":"66a12bac-a696-4699-930a-6c908de5732c","type":"nightstand","x":9.5,"y":-10,"width":2,"depth":1.5,"rotation":270},{"id":"1ce8ddbb-4b1e-4e6e-a8f5-eb3346be8fba","type":"nightstand","x":9.5,"y":-3,"width":2,"depth":1.5,"rotation":270},{"id":"a49c95cf-090e-4915-add5-9e17be3a2095","type":"sofa_3seat","x":-5,"y":-4,"width":7,"depth":3,"rotation":270},{"id":"5fe9815b-6d24-4677-86c2-93d9f68a0d94","type":"sofa_2seat","x":-0.5,"y":-7.5,"width":5,"depth":3,"rotation":0},{"id":"c073300a-90a7-4add-9fce-f8af928f6574","type":"coffee_table","x":-0.5,"y":-3.5,"width":4,"depth":2,"rotation":90},{"id":"ddcfa95c-06f8-458e-bfe9-4327d30da5eb","type":"refrigerator","x":-2,"y":-12,"width":3,"depth":2.5,"rotation":0},{"id":"8c8bd79e-04b0-4303-ad1e-63db9add2a9b","type":"stove","x":-10.5,"y":-8.5,"width":2.5,"depth":2.5,"rotation":0},{"id":"7232f80a-3efa-4f44-9076-a832cda9bc41","type":"kitchen_sink","x":-6,"y":-12,"width":2.5,"depth":2,"rotation":0},{"id":"0ca04dc7-c660-4ed3-bfa6-7265806476f4","type":"bathtub","x":16.5,"y":2,"width":2,"depth":4,"rotation":90},{"id":"4ecb4891-a62f-454f-9f49-55e35a1d7524","type":"sink","x":-16,"y":-0.5,"width":2,"depth":1.5,"rotation":270},{"id":"74dc418f-8ddf-4554-bb19-678329a1f577","type":"sink","x":14.5,"y":-0.5,"width":2,"depth":1.5,"rotation":270},{"id":"81a169a6-0b1f-4a86-95d6-5ac9552667d5","type":"toilet","x":-15.5,"y":1.5,"width":1.5,"depth":2.33,"rotation":270},{"id":"8ca7e5e1-237b-4e33-8f1c-4f62fcfd0ad9","type":"toilet","x":15,"y":1.5,"width":1.5,"depth":2.33,"rotation":270}],"rooms":[{"id":"r_1774563591329_h1ewvmvs8","name":"Room 1","type":"bathroom","area":749.25,"corners":[{"x":-22,"y":-13.5},{"x":-12,"y":-13.5},{"x":8.5,"y":-13.5},{"x":18.5,"y":-13.5},{"x":18.5,"y":-1.5},{"x":18.5,"y":5},{"x":13.5,"y":5},{"x":8.5,"y":5},{"x":-12,"y":5},{"x":-17,"y":5},{"x":-20.5,"y":5},{"x":-22,"y":5},{"x":-22,"y":-1.5}]},{"id":"r_1774563591329_c55awjv6b","name":"Room 2","type":"bedroom","area":120,"corners":[{"x":-12,"y":-13.5},{"x":-12,"y":-1.5},{"x":-17,"y":-1.5},{"x":-22,"y":-1.5},{"x":-22,"y":-13.5}]},{"id":"r_1774563591329_q6n989b7p","name":"Room 3","type":"bathroom","area":185,"corners":[{"x":-12,"y":-13.5},{"x":-12,"y":5},{"x":-17,"y":5},{"x":-20.5,"y":5},{"x":-22,"y":5},{"x":-22,"y":-1.5},{"x":-22,"y":-13.5}]},{"id":"r_1774563591329_tkolsdxb0","name":"Room 4","type":"bathroom","area":564.25,"corners":[{"x":8.5,"y":-13.5},{"x":8.5,"y":-1.5},{"x":8.5,"y":2.5},{"x":8.5,"y":5},{"x":-12,"y":5},{"x":-17,"y":5},{"x":-20.5,"y":5},{"x":-22,"y":5},{"x":-22,"y":-1.5},{"x":-22,"y":-13.5},{"x":-12,"y":-13.5}]},{"id":"r_1774563591330_wnd0fzxs2","name":"Room 5","type":"closet","area":7,"corners":[{"x":-20.5,"y":5},{"x":-20.5,"y":3},{"x":-17,"y":3},{"x":-17,"y":5}]}]};
+
+    // ============================================
+    // Geometry Processing (exact port from useGeometry hook)
+    // ============================================
+
+    // Corner lookup map
+    const cornerMap = new Map();
+    blueprint.corners.forEach(c => cornerMap.set(c.id, { x: c.x, y: c.y }));
+
+    // Process walls
+    const walls3D = blueprint.walls
+      .filter(wall => wall.wallType !== 'virtual')
+      .map(wall => {
+        const start = cornerMap.get(wall.startCornerId);
+        const end = cornerMap.get(wall.endCornerId);
+        if (!start || !end) return null;
+
+        const dx = end.x - start.x;
+        const dy = end.y - start.y;
+        const length = Math.sqrt(dx * dx + dy * dy);
+        const angle = Math.atan2(dy, dx);
+        const thickness = wall.thickness ?? DIMENSIONS.WALL_THICKNESS;
+        const baseHeight = wall.height ?? DIMENSIONS.WALL_HEIGHT;
+        const height = wall.wallType === 'partition' ? baseHeight / 2 : baseHeight;
+        const wallType = wall.wallType ?? 'solid';
+
+        // Find openings on this wall (only for solid walls)
+        const openings = [];
+        if (wallType === 'solid') {
+          // Doors
+          blueprint.doors
+            .filter(d => d.wallId === wall.id)
+            .forEach(door => {
+              const pos = door.position;
+              const centerX = start.x + dx * pos;
+              const centerZ = start.y + dy * pos;
+              openings.push({
+                type: 'door',
+                id: door.id,
+                center: { x: centerX, y: (door.height ?? DIMENSIONS.DOOR_HEIGHT) / 2, z: centerZ },
+                width: door.width ?? DIMENSIONS.DOOR_WIDTH,
+                height: door.height ?? DIMENSIONS.DOOR_HEIGHT,
+                bottomY: 0,
+                doorType: door.type,
+              });
+            });
+
+          // Windows
+          blueprint.windows
+            .filter(w => w.wallId === wall.id)
+            .forEach(window => {
+              const pos = window.position;
+              const centerX = start.x + dx * pos;
+              const centerZ = start.y + dy * pos;
+              const sillHeight = window.sillHeight ?? DIMENSIONS.WINDOW_SILL_HEIGHT;
+              const windowHeight = window.height ?? DIMENSIONS.WINDOW_HEIGHT;
+              openings.push({
+                type: 'window',
+                id: window.id,
+                center: { x: centerX, y: sillHeight + windowHeight / 2, z: centerZ },
+                width: window.width ?? DIMENSIONS.WINDOW_WIDTH,
+                height: windowHeight,
+                bottomY: sillHeight,
+                windowType: window.type,
+              });
+            });
+        }
+
+        return {
+          id: wall.id,
+          start: { x: start.x, y: 0, z: start.y },
+          end: { x: end.x, y: 0, z: end.y },
+          thickness,
+          height,
+          angle,
+          length,
+          wallType,
+          openings: openings.sort((a, b) => {
+            const posA = Math.sqrt((a.center.x - start.x) ** 2 + (a.center.z - start.y) ** 2);
+            const posB = Math.sqrt((b.center.x - start.x) ** 2 + (b.center.z - start.y) ** 2);
+            return posA - posB;
+          }),
+        };
+      })
+      .filter(w => w !== null);
+
+    // Process floors (rooms) - filter entry/corridor and small rooms
+    const floors3D = blueprint.rooms
+      .filter(room => {
+        if (room.type === 'entry' || room.type === 'corridor') return false;
+        if (room.area && room.area < 10) return false;
+        return true;
+      })
+      .map(room => ({
+        id: room.id,
+        name: room.name || room.type,
+        type: room.type,
+        vertices: room.corners.map(c => ({ x: c.x, y: 0, z: c.y })),
+        color: COLORS.ROOM_TYPES[room.type] || COLORS.FLOOR_DEFAULT,
+      }));
+
+    function normalizeBelleFurniture(item) {
+      if (item.type === 'bathtub' && Math.abs(item.x - 16.5) < 0.01) {
+        return { ...item, y: 4, width: 2, depth: 4, rotation: 90 };
+      }
+      if (item.type === 'sofa_2seat' || item.type === 'coffee_table') {
+        return null;
+      }
+      return item;
+    }
+
+    // Process furniture
+    const furniture3D = blueprint.furniture.map(normalizeBelleFurniture).filter(Boolean).map(item => {
+      const config = FURNITURE_HEIGHTS[item.type] || { height: 2, color: COLORS.FURNITURE_DEFAULT };
+      return {
+        id: item.id,
+        type: item.type,
+        position: { x: item.x, y: config.height / 2, z: item.y },
+        rotation: ((item.rotation || 0) * Math.PI) / 180,
+        width: item.width || 2,
+        depth: item.depth || 2,
+        height: config.height,
+        color: config.color,
+      };
+    });
+
+    function getFootprint(item) {
+      const quarterTurns = Math.abs(Math.round(item.rotation / (Math.PI / 2))) % 2 === 1;
+      const width = quarterTurns ? item.depth : item.width;
+      const depth = quarterTurns ? item.width : item.depth;
+      return {
+        minX: item.position.x - width / 2,
+        maxX: item.position.x + width / 2,
+        minZ: item.position.z - depth / 2,
+        maxZ: item.position.z + depth / 2,
+      };
+    }
+
+    function overlapsFootprint(a, b, pad = 0) {
+      return !(
+        a.maxX <= b.minX + pad ||
+        a.minX >= b.maxX - pad ||
+        a.maxZ <= b.minZ + pad ||
+        a.minZ >= b.maxZ - pad
+      );
+    }
+
+    const kitchenCollisionFootprints = furniture3D
+      .filter(item => item.type !== 'rug')
+      .map(getFootprint);
+
+    // Calculate scene bounds
+    let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
+    blueprint.corners.forEach(c => {
+      if (c.x < minX) minX = c.x;
+      if (c.x > maxX) maxX = c.x;
+      if (c.y < minZ) minZ = c.y;
+      if (c.y > maxZ) maxZ = c.y;
+    });
+    const padding = 5;
+    minX -= padding; maxX += padding; minZ -= padding; maxZ += padding;
+    const bounds = {
+      minX, maxX, minZ, maxZ,
+      width: maxX - minX,
+      depth: maxZ - minZ,
+      centerX: (minX + maxX) / 2,
+      centerZ: (minZ + maxZ) / 2,
+    };
+
+    // ============================================
+    // Three.js Setup
+    // ============================================
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.0;
+    document.body.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color('#f2ede5');
+
+    // Camera - perspective from above
+    const camHeight = Math.max(bounds.width, bounds.depth) + 20;
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500);
+    camera.position.set(bounds.centerX + 2, camHeight * 1.1, bounds.centerZ + 3);
+
+    // OrbitControls
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(bounds.centerX, 0, bounds.centerZ);
+    controls.enablePan = true;
+    controls.enableZoom = true;
+    controls.enableRotate = true;
+    controls.minDistance = 10;
+    controls.maxDistance = 200;
+    controls.maxPolarAngle = Math.PI / 2.1;
+    controls.minPolarAngle = 0;
+    controls.autoRotate = false;
+    controls.autoRotateSpeed = 0;
+    controls.update();
+
+    // ============================================
+    // Lighting (exact copy from ADU Visualizer)
+    // ============================================
+
+    // Tone mapping — darker exposure
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.5;
+    renderer.outputEncoding = THREE.sRGBEncoding;
+
+    // Hemisphere light — subtle sky/ground
+    const hemiLight = new THREE.HemisphereLight(0x8eb4d4, 0x6b5030, 0.3);
+    scene.add(hemiLight);
+
+    // Main directional (sun) — warm, moderate
+    const dirLight = new THREE.DirectionalLight(0xffeedd, 0.6);
+    dirLight.position.set(bounds.centerX + 25, 40, bounds.centerZ + 25);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 2048;
+    dirLight.shadow.mapSize.height = 2048;
+    dirLight.shadow.camera.far = 150;
+    dirLight.shadow.camera.left = -60;
+    dirLight.shadow.camera.right = 60;
+    dirLight.shadow.camera.top = 60;
+    dirLight.shadow.camera.bottom = -60;
+    dirLight.shadow.bias = -0.001;
+    scene.add(dirLight);
+
+    // Fill light — very subtle
+    const fillLight = new THREE.DirectionalLight(0xccddee, 0.15);
+    fillLight.position.set(bounds.centerX - 15, 25, bounds.centerZ - 15);
+    scene.add(fillLight);
+
+    // Ambient — minimal
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
+    scene.add(ambientLight);
+
+    // ============================================
+    // Build Scene Geometry
+    // ============================================
+
+    // --- Procedural Textures ---
+    function makeWoodTexture(baseColor, grainColor, scale) {
+      const size = 512;
+      const canvas = document.createElement('canvas');
+      canvas.width = size; canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      // Base
+      ctx.fillStyle = baseColor;
+      ctx.fillRect(0, 0, size, size);
+      // Wood grain lines
+      ctx.strokeStyle = grainColor;
+      ctx.globalAlpha = 0.3;
+      for (let i = 0; i < size; i += (scale || 8)) {
+        ctx.lineWidth = 0.5 + Math.random() * 1.5;
+        ctx.beginPath();
+        ctx.moveTo(0, i + Math.random() * 4);
+        for (let x = 0; x < size; x += 20) {
+          ctx.lineTo(x, i + Math.sin(x * 0.02) * 3 + Math.random() * 2);
+        }
+        ctx.stroke();
+      }
+      // Knots
+      ctx.globalAlpha = 0.15;
+      for (let k = 0; k < 3; k++) {
+        const kx = Math.random() * size, ky = Math.random() * size;
+        ctx.beginPath();
+        ctx.arc(kx, ky, 8 + Math.random() * 12, 0, Math.PI * 2);
+        ctx.fillStyle = grainColor;
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(2, 2);
+      return tex;
+    }
+
+    function makeTileTexture(baseColor, groutColor, tileSize) {
+      const size = 512;
+      const ts = tileSize || 64;
+      const canvas = document.createElement('canvas');
+      canvas.width = size; canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = baseColor;
+      ctx.fillRect(0, 0, size, size);
+      // Grout lines
+      ctx.strokeStyle = groutColor;
+      ctx.lineWidth = 2;
+      for (let x = 0; x <= size; x += ts) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, size); ctx.stroke();
+      }
+      for (let y = 0; y <= size; y += ts) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(size, y); ctx.stroke();
+      }
+      // Slight tile variation
+      ctx.globalAlpha = 0.05;
+      for (let x = 0; x < size; x += ts) {
+        for (let y = 0; y < size; y += ts) {
+          ctx.fillStyle = Math.random() > 0.5 ? '#fff' : '#000';
+          ctx.fillRect(x + 2, y + 2, ts - 4, ts - 4);
+        }
+      }
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(2, 2);
+      return tex;
+    }
+
+    function makeWallTexture() {
+      const size = 256;
+      const canvas = document.createElement('canvas');
+      canvas.width = size; canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = COLORS.WALL;
+      ctx.fillRect(0, 0, size, size);
+      // Subtle noise
+      ctx.globalAlpha = 0.03;
+      for (let i = 0; i < 2000; i++) {
+        ctx.fillStyle = Math.random() > 0.5 ? '#fff' : '#000';
+        const x = Math.random() * size, y = Math.random() * size;
+        ctx.fillRect(x, y, 2, 2);
+      }
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(3, 3);
+      return tex;
+    }
+
+    // Create texture maps per room type
+    const woodFloorTex = makeWoodTexture('#C8B494', '#A08060', 6);
+    const woodFloorTex2 = makeWoodTexture('#D4C0A0', '#B09878', 7);
+    const tileFloorTex = makeTileTexture('#D0DAE0', '#B8C4CC', 48);
+    const kitchenFloorTex = makeWoodTexture('#D0C4A8', '#B0A488', 8);
+    const closetFloorTex = makeWoodTexture('#C0B8A8', '#A09888', 10);
+    const wallTex = makeWallTexture();
+
+    const floorMaterials = {
+      bedroom: new THREE.MeshStandardMaterial({ map: woodFloorTex, roughness: 0.75, metalness: 0 }),
+      bathroom: new THREE.MeshStandardMaterial({ map: tileFloorTex, roughness: 0.4, metalness: 0.05 }),
+      kitchen: new THREE.MeshStandardMaterial({ map: kitchenFloorTex, roughness: 0.7, metalness: 0 }),
+      living: new THREE.MeshStandardMaterial({ map: woodFloorTex2, roughness: 0.7, metalness: 0 }),
+      closet: new THREE.MeshStandardMaterial({ map: closetFloorTex, roughness: 0.8, metalness: 0 }),
+      laundry: new THREE.MeshStandardMaterial({ color: '#D8DDE2', roughness: 0.6, metalness: 0.05 }),
+      other: new THREE.MeshStandardMaterial({ map: closetFloorTex, roughness: 0.8, metalness: 0 }),
+    };
+
+    // --- Walls ---
+    function createWallMaterial(wallType) {
+      const wallColor = wallType === 'partition' ? COLORS.WALL_PARTITION : COLORS.WALL;
+      return new THREE.MeshStandardMaterial({
+        map: wallTex,
+        color: wallColor,
+        roughness: MATERIALS.WALL.roughness,
+        metalness: MATERIALS.WALL.metalness,
+      });
+    }
+
+    // --- Floors (after textures are defined) ---
+    floors3D.forEach(floor => {
+      if (floor.vertices.length < 3) return;
+      const shape = new THREE.Shape();
+      shape.moveTo(floor.vertices[0].x, -floor.vertices[0].z);
+      for (let i = 1; i < floor.vertices.length; i++) {
+        shape.lineTo(floor.vertices[i].x, -floor.vertices[i].z);
+      }
+      shape.closePath();
+      const roomType = floor.type || 'other';
+      const floorMat = floorMaterials[roomType] || floorMaterials.other;
+      const mat = floorMat.clone();
+      mat.side = THREE.DoubleSide;
+      const floorMesh = new THREE.Mesh(new THREE.ShapeGeometry(shape), mat);
+      floorMesh.rotation.set(-Math.PI / 2, 0, 0);
+      floorMesh.position.set(0, 0.01, 0);
+      floorMesh.receiveShadow = true;
+      scene.add(floorMesh);
+    });
+
+    // --- Walls ---
+    walls3D.forEach(wall => {
+      const { start, end, thickness, height, angle, length, openings, wallType } = wall;
+      const wallColor = wallType === 'partition' ? COLORS.WALL_PARTITION : COLORS.WALL;
+
+      if (openings.length === 0) {
+        // Simple wall - no openings
+        const centerX = (start.x + end.x) / 2;
+        const centerZ = (start.z + end.z) / 2;
+        const mesh = new THREE.Mesh(
+          new THREE.BoxGeometry(length, height, thickness),
+          new THREE.MeshStandardMaterial({
+            color: wallColor,
+            roughness: MATERIALS.WALL.roughness,
+            metalness: MATERIALS.WALL.metalness,
+          })
+        );
+        mesh.position.set(centerX, height / 2, centerZ);
+        mesh.rotation.set(0, -angle, 0);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        scene.add(mesh);
+      } else {
+        // Wall with openings - render segments around them
+        const wallGroup = new THREE.Group();
+        wallGroup.position.set(start.x, 0, start.z);
+        wallGroup.rotation.set(0, -angle, 0);
+
+        const sortedOpenings = [...openings].sort((a, b) => {
+          const posA = Math.sqrt((a.center.x - start.x) ** 2 + (a.center.z - start.z) ** 2);
+          const posB = Math.sqrt((b.center.x - start.x) ** 2 + (b.center.z - start.z) ** 2);
+          return posA - posB;
+        });
+
+        let lastEnd = 0;
+        const wallMat = new THREE.MeshStandardMaterial({
+          color: wallColor,
+          roughness: MATERIALS.WALL.roughness,
+          metalness: MATERIALS.WALL.metalness,
+        });
+
+        sortedOpenings.forEach(opening => {
+          const distFromStart = Math.sqrt(
+            (opening.center.x - start.x) ** 2 + (opening.center.z - start.z) ** 2
+          );
+          const openingStart = distFromStart - opening.width / 2;
+          const openingEnd = distFromStart + opening.width / 2;
+
+          // Wall segment before this opening
+          if (openingStart > lastEnd + 0.1) {
+            const segLength = openingStart - lastEnd;
+            const segCenter = lastEnd + segLength / 2;
+            const seg = new THREE.Mesh(
+              new THREE.BoxGeometry(segLength, height, thickness),
+              wallMat
+            );
+            seg.position.set(segCenter, height / 2, 0);
+            seg.castShadow = true;
+            seg.receiveShadow = true;
+            wallGroup.add(seg);
+          }
+
+          // Wall above opening
+          if (opening.bottomY + opening.height < height - 0.1) {
+            const aboveHeight = height - (opening.bottomY + opening.height);
+            const seg = new THREE.Mesh(
+              new THREE.BoxGeometry(opening.width, aboveHeight, thickness),
+              wallMat
+            );
+            seg.position.set(distFromStart, opening.bottomY + opening.height + aboveHeight / 2, 0);
+            seg.castShadow = true;
+            seg.receiveShadow = true;
+            wallGroup.add(seg);
+          }
+
+          // Wall below opening (for windows)
+          if (opening.bottomY > 0.1) {
+            const seg = new THREE.Mesh(
+              new THREE.BoxGeometry(opening.width, opening.bottomY, thickness),
+              wallMat
+            );
+            seg.position.set(distFromStart, opening.bottomY / 2, 0);
+            seg.castShadow = true;
+            seg.receiveShadow = true;
+            wallGroup.add(seg);
+          }
+
+          lastEnd = openingEnd;
+        });
+
+        // Wall segment after last opening
+        if (lastEnd < length - 0.1) {
+          const segLength = length - lastEnd;
+          const segCenter = lastEnd + segLength / 2;
+          const seg = new THREE.Mesh(
+            new THREE.BoxGeometry(segLength, height, thickness),
+            wallMat
+          );
+          seg.position.set(segCenter, height / 2, 0);
+          seg.castShadow = true;
+          seg.receiveShadow = true;
+          wallGroup.add(seg);
+        }
+
+        scene.add(wallGroup);
+      }
+    });
+
+    // --- Corner Posts ---
+    const cornerPostMap = new Map();
+    walls3D.forEach(wall => {
+      const startKey = `${wall.start.x.toFixed(2)},${wall.start.z.toFixed(2)}`;
+      if (!cornerPostMap.has(startKey)) {
+        cornerPostMap.set(startKey, {
+          x: wall.start.x, z: wall.start.z,
+          height: wall.height, thickness: wall.thickness,
+        });
+      }
+      const endKey = `${wall.end.x.toFixed(2)},${wall.end.z.toFixed(2)}`;
+      if (!cornerPostMap.has(endKey)) {
+        cornerPostMap.set(endKey, {
+          x: wall.end.x, z: wall.end.z,
+          height: wall.height, thickness: wall.thickness,
+        });
+      }
+    });
+
+    const cornerPostMat = new THREE.MeshStandardMaterial({
+      color: COLORS.WALL,
+      roughness: MATERIALS.WALL.roughness,
+      metalness: MATERIALS.WALL.metalness,
+    });
+
+    cornerPostMap.forEach(corner => {
+      const mesh = new THREE.Mesh(
+        new THREE.BoxGeometry(corner.thickness, corner.height, corner.thickness),
+        cornerPostMat
+      );
+      mesh.position.set(corner.x, corner.height / 2, corner.z);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      scene.add(mesh);
+    });
+
+    // --- Doors — just open holes, no frames ---
+    // Wall openings already cut the holes. Nothing to render.
+
+    // --- Windows (frame + transparent glass) ---
+    const winFrameMat = new THREE.MeshStandardMaterial({
+      color: COLORS.WINDOW_FRAME, roughness: 0.4, metalness: 0.2,
+    });
+    const glassMat = new THREE.MeshStandardMaterial({
+      color: COLORS.WINDOW_GLASS, roughness: 0.05, metalness: 0.1,
+      transparent: true, opacity: 0.25, side: THREE.DoubleSide,
+    });
+
+    walls3D.forEach(wall => {
+      wall.openings.forEach(opening => {
+        if (opening.type !== 'window') return;
+
+        const distFromStart = Math.sqrt(
+          (opening.center.x - wall.start.x) ** 2 + (opening.center.z - wall.start.z) ** 2
+        );
+        const localX = distFromStart;
+        const frameW = 0.12;
+        const frameD = wall.thickness + 0.02;
+        const cy = opening.bottomY + opening.height / 2;
+
+        const winGroup = new THREE.Group();
+        winGroup.position.set(wall.start.x, 0, wall.start.z);
+        winGroup.rotation.set(0, -wall.angle, 0);
+
+        // Frame — 4 bars (top, bottom, left, right)
+        function addBar(geo, mat, x, y, z) {
+          var m = new THREE.Mesh(geo, mat);
+          m.position.set(x, y, z);
+          winGroup.add(m);
+        }
+        // Top
+        addBar(new THREE.BoxGeometry(opening.width + frameW * 2, frameW, frameD), winFrameMat,
+          localX, cy + opening.height / 2, 0);
+        // Bottom (sill — slightly wider and deeper)
+        addBar(new THREE.BoxGeometry(opening.width + frameW * 2 + 0.3, frameW * 1.5, frameD + 0.15), winFrameMat,
+          localX, opening.bottomY, 0);
+        // Left
+        addBar(new THREE.BoxGeometry(frameW, opening.height, frameD), winFrameMat,
+          localX - opening.width / 2, cy, 0);
+        // Right
+        addBar(new THREE.BoxGeometry(frameW, opening.height, frameD), winFrameMat,
+          localX + opening.width / 2, cy, 0);
+        // Center mullion
+        addBar(new THREE.BoxGeometry(frameW * 0.7, opening.height - frameW, frameD * 0.5), winFrameMat,
+          localX, cy, 0);
+
+        // Glass pane — very thin, transparent
+        const glass = new THREE.Mesh(
+          new THREE.BoxGeometry(opening.width - frameW, opening.height - frameW, 0.03), glassMat
+        );
+        glass.position.set(localX, cy, 0);
+        winGroup.add(glass);
+
+        scene.add(winGroup);
+      });
+    });
+
+    // --- Procedural Furniture ---
+    function makeFurniturePiece(type, w, h, d, color) {
+      const group = new THREE.Group();
+      const mat = new THREE.MeshStandardMaterial({ color, roughness: 0.7, metalness: 0 });
+      const darkMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(color).multiplyScalar(0.7), roughness: 0.8 });
+      const whiteMat = new THREE.MeshStandardMaterial({ color: '#f8f6f2', roughness: 0.5 });
+      const fabricMat = new THREE.MeshStandardMaterial({ color, roughness: 0.9, metalness: 0 });
+
+      if (type === 'bed_queen' || type === 'bed_king' || type === 'bed_twin') {
+        // Mattress
+        var mw = w * 0.9, md = d * 0.85;
+        var mattress = new THREE.Mesh(new THREE.BoxGeometry(mw, 0.8, md), whiteMat);
+        mattress.position.set(0, 1.0, d * 0.05);
+        group.add(mattress);
+        // Headboard
+        var hb = new THREE.Mesh(new THREE.BoxGeometry(w, 2.5, 0.3), darkMat);
+        hb.position.set(0, 1.25, -d / 2 + 0.15);
+        group.add(hb);
+        // Frame
+        var frame = new THREE.Mesh(new THREE.BoxGeometry(w, 0.6, d), mat);
+        frame.position.set(0, 0.3, 0);
+        group.add(frame);
+        // Pillow(s)
+        var pw = mw * 0.4;
+        var pillow = new THREE.Mesh(new THREE.BoxGeometry(pw, 0.25, 1.2), new THREE.MeshStandardMaterial({ color: '#e8e4df', roughness: 0.95 }));
+        pillow.position.set(-pw * 0.55, 1.5, -d * 0.3);
+        group.add(pillow);
+        var pillow2 = pillow.clone();
+        pillow2.position.x = pw * 0.55;
+        group.add(pillow2);
+      } else if (type === 'sofa_3seat' || type === 'sofa_2seat') {
+        // Seat cushion
+        var seat = new THREE.Mesh(new THREE.BoxGeometry(w, 0.6, d * 0.65), fabricMat);
+        seat.position.set(0, 0.9, d * 0.1);
+        group.add(seat);
+        // Back cushion
+        var back = new THREE.Mesh(new THREE.BoxGeometry(w, 1.2, d * 0.3), fabricMat);
+        back.position.set(0, 1.2, -d * 0.35);
+        group.add(back);
+        // Base/frame
+        var base = new THREE.Mesh(new THREE.BoxGeometry(w, 0.6, d), darkMat);
+        base.position.set(0, 0.3, 0);
+        group.add(base);
+        // Arms
+        var armMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(color).multiplyScalar(0.85), roughness: 0.85 });
+        var armL = new THREE.Mesh(new THREE.BoxGeometry(0.3, 1.0, d), armMat);
+        armL.position.set(-w / 2 + 0.15, 1.1, 0);
+        group.add(armL);
+        var armR = armL.clone();
+        armR.position.x = w / 2 - 0.15;
+        group.add(armR);
+      } else if (type === 'armchair') {
+        var chairSeat = new THREE.Mesh(new THREE.BoxGeometry(w * 0.92, 0.55, d * 0.62), fabricMat);
+        chairSeat.position.set(0, 0.85, d * 0.08);
+        group.add(chairSeat);
+        var chairBack = new THREE.Mesh(new THREE.BoxGeometry(w * 0.88, 1.15, d * 0.24), fabricMat);
+        chairBack.position.set(0, 1.18, -d * 0.32);
+        group.add(chairBack);
+        var chairBase = new THREE.Mesh(new THREE.BoxGeometry(w, 0.4, d * 0.96), darkMat);
+        chairBase.position.set(0, 0.22, 0);
+        group.add(chairBase);
+        var chairArmMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(color).multiplyScalar(0.82), roughness: 0.88 });
+        var chairArmL = new THREE.Mesh(new THREE.BoxGeometry(0.18, 1.05, d * 0.92), chairArmMat);
+        chairArmL.position.set(-w / 2 + 0.12, 1.02, 0);
+        group.add(chairArmL);
+        var chairArmR = chairArmL.clone();
+        chairArmR.position.x = w / 2 - 0.12;
+        group.add(chairArmR);
+      } else if (type === 'coffee_table') {
+        // Top
+        var top = new THREE.Mesh(new THREE.BoxGeometry(w, 0.15, d), mat);
+        top.position.set(0, h - 0.08, 0);
+        group.add(top);
+        // Legs
+        for (var lx = -1; lx <= 1; lx += 2) {
+          for (var lz = -1; lz <= 1; lz += 2) {
+            var leg = new THREE.Mesh(new THREE.BoxGeometry(0.15, h - 0.15, 0.15), darkMat);
+            leg.position.set(lx * (w / 2 - 0.2), (h - 0.15) / 2, lz * (d / 2 - 0.2));
+            group.add(leg);
+          }
+        }
+      } else if (type === 'clean_coffee_table') {
+        var slabMat = new THREE.MeshStandardMaterial({ color, roughness: 0.38, metalness: 0.03 });
+        var frameMat = new THREE.MeshStandardMaterial({ color: '#6E665C', roughness: 0.55, metalness: 0.08 });
+        var tableTop = new THREE.Mesh(new THREE.BoxGeometry(w, 0.12, d), slabMat);
+        tableTop.position.set(0, h - 0.06, 0);
+        group.add(tableTop);
+        var frame1 = new THREE.Mesh(new THREE.BoxGeometry(w * 0.94, 0.08, 0.08), frameMat);
+        frame1.position.set(0, h * 0.52, -d / 2 + 0.08);
+        group.add(frame1);
+        var frame2 = frame1.clone();
+        frame2.position.z = d / 2 - 0.08;
+        group.add(frame2);
+        var leg1 = new THREE.Mesh(new THREE.BoxGeometry(0.08, h - 0.12, 0.08), frameMat);
+        leg1.position.set(-w / 2 + 0.12, (h - 0.12) / 2, -d / 2 + 0.12);
+        group.add(leg1);
+        var leg2 = leg1.clone();
+        leg2.position.set(w / 2 - 0.12, (h - 0.12) / 2, -d / 2 + 0.12);
+        group.add(leg2);
+        var leg3 = leg1.clone();
+        leg3.position.set(-w / 2 + 0.12, (h - 0.12) / 2, d / 2 - 0.12);
+        group.add(leg3);
+        var leg4 = leg1.clone();
+        leg4.position.set(w / 2 - 0.12, (h - 0.12) / 2, d / 2 - 0.12);
+        group.add(leg4);
+      } else if (type === 'nightstand') {
+        var ns = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+        ns.position.set(0, h / 2, 0);
+        group.add(ns);
+        // Drawer face
+        var drawer = new THREE.Mesh(new THREE.BoxGeometry(w * 0.8, h * 0.35, 0.05), darkMat);
+        drawer.position.set(0, h * 0.5, d / 2 + 0.03);
+        group.add(drawer);
+      } else if (type === 'toilet') {
+        // Bowl
+        var bowl = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.5, 1.2, 12), whiteMat);
+        bowl.position.set(0, 0.6, 0.3);
+        group.add(bowl);
+        // Tank
+        var tank = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.5, 0.6), whiteMat);
+        tank.position.set(0, 0.75, -0.5);
+        group.add(tank);
+      } else if (type === 'bathtub') {
+        // Outer shell
+        var outer = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), whiteMat);
+        outer.position.set(0, h / 2, 0);
+        group.add(outer);
+        // Inner (cutout look — slightly inset darker)
+        var inner = new THREE.Mesh(new THREE.BoxGeometry(w - 0.3, 0.3, d - 0.3),
+          new THREE.MeshStandardMaterial({ color: '#d0dde8', roughness: 0.3 }));
+        inner.position.set(0, h - 0.15, 0);
+        group.add(inner);
+      } else if (type === 'sink' || type === 'kitchen_sink') {
+        var cabinetMat = new THREE.MeshStandardMaterial({
+          color: type === 'kitchen_sink' ? '#F1F1EC' : '#FBFAF7',
+          roughness: 0.45,
+          metalness: 0.03
+        });
+        var topMat = new THREE.MeshStandardMaterial({
+          color: type === 'kitchen_sink' ? '#E8E5DE' : '#F5F3EF',
+          roughness: 0.28,
+          metalness: 0.04
+        });
+        var basinMat = new THREE.MeshStandardMaterial({
+          color: '#8F9AA4',
+          roughness: 0.24,
+          metalness: 0.32
+        });
+        var hardwareMat = new THREE.MeshStandardMaterial({
+          color: '#8E98A1',
+          roughness: 0.22,
+          metalness: 0.62
+        });
+
+        var bodyDepth = type === 'kitchen_sink' ? d : d * 0.92;
+        var body = new THREE.Mesh(new THREE.BoxGeometry(w, h - 0.18, bodyDepth), cabinetMat);
+        body.position.set(0, (h - 0.18) / 2, 0);
+        group.add(body);
+
+        var topSlab = new THREE.Mesh(new THREE.BoxGeometry(w + 0.06, 0.16, d + 0.06), topMat);
+        topSlab.position.set(0, h - 0.08, 0);
+        group.add(topSlab);
+
+        if (type === 'sink') {
+          var vanityDoorWidth = (w - 0.2) / 2;
+          for (var vd = 0; vd < 2; vd++) {
+            var vanityDoor = new THREE.Mesh(
+              new THREE.BoxGeometry(vanityDoorWidth, h * 0.58, 0.05),
+              new THREE.MeshStandardMaterial({ color: '#EEEAE3', roughness: 0.6 })
+            );
+            vanityDoor.position.set((vd === 0 ? -1 : 1) * vanityDoorWidth * 0.52, h * 0.32, bodyDepth / 2 + 0.03);
+            group.add(vanityDoor);
+          }
+        }
+
+        if (type === 'kitchen_sink') {
+          var basinOffset = w > 2.2 ? w * 0.16 : 0;
+          var basinWidth = w > 2.2 ? w * 0.28 : w * 0.5;
+          var basinDepth = d * 0.34;
+          function addKitchenBasin(offsetX) {
+            var cavity = new THREE.Mesh(
+              new THREE.BoxGeometry(basinWidth, 0.22, basinDepth),
+              basinMat
+            );
+            cavity.position.set(offsetX, h - 0.15, 0);
+            group.add(cavity);
+          }
+          if (basinOffset > 0) {
+            addKitchenBasin(-basinOffset);
+            addKitchenBasin(basinOffset);
+          } else {
+            addKitchenBasin(0);
+          }
+        } else {
+          var basin = new THREE.Mesh(
+            new THREE.BoxGeometry(w * 0.52, 0.24, d * 0.42),
+            basinMat
+          );
+          basin.position.set(0, h - 0.15, 0);
+          group.add(basin);
+        }
+
+        var faucetStem = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.55, 0.08), hardwareMat);
+        faucetStem.position.set(0, h + 0.18, -d * 0.23);
+        group.add(faucetStem);
+        var faucetSpout = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.08, 0.08), hardwareMat);
+        faucetSpout.position.set(0.15, h + 0.42, -d * 0.23);
+        group.add(faucetSpout);
+      } else if (type === 'refrigerator') {
+        // Main body
+        var fridge = new THREE.Mesh(new THREE.BoxGeometry(w, h, d),
+          new THREE.MeshStandardMaterial({ color: '#c0c0c0', roughness: 0.3, metalness: 0.4 }));
+        fridge.position.set(0, h / 2, 0);
+        group.add(fridge);
+        // Door line
+        var doorLine = new THREE.Mesh(new THREE.BoxGeometry(w + 0.02, 0.05, d + 0.02),
+          new THREE.MeshStandardMaterial({ color: '#888', roughness: 0.5 }));
+        doorLine.position.set(0, h * 0.6, 0);
+        group.add(doorLine);
+        // Handle
+        var handle = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.5, 0.1),
+          new THREE.MeshStandardMaterial({ color: '#999', roughness: 0.2, metalness: 0.6 }));
+        handle.position.set(w / 2 - 0.3, h * 0.4, d / 2 + 0.08);
+        group.add(handle);
+      } else if (type === 'stove') {
+        var stoveBody = new THREE.Mesh(new THREE.BoxGeometry(w, h, d),
+          new THREE.MeshStandardMaterial({ color: '#333', roughness: 0.4, metalness: 0.3 }));
+        stoveBody.position.set(0, h / 2, 0);
+        group.add(stoveBody);
+        // Burners
+        for (var bx = -0.4; bx <= 0.4; bx += 0.8) {
+          for (var bz = -0.4; bz <= 0.4; bz += 0.8) {
+            var burner = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.05, 16),
+              new THREE.MeshStandardMaterial({ color: '#222', roughness: 0.6, metalness: 0.5 }));
+            burner.position.set(bx, h + 0.03, bz);
+            group.add(burner);
+          }
+        }
+      } else if (type === 'tv') {
+        // Flat screen TV on stand
+        var screen = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.7, 0.1),
+          new THREE.MeshStandardMaterial({ color: '#111', roughness: 0.3, metalness: 0.4 }));
+        screen.position.set(0, h * 0.65, 0);
+        group.add(screen);
+        // Screen bezel glow
+        var screenFace = new THREE.Mesh(new THREE.BoxGeometry(w - 0.3, h * 0.7 - 0.2, 0.02),
+          new THREE.MeshStandardMaterial({ color: '#1a2a3a', roughness: 0.1, metalness: 0.1, emissive: '#0a1520', emissiveIntensity: 0.3 }));
+        screenFace.position.set(0, h * 0.65, 0.06);
+        group.add(screenFace);
+        // Stand
+        var stand = new THREE.Mesh(new THREE.BoxGeometry(w * 0.15, h * 0.3, d * 0.5),
+          new THREE.MeshStandardMaterial({ color: '#333', roughness: 0.5, metalness: 0.3 }));
+        stand.position.set(0, h * 0.15, 0);
+        group.add(stand);
+        // Base
+        var tvBase = new THREE.Mesh(new THREE.BoxGeometry(w * 0.5, 0.08, d * 0.8),
+          new THREE.MeshStandardMaterial({ color: '#333', roughness: 0.5, metalness: 0.3 }));
+        tvBase.position.set(0, 0.04, 0);
+        group.add(tvBase);
+      } else if (type === 'tall_closet') {
+        var closetBody = new THREE.Mesh(
+          new THREE.BoxGeometry(w, h, d),
+          new THREE.MeshStandardMaterial({ color: '#D0C1A8', roughness: 0.78 })
+        );
+        closetBody.position.set(0, h / 2, 0);
+        group.add(closetBody);
+        var doorCount = Math.max(2, Math.round(w / 2.2));
+        var doorWidth = w / doorCount;
+        for (var i = 0; i < doorCount; i++) {
+          var door = new THREE.Mesh(
+            new THREE.BoxGeometry(doorWidth - 0.08, h - 0.3, 0.06),
+            new THREE.MeshStandardMaterial({ color: '#C5B395', roughness: 0.68 })
+          );
+          door.position.set(-w / 2 + doorWidth * (i + 0.5), h / 2, d / 2 + 0.04);
+          group.add(door);
+          var inset = new THREE.Mesh(
+            new THREE.BoxGeometry(doorWidth - 0.38, h - 1.1, 0.03),
+            new THREE.MeshStandardMaterial({ color: '#B89F7F', roughness: 0.72 })
+          );
+          inset.position.set(door.position.x, h / 2, d / 2 + 0.08);
+          group.add(inset);
+          var handle = new THREE.Mesh(
+            new THREE.BoxGeometry(0.05, 1.15, 0.05),
+            new THREE.MeshStandardMaterial({ color: '#7D6750', roughness: 0.3, metalness: 0.2 })
+          );
+          handle.position.set(door.position.x + doorWidth * 0.22, h / 2, d / 2 + 0.1);
+          group.add(handle);
+        }
+      } else if (type === 'laundry_tower') {
+        var towerBody = new THREE.Mesh(
+          new THREE.BoxGeometry(w, h, d),
+          new THREE.MeshStandardMaterial({ color: '#E8EAED', roughness: 0.45, metalness: 0.12 })
+        );
+        towerBody.position.set(0, h / 2, 0);
+        group.add(towerBody);
+        var splitLine = new THREE.Mesh(
+          new THREE.BoxGeometry(w * 0.92, 0.05, d + 0.02),
+          new THREE.MeshStandardMaterial({ color: '#B7BDC5', roughness: 0.6 })
+        );
+        splitLine.position.set(0, h * 0.5, 0);
+        group.add(splitLine);
+        var lowerDoor = new THREE.Mesh(
+          new THREE.CylinderGeometry(w * 0.26, w * 0.26, 0.04, 24),
+          new THREE.MeshStandardMaterial({ color: '#58606A', roughness: 0.35, metalness: 0.2 })
+        );
+        lowerDoor.rotation.x = Math.PI / 2;
+        lowerDoor.position.set(0, h * 0.28, d / 2 + 0.03);
+        group.add(lowerDoor);
+        var upperDoor = lowerDoor.clone();
+        upperDoor.position.y = h * 0.73;
+        group.add(upperDoor);
+        var panel = new THREE.Mesh(
+          new THREE.BoxGeometry(w * 0.7, 0.25, 0.05),
+          new THREE.MeshStandardMaterial({ color: '#CDD2D8', roughness: 0.4 })
+        );
+        panel.position.set(0, h * 0.95, d / 2 + 0.03);
+        group.add(panel);
+      } else if (type === 'rug') {
+        var rugMesh = new THREE.Mesh(new THREE.BoxGeometry(w, 0.05, d),
+          new THREE.MeshStandardMaterial({ color, roughness: 0.95, metalness: 0 }));
+        rugMesh.position.set(0, 0.03, 0);
+        group.add(rugMesh);
+      } else if (type === 'kitchen_counter') {
+        // L or straight counter
+        var counterTop = new THREE.Mesh(new THREE.BoxGeometry(w, 0.15, d),
+          new THREE.MeshStandardMaterial({ color: '#e8e4e0', roughness: 0.3, metalness: 0.05 }));
+        counterTop.position.set(0, h, 0);
+        group.add(counterTop);
+        var counterBase = new THREE.Mesh(new THREE.BoxGeometry(w, h - 0.15, d),
+          new THREE.MeshStandardMaterial({ color: '#d4c8b8', roughness: 0.7 }));
+        counterBase.position.set(0, (h - 0.15) / 2, 0);
+        group.add(counterBase);
+      } else if (type === 'plant') {
+        // Pot
+        var pot = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.3, 0.8, 12),
+          new THREE.MeshStandardMaterial({ color: '#8B5E3C', roughness: 0.8 }));
+        pot.position.set(0, 0.4, 0);
+        group.add(pot);
+        // Foliage
+        var foliage = new THREE.Mesh(new THREE.SphereGeometry(0.6, 8, 8),
+          new THREE.MeshStandardMaterial({ color: '#3a6b35', roughness: 0.9 }));
+        foliage.position.set(0, 1.5, 0);
+        group.add(foliage);
+      } else {
+        // Default box
+        var box = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+        box.position.set(0, h / 2, 0);
+        group.add(box);
+      }
+
+      group.traverse(child => {
+        if (child.isMesh) { child.castShadow = true; child.receiveShadow = true; }
+      });
+      return group;
+    }
+
+    furniture3D.forEach(item => {
+      const piece = makeFurniturePiece(item.type, item.width, item.height, item.depth, item.color);
+      piece.position.set(item.position.x, 0, item.position.z);
+      piece.rotation.set(0, -item.rotation, 0);
+      scene.add(piece);
+    });
+
+    // --- Post-process: Fix furniture positions ---
+    // Fix Bathroom 2 bathtub — move to z=1.5 so it doesn't clip south wall (z=5)
+    // Bathtub was at (16, 3.5) with depth=5 rotated 90deg — clips z=5 wall
+    // Also make it narrower (width 2 instead of 2.5)
+    scene.traverse(child => {
+      // Find and remove the original bathtub group near x=16, z=3.5 to replace it
+    });
+
+    // Bathroom 1 bathtub (bathroom 1: x=-17..-12, z=-1.5..5)
+    // Rotated 90deg, placed against south wall of bathroom, moved down
+    var tub1 = makeFurniturePiece('bathtub', 2, 2, 4, '#fff');
+    tub1.position.set(-14.5, 0, 3.5);
+    tub1.rotation.set(0, Math.PI / 2, 0);
+    scene.add(tub1);
+
+    // --- Decorations (per user feedback) ---
+
+    // TV centered on right wall of living room
+    // Right wall is at x=8.5. Living room z goes from -1.5 to -13.5
+    // Center of that wall = z = (-1.5 + -13.5) / 2 = -7.5 — but visually it should be
+    // centered on the VISIBLE wall between the two doors. Let me just center it.
+    var tv = makeFurniturePiece('tv', 4, 3.5, 1, '#222');
+    tv.position.set(8, 1.8, -5);
+    tv.rotation.set(0, Math.PI / 2, 0);
+    scene.add(tv);
+    var tvConsole = makeFurniturePiece('kitchen_counter', 1.5, 1.8, 5, '#6B5B4B');
+    tvConsole.position.set(7.8, 0, -5);
+    scene.add(tvConsole);
+
+    // Rugs
+    var livingRug = makeFurniturePiece('rug', 9, 0.05, 7, '#B0A088');
+    livingRug.position.set(-2, 0, -5.5);
+    scene.add(livingRug);
+    var bedRug1 = makeFurniturePiece('rug', 7, 0.05, 5, '#C4B898');
+    bedRug1.position.set(-17, 0, -8);
+    scene.add(bedRug1);
+    var bedRug2 = makeFurniturePiece('rug', 7, 0.05, 5, '#8888A8');
+    bedRug2.position.set(13.5, 0, -7);
+    scene.add(bedRug2);
+    var bathRug1 = makeFurniturePiece('rug', 2, 0.05, 1.5, '#90B0C0');
+    bathRug1.position.set(-14.5, 0, 0);
+    scene.add(bathRug1);
+    var bathRug2 = makeFurniturePiece('rug', 2, 0.05, 1.5, '#90B0C0');
+    bathRug2.position.set(16, 0, 0);
+    scene.add(bathRug2);
+
+    var lounge1 = makeFurniturePiece('armchair', 1.7, 2.3, 1.8, '#D6D3CC');
+    lounge1.position.set(-1.95, 0, -7.45);
+    lounge1.rotation.set(0, 0, 0);
+    scene.add(lounge1);
+    var lounge2 = makeFurniturePiece('armchair', 1.7, 2.3, 1.8, '#D6D3CC');
+    lounge2.position.set(0.85, 0, -7.45);
+    lounge2.rotation.set(0, 0, 0);
+    scene.add(lounge2);
+    var livingTable = makeFurniturePiece('clean_coffee_table', 2.0, 1.0, 4.1, '#D2C4B1');
+    livingTable.position.set(-0.45, 0, -5.2);
+    livingTable.rotation.set(0, -Math.PI / 2, 0);
+    scene.add(livingTable);
+    // Kitchen counter — continuous strips like Elega so appliances own their footprint.
+    var kcGroup = new THREE.Group();
+    var kcMat = new THREE.MeshStandardMaterial({ color: '#F0F0ED', roughness: 0.72 });
+    var kcTopMat = new THREE.MeshStandardMaterial({ color: '#FBFBFA', roughness: 0.22, metalness: 0.03 });
+    function addCounterSegment(width, depth, x, z) {
+      var base = new THREE.Mesh(new THREE.BoxGeometry(width, 2.85, depth), kcMat);
+      base.position.set(x, 1.425, z);
+      kcGroup.add(base);
+      var top = new THREE.Mesh(new THREE.BoxGeometry(width + 0.08, 0.15, depth + 0.08), kcTopMat);
+      top.position.set(x, 2.995, z);
+      kcGroup.add(top);
+    }
+    function collectBlockingIntervals(start, end, fixed, axis, thickness) {
+      var strip = axis === 'z'
+        ? { minX: fixed - thickness / 2, maxX: fixed + thickness / 2, minZ: start, maxZ: end }
+        : { minX: start, maxX: end, minZ: fixed - thickness / 2, maxZ: fixed + thickness / 2 };
+      return kitchenCollisionFootprints
+        .filter(other => overlapsFootprint(strip, other, 0))
+        .map(other => axis === 'z'
+          ? [Math.max(start, other.minZ), Math.min(end, other.maxZ)]
+          : [Math.max(start, other.minX), Math.min(end, other.maxX)]
+        )
+        .filter(interval => interval[1] > interval[0])
+        .sort((a, b) => a[0] - b[0]);
+    }
+    function addCounterStrip(start, end, fixed, axis, thickness) {
+      var intervals = collectBlockingIntervals(start, end, fixed, axis, thickness);
+      var cursor = start;
+      intervals.forEach(function(interval) {
+        if (interval[0] > cursor + 0.02) {
+          var segStart = cursor;
+          var segEnd = interval[0];
+          var center = (segStart + segEnd) / 2;
+          var length = segEnd - segStart;
+          if (axis === 'z') addCounterSegment(thickness, length, fixed, center);
+          else addCounterSegment(length, thickness, center, fixed);
+        }
+        cursor = Math.max(cursor, interval[1]);
+      });
+      if (cursor < end - 0.02) {
+        var center = (cursor + end) / 2;
+        var length = end - cursor;
+        if (axis === 'z') addCounterSegment(thickness, length, fixed, center);
+        else addCounterSegment(length, thickness, center, fixed);
+      }
+    }
+    addCounterStrip(-11.75, 0.5, -12.25, 'x', 2.0);
+    addCounterStrip(-12.25, -6.25, -10.75, 'z', 2.0);
+    addCounterSegment(2.0, 2.0, -10.75, -12.25);
+
+    kcGroup.traverse(child => {
+      if (child.isMesh) { child.castShadow = true; child.receiveShadow = true; }
+    });
+    scene.add(kcGroup);
+
+    var laundryTower = makeFurniturePiece('laundry_tower', 1.7, 7, 1.15, '#E3E5E8');
+    laundryTower.position.set(12.4, 0, 4);
+    laundryTower.rotation.set(0, -Math.PI / 2, 0);
+    scene.add(laundryTower);
+
+    // Plant — only the one near south, removed the two circled ones
+    var plant3 = makeFurniturePiece('plant', 0.8, 2, 0.8, '#4a7a45');
+    plant3.position.set(-11.5, 0, 4);
+    scene.add(plant3);
+
+    // Dedicated closet rooms
+    var closet1 = makeFurniturePiece('tall_closet', 4.2, 8.8, 1.15, '#C8B79B');
+    closet1.position.set(-19.5, 0, 2.35);
+    closet1.rotation.set(0, Math.PI, 0);
+    scene.add(closet1);
+    var closet2 = makeFurniturePiece('tall_closet', 4.2, 8.8, 1.15, '#C8B79B');
+    closet2.position.set(11.0, 0, 1.9);
+    closet2.rotation.set(0, Math.PI, 0);
+    scene.add(closet2);
+
+    // Bathroom mirrors
+    var mirrorMat = new THREE.MeshStandardMaterial({ color: '#c0d0e0', roughness: 0.05, metalness: 0.8 });
+    var mirror1 = new THREE.Mesh(new THREE.BoxGeometry(2, 2.5, 0.08), mirrorMat);
+    mirror1.position.set(-16, 5, -1.3);
+    scene.add(mirror1);
+    var mirror2 = new THREE.Mesh(new THREE.BoxGeometry(2, 2.5, 0.08), mirrorMat);
+    mirror2.position.set(14.5, 5, -1.3);
+    scene.add(mirror2);
+
+    // --- Ground Plane ---
+    const groundMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(200, 200),
+      new THREE.MeshStandardMaterial({ color: COLORS.GROUND, roughness: 0.9 })
+    );
+    groundMesh.rotation.set(-Math.PI / 2, 0, 0);
+    groundMesh.position.set(bounds.centerX, -0.01, bounds.centerZ);
+    groundMesh.receiveShadow = true;
+    scene.add(groundMesh);
+
+    // ============================================
+    // Interactive Room Labels + Image Popup
+    // ============================================
+
+    // Room → image mapping
+    const IMG_BASE = './assets/adu-plans/belle/';
+    const roomImages = {
+      'Bedroom 1':    { img: 'bedroom.jpg', desc: 'Primary bedroom rendering' },
+      'Bedroom 2':    { img: 'bedroom.jpg', desc: 'Secondary bedroom rendering' },
+      'Living Room':  { img: 'living-alt.jpg', desc: 'Living room rendering' },
+      'Kitchen':      { img: 'living.jpg', desc: 'Kitchen rendering' },
+      'Bathroom 1':   { img: 'bathroom.jpg', desc: 'Bathroom rendering' },
+      'Bathroom 2':   { img: 'bathroom.jpg', desc: 'Bathroom rendering' },
+      'Overview':     { img: 'overview.jpg', desc: 'Bellecielo overview rendering' },
+      'Exterior':     { img: 'overview.jpg', desc: 'Bellecielo overview rendering' },
+    };
+
+    // Room label positions (Three.js coords) and which rooms
+    const roomLabels = [
+      { name: 'Bedroom 1',   x: -17,   y: 9.5, z: -8 },
+      { name: 'Bedroom 2',   x: 13.5,  y: 9.5, z: -7 },
+      { name: 'Living Room', x: -2,    y: 9.5, z: -5 },
+      { name: 'Kitchen',     x: -5,    y: 9.5, z: -11 },
+      { name: 'Bathroom 1',  x: -14.5, y: 9.5, z: 2 },
+      { name: 'Bathroom 2',  x: 16,    y: 9.5, z: 2 },
+    ];
+
+    // Create sprite labels
+    const labelSprites = [];
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    function createLabelSprite(text, x, y, z) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 256; canvas.height = 64;
+      const ctx = canvas.getContext('2d');
+      // Background pill
+      ctx.fillStyle = 'rgba(17,17,17,0.85)';
+      ctx.beginPath();
+      ctx.roundRect(4, 4, 248, 56, 12);
+      ctx.fill();
+      // Border
+      ctx.strokeStyle = 'rgba(200,168,110,0.6)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.roundRect(4, 4, 248, 56, 12);
+      ctx.stroke();
+      // Text
+      ctx.fillStyle = '#f0ede8';
+      ctx.font = '600 22px system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, 128, 28);
+      // "VIEW" subtext
+      ctx.fillStyle = 'rgba(200,168,110,0.8)';
+      ctx.font = '500 12px system-ui, sans-serif';
+      ctx.fillText('CLICK TO VIEW', 128, 48);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      const material = new THREE.SpriteMaterial({ map: texture, transparent: true, depthTest: false });
+      const sprite = new THREE.Sprite(material);
+      sprite.position.set(x, y, z);
+      sprite.scale.set(5, 1.25, 1);
+      sprite.userData = { roomName: text, isLabel: true };
+      return sprite;
+    }
+
+    roomLabels.forEach(label => {
+      const sprite = createLabelSprite(label.name, label.x, label.y, label.z);
+      scene.add(sprite);
+      labelSprites.push(sprite);
+    });
+
+    // Image overlay DOM
+    const overlay = document.createElement('div');
+    overlay.id = 'room-overlay';
+    overlay.innerHTML = `
+      <div class="ro-backdrop"></div>
+      <div class="ro-content">
+        <button class="ro-close">&times;</button>
+        <img class="ro-img" src="" alt="">
+        <div class="ro-caption"></div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    // Overlay styles
+    const overlayStyle = document.createElement('style');
+    overlayStyle.textContent = `
+      #room-overlay { display:none; position:fixed; inset:0; z-index:100; }
+      #room-overlay.active { display:flex; align-items:center; justify-content:center; }
+      .ro-backdrop { position:absolute; inset:0; background:rgba(0,0,0,0.85); cursor:pointer; }
+      .ro-content { position:relative; max-width:90vw; max-height:90vh; z-index:1; }
+      .ro-img { display:block; max-width:90vw; max-height:80vh; border-radius:12px; box-shadow:0 8px 40px rgba(0,0,0,0.6); }
+      .ro-caption { text-align:center; color:#f0ede8; font:500 16px/1.5 system-ui,sans-serif; margin-top:12px; letter-spacing:0.02em; }
+      .ro-close { position:absolute; top:-16px; right:-16px; width:40px; height:40px; border-radius:50%; border:none; background:#222; color:#f0ede8; font-size:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:2; }
+      .ro-close:hover { background:#c8222a; }
+    `;
+    document.head.appendChild(overlayStyle);
+
+    // Close overlay
+    overlay.querySelector('.ro-backdrop').addEventListener('click', () => overlay.classList.remove('active'));
+    overlay.querySelector('.ro-close').addEventListener('click', () => overlay.classList.remove('active'));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') overlay.classList.remove('active'); });
+
+    // Show room image
+    function showRoomImage(roomName) {
+      const data = roomImages[roomName];
+      if (!data) return;
+      if (EMBED_MODE && window.parent && window.parent !== window) {
+        window.parent.postMessage({
+          type: 'adu-plan-room-select',
+          plan: PLAN_SLUG,
+          room: roomName,
+          image: IMG_BASE + data.img,
+          description: data.desc,
+        }, '*');
+        return;
+      }
+      overlay.querySelector('.ro-img').src = IMG_BASE + data.img;
+      overlay.querySelector('.ro-caption').textContent = data.desc;
+      overlay.classList.add('active');
+    }
+
+    // Mouse interaction
+    let hoveredLabel = null;
+    const canvasEl = renderer.domElement;
+
+    canvasEl.addEventListener('mousemove', e => {
+      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    });
+
+    canvasEl.addEventListener('click', e => {
+      if (hoveredLabel) {
+        showRoomImage(hoveredLabel.userData.roomName);
+      }
+    });
+
+    // ============================================
+    // Animation Loop
+    // ============================================
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+
+      // Raycast for label hover
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(labelSprites);
+      if (intersects.length > 0 && intersects[0].object.userData.isLabel) {
+        if (hoveredLabel !== intersects[0].object) {
+          // Reset previous
+          if (hoveredLabel) hoveredLabel.scale.set(5, 1.25, 1);
+          hoveredLabel = intersects[0].object;
+          hoveredLabel.scale.set(5.5, 1.4, 1); // Scale up on hover
+        }
+        canvasEl.style.cursor = 'pointer';
+      } else {
+        if (hoveredLabel) {
+          hoveredLabel.scale.set(5, 1.25, 1);
+          hoveredLabel = null;
+        }
+        canvasEl.style.cursor = 'grab';
+      }
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Resize handler
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
