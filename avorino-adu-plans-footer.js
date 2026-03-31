@@ -733,10 +733,7 @@
     var isAnimating = false;
 
     function updateUI(idx) {
-      /* Progress bar fill */
-      var prog = idx / (numSlides - 1);
-      if (fill) fill.style.transform = 'translateY(-50%) scaleX(' + prog + ')';
-      /* Dots */
+      /* Dots — only update on slide change */
       dots.forEach(function(d, di) { d.classList.toggle('is-active', di === idx); });
       /* Arrows */
       prevArrow.classList.toggle('is-hidden', idx === 0);
