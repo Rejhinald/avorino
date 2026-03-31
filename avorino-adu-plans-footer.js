@@ -775,13 +775,21 @@
       if (e.key === 'ArrowRight') goToSlide(currentSlide + 1);
     });
 
-    /* Pin the wrapper for the duration of all slides */
+    /* Pin the wrapper and drive slide transitions on scroll */
     ScrollTrigger.create({
       trigger: wrapper,
       start: 'top top',
       end: '+=' + (numSlides * 100) + 'vh',
       pin: true,
-      pinSpacing: true
+      pinSpacing: true,
+      scrub: 0,
+      onUpdate: function(self) {
+        var prog = self.progress;
+        var idx = Math.min(Math.floor(prog * numSlides), numSlides - 1);
+        if (idx !== currentSlide) goToSlide(idx);
+        /* Update fill independently for smooth tracking */
+        if (fill) fill.style.transform = 'translateY(-50%) scaleX(' + prog + ')';
+      }
     });
 
     updateUI(0);
