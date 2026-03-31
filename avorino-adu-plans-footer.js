@@ -65,7 +65,7 @@
       /* Horizontal progress bar */
       '.adu-plans-bar{position:absolute;bottom:24px;left:64px;right:64px;display:flex;align-items:center;justify-content:space-between;height:36px;z-index:10;}',
       '.adu-plans-bar-track{position:absolute;top:50%;left:0;right:0;height:3px;background:rgba(17,17,17,0.08);transform:translateY(-50%);}',
-      '.adu-plans-bar-fill{position:absolute;top:50%;left:0;right:0;height:3px;background:#c8222a;opacity:0.55;transform:translateY(-50%) scaleX(0);transform-origin:left center;transition:transform .45s ease;}',
+      '.adu-plans-bar-fill{position:absolute;top:50%;left:0;right:0;height:3px;background:#c8222a;opacity:0.55;transform:translateY(-50%) scaleX(0);transform-origin:left center;}',
       '.adu-plans-bar-dot{position:relative;width:12px;height:12px;border-radius:50%;border:1.5px solid rgba(17,17,17,0.12);background:var(--adu-plans-cream);z-index:1;cursor:pointer;transition:background .4s ease,border-color .4s ease,box-shadow .4s ease;}',
       '.adu-plans-bar-dot.is-active{background:#c8222a;border-color:#c8222a;box-shadow:0 0 0 4px rgba(200,34,42,0.12);}',
       '.adu-plans-bar-dot span{position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);font:500 11px/1 "DM Sans",system-ui,sans-serif;letter-spacing:0.12em;text-transform:uppercase;color:rgba(17,17,17,0.35);white-space:nowrap;transition:opacity .3s ease,color .3s ease;}',
@@ -150,17 +150,13 @@
     camera.position.set(0, 45, 0.01);
     camera.lookAt(0, 0, 0);
 
-    /* ── Materials ── */
+    /* ── Materials — all gold/yellow, very transparent ── */
     var goldColor = 0xc8a86e;
-    var wallMat = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.72 });
-    var partMat = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.38 });
-    var gridMat = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.06 });
-    var dimMat = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.18 });
-    var doorMat = new THREE.LineBasicMaterial({ color: 0xc8222a, transparent: true, opacity: 0.5 });
-    var winMat = new THREE.LineBasicMaterial({ color: 0x87CEEB, transparent: true, opacity: 0.35 });
-    var fillMat = new THREE.MeshBasicMaterial({ color: goldColor, transparent: true, opacity: 0.025, side: THREE.DoubleSide });
-    var roomFill1 = new THREE.MeshBasicMaterial({ color: 0xc8a86e, transparent: true, opacity: 0.04, side: THREE.DoubleSide });
-    var roomFill2 = new THREE.MeshBasicMaterial({ color: 0x87CEEB, transparent: true, opacity: 0.035, side: THREE.DoubleSide });
+    var wallMat = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.25 });
+    var partMat = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.14 });
+    var gridMat = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.04 });
+    var dimMat = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.1 });
+    var fillMat = new THREE.MeshBasicMaterial({ color: goldColor, transparent: true, opacity: 0.03, side: THREE.DoubleSide });
 
     var gridGroup = new THREE.Group();
     var planGroup = new THREE.Group();
@@ -179,24 +175,6 @@
       var geo = new THREE.ShapeGeometry(shape);
       geo.rotateX(-Math.PI / 2);
       group.add(new THREE.Mesh(geo, mat || fillMat));
-    }
-
-    function addArc(group, cx, cz, r, a0, a1, mat) {
-      var pts = [];
-      for (var i = 0; i <= 20; i++) {
-        var a = a0 + (a1 - a0) * (i / 20);
-        pts.push(new THREE.Vector3(cx + Math.cos(a) * r, 0, cz + Math.sin(a) * r));
-      }
-      group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), mat || doorMat));
-    }
-
-    function addWindowMark(group, x1, z1, x2, z2) {
-      addLine(group, x1, z1, x2, z2, winMat);
-      var mx = (x1 + x2) / 2, mz = (z1 + z2) / 2;
-      var dx = x2 - x1, dz = z2 - z1;
-      var len = Math.sqrt(dx * dx + dz * dz);
-      var nx = -dz / len * 0.3, nz = dx / len * 0.3;
-      addLine(group, mx - nx, mz - nz, mx + nx, mz + nz, winMat);
     }
 
     /* ── Blueprint grid ── */
@@ -260,37 +238,13 @@
     ];
     intWalls.forEach(function(w) { addLine(planGroup, C[w[0]][0], C[w[0]][1], C[w[1]][0], C[w[1]][1], partMat); });
 
-    /* Room floor fills */
-    /* Bedroom 1 (left bottom) */
-    addFloor(planGroup, [C.c1, C.c2, C.c3, C.c4], roomFill1);
-    /* Living/Kitchen (center) */
+    /* Room floor fills — all gold */
+    addFloor(planGroup, [C.c1, C.c2, C.c3, C.c4], fillMat);
     addFloor(planGroup, [C.c7, C.c8, C.c16, C.c3], fillMat);
-    /* Bedroom 2 (right bottom) */
-    addFloor(planGroup, [C.c6, C.c5, C.c17, C.c16], roomFill1);
-    /* Bathroom 1 (right top) */
-    addFloor(planGroup, [C.c21, C.c20, C.c19, C.c8], roomFill2);
-    /* Bathroom 2 (right far) */
-    addFloor(planGroup, [C.c18, C.c17, C.c15, C.c19], roomFill2);
-    /* Closet */
-    addFloor(planGroup, [C.c10, C.c11, C.c12, C.c14], roomFill2);
-
-    /* Door arcs */
-    addArc(planGroup, C.c3[0], C.c3[1]+0.3, 1.2*S, 0, Math.PI/2);
-    addArc(planGroup, C.c16[0], C.c16[1]+0.3, 1.2*S, Math.PI/2, Math.PI);
-    addArc(planGroup, C.c12[0]+0.3, C.c12[1], 1.0*S, -Math.PI/2, 0);
-    addArc(planGroup, C.c21[0]+0.3, C.c21[1], 1.0*S, Math.PI, Math.PI*1.5);
-
-    /* Window markers on exterior walls */
-    /* Left wall */
-    addWindowMark(planGroup, C.c9[0], (C.c9[1]+C.c4[1])*0.55, C.c9[0], (C.c9[1]+C.c4[1])*0.45);
-    /* Bottom wall - bedroom 1 */
-    addWindowMark(planGroup, (C.c1[0]+C.c2[0])*0.4, C.c1[1], (C.c1[0]+C.c2[0])*0.6, C.c1[1]);
-    /* Bottom wall - bedroom 2 */
-    addWindowMark(planGroup, (C.c6[0]+C.c5[0])*0.4, C.c6[1], (C.c6[0]+C.c5[0])*0.6, C.c6[1]);
-    /* Right wall */
-    addWindowMark(planGroup, C.c5[0], (C.c5[1]+C.c17[1])*0.5, C.c5[0], (C.c5[1]+C.c17[1])*0.45);
-    /* Top wall - living */
-    addWindowMark(planGroup, (C.c7[0]+C.c8[0])*0.4, C.c8[1], (C.c7[0]+C.c8[0])*0.6, C.c8[1]);
+    addFloor(planGroup, [C.c6, C.c5, C.c17, C.c16], fillMat);
+    addFloor(planGroup, [C.c21, C.c20, C.c19, C.c8], fillMat);
+    addFloor(planGroup, [C.c18, C.c17, C.c15, C.c19], fillMat);
+    addFloor(planGroup, [C.c10, C.c11, C.c12, C.c14], fillMat);
 
     /* Dimension lines */
     var dO = 1.5;
