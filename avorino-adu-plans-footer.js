@@ -775,11 +775,11 @@
       if (e.key === 'ArrowRight') goToSlide(currentSlide + 1);
     });
 
-    /* Pin the wrapper in place */
+    /* Pin the wrapper for the duration of all slides */
     ScrollTrigger.create({
       trigger: wrapper,
       start: 'top top',
-      end: 'bottom bottom',
+      end: '+=' + (numSlides * 100) + 'vh',
       pin: true,
       pinSpacing: true
     });
