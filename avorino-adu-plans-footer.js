@@ -39,16 +39,29 @@
       '#adu-plans-hero-canvas{display:block;width:100% !important;height:100% !important;}',
       '#adu-plans-hero [class*="scroll-hint"] span,#adu-plans-hero [class*="scroll"] > span{font-family:"DM Sans",system-ui,sans-serif !important;font-size:11px !important;letter-spacing:0.25em !important;text-transform:uppercase !important;color:rgba(200,168,110,0.55) !important;}',
 
-      /* Plan sections — wider viewer */
-      '[data-adu-plan-section]{position:relative;background:var(--adu-plans-cream);}',
+      /* 100vh scroll-locked stage */
+      '#adu-plans-stage{position:relative;width:100%;height:100vh;overflow:hidden;}',
+      '.adu-plans-viewport{position:relative;width:100%;height:100%;overflow:hidden;}',
+
+      /* Plan sections as slides */
+      '[data-adu-plan-section]{background:var(--adu-plans-cream);padding:48px 64px 80px !important;}',
       '[data-adu-plan-section="casielo"]{background:var(--adu-plans-warm);}',
-      '[data-adu-plan-section] [data-adu-role="plan-layout"]{align-items:flex-start;}',
-      '[data-adu-plan-section] [data-adu-role="plan-stage"]{width:62% !important;flex-shrink:0;will-change:transform,opacity;}',
-      '[data-adu-plan-section] [data-adu-role="plan-panel"]{width:38% !important;will-change:transform,opacity;}',
-      '[data-adu-plan-section] [data-adu-role="plan-stage"] iframe{display:block;width:100% !important;height:680px !important;min-height:680px !important;background:var(--adu-plans-surface) !important;}',
+      '[data-adu-plan-section] [data-adu-role="plan-layout"]{align-items:flex-start;height:100%;max-width:1440px;margin:0 auto;}',
+      '[data-adu-plan-section] [data-adu-role="plan-stage"]{width:60% !important;flex-shrink:0;will-change:transform,opacity;}',
+      '[data-adu-plan-section] [data-adu-role="plan-panel"]{width:40% !important;will-change:transform,opacity;overflow-y:auto;max-height:calc(100vh - 160px);}',
+      '[data-adu-plan-section] [data-adu-role="plan-stage"] iframe{display:block;width:100% !important;height:calc(100vh - 200px) !important;min-height:500px !important;background:var(--adu-plans-surface) !important;}',
 
       /* Hide gallery/thumbs below use cases */
       '[data-adu-gallery-hero],[data-adu-main-image],[data-adu-thumbs]{display:none !important;}',
+
+      /* Horizontal progress bar */
+      '.adu-plans-bar{position:absolute;bottom:24px;left:64px;right:64px;display:flex;align-items:center;justify-content:space-between;height:36px;z-index:10;}',
+      '.adu-plans-bar-track{position:absolute;top:50%;left:0;right:0;height:3px;background:rgba(17,17,17,0.08);transform:translateY(-50%);}',
+      '.adu-plans-bar-fill{position:absolute;top:50%;left:0;right:0;height:3px;background:#c8222a;opacity:0.55;transform:translateY(-50%) scaleX(0);transform-origin:left center;}',
+      '.adu-plans-bar-dot{position:relative;width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(17,17,17,0.12);background:var(--adu-plans-cream);z-index:1;transition:background .4s ease,border-color .4s ease,box-shadow .4s ease;}',
+      '.adu-plans-bar-dot.is-active{background:#c8222a;border-color:#c8222a;box-shadow:0 0 0 4px rgba(200,34,42,0.12);}',
+      '.adu-plans-bar-dot span{position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);font:500 11px/1 "DM Sans",system-ui,sans-serif;letter-spacing:0.12em;text-transform:uppercase;color:rgba(17,17,17,0.35);white-space:nowrap;transition:opacity .3s ease,color .3s ease;}',
+      '.adu-plans-bar-dot.is-active span{opacity:1;color:rgba(17,17,17,0.65);}',
 
       /* Lightbox (still functional from room clicks) */
       '#adu-plans-lightbox{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;}',
@@ -65,36 +78,29 @@
       '#adu-plans-lightbox .adu-plans-lightbox-next{right:20px;top:50%;transform:translateY(-50%);font-size:24px;}',
       '#adu-plans-lightbox .adu-plans-lightbox-prev:hover,#adu-plans-lightbox .adu-plans-lightbox-next:hover{transform:translateY(calc(-50% - 1px));}',
 
-      /* Plan progress bar */
-      '#adu-plan-progress{position:fixed;right:32px;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:18px;align-items:center;opacity:0;pointer-events:none;transition:opacity .4s ease;}',
-      '#adu-plan-progress.is-visible{opacity:1;pointer-events:auto;}',
-      '#adu-plan-progress .adu-prog-dot{width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(200,168,110,0.4);background:transparent;cursor:pointer;transition:all .35s ease;position:relative;}',
-      '#adu-plan-progress .adu-prog-dot.is-active{background:var(--adu-plans-gold);border-color:var(--adu-plans-gold);transform:scale(1.3);}',
-      '#adu-plan-progress .adu-prog-dot .adu-prog-label{position:absolute;right:22px;top:50%;transform:translateY(-50%);font:500 11px/1 "DM Sans",system-ui,sans-serif;letter-spacing:0.15em;text-transform:uppercase;color:rgba(17,17,17,0.5);white-space:nowrap;opacity:0;transition:opacity .3s ease;}',
-      '#adu-plan-progress .adu-prog-dot:hover .adu-prog-label,#adu-plan-progress .adu-prog-dot.is-active .adu-prog-label{opacity:1;}',
-      '#adu-plan-progress .adu-prog-line{width:1.5px;height:18px;background:rgba(200,168,110,0.2);}',
-
       /* Responsive */
       '@media (max-width: 991px){',
       '  #adu-plans-hero{padding:120px 24px 56px !important;min-height:72vh !important;}',
       '  #adu-plans-hero h1{font-size:clamp(48px,11vw,64px) !important;max-width:10ch !important;}',
       '  #adu-plans-hero p{max-width:540px !important;}',
-      '  [data-adu-plan-section]{padding:88px 24px !important;}',
-      '  [data-adu-plan-section] [data-adu-role="plan-layout"]{display:flex !important;flex-direction:column !important;gap:36px !important;}',
+      '  [data-adu-plan-section]{padding:32px 24px 72px !important;}',
+      '  [data-adu-plan-section] [data-adu-role="plan-layout"]{display:flex !important;flex-direction:column !important;gap:24px !important;}',
       '  [data-adu-plan-section] [data-adu-role="plan-stage"],[data-adu-plan-section] [data-adu-role="plan-panel"]{width:100% !important;}',
-      '  [data-adu-plan-section] [data-adu-role="plan-stage"] iframe{min-height:520px !important;height:520px !important;}',
-      '  #adu-plan-progress{right:16px;gap:14px;}',
-      '  #adu-plan-progress .adu-prog-label{display:none;}',
+      '  [data-adu-plan-section] [data-adu-role="plan-panel"]{max-height:none !important;overflow-y:visible !important;}',
+      '  [data-adu-plan-section] [data-adu-role="plan-stage"] iframe{min-height:45vh !important;height:45vh !important;}',
+      '  .adu-plans-bar{left:24px;right:24px;bottom:16px;}',
+      '  .adu-plans-bar-dot span{font-size:9px;bottom:calc(100% + 6px);}',
       '}',
       '@media (max-width: 767px){',
       '  #adu-plans-hero{padding:104px 16px 44px !important;min-height:66vh !important;}',
       '  #adu-plans-hero h1{font-size:clamp(40px,13vw,52px) !important;line-height:1.02 !important;}',
       '  #adu-plans-hero p{font-size:16px !important;line-height:1.7 !important;max-width:none !important;}',
-      '  [data-adu-plan-section]{padding:72px 16px !important;}',
-      '  [data-adu-plan-section] [data-adu-role="plan-stage"] iframe{min-height:400px !important;height:400px !important;}',
-      '  [data-adu-plan-section] h2{font-size:clamp(32px,10vw,44px) !important;line-height:1.04 !important;}',
-      '  [data-adu-plan-section] p{font-size:15px !important;line-height:1.7 !important;}',
-      '  #adu-plan-progress .adu-prog-dot{width:8px;height:8px;}',
+      '  [data-adu-plan-section]{padding:20px 16px 64px !important;overflow-y:auto !important;}',
+      '  [data-adu-plan-section] [data-adu-role="plan-stage"] iframe{min-height:38vh !important;height:38vh !important;}',
+      '  [data-adu-plan-section] h2{font-size:clamp(28px,8vw,36px) !important;line-height:1.08 !important;}',
+      '  [data-adu-plan-section] p{font-size:14px !important;line-height:1.65 !important;}',
+      '  .adu-plans-bar{left:16px;right:16px;bottom:10px;}',
+      '  .adu-plans-bar-dot span{font-size:8px;}',
       '}',
       '@media (prefers-reduced-motion: reduce){',
       '  [data-adu-thumb],#adu-plans-lightbox .adu-plans-lightbox-btn{transition:none !important;}',
@@ -611,36 +617,6 @@
     }
   }
 
-  function initProgressBar() {
-    var sections = document.querySelectorAll('[data-adu-plan-section]');
-    if (!sections.length) return null;
-
-    var bar = document.createElement('div');
-    bar.id = 'adu-plan-progress';
-    var labels = { belle: 'Bellecielo', bellecielo: 'Bellecielo', casielo: 'Casielo', elega: 'Elega' };
-    var dots = [];
-
-    Array.prototype.slice.call(sections).forEach(function(section, i) {
-      if (i > 0) {
-        var line = document.createElement('div');
-        line.className = 'adu-prog-line';
-        bar.appendChild(line);
-      }
-      var dot = document.createElement('div');
-      dot.className = 'adu-prog-dot' + (i === 0 ? ' is-active' : '');
-      var key = section.getAttribute('data-adu-plan-section');
-      dot.innerHTML = '<span class="adu-prog-label">' + (labels[key] || key) + '</span>';
-      dot.addEventListener('click', function() {
-        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-      bar.appendChild(dot);
-      dots.push(dot);
-    });
-
-    document.body.appendChild(bar);
-    return { bar: bar, dots: dots };
-  }
-
   function initAnimations() {
     if (!window.gsap || !window.ScrollTrigger) return;
 
@@ -656,108 +632,116 @@
       var heroContent = hero.querySelectorAll('h1, p, [class*="label"], [class*="gold-line"], [class*="scroll-hint"]');
       if (heroContent.length) {
         gsap.to(heroContent, {
-          y: -72,
-          opacity: 0,
-          ease: 'none',
-          stagger: 0.03,
-          scrollTrigger: {
-            trigger: hero,
-            start: 'top top',
-            end: 'bottom top',
-            scrub: 0.65
-          }
+          y: -72, opacity: 0, ease: 'none', stagger: 0.03,
+          scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.65 }
         });
       }
     }
 
     if (hero && heroCanvas) {
       gsap.to(heroCanvas, {
-        yPercent: -6,
-        scale: 1.04,
-        transformOrigin: '50% 50%',
-        ease: 'none',
-        scrollTrigger: {
-          trigger: hero,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.8
-        }
+        yPercent: -6, scale: 1.04, transformOrigin: '50% 50%', ease: 'none',
+        scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.8 }
       });
     }
 
-    /* ── Plan sections: scroll-lock with progress bar ── */
+    /* ═══════════════════════════════════════════════
+       PLAN SECTIONS — 100vh scroll-locked slides
+       ═══════════════════════════════════════════════ */
     var sections = Array.prototype.slice.call(document.querySelectorAll('[data-adu-plan-section]'));
-    var progress = initProgressBar();
+    if (!sections.length) return;
 
-    sections.forEach(function(section, idx) {
-      var stage = section.querySelector('[data-adu-role="plan-stage"]');
-      var panel = section.querySelector('[data-adu-role="plan-panel"]');
-      var copyItems = section.querySelectorAll('[data-adu-animate="section-copy"]');
+    var labels = { bellecielo: 'Bellecielo', casielo: 'Casielo', elega: 'Elega' };
 
-      /* Pin each section */
-      ScrollTrigger.create({
-        trigger: section,
-        start: 'top top',
-        end: 'bottom top',
-        pin: true,
-        pinSpacing: true,
-        onEnter: function() {
-          if (progress) {
-            progress.bar.classList.add('is-visible');
-            progress.dots.forEach(function(d, di) {
-              d.classList.toggle('is-active', di === idx);
-            });
-          }
-        },
-        onEnterBack: function() {
-          if (progress) {
-            progress.bar.classList.add('is-visible');
-            progress.dots.forEach(function(d, di) {
-              d.classList.toggle('is-active', di === idx);
-            });
-          }
-        },
-        onLeaveBack: function() {
-          if (idx === 0 && progress) {
-            progress.bar.classList.remove('is-visible');
-          }
-        },
-        onLeave: function() {
-          if (idx === sections.length - 1 && progress) {
-            progress.bar.classList.remove('is-visible');
-          }
-        }
-      });
+    /* ── Build wrapper: pinned 100vh container ── */
+    var wrapper = document.createElement('div');
+    wrapper.id = 'adu-plans-stage';
+    var viewport = document.createElement('div');
+    viewport.className = 'adu-plans-viewport';
 
-      /* Entrance animations */
-      if (stage) {
-        gsap.from(stage, {
-          opacity: 0, x: -36, y: 20, duration: 1, ease: 'power3.out',
-          scrollTrigger: { trigger: section, start: 'top 78%' }
-        });
-      }
+    /* Insert wrapper before the first section */
+    sections[0].parentNode.insertBefore(wrapper, sections[0]);
+    wrapper.appendChild(viewport);
 
-      if (panel) {
-        gsap.from(panel, {
-          opacity: 0, x: 36, y: 20, duration: 1, ease: 'power3.out',
-          scrollTrigger: { trigger: section, start: 'top 78%' }
-        });
-      }
+    /* Move all sections into the viewport as stacked slides */
+    sections.forEach(function(section, i) {
+      section.style.position = 'absolute';
+      section.style.inset = '0';
+      section.style.width = '100%';
+      section.style.height = '100%';
+      section.style.overflow = 'auto';
+      section.style.display = 'flex';
+      section.style.alignItems = 'center';
+      section.style.opacity = i === 0 ? '1' : '0';
+      section.style.pointerEvents = i === 0 ? 'auto' : 'none';
+      section.style.transition = 'none';
+      viewport.appendChild(section);
+    });
 
-      if (copyItems.length) {
-        gsap.from(copyItems, {
-          opacity: 0, y: 22, duration: 0.8, stagger: 0.08, ease: 'power3.out',
-          scrollTrigger: { trigger: section, start: 'top 72%' }
+    /* ── Build horizontal progress bar ── */
+    var bar = document.createElement('div');
+    bar.className = 'adu-plans-bar';
+    bar.innerHTML = '<div class="adu-plans-bar-track"></div><div class="adu-plans-bar-fill"></div>';
+    var dots = [];
+    sections.forEach(function(section, i) {
+      var key = section.getAttribute('data-adu-plan-section');
+      var dot = document.createElement('div');
+      dot.className = 'adu-plans-bar-dot' + (i === 0 ? ' is-active' : '');
+      dot.innerHTML = '<span>' + (labels[key] || key) + '</span>';
+      bar.appendChild(dot);
+      dots.push(dot);
+    });
+    viewport.appendChild(bar);
+
+    var fill = bar.querySelector('.adu-plans-bar-fill');
+    var numSlides = sections.length;
+
+    /* ── Pin the wrapper and drive slide transitions ── */
+    var currentSlide = 0;
+
+    function showSlide(idx) {
+      if (idx === currentSlide) return;
+      /* Crossfade */
+      gsap.to(sections[currentSlide], { opacity: 0, duration: 0.45, ease: 'power2.inOut', onComplete: function() {
+        sections[currentSlide].style.pointerEvents = 'none';
+      }});
+      gsap.to(sections[idx], { opacity: 1, duration: 0.45, ease: 'power2.inOut', onStart: function() {
+        sections[idx].style.pointerEvents = 'auto';
+      }});
+
+      /* Animate panel entrance */
+      var stage = sections[idx].querySelector('[data-adu-role="plan-stage"]');
+      var panel = sections[idx].querySelector('[data-adu-role="plan-panel"]');
+      if (stage) gsap.fromTo(stage, { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.7, ease: 'power3.out', delay: 0.15 });
+      if (panel) gsap.fromTo(panel, { x: 30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.7, ease: 'power3.out', delay: 0.2 });
+
+      currentSlide = idx;
+    }
+
+    ScrollTrigger.create({
+      trigger: wrapper,
+      start: 'top top',
+      end: '+=' + (numSlides * 100) + '%',
+      pin: true,
+      pinSpacing: true,
+      scrub: 0,
+      onUpdate: function(self) {
+        var prog = self.progress;
+        /* Progress bar fill */
+        if (fill) fill.style.transform = 'translateY(-50%) scaleX(' + prog + ')';
+        /* Determine active slide */
+        var idx = Math.min(Math.floor(prog * numSlides), numSlides - 1);
+        if (idx !== currentSlide) showSlide(idx);
+        /* Update dots */
+        dots.forEach(function(d, di) {
+          d.classList.toggle('is-active', di === idx);
         });
       }
     });
 
     requestAnimationFrame(function() {
-      requestAnimationFrame(function() {
-        ScrollTrigger.refresh();
-      });
+      requestAnimationFrame(function() { ScrollTrigger.refresh(); });
     });
-
     if (document.readyState !== 'complete') {
       window.addEventListener('load', function() { ScrollTrigger.refresh(); }, { once: true });
     }
