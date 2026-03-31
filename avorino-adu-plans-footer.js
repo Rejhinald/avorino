@@ -44,9 +44,9 @@
       '.adu-plans-viewport{position:relative;width:100%;height:100%;overflow:hidden;}',
 
       /* Plan sections as slides */
-      '[data-adu-plan-section]{background:var(--adu-plans-cream);padding:48px 64px 80px !important;}',
+      '[data-adu-plan-section]{background:var(--adu-plans-cream);padding:48px 64px 80px !important;display:flex !important;align-items:center !important;justify-content:center !important;}',
       '[data-adu-plan-section="casielo"]{background:var(--adu-plans-warm);}',
-      '[data-adu-plan-section] [data-adu-role="plan-layout"]{align-items:flex-start;height:100%;max-width:1440px;margin:0 auto;}',
+      '[data-adu-plan-section] [data-adu-role="plan-layout"]{align-items:center;height:100%;max-width:1440px;margin:0 auto;}',
       '[data-adu-plan-section] [data-adu-role="plan-stage"]{width:58% !important;flex-shrink:0;will-change:transform,opacity;}',
       '[data-adu-plan-section] [data-adu-role="plan-panel"]{width:42% !important;will-change:transform,opacity;overflow-y:auto;max-height:calc(100vh - 160px);}',
       '[data-adu-plan-section] [data-adu-role="plan-stage"] iframe{display:block;width:100% !important;height:calc(100vh - 200px) !important;min-height:500px !important;background:var(--adu-plans-surface) !important;}',
