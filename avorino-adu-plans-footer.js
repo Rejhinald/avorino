@@ -778,27 +778,19 @@
     });
 
     /* Pin the wrapper and drive slide transitions on scroll */
-    var scrollIdx = 0;
+    var lastScrollIdx = 0;
     ScrollTrigger.create({
       trigger: wrapper,
       start: 'top top',
-      end: '+=' + (numSlides * 100) + 'vh',
+      end: '+=200%',
       pin: true,
       pinSpacing: true,
-      snap: {
-        snapTo: 1 / (numSlides - 1),
-        duration: { min: 0.25, max: 0.6 },
-        ease: 'power2.inOut'
-      },
       onUpdate: function(self) {
         var prog = self.progress;
-        /* Map progress to slide index with equal ranges */
-        var idx;
-        if (prog < 0.33) idx = 0;
-        else if (prog < 0.66) idx = 1;
-        else idx = 2;
-        if (idx !== scrollIdx) {
-          scrollIdx = idx;
+        /* Equal thirds: 0-0.33 = Belle, 0.33-0.66 = Casielo, 0.66-1 = Elega */
+        var idx = Math.min(Math.floor(prog * numSlides), numSlides - 1);
+        if (idx !== lastScrollIdx) {
+          lastScrollIdx = idx;
           goToSlide(idx);
         }
         if (fill) fill.style.transform = 'translateY(-50%) scaleX(' + prog + ')';
