@@ -1,464 +1,722 @@
-// ════════════════════════════════════════════════════════════════
-// Avorino Builder — ADU PLAN SAMPLES PAGE
-// Rename this to index.ts to build the ADU Plans page.
-// ════════════════════════════════════════════════════════════════
-
 import {
-  webflow, log, logDetail, clearErrorLog, wait,
-  safeCall, getAvorinVars, getOrCreateStyle, freshStyle,
+  webflow, log, logDetail, clearErrorLog,
+  getAvorinVars, getOrCreateStyle, freshStyle,
   clearAndSet, createSharedStyles, setSharedStyleProps,
   createAllVariables, createPageWithSlug,
   buildCTASection, applyCTAStyleProps,
-  CALENDLY_CSS, CALENDLY_JS,
 } from './shared.js';
+import { ADU_PLAN_IMAGE_DATA } from './adu-plan-image-data.js';
+import { ADU_PLAN_VIEWER_DATA } from './adu-plan-viewer-data.js';
+import { ADU_PLANS_FOOTER_INLINE } from './adu-plans-footer-inline.js';
 
 const PAGE_NAME = 'ADU Plan Samples';
 const PAGE_SLUG = 'adu-plan-samples';
 const PAGE_TITLE = 'ADU Floor Plans & Designs | Avorino Orange County';
-const PAGE_DESC = 'Browse ADU floor plans from studio to 1,200 sqft. Pre-approved and custom designs for Orange County. Detached, attached, and garage conversion layouts by Avorino.';
-const CDN = '0a5bf9d';
-const HEAD_CODE = [
-  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
-  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
-  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-adu.css">`,
-  CALENDLY_CSS,
-].join('\n');
-const FOOTER_CODE = [
-  '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
-  '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
-  '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
-  '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
-  `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-animations.js"><\/script>`,
-  `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-adu-plans-footer.js"><\/script>`,
-  CALENDLY_JS,
-].join('\n');
+const PAGE_DESC = 'Explore Bellecielo, Casielo, and Elega with interactive 3D floor plans and matched room render references.';
+const HEAD_CODE = '';
+const getFooterCode = () => {
+  return [
+    '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
+    '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
+    '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
+    '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
+    `<script>${ADU_PLANS_FOOTER_INLINE}<\/script>`,
+  ].join('\n');
+};
 
 document.getElementById('page-name')!.textContent = PAGE_NAME;
 const headCodeEl = document.getElementById('head-code');
 const footerCodeEl = document.getElementById('footer-code');
-if (headCodeEl) headCodeEl.textContent = HEAD_CODE;
-if (footerCodeEl) footerCodeEl.textContent = FOOTER_CODE;
+const renderCodeSnippets = () => {
+  if (headCodeEl) headCodeEl.textContent = HEAD_CODE;
+  if (footerCodeEl) footerCodeEl.textContent = getFooterCode();
+};
+renderCodeSnippets();
 
-const PLANS = [
-  { name: 'Studio 400', sqft: '400 sqft', beds: 'Studio', baths: '1 Bath', tag: 'Studio' },
-  { name: 'Studio 500', sqft: '500 sqft', beds: 'Studio', baths: '1 Bath', tag: 'Studio' },
-  { name: '1-Bed 600', sqft: '600 sqft', beds: '1 Bed', baths: '1 Bath', tag: '1-Bed' },
-  { name: '1-Bed 750', sqft: '750 sqft', beds: '1 Bed', baths: '1 Bath', tag: '1-Bed' },
-  { name: '2-Bed 800', sqft: '800 sqft', beds: '2 Bed', baths: '1 Bath', tag: '2-Bed' },
-  { name: '2-Bed 1000', sqft: '1,000 sqft', beds: '2 Bed', baths: '2 Bath', tag: '2-Bed' },
+type PlanRoom = { name: string; img: string; desc: string };
+type PlanData = {
+  key: string;
+  label: string;
+  title: string;
+  sqft: string;
+  desc: string;
+  tags: string[];
+  useCases: string[];
+  iframe: string;
+  rooms: PlanRoom[];
+};
+
+const PLAN_SECTIONS: PlanData[] = [
+  {
+    key: 'belle',
+    label: '// Plan A',
+    title: 'Bellecielo',
+    sqft: '830 SQFT',
+    desc: 'A spacious two-bedroom ADU with an open-concept living and kitchen area. The symmetrical layout places bedrooms on opposite ends for maximum privacy, with full bathrooms adjacent to each.',
+    tags: ['2 Bedrooms', '2 Bathrooms', 'Open Kitchen', 'Living Room'],
+    useCases: [
+      'Multi-generational family housing',
+      'Long-term rental income',
+      'Home office + guest suite',
+      'Aging-in-place for parents',
+    ],
+    iframe: ADU_PLAN_VIEWER_DATA.belle,
+    rooms: [
+      { name: 'Overview', img: ADU_PLAN_IMAGE_DATA.belle['overview'], desc: 'Bellecielo overview rendering' },
+      { name: 'Living Room', img: ADU_PLAN_IMAGE_DATA.belle['living-alt'], desc: 'Bellecielo living room rendering' },
+      { name: 'Kitchen', img: ADU_PLAN_IMAGE_DATA.belle['living'], desc: 'Bellecielo kitchen rendering' },
+      { name: 'Bedroom 1', img: ADU_PLAN_IMAGE_DATA.belle['bedroom'], desc: 'Bellecielo primary bedroom rendering' },
+      { name: 'Bedroom 2', img: ADU_PLAN_IMAGE_DATA.belle['bedroom'], desc: 'Bellecielo secondary bedroom rendering' },
+      { name: 'Bathroom 1', img: ADU_PLAN_IMAGE_DATA.belle['bathroom'], desc: 'Bellecielo bathroom one rendering' },
+      { name: 'Bathroom 2', img: ADU_PLAN_IMAGE_DATA.belle['bathroom'], desc: 'Bellecielo bathroom two rendering' },
+    ],
+  },
+  {
+    key: 'casielo',
+    label: '// Plan B',
+    title: 'Casielo',
+    sqft: '387 SQFT',
+    desc: 'A compact one-bedroom ADU with an efficient open-concept living and kitchen core. The bedroom and bath stay private while the main living space stays bright and straightforward.',
+    tags: ['1 Bedroom', '1 Bathroom', 'Open Kitchen', 'Living Room', 'Laundry'],
+    useCases: [
+      'Garage conversion + new ADU combo',
+      'Rental unit with covered parking',
+      'In-law suite with independent access',
+      'Investment property addition',
+    ],
+    iframe: ADU_PLAN_VIEWER_DATA.casielo,
+    rooms: [
+      { name: 'Overview', img: ADU_PLAN_IMAGE_DATA.casielo['overview'], desc: 'Casielo overview rendering' },
+      { name: 'Living Room', img: ADU_PLAN_IMAGE_DATA.casielo['living'], desc: 'Casielo living room rendering' },
+      { name: 'Kitchen', img: ADU_PLAN_IMAGE_DATA.casielo['kitchen'], desc: 'Casielo kitchen rendering' },
+      { name: 'Bedroom', img: ADU_PLAN_IMAGE_DATA.casielo['bedroom'], desc: 'Casielo bedroom rendering' },
+      { name: 'Bathroom', img: ADU_PLAN_IMAGE_DATA.casielo['bathroom'], desc: 'Casielo bathroom rendering' },
+    ],
+  },
+  {
+    key: 'elega',
+    label: '// Plan C',
+    title: 'Elega',
+    sqft: '500 SQFT',
+    desc: 'A compact yet elegant one-bedroom ADU that maximizes every square foot. The open living and kitchen area occupies the right side, while the bedroom and full bath have their own private wing on the left.',
+    tags: ['1 Bedroom', '1 Bathroom', 'Open Kitchen', 'Living Room', 'Closet'],
+    useCases: [
+      'Junior ADU on smaller lots',
+      'Backyard studio apartment',
+      'Starter rental property',
+      'Guest house for visitors',
+    ],
+    iframe: ADU_PLAN_VIEWER_DATA.elega,
+    rooms: [
+      { name: 'Overview', img: ADU_PLAN_IMAGE_DATA.elega['overview'], desc: 'Elega overview rendering' },
+      { name: 'Living Room', img: ADU_PLAN_IMAGE_DATA.elega['living-kitchen'], desc: 'Elega living room rendering' },
+      { name: 'Kitchen', img: ADU_PLAN_IMAGE_DATA.elega['kitchen'], desc: 'Elega kitchen rendering' },
+      { name: 'Bedroom', img: ADU_PLAN_IMAGE_DATA.elega['bedroom'], desc: 'Elega bedroom rendering' },
+      { name: 'Bathroom', img: ADU_PLAN_IMAGE_DATA.elega['bathroom'], desc: 'Elega bathroom rendering' },
+    ],
+  },
 ];
 
-const CUSTOM_FEATURES = [
-  'Custom lot-fit analysis',
-  'Architectural design included',
-  'Title 24 energy calculations',
-  'Full permit management',
-];
+function createTextEl(parent: any, tag: string, text: string, attrs: Record<string, string> = {}, styles: any[] = []) {
+  const el = parent.append(webflow.elementPresets.DOM);
+  el.setTag(tag);
+  if (styles.length) el.setStyles(styles);
+  Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value));
+  el.setTextContent(text);
+  return el;
+}
 
 async function buildPlansPage() {
   clearErrorLog();
-  logDetail('Starting ADU Plans page build...', 'info');
-  const v = await getAvorinVars();
+  logDetail('Starting ADU Plans Samples build...', 'info');
 
-  log('Creating shared styles...');
+  const v = await getAvorinVars();
   const s = await createSharedStyles();
 
-  log('Creating page-specific styles...');
-  // Hero — style names match CSS class names in avorino-adu.css
-  const plHero = await getOrCreateStyle('plans-hero');
-  const plCanvasWrap = await getOrCreateStyle('canvas-wrap');
-  const plContentOverlay = await getOrCreateStyle('content-overlay');
-  const plHeroContent = await getOrCreateStyle('plans-hero-content');
-  const plHeroLabel = await getOrCreateStyle('plans-hero-label');
-  const plHeroGoldLine = await getOrCreateStyle('plans-hero-gold-line');
-  const plHeroSubtitle = await getOrCreateStyle('plans-hero-subtitle');
-  const plHeroScrollHint = await getOrCreateStyle('plans-hero-scroll-hint');
-  const plHeroScrollLine = await getOrCreateStyle('plans-hero-scroll-line');
-  // Gallery
-  const plGalleryHeader = await getOrCreateStyle('plans-gallery-header');
-  const plGrid = await getOrCreateStyle('plans-grid');
-  const plCard = await getOrCreateStyle('plan-card');
-  const plCardImg = await getOrCreateStyle('plan-card-img');
-  const plCardBody = await getOrCreateStyle('plan-card-body');
-  const plCardName = await getOrCreateStyle('plan-card-name');
-  const plCardSpecs = await getOrCreateStyle('plan-card-specs');
-  const plCardTag = await getOrCreateStyle('plan-card-tag');
-  // Custom — style names match CSS classes (no pl- prefix)
-  const plCustom = await getOrCreateStyle('plans-custom');
-  const plGlassCard = await getOrCreateStyle('glass-card');
-  const plCustomInner = await getOrCreateStyle('custom-inner');
-  const plCustomFeatures = await getOrCreateStyle('custom-features');
-  const plCustomFeature = await getOrCreateStyle('custom-feature');
-  const plCustomFeatureDot = await getOrCreateStyle('custom-feature-dot');
-  // Utility
-  const plLabelLine = await getOrCreateStyle('av-label-line');
-  const plMb48 = await getOrCreateStyle('pl-mb-48');
-  const plMb64 = await getOrCreateStyle('pl-mb-64');
+  const heroStyle = await getOrCreateStyle('adu-plans-hero');
+  const heroInnerStyle = await getOrCreateStyle('adu-plans-hero-inner');
+  const heroCopyStyle = await getOrCreateStyle('adu-plans-hero-copy-wrap');
+  const heroLabelStyle = await getOrCreateStyle('adu-plans-hero-label');
+  const heroTitleStyle = await getOrCreateStyle('adu-plans-hero-title');
+  const heroSubtitleStyle = await getOrCreateStyle('adu-plans-hero-subtitle');
+  const heroMediaStyle = await getOrCreateStyle('adu-plans-hero-media');
+  const heroMediaImgStyle = await getOrCreateStyle('adu-plans-hero-media-img');
+  const heroScrollStyle = await getOrCreateStyle('adu-plans-hero-scroll');
+  const heroScrollLineStyle = await getOrCreateStyle('adu-plans-hero-scroll-line');
+  const sectionStyle = await getOrCreateStyle('adu-plans-section');
+  const sectionInnerStyle = await getOrCreateStyle('adu-plans-section-inner');
+  const planLayoutStyle = await getOrCreateStyle('adu-plans-layout');
+  const viewerWrapStyle = await getOrCreateStyle('adu-plans-viewer-wrap');
+  const viewerFrameStyle = await getOrCreateStyle('adu-plans-viewer-frame');
+  const viewerStyle = await getOrCreateStyle('adu-plans-viewer');
+  const viewerHintStyle = await getOrCreateStyle('adu-plans-viewer-hint');
+  const infoStyle = await getOrCreateStyle('adu-plans-info');
+  const planLabelStyle = await getOrCreateStyle('adu-plans-plan-label');
+  const planNameStyle = await getOrCreateStyle('adu-plans-plan-name');
+  const sqftBadgeStyle = await getOrCreateStyle('adu-plans-sqft-badge');
+  const planDescStyle = await getOrCreateStyle('adu-plans-plan-desc');
+  const roomTagsStyle = await getOrCreateStyle('adu-plans-room-tags');
+  const roomTagStyle = await getOrCreateStyle('adu-plans-room-tag');
+  const useTitleStyle = await getOrCreateStyle('adu-plans-use-title');
+  const useListStyle = await getOrCreateStyle('adu-plans-use-list');
+  const useItemStyle = await getOrCreateStyle('adu-plans-use-item');
+  const galleryStyle = await getOrCreateStyle('adu-plans-gallery');
+  const galleryHeroStyle = await getOrCreateStyle('adu-plans-gallery-hero');
+  const galleryHeroImgStyle = await getOrCreateStyle('adu-plans-gallery-hero-img');
+  const galleryThumbsStyle = await getOrCreateStyle('adu-plans-gallery-thumbs');
+  const galleryThumbStyle = await getOrCreateStyle('adu-plans-gallery-thumb');
+  const galleryThumbImgStyle = await getOrCreateStyle('adu-plans-gallery-thumb-img');
 
   const { body } = await createPageWithSlug(PAGE_NAME, PAGE_SLUG, PAGE_TITLE, PAGE_DESC);
 
   async function applyStyleProperties() {
-    log('Setting shared style properties...');
     await setSharedStyleProps(s, v);
-    await wait(1000);
 
-    log('Setting page-specific style properties...');
-
-    // ── Hero ──
-    await clearAndSet(await freshStyle('plans-hero'), 'plans-hero', {
-      'min-height': '85vh', 'display': 'flex', 'align-items': 'flex-end',
-      'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
-      'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
-      'background-color': v['av-dark'], 'color': v['av-cream'],
-      'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
+    await clearAndSet(await freshStyle('adu-plans-hero'), 'adu-plans-hero', {
+      'min-height': '100vh',
+      'display': 'flex',
+      'align-items': 'center',
+      'padding-top': '120px',
+      'padding-bottom': '72px',
+      'padding-left': v['av-section-pad-x'],
+      'padding-right': v['av-section-pad-x'],
+      'background-color': v['av-dark'],
+      'color': v['av-cream'],
+      'position': 'relative',
+      'overflow-x': 'hidden',
+      'overflow-y': 'hidden',
     });
-    await clearAndSet(await freshStyle('canvas-wrap'), 'canvas-wrap', {
-      'position': 'absolute', 'top': '0px', 'left': '0px',
-      'width': '100%', 'height': '100%', 'z-index': '1',
+
+    await clearAndSet(await freshStyle('adu-plans-hero-inner'), 'adu-plans-hero-inner', {
+      'display': 'grid',
+      'grid-template-columns': '0.95fr 1.05fr',
+      'grid-column-gap': '64px',
+      'align-items': 'center',
+      'max-width': '1440px',
+      'margin-left': 'auto',
+      'margin-right': 'auto',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-hero-copy-wrap'), 'adu-plans-hero-copy-wrap', {
+      'display': 'flex',
+      'flex-direction': 'column',
+      'align-items': 'flex-start',
+      'justify-content': 'center',
+      'max-width': '520px',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-hero-label'), 'adu-plans-hero-label', {
+      'font-family': 'DM Sans',
+      'font-size': '14px',
+      'font-weight': '600',
+      'letter-spacing': '0.22em',
+      'text-transform': 'uppercase',
+      'color': '#c8a86e',
+      'margin-bottom': '20px',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-hero-title'), 'adu-plans-hero-title', {
+      'font-family': 'DM Serif Display',
+      'font-size': '64px',
+      'line-height': '1.1',
+      'font-weight': '400',
+      'letter-spacing': '-0.02em',
+      'color': v['av-cream'],
+      'margin-top': '0px',
+      'margin-bottom': '24px',
+      'max-width': '10ch',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-hero-subtitle'), 'adu-plans-hero-subtitle', {
+      'font-family': 'DM Sans',
+      'font-size': '18px',
+      'line-height': '1.7',
+      'color': 'rgba(240,237,232,0.7)',
+      'margin-top': '0px',
+      'margin-bottom': '0px',
+      'max-width': '440px',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-hero-media'), 'adu-plans-hero-media', {
+      'height': '80vh',
+      'min-height': '520px',
+      'max-height': '720px',
+      'position': 'relative',
+      'overflow-x': 'hidden',
+      'overflow-y': 'hidden',
+      'background-color': 'transparent',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-hero-media-img'), 'adu-plans-hero-media-img', {
+      'width': '100%',
+      'height': '100%',
+      'display': 'block',
+      'background-color': 'transparent',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-hero-scroll'), 'adu-plans-hero-scroll', {
+      'position': 'absolute',
+      'bottom': '40px',
+      'left': '0px',
+      'width': '100%',
+      'display': 'flex',
+      'flex-direction': 'column',
+      'align-items': 'center',
+      'grid-row-gap': '8px',
+      'color': 'rgba(240,237,232,0.4)',
+      'font-family': 'DM Sans',
+      'font-size': '12px',
+      'letter-spacing': '0.18em',
+      'text-transform': 'uppercase',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-hero-scroll-line'), 'adu-plans-hero-scroll-line', {
+      'width': '1px',
+      'height': '40px',
+      'background-color': 'rgba(200,168,110,0.65)',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-section'), 'adu-plans-section', {
+      'padding-top': '128px',
+      'padding-bottom': '128px',
+      'padding-left': v['av-section-pad-x'],
+      'padding-right': v['av-section-pad-x'],
+      'background-color': '#ffffff',
+      'border-top-width': '1px',
+      'border-top-color': 'rgba(17,17,17,0.08)',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-section-inner'), 'adu-plans-section-inner', {
+      'max-width': '1440px',
+      'margin-left': 'auto',
+      'margin-right': 'auto',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-layout'), 'adu-plans-layout', {
+      'display': 'flex',
+      'grid-column-gap': '64px',
+      'align-items': 'flex-start',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-viewer-wrap'), 'adu-plans-viewer-wrap', {
+      'width': '55%',
+      'flex-shrink': '0',
+      'position': 'relative',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-viewer-frame'), 'adu-plans-viewer-frame', {
+      'border-top-left-radius': '12px',
+      'border-top-right-radius': '12px',
+      'border-bottom-left-radius': '12px',
+      'border-bottom-right-radius': '12px',
+      'overflow-x': 'hidden',
+      'overflow-y': 'hidden',
+      'background-color': '#111111',
+      'border-top-width': '1px',
+      'border-right-width': '1px',
+      'border-bottom-width': '1px',
+      'border-left-width': '1px',
+      'border-top-color': 'rgba(200,168,110,0.15)',
+      'border-right-color': 'rgba(200,168,110,0.15)',
+      'border-bottom-color': 'rgba(200,168,110,0.15)',
+      'border-left-color': 'rgba(200,168,110,0.15)',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-viewer'), 'adu-plans-viewer', {
+      'width': '100%',
+      'height': '600px',
+      'min-height': '600px',
+      'display': 'block',
+      'border-left-width': '0px',
+      'border-right-width': '0px',
+      'border-top-width': '0px',
+      'border-bottom-width': '0px',
+      'background-color': '#111111',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-viewer-hint'), 'adu-plans-viewer-hint', {
+      'position': 'absolute',
+      'bottom': '16px',
+      'left': '0px',
+      'width': '100%',
+      'text-align': 'center',
+      'font-family': 'DM Sans',
+      'font-size': '12px',
+      'letter-spacing': '0.08em',
+      'text-transform': 'uppercase',
+      'color': 'rgba(240,237,232,0.42)',
       'pointer-events': 'none',
-      'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
-    await clearAndSet(await freshStyle('content-overlay'), 'content-overlay', {
-      'position': 'relative', 'z-index': '2',
+
+    await clearAndSet(await freshStyle('adu-plans-info'), 'adu-plans-info', {
+      'width': '45%',
     });
-    await clearAndSet(await freshStyle('plans-hero-content'), 'plans-hero-content', {
-      'max-width': '800px',
+
+    await clearAndSet(await freshStyle('adu-plans-plan-label'), 'adu-plans-plan-label', {
+      'font-family': 'DM Sans',
+      'font-size': '13px',
+      'font-weight': '600',
+      'letter-spacing': '0.23em',
+      'text-transform': 'uppercase',
+      'color': '#c8a86e',
+      'margin-bottom': '12px',
     });
-    await clearAndSet(await freshStyle('plans-hero-label'), 'plans-hero-label', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-label'],
-      'letter-spacing': '0.3em', 'text-transform': 'uppercase',
-      'opacity': '0', 'margin-bottom': '32px', 'color': v['av-cream'],
+
+    await clearAndSet(await freshStyle('adu-plans-plan-name'), 'adu-plans-plan-name', {
+      'font-family': 'DM Serif Display',
+      'font-size': '56px',
+      'line-height': '1.1',
+      'font-weight': '400',
+      'color': v['av-dark'],
+      'margin-top': '0px',
+      'margin-bottom': '16px',
     });
-    await clearAndSet(await freshStyle('plans-hero-gold-line'), 'plans-hero-gold-line', {
-      'width': '0px', 'height': '1px', 'background-color': '#c9a96e',
+
+    await clearAndSet(await freshStyle('adu-plans-sqft-badge'), 'adu-plans-sqft-badge', {
+      'display': 'inline-flex',
+      'align-items': 'center',
+      'padding-top': '6px',
+      'padding-bottom': '6px',
+      'padding-left': '20px',
+      'padding-right': '20px',
+      'border-top-left-radius': '999px',
+      'border-top-right-radius': '999px',
+      'border-bottom-left-radius': '999px',
+      'border-bottom-right-radius': '999px',
+      'border-top-width': '1px',
+      'border-right-width': '1px',
+      'border-bottom-width': '1px',
+      'border-left-width': '1px',
+      'border-top-color': '#c8a86e',
+      'border-right-color': '#c8a86e',
+      'border-bottom-color': '#c8a86e',
+      'border-left-color': '#c8a86e',
+      'font-family': 'DM Sans',
+      'font-size': '14px',
+      'font-weight': '600',
+      'letter-spacing': '0.08em',
+      'text-transform': 'uppercase',
+      'color': '#c8a86e',
       'margin-bottom': '24px',
     });
-    await clearAndSet(await freshStyle('plans-hero-subtitle'), 'plans-hero-subtitle', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'line-height': '1.9', 'opacity': '0', 'margin-top': '24px',
-      'color': v['av-cream'], 'max-width': '520px',
-    });
-    await clearAndSet(await freshStyle('plans-hero-scroll-hint'), 'plans-hero-scroll-hint', {
-      'position': 'absolute', 'bottom': '40px', 'left': '50%',
-      'z-index': '3', 'display': 'flex', 'flex-direction': 'column',
-      'align-items': 'center', 'gap': '8px', 'opacity': '0',
-    });
-    await clearAndSet(await freshStyle('plans-hero-scroll-line'), 'plans-hero-scroll-line', {
-      'width': '1px', 'height': '40px', 'background-color': '#c9a96e',
-    });
-    await wait(500);
 
-    // ── Gallery ──
-    await clearAndSet(await freshStyle('plans-gallery-header'), 'plans-gallery-header', {
-      'text-align': 'center', 'margin-bottom': '80px',
+    await clearAndSet(await freshStyle('adu-plans-plan-desc'), 'adu-plans-plan-desc', {
+      'font-family': 'DM Sans',
+      'font-size': '16px',
+      'line-height': '1.7',
+      'color': 'rgba(17,17,17,0.7)',
+      'margin-top': '0px',
+      'margin-bottom': '28px',
     });
-    await clearAndSet(await freshStyle('plans-grid'), 'plans-grid', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr 1fr',
-      'grid-column-gap': '24px', 'grid-row-gap': '24px',
-      'max-width': '1200px', 'margin-left': 'auto', 'margin-right': 'auto',
-    });
-    await clearAndSet(await freshStyle('plan-card'), 'plan-card', {
-      'background-color': v['av-dark'], 'color': v['av-cream'],
-      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
-      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
-      'overflow-x': 'hidden', 'overflow-y': 'hidden',
-      'border-top-width': '2px', 'border-top-style': 'solid', 'border-top-color': 'rgba(201,169,110,0.25)',
-    });
-    await clearAndSet(await freshStyle('plan-card-img'), 'plan-card-img', {
-      'background-color': '#1a1a1a', 'min-height': '200px',
-      'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
-    });
-    await clearAndSet(await freshStyle('plan-card-body'), 'plan-card-body', {
-      'padding-top': '24px', 'padding-bottom': '24px',
-      'padding-left': '28px', 'padding-right': '28px',
-    });
-    await clearAndSet(await freshStyle('plan-card-name'), 'plan-card-name', {
-      'font-family': 'DM Serif Display', 'font-size': '24px',
-      'line-height': '1.2', 'font-weight': '400', 'margin-bottom': '8px',
-    });
-    await clearAndSet(await freshStyle('plan-card-specs'), 'plan-card-specs', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
-      'opacity': '0.5', 'line-height': '1.6', 'margin-bottom': '12px',
-    });
-    await clearAndSet(await freshStyle('plan-card-tag'), 'plan-card-tag', {
-      'display': 'inline-block', 'font-family': 'DM Sans', 'font-size': v['av-text-label'],
-      'text-transform': 'uppercase', 'letter-spacing': '0.06em',
-      'padding-top': '4px', 'padding-bottom': '4px',
-      'padding-left': '12px', 'padding-right': '12px',
-      'border-top-left-radius': '20px', 'border-top-right-radius': '20px',
-      'border-bottom-left-radius': '20px', 'border-bottom-right-radius': '20px',
-      'background-color': 'rgba(201,169,110,0.12)', 'color': '#c9a96e',
-    });
-    await wait(500);
 
-    // ── Custom Plans ──
-    await clearAndSet(await freshStyle('plans-custom'), 'plans-custom', {
-      'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
-      'background-color': v['av-dark'], 'color': v['av-cream'],
-      'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
-      'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
+    await clearAndSet(await freshStyle('adu-plans-room-tags'), 'adu-plans-room-tags', {
+      'display': 'flex',
+      'flex-wrap': 'wrap',
+      'grid-column-gap': '8px',
+      'grid-row-gap': '8px',
+      'margin-bottom': '32px',
     });
-    await clearAndSet(await freshStyle('glass-card'), 'glass-card', {
-      'color': v['av-cream'],
-      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
-      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
-      'padding-top': '48px', 'padding-bottom': '48px',
-      'padding-left': '40px', 'padding-right': '40px',
-      'border-top-width': '2px', 'border-top-style': 'solid', 'border-top-color': 'rgba(201,169,110,0.25)',
-    });
-    await clearAndSet(await freshStyle('custom-inner'), 'custom-inner', {
-      'max-width': '700px', 'margin-left': 'auto', 'margin-right': 'auto',
-      'text-align': 'center',
-    });
-    await clearAndSet(await freshStyle('custom-features'), 'custom-features', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr',
-      'grid-column-gap': '16px', 'grid-row-gap': '16px',
-      'text-align': 'left', 'margin-top': '32px',
-    });
-    await clearAndSet(await freshStyle('custom-feature'), 'custom-feature', {
-      'display': 'flex', 'align-items': 'flex-start',
-      'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
-      'opacity': '0.5', 'line-height': '1.5',
-    });
-    await clearAndSet(await freshStyle('custom-feature-dot'), 'custom-feature-dot', {
-      'width': '6px', 'height': '6px',
-      'border-top-left-radius': '50%', 'border-top-right-radius': '50%',
-      'border-bottom-left-radius': '50%', 'border-bottom-right-radius': '50%',
-      'background-color': '#c9a96e', 'margin-top': '7px', 'margin-right': '12px',
-      'flex-shrink': '0',
-    });
-    await wait(500);
 
-    // ── Utility ──
-    await clearAndSet(await freshStyle('av-label-line'), 'av-label-line', {
-      'flex-grow': '1', 'height': '1px', 'background-color': 'rgba(17,17,17,0.15)',
+    await clearAndSet(await freshStyle('adu-plans-room-tag'), 'adu-plans-room-tag', {
+      'display': 'inline-flex',
+      'align-items': 'center',
+      'padding-top': '6px',
+      'padding-bottom': '6px',
+      'padding-left': '16px',
+      'padding-right': '16px',
+      'background-color': 'rgba(200,168,110,0.1)',
+      'border-top-width': '1px',
+      'border-right-width': '1px',
+      'border-bottom-width': '1px',
+      'border-left-width': '1px',
+      'border-top-color': 'rgba(200,168,110,0.25)',
+      'border-right-color': 'rgba(200,168,110,0.25)',
+      'border-bottom-color': 'rgba(200,168,110,0.25)',
+      'border-left-color': 'rgba(200,168,110,0.25)',
+      'border-top-left-radius': '999px',
+      'border-top-right-radius': '999px',
+      'border-bottom-left-radius': '999px',
+      'border-bottom-right-radius': '999px',
+      'font-family': 'DM Sans',
+      'font-size': '13px',
+      'font-weight': '500',
+      'color': v['av-dark'],
     });
-    await clearAndSet(await freshStyle('pl-mb-48'), 'pl-mb-48', { 'margin-bottom': '48px' });
-    await clearAndSet(await freshStyle('pl-mb-64'), 'pl-mb-64', { 'margin-bottom': '64px' });
+
+    await clearAndSet(await freshStyle('adu-plans-use-title'), 'adu-plans-use-title', {
+      'font-family': 'DM Serif Display',
+      'font-size': '20px',
+      'font-weight': '400',
+      'color': v['av-dark'],
+      'margin-top': '0px',
+      'margin-bottom': '12px',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-use-list'), 'adu-plans-use-list', {
+      'list-style-type': 'disc',
+      'padding-left': '20px',
+      'margin-top': '0px',
+      'margin-bottom': '36px',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-use-item'), 'adu-plans-use-item', {
+      'font-family': 'DM Sans',
+      'font-size': '15px',
+      'line-height': '2',
+      'color': 'rgba(17,17,17,0.7)',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-gallery'), 'adu-plans-gallery', {
+      'margin-top': '36px',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-gallery-hero'), 'adu-plans-gallery-hero', {
+      'height': '320px',
+      'border-top-left-radius': '10px',
+      'border-top-right-radius': '10px',
+      'border-bottom-left-radius': '10px',
+      'border-bottom-right-radius': '10px',
+      'overflow-x': 'hidden',
+      'overflow-y': 'hidden',
+      'margin-bottom': '12px',
+      'border-top-width': '1px',
+      'border-right-width': '1px',
+      'border-bottom-width': '1px',
+      'border-left-width': '1px',
+      'border-top-color': 'rgba(200,168,110,0.1)',
+      'border-right-color': 'rgba(200,168,110,0.1)',
+      'border-bottom-color': 'rgba(200,168,110,0.1)',
+      'border-left-color': 'rgba(200,168,110,0.1)',
+      'background-color': '#ece8e1',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-gallery-hero-img'), 'adu-plans-gallery-hero-img', {
+      'width': '100%',
+      'height': '100%',
+      'display': 'block',
+      'object-fit': 'cover',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-gallery-thumbs'), 'adu-plans-gallery-thumbs', {
+      'display': 'grid',
+      'grid-template-columns': '1fr 1fr 1fr 1fr',
+      'grid-column-gap': '10px',
+      'grid-row-gap': '10px',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-gallery-thumb'), 'adu-plans-gallery-thumb', {
+      'height': '100px',
+      'padding-top': '0px',
+      'padding-bottom': '0px',
+      'padding-left': '0px',
+      'padding-right': '0px',
+      'border-top-left-radius': '8px',
+      'border-top-right-radius': '8px',
+      'border-bottom-left-radius': '8px',
+      'border-bottom-right-radius': '8px',
+      'overflow-x': 'hidden',
+      'overflow-y': 'hidden',
+      'background-color': 'transparent',
+      'border-top-width': '1px',
+      'border-right-width': '1px',
+      'border-bottom-width': '1px',
+      'border-left-width': '1px',
+      'border-top-color': 'rgba(200,168,110,0.1)',
+      'border-right-color': 'rgba(200,168,110,0.1)',
+      'border-bottom-color': 'rgba(200,168,110,0.1)',
+      'border-left-color': 'rgba(200,168,110,0.1)',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-gallery-thumb-img'), 'adu-plans-gallery-thumb-img', {
+      'width': '100%',
+      'height': '100%',
+      'display': 'block',
+      'object-fit': 'cover',
+    });
 
     await applyCTAStyleProps(v);
   }
 
-  // ═══════════════ BUILD ELEMENTS ═══════════════
-
-  // SECTION 1: HERO — full-viewport cinematic with Three.js canvas
-  log('Building Section 1: Hero...');
   const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
   hero.setTag('section');
-  hero.setStyles([plHero]);
-  hero.setAttribute('id', 'plans-hero');
+  hero.setStyles([heroStyle]);
+  hero.setAttribute('id', 'adu-plans-hero');
 
-  // Canvas wrap (Three.js exploded floor plan — populated at runtime)
-  const heroCanvasWrap = hero.append(webflow.elementPresets.DOM);
-  heroCanvasWrap.setTag('div');
-  heroCanvasWrap.setStyles([plCanvasWrap]);
-  heroCanvasWrap.setAttribute('id', 'hero-canvas');
+  const heroInner = hero.append(webflow.elementPresets.DOM);
+  heroInner.setTag('div');
+  heroInner.setStyles([heroInnerStyle]);
+  heroInner.setAttribute('data-adu-role', 'hero-inner');
 
-  // Content overlay
-  const heroOverlay = hero.append(webflow.elementPresets.DOM);
-  heroOverlay.setTag('div');
-  heroOverlay.setStyles([plContentOverlay, plHeroContent]);
+  const heroCopy = heroInner.append(webflow.elementPresets.DOM);
+  heroCopy.setTag('div');
+  heroCopy.setStyles([heroCopyStyle]);
 
-  const heroLabel = heroOverlay.append(webflow.elementPresets.DOM);
-  heroLabel.setTag('div');
-  heroLabel.setStyles([plHeroLabel]);
-  heroLabel.setAttribute('data-animate', 'fade-up');
-  heroLabel.setTextContent('// Floor Plans');
+  createTextEl(heroCopy, 'div', '// Our Plans', { 'data-adu-animate': 'hero-copy' }, [heroLabelStyle]);
+  createTextEl(heroCopy, 'h1', 'ADU Floor Plan Collection', { 'data-adu-animate': 'hero-copy' }, [heroTitleStyle]);
+  createTextEl(heroCopy, 'p', 'Explore our signature floor plans — each designed for Orange County living.', { 'data-adu-animate': 'hero-copy' }, [heroSubtitleStyle]);
 
-  const heroH = heroOverlay.append(webflow.elementPresets.DOM);
-  heroH.setTag('h1');
-  heroH.setStyles([s.headingXL]);
-  heroH.setTextContent('ADU Floor Plans');
-  heroH.setAttribute('data-animate', 'char-cascade');
+  const heroMedia = heroInner.append(webflow.elementPresets.DOM);
+  heroMedia.setTag('div');
+  heroMedia.setStyles([heroMediaStyle]);
+  heroMedia.setAttribute('data-adu-role', 'hero-media');
 
-  const heroGoldLine = heroOverlay.append(webflow.elementPresets.DOM);
-  heroGoldLine.setTag('div');
-  heroGoldLine.setStyles([plHeroGoldLine]);
+  const heroCanvas = heroMedia.append(webflow.elementPresets.DOM);
+  heroCanvas.setTag('canvas');
+  heroCanvas.setStyles([heroMediaImgStyle]);
+  heroCanvas.setAttribute('id', 'adu-plans-hero-canvas');
+  heroCanvas.setAttribute('aria-label', 'ADU plan wireframe animation');
+  heroCanvas.setAttribute('data-adu-animate', 'hero-media');
 
-  const heroSub = heroOverlay.append(webflow.elementPresets.DOM);
-  heroSub.setTag('p');
-  heroSub.setStyles([plHeroSubtitle]);
-  heroSub.setAttribute('data-animate', 'fade-up');
-  heroSub.setTextContent('Browse studio, 1-bed, and 2-bed ADU layouts designed for Orange County properties.');
+  const scroll = hero.append(webflow.elementPresets.DOM);
+  scroll.setTag('div');
+  scroll.setStyles([heroScrollStyle]);
+  scroll.setAttribute('data-adu-animate', 'hero-copy');
+  createTextEl(scroll, 'span', 'Scroll');
+  const scrollLine = scroll.append(webflow.elementPresets.DOM);
+  scrollLine.setTag('div');
+  scrollLine.setStyles([heroScrollLineStyle]);
 
-  // Scroll hint
-  const scrollHint = hero.append(webflow.elementPresets.DOM);
-  scrollHint.setTag('div');
-  scrollHint.setStyles([plHeroScrollHint]);
-  scrollHint.setAttribute('data-animate', 'fade-up');
+  await body.append(hero);
 
-  const scrollHintText = scrollHint.append(webflow.elementPresets.DOM);
-  scrollHintText.setTag('span');
-  scrollHintText.setTextContent('Scroll');
+  for (const plan of PLAN_SECTIONS) {
+    const section = webflow.elementBuilder(webflow.elementPresets.DOM);
+    section.setTag('section');
+    section.setStyles([sectionStyle]);
+    section.setAttribute('data-adu-plan-section', plan.key);
 
-  const scrollHintLine = scrollHint.append(webflow.elementPresets.DOM);
-  scrollHintLine.setTag('div');
-  scrollHintLine.setStyles([plHeroScrollLine]);
+    const inner = section.append(webflow.elementPresets.DOM);
+    inner.setTag('div');
+    inner.setStyles([sectionInnerStyle]);
 
-  await safeCall('append:hero', () => body.append(hero));
+    const layout = inner.append(webflow.elementPresets.DOM);
+    layout.setTag('div');
+    layout.setStyles([planLayoutStyle]);
+    layout.setAttribute('data-adu-role', 'plan-layout');
 
-  // SECTION 2: PLANS GALLERY (warm bg with header)
-  log('Building Section 2: Plans Gallery...');
-  const gallerySection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  gallerySection.setTag('section');
-  gallerySection.setStyles([s.section, s.sectionWarm]);
-  gallerySection.setAttribute('id', 'plans-gallery');
+    const viewerWrap = layout.append(webflow.elementPresets.DOM);
+    viewerWrap.setTag('div');
+    viewerWrap.setStyles([viewerWrapStyle]);
+    viewerWrap.setAttribute('data-adu-role', 'plan-stage');
 
-  // Gallery header
-  const galleryHeader = gallerySection.append(webflow.elementPresets.DOM);
-  galleryHeader.setTag('div');
-  galleryHeader.setStyles([plGalleryHeader]);
+    const viewerFrame = viewerWrap.append(webflow.elementPresets.DOM);
+    viewerFrame.setTag('div');
+    viewerFrame.setStyles([viewerFrameStyle]);
 
-  const galleryLabel = galleryHeader.append(webflow.elementPresets.DOM);
-  galleryLabel.setTag('div');
-  galleryLabel.setStyles([s.label, plMb64]);
-  galleryLabel.setAttribute('data-animate', 'fade-up');
-  const galleryLabelTxt = galleryLabel.append(webflow.elementPresets.DOM);
-  galleryLabelTxt.setTag('div');
-  galleryLabelTxt.setTextContent('Browse Plans');
-  const galleryLabelLine = galleryLabel.append(webflow.elementPresets.DOM);
-  galleryLabelLine.setTag('div');
-  galleryLabelLine.setStyles([plLabelLine]);
+    const iframe = viewerFrame.append(webflow.elementPresets.DOM);
+    iframe.setTag('iframe');
+    iframe.setStyles([viewerStyle]);
+    iframe.setAttribute('data-adu-embed', plan.key);
+    iframe.setAttribute('title', `${plan.title} 3D Viewer`);
+    iframe.setAttribute('loading', 'lazy');
+    iframe.setAttribute('src', plan.iframe);
 
-  const galleryH = galleryHeader.append(webflow.elementPresets.DOM);
-  galleryH.setTag('h2');
-  galleryH.setStyles([s.headingLG]);
-  galleryH.setTextContent('Sample Floor Plans');
-  galleryH.setAttribute('data-animate', 'line-wipe');
+    const hint = viewerWrap.append(webflow.elementPresets.DOM);
+    hint.setTag('div');
+    hint.setStyles([viewerHintStyle]);
+    hint.setTextContent('Drag to rotate · Scroll to zoom');
 
-  // Plans grid
-  const grid = gallerySection.append(webflow.elementPresets.DOM);
-  grid.setTag('div');
-  grid.setStyles([plGrid]);
+    const info = layout.append(webflow.elementPresets.DOM);
+    info.setTag('div');
+    info.setStyles([infoStyle]);
+    info.setAttribute('data-adu-role', 'plan-panel');
 
-  PLANS.forEach(plan => {
-    const card = grid.append(webflow.elementPresets.DOM);
-    card.setTag('div');
-    card.setStyles([plCard]);
-    card.setAttribute('data-animate', 'fade-up');
+    createTextEl(info, 'div', plan.label, { 'data-adu-animate': 'section-copy' }, [planLabelStyle]);
+    createTextEl(info, 'h2', plan.title, { 'data-adu-animate': 'section-copy' }, [planNameStyle]);
+    createTextEl(info, 'div', plan.sqft, { 'data-adu-animate': 'section-copy' }, [sqftBadgeStyle]);
+    createTextEl(info, 'p', plan.desc, { 'data-adu-animate': 'section-copy' }, [planDescStyle]);
 
-    const img = card.append(webflow.elementPresets.DOM);
-    img.setTag('div');
-    img.setStyles([plCardImg]);
+    const tags = info.append(webflow.elementPresets.DOM);
+    tags.setTag('div');
+    tags.setStyles([roomTagsStyle]);
+    tags.setAttribute('data-adu-animate', 'section-copy');
+    plan.tags.forEach(tag => createTextEl(tags, 'span', tag, {}, [roomTagStyle]));
 
-    const cardBody = card.append(webflow.elementPresets.DOM);
-    cardBody.setTag('div');
-    cardBody.setStyles([plCardBody]);
+    createTextEl(info, 'div', 'Ideal Use Cases', { 'data-adu-animate': 'section-copy' }, [useTitleStyle]);
+    const useList = info.append(webflow.elementPresets.DOM);
+    useList.setTag('ul');
+    useList.setStyles([useListStyle]);
+    useList.setAttribute('data-adu-animate', 'section-copy');
+    plan.useCases.forEach(item => {
+      const li = useList.append(webflow.elementPresets.DOM);
+      li.setTag('li');
+      li.setStyles([useItemStyle]);
+      li.setTextContent(item);
+    });
 
-    const name = cardBody.append(webflow.elementPresets.DOM);
-    name.setTag('h3');
-    name.setStyles([plCardName]);
-    name.setTextContent(plan.name);
+    const gallery = info.append(webflow.elementPresets.DOM);
+    gallery.setTag('div');
+    gallery.setStyles([galleryStyle]);
+    gallery.setAttribute('data-adu-animate', 'section-gallery');
 
-    const specs = cardBody.append(webflow.elementPresets.DOM);
-    specs.setTag('p');
-    specs.setStyles([plCardSpecs]);
-    specs.setTextContent(`${plan.sqft} \u00b7 ${plan.beds} \u00b7 ${plan.baths}`);
+    const heroMediaWrap = gallery.append(webflow.elementPresets.DOM);
+    heroMediaWrap.setTag('div');
+    heroMediaWrap.setStyles([galleryHeroStyle]);
 
-    const tag = cardBody.append(webflow.elementPresets.DOM);
-    tag.setTag('span');
-    tag.setStyles([plCardTag]);
-    tag.setTextContent(plan.tag);
-  });
+    const mainImg = heroMediaWrap.append(webflow.elementPresets.DOM);
+    mainImg.setTag('img');
+    mainImg.setStyles([galleryHeroImgStyle]);
+    mainImg.setAttribute('data-adu-main-image', 'true');
+    mainImg.setAttribute('src', plan.rooms[0].img);
+    mainImg.setAttribute('alt', `${plan.title} render`);
 
-  await safeCall('append:gallery', () => body.append(gallerySection));
+    const thumbs = gallery.append(webflow.elementPresets.DOM);
+    thumbs.setTag('div');
+    thumbs.setStyles([galleryThumbsStyle]);
+    thumbs.setAttribute('data-adu-thumbs', plan.key);
+    plan.rooms.slice(1).forEach(room => {
+      const thumb = thumbs.append(webflow.elementPresets.DOM);
+      thumb.setTag('button');
+      thumb.setStyles([galleryThumbStyle]);
+      thumb.setAttribute('type', 'button');
+      thumb.setAttribute('data-adu-thumb', room.name);
 
-  // SECTION 3: CUSTOM PLANS — dark with Three.js backdrop + glass card
-  log('Building Section 3: Custom Plans...');
-  const customSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  customSection.setTag('section');
-  customSection.setStyles([plCustom]);
-  customSection.setAttribute('id', 'plans-custom');
+      const thumbImg = thumb.append(webflow.elementPresets.DOM);
+      thumbImg.setTag('img');
+      thumbImg.setStyles([galleryThumbImgStyle]);
+      thumbImg.setAttribute('src', room.img);
+      thumbImg.setAttribute('alt', room.name);
+    });
 
-  // Canvas wrap (Three.js multi-layout blueprints — populated at runtime)
-  const customCanvasWrap = customSection.append(webflow.elementPresets.DOM);
-  customCanvasWrap.setTag('div');
-  customCanvasWrap.setStyles([plCanvasWrap]);
-  customCanvasWrap.setAttribute('id', 'custom-canvas');
+    await body.append(section);
+  }
 
-  // Content overlay
-  const customOverlay = customSection.append(webflow.elementPresets.DOM);
-  customOverlay.setTag('div');
-  customOverlay.setStyles([plContentOverlay]);
-
-  // Section label
-  const customLabel = customOverlay.append(webflow.elementPresets.DOM);
-  customLabel.setTag('div');
-  customLabel.setStyles([s.label, plMb64]);
-  customLabel.setAttribute('data-animate', 'fade-up');
-  const customLabelTxt = customLabel.append(webflow.elementPresets.DOM);
-  customLabelTxt.setTag('div');
-  customLabelTxt.setTextContent('Custom Design');
-  const customLabelLine = customLabel.append(webflow.elementPresets.DOM);
-  customLabelLine.setTag('div');
-  customLabelLine.setStyles([plLabelLine]);
-
-  // Glass card inner wrapper
-  const customInner = customOverlay.append(webflow.elementPresets.DOM);
-  customInner.setTag('div');
-  customInner.setStyles([plCustomInner]);
-
-  const glassCard = customInner.append(webflow.elementPresets.DOM);
-  glassCard.setTag('div');
-  glassCard.setStyles([plGlassCard]);
-  glassCard.setAttribute('data-animate', 'fade-up');
-
-  const customH = glassCard.append(webflow.elementPresets.DOM);
-  customH.setTag('h2');
-  customH.setStyles([s.headingMD]);
-  customH.setTextContent('Custom Plan Design');
-
-  const customP = glassCard.append(webflow.elementPresets.DOM);
-  customP.setTag('p');
-  customP.setStyles([s.body, s.bodyMuted]);
-  customP.setTextContent('Our architects design to your exact specifications \u2014 lot size, layout, and style. Every detail tailored to your Orange County property.');
-
-  // Features grid
-  const featuresGrid = glassCard.append(webflow.elementPresets.DOM);
-  featuresGrid.setTag('div');
-  featuresGrid.setStyles([plCustomFeatures]);
-
-  CUSTOM_FEATURES.forEach(feat => {
-    const featureRow = featuresGrid.append(webflow.elementPresets.DOM);
-    featureRow.setTag('div');
-    featureRow.setStyles([plCustomFeature]);
-    featureRow.setAttribute('data-animate', 'fade-up');
-
-    const dot = featureRow.append(webflow.elementPresets.DOM);
-    dot.setTag('div');
-    dot.setStyles([plCustomFeatureDot]);
-
-    const text = featureRow.append(webflow.elementPresets.DOM);
-    text.setTag('span');
-    text.setTextContent(feat);
-  });
-
-  await safeCall('append:custom', () => body.append(customSection));
-
-  // SECTION 4: CTA
-  log('Building Section 4: CTA...');
-  await buildCTASection(body, v, 'Get started', 'Schedule a Meeting', '/schedule-a-meeting', 'ADU Cost Calculator', '/adu-cost-estimator');
-
+  await buildCTASection(
+    body,
+    v,
+    'Ready to Build Your ADU?',
+    'Get a Free Estimate',
+    '/free-estimate',
+    'Call (714) 900-3676',
+    'tel:7149003676',
+  );
   await applyStyleProperties();
 
-  log('ADU Plans page built!', 'success');
-  await webflow.notify({ type: 'Success', message: 'ADU Plans page created!' });
+  log('ADU Plans Samples page built!', 'success');
+  await webflow.notify({ type: 'Success', message: 'ADU Plans Samples page created!' });
 }
 
-// ── Event listeners ──
 document.getElementById('inject-btn')?.addEventListener('click', async () => {
   const btn = document.getElementById('inject-btn') as HTMLButtonElement;
   btn.disabled = true;
-  try { await createAllVariables(); } catch (err: any) { log(`Error: ${err.message || err}`, 'error'); } finally { btn.disabled = false; }
+  try {
+    await createAllVariables();
+  } catch (err: any) {
+    log(`Error: ${err.message || err}`, 'error');
+  } finally {
+    btn.disabled = false;
+  }
 });
 
 document.querySelectorAll('.copy-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const type = (btn as HTMLElement).dataset.copy;
-    let text = type === 'head' ? HEAD_CODE : type === 'footer' ? FOOTER_CODE : '';
+    const text = type === 'head' ? HEAD_CODE : type === 'footer' ? getFooterCode() : '';
+    if (type === 'footer' && footerCodeEl) footerCodeEl.textContent = text;
     navigator.clipboard.writeText(text).then(() => {
       (btn as HTMLElement).textContent = 'Copied!';
-      setTimeout(() => { (btn as HTMLElement).textContent = 'Copy'; }, 2000);
+      setTimeout(() => {
+        (btn as HTMLElement).textContent = 'Copy';
+      }, 2000);
     });
   });
 });
@@ -466,8 +724,13 @@ document.querySelectorAll('.copy-btn').forEach(btn => {
 document.getElementById('build-page')?.addEventListener('click', async () => {
   const btn = document.getElementById('build-page') as HTMLButtonElement;
   btn.disabled = true;
-  try { await buildPlansPage(); } catch (err: any) {
+  try {
+    renderCodeSnippets();
+    await buildPlansPage();
+  } catch (err: any) {
     log(`Error: ${err.message || err}`, 'error');
     await webflow.notify({ type: 'Error', message: `Failed: ${err.message || err}` });
-  } finally { btn.disabled = false; }
+  } finally {
+    btn.disabled = false;
+  }
 });
