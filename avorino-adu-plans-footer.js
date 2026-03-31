@@ -32,20 +32,25 @@
     style.textContent = [
       ':root{--adu-plans-dark:#111111;--adu-plans-cream:#f0ede8;--adu-plans-warm:#e8e4df;--adu-plans-gold:#c8a86e;--adu-plans-surface:#faf9f7;--adu-plans-surface-2:#ece6db;--adu-plans-text:#111111;}',
       'html,body{overflow-x:hidden !important;}',
+
+      /* Hero */
       '#adu-plans-hero{position:relative;isolation:isolate;background:var(--adu-plans-dark);}',
       '#adu-plans-hero #hero-canvas{position:absolute;inset:0;z-index:1;pointer-events:none;}',
       '#adu-plans-hero-canvas{display:block;width:100% !important;height:100% !important;}',
+      '#adu-plans-hero [class*="scroll-hint"] span,#adu-plans-hero [class*="scroll"] > span{font-family:"DM Sans",system-ui,sans-serif !important;font-size:11px !important;letter-spacing:0.25em !important;text-transform:uppercase !important;color:rgba(200,168,110,0.55) !important;}',
+
+      /* Plan sections — wider viewer */
       '[data-adu-plan-section]{position:relative;background:var(--adu-plans-cream);}',
       '[data-adu-plan-section="casielo"]{background:var(--adu-plans-warm);}',
       '[data-adu-plan-section] [data-adu-role="plan-layout"]{align-items:flex-start;}',
-      '[data-adu-plan-section] [data-adu-role="plan-stage"],[data-adu-plan-section] [data-adu-role="plan-panel"]{will-change:transform,opacity;}',
-      '[data-adu-plan-section] [data-adu-role="plan-stage"] iframe{display:block;width:100% !important;background:var(--adu-plans-surface) !important;}',
-      '[data-adu-gallery-hero],[data-adu-main-image]{cursor:zoom-in;}',
-      '[data-adu-main-image]{display:block;width:100% !important;height:100% !important;object-fit:cover;}',
-      '[data-adu-thumbs]{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px !important;}',
-      '[data-adu-thumb]{cursor:pointer;transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease,opacity .35s ease;transform:translateY(0);}',
-      '[data-adu-thumb]:hover{transform:translateY(-2px);border-color:rgba(200,168,110,.45) !important;}',
-      '[data-adu-thumb].is-active{transform:translateY(-2px);border-color:rgba(200,168,110,.6) !important;box-shadow:0 18px 40px rgba(17,17,17,.12);}',
+      '[data-adu-plan-section] [data-adu-role="plan-stage"]{width:62% !important;flex-shrink:0;will-change:transform,opacity;}',
+      '[data-adu-plan-section] [data-adu-role="plan-panel"]{width:38% !important;will-change:transform,opacity;}',
+      '[data-adu-plan-section] [data-adu-role="plan-stage"] iframe{display:block;width:100% !important;height:680px !important;min-height:680px !important;background:var(--adu-plans-surface) !important;}',
+
+      /* Hide gallery/thumbs below use cases */
+      '[data-adu-gallery-hero],[data-adu-main-image],[data-adu-thumbs]{display:none !important;}',
+
+      /* Lightbox (still functional from room clicks) */
       '#adu-plans-lightbox{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;}',
       '#adu-plans-lightbox.is-active{display:flex;}',
       '#adu-plans-lightbox .adu-plans-lightbox-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.92);}',
@@ -59,6 +64,17 @@
       '#adu-plans-lightbox .adu-plans-lightbox-prev{left:20px;top:50%;transform:translateY(-50%);font-size:24px;}',
       '#adu-plans-lightbox .adu-plans-lightbox-next{right:20px;top:50%;transform:translateY(-50%);font-size:24px;}',
       '#adu-plans-lightbox .adu-plans-lightbox-prev:hover,#adu-plans-lightbox .adu-plans-lightbox-next:hover{transform:translateY(calc(-50% - 1px));}',
+
+      /* Plan progress bar */
+      '#adu-plan-progress{position:fixed;right:32px;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:18px;align-items:center;opacity:0;pointer-events:none;transition:opacity .4s ease;}',
+      '#adu-plan-progress.is-visible{opacity:1;pointer-events:auto;}',
+      '#adu-plan-progress .adu-prog-dot{width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(200,168,110,0.4);background:transparent;cursor:pointer;transition:all .35s ease;position:relative;}',
+      '#adu-plan-progress .adu-prog-dot.is-active{background:var(--adu-plans-gold);border-color:var(--adu-plans-gold);transform:scale(1.3);}',
+      '#adu-plan-progress .adu-prog-dot .adu-prog-label{position:absolute;right:22px;top:50%;transform:translateY(-50%);font:500 11px/1 "DM Sans",system-ui,sans-serif;letter-spacing:0.15em;text-transform:uppercase;color:rgba(17,17,17,0.5);white-space:nowrap;opacity:0;transition:opacity .3s ease;}',
+      '#adu-plan-progress .adu-prog-dot:hover .adu-prog-label,#adu-plan-progress .adu-prog-dot.is-active .adu-prog-label{opacity:1;}',
+      '#adu-plan-progress .adu-prog-line{width:1.5px;height:18px;background:rgba(200,168,110,0.2);}',
+
+      /* Responsive */
       '@media (max-width: 991px){',
       '  #adu-plans-hero{padding:120px 24px 56px !important;min-height:72vh !important;}',
       '  #adu-plans-hero h1{font-size:clamp(48px,11vw,64px) !important;max-width:10ch !important;}',
@@ -67,7 +83,8 @@
       '  [data-adu-plan-section] [data-adu-role="plan-layout"]{display:flex !important;flex-direction:column !important;gap:36px !important;}',
       '  [data-adu-plan-section] [data-adu-role="plan-stage"],[data-adu-plan-section] [data-adu-role="plan-panel"]{width:100% !important;}',
       '  [data-adu-plan-section] [data-adu-role="plan-stage"] iframe{min-height:520px !important;height:520px !important;}',
-      '  [data-adu-plan-section] [data-adu-main-image]{height:420px !important;}',
+      '  #adu-plan-progress{right:16px;gap:14px;}',
+      '  #adu-plan-progress .adu-prog-label{display:none;}',
       '}',
       '@media (max-width: 767px){',
       '  #adu-plans-hero{padding:104px 16px 44px !important;min-height:66vh !important;}',
@@ -75,14 +92,9 @@
       '  #adu-plans-hero p{font-size:16px !important;line-height:1.7 !important;max-width:none !important;}',
       '  [data-adu-plan-section]{padding:72px 16px !important;}',
       '  [data-adu-plan-section] [data-adu-role="plan-stage"] iframe{min-height:400px !important;height:400px !important;}',
-      '  [data-adu-plan-section] [data-adu-main-image]{height:280px !important;}',
       '  [data-adu-plan-section] h2{font-size:clamp(32px,10vw,44px) !important;line-height:1.04 !important;}',
       '  [data-adu-plan-section] p{font-size:15px !important;line-height:1.7 !important;}',
-      '  [data-adu-thumbs]{gap:10px !important;}',
-      '  [data-adu-thumb]{min-height:96px !important;}',
-      '  #adu-plans-lightbox .adu-plans-lightbox-btn{width:42px;height:42px;}',
-      '  #adu-plans-lightbox .adu-plans-lightbox-prev{left:12px;}',
-      '  #adu-plans-lightbox .adu-plans-lightbox-next{right:12px;}',
+      '  #adu-plan-progress .adu-prog-dot{width:8px;height:8px;}',
       '}',
       '@media (prefers-reduced-motion: reduce){',
       '  [data-adu-thumb],#adu-plans-lightbox .adu-plans-lightbox-btn{transition:none !important;}',
@@ -107,146 +119,165 @@
 
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(38, 1, 0.1, 300);
-    camera.position.set(18, 14, 22);
+    camera.position.set(0, 45, 0.01);
     camera.lookAt(0, 0, 0);
 
     /* ── Materials ── */
     var goldColor = 0xc8a86e;
-    var accentColor = 0xc8222a;
-    var wallMat = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.7 });
-    var partMat = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.45 });
-    var gridMat = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.08 });
-    var dimMat = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.2 });
-    var doorMat = new THREE.LineBasicMaterial({ color: accentColor, transparent: true, opacity: 0.55 });
-    var fillMat = new THREE.MeshBasicMaterial({ color: goldColor, transparent: true, opacity: 0.03, side: THREE.DoubleSide });
+    var wallMat = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.72 });
+    var partMat = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.38 });
+    var gridMat = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.06 });
+    var dimMat = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.18 });
+    var doorMat = new THREE.LineBasicMaterial({ color: 0xc8222a, transparent: true, opacity: 0.5 });
+    var winMat = new THREE.LineBasicMaterial({ color: 0x87CEEB, transparent: true, opacity: 0.35 });
+    var fillMat = new THREE.MeshBasicMaterial({ color: goldColor, transparent: true, opacity: 0.025, side: THREE.DoubleSide });
+    var roomFill1 = new THREE.MeshBasicMaterial({ color: 0xc8a86e, transparent: true, opacity: 0.04, side: THREE.DoubleSide });
+    var roomFill2 = new THREE.MeshBasicMaterial({ color: 0x87CEEB, transparent: true, opacity: 0.035, side: THREE.DoubleSide });
 
     var gridGroup = new THREE.Group();
     var planGroup = new THREE.Group();
 
-    function addLine(group, x1, z1, x2, z2, material, y) {
-      var yy = y || 0;
-      var geometry = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(x1, yy, z1),
-        new THREE.Vector3(x2, yy, z2)
-      ]);
-      group.add(new THREE.Line(geometry, material));
+    function addLine(group, x1, z1, x2, z2, material) {
+      group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(x1, 0, z1), new THREE.Vector3(x2, 0, z2)
+      ]), material));
     }
 
-    function addRect(group, x1, z1, x2, z2, material) {
-      addLine(group, x1, z1, x2, z1, material);
-      addLine(group, x2, z1, x2, z2, material);
-      addLine(group, x2, z2, x1, z2, material);
-      addLine(group, x1, z2, x1, z1, material);
-    }
-
-    function addFloor(group, x1, z1, x2, z2) {
+    function addFloor(group, pts, mat) {
       var shape = new THREE.Shape();
-      shape.moveTo(x1, z1);
-      shape.lineTo(x2, z1);
-      shape.lineTo(x2, z2);
-      shape.lineTo(x1, z2);
+      shape.moveTo(pts[0][0], pts[0][1]);
+      for (var i = 1; i < pts.length; i++) shape.lineTo(pts[i][0], pts[i][1]);
       shape.closePath();
       var geo = new THREE.ShapeGeometry(shape);
       geo.rotateX(-Math.PI / 2);
-      group.add(new THREE.Mesh(geo, fillMat));
+      group.add(new THREE.Mesh(geo, mat || fillMat));
     }
 
-    function addDoorArc(group, cx, cz, radius, startAngle, endAngle) {
+    function addArc(group, cx, cz, r, a0, a1, mat) {
       var pts = [];
-      for (var i = 0; i <= 16; i++) {
-        var a = startAngle + (endAngle - startAngle) * (i / 16);
-        pts.push(new THREE.Vector3(cx + Math.cos(a) * radius, 0, cz + Math.sin(a) * radius));
+      for (var i = 0; i <= 20; i++) {
+        var a = a0 + (a1 - a0) * (i / 20);
+        pts.push(new THREE.Vector3(cx + Math.cos(a) * r, 0, cz + Math.sin(a) * r));
       }
-      group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), doorMat));
+      group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), mat || doorMat));
+    }
+
+    function addWindowMark(group, x1, z1, x2, z2) {
+      addLine(group, x1, z1, x2, z2, winMat);
+      var mx = (x1 + x2) / 2, mz = (z1 + z2) / 2;
+      var dx = x2 - x1, dz = z2 - z1;
+      var len = Math.sqrt(dx * dx + dz * dz);
+      var nx = -dz / len * 0.3, nz = dx / len * 0.3;
+      addLine(group, mx - nx, mz - nz, mx + nx, mz + nz, winMat);
     }
 
     /* ── Blueprint grid ── */
-    var gridSize = 20;
-    for (var g = -gridSize; g <= gridSize; g += 2) {
-      addLine(gridGroup, -gridSize, g, gridSize, g, gridMat);
-      addLine(gridGroup, g, -gridSize, g, gridSize, gridMat);
+    for (var g = -24; g <= 24; g += 2) {
+      addLine(gridGroup, -24, g, 24, g, gridMat);
+      addLine(gridGroup, g, -24, g, 24, gridMat);
     }
 
-    /* ── Bellecielo floor plan (830 sqft, 2bed/2bath) ── */
-    /* Exterior walls — main rectangle */
-    var W = 13.5, D = 7;
-    var x0 = -W / 2, x1 = W / 2, z0 = -D / 2, z1 = D / 2;
-    addRect(planGroup, x0, z0, x1, z1, wallMat);
-    addFloor(planGroup, x0, z0, x1, z1);
+    /* ═════════════════════════════════════════════
+       BELLECIELO — Actual floor plan from preview
+       Coordinates from blueprint data, scaled 0.45x, centered
+       ═════════════════════════════════════════════ */
+    var S = 0.45;
+    var cx = -1.75 * S, cz = -4.25 * S;
 
-    /* Interior partitions */
-    /* Bedroom 1 (left) */
-    addLine(planGroup, x0 + 4.5, z0, x0 + 4.5, z1, partMat);
-    /* Bedroom 2 (right) */
-    addLine(planGroup, x1 - 4.5, z0, x1 - 4.5, z1, partMat);
-    /* Bathrooms (inset from bedrooms) */
-    addLine(planGroup, x0 + 4.5, z0 + 3, x0 + 2, z0 + 3, partMat);
-    addLine(planGroup, x0 + 2, z0, x0 + 2, z0 + 3, partMat);
-    addLine(planGroup, x1 - 4.5, z0 + 3, x1 - 2, z0 + 3, partMat);
-    addLine(planGroup, x1 - 2, z0, x1 - 2, z0 + 3, partMat);
-    /* Kitchen peninsula */
-    addLine(planGroup, x0 + 4.5, z1 - 2.2, x0 + 6.5, z1 - 2.2, partMat);
+    /* Corner lookup (id → [x, z] in scene coords) */
+    var C = {
+      c1:  [(-22)*S-cx, (-13.5)*S-cz],
+      c2:  [(-12)*S-cx, (-13.5)*S-cz],
+      c3:  [(-12)*S-cx, (-1.5)*S-cz],
+      c4:  [(-22)*S-cx, (-1.5)*S-cz],
+      c5:  [(18.5)*S-cx, (-13.5)*S-cz],
+      c6:  [(8.5)*S-cx, (-13.5)*S-cz],
+      c7:  [(-12)*S-cx, (5)*S-cz],
+      c8:  [(8.5)*S-cx, (5)*S-cz],
+      c9:  [(-22)*S-cx, (5)*S-cz],
+      c10: [(-20.5)*S-cx, (5)*S-cz],
+      c11: [(-20.5)*S-cx, (3)*S-cz],
+      c12: [(-17)*S-cx, (3)*S-cz],
+      c13: [(-17)*S-cx, (-1.5)*S-cz],
+      c14: [(-17)*S-cx, (5)*S-cz],
+      c15: [(18.5)*S-cx, (5)*S-cz],
+      c16: [(8.5)*S-cx, (-1.5)*S-cz],
+      c17: [(18.5)*S-cx, (-1.5)*S-cz],
+      c18: [(13.5)*S-cx, (-1.5)*S-cz],
+      c19: [(13.5)*S-cx, (5)*S-cz],
+      c20: [(13.5)*S-cx, (2.5)*S-cz],
+      c21: [(8.5)*S-cx, (2.5)*S-cz]
+    };
 
-    /* Door swing arcs */
-    addDoorArc(planGroup, x0 + 4.5, z0 + 4.2, 1.5, 0, Math.PI / 2);
-    addDoorArc(planGroup, x1 - 4.5, z0 + 4.2, 1.5, Math.PI / 2, Math.PI);
-    addDoorArc(planGroup, x0 + 2.8, z0 + 3, 1.2, -Math.PI / 2, 0);
-    addDoorArc(planGroup, x1 - 2.8, z0 + 3, 1.2, Math.PI, Math.PI * 1.5);
-    /* Front door */
-    addDoorArc(planGroup, 0, z1, 1.5, Math.PI, Math.PI * 1.5);
+    /* Exterior walls */
+    var extWalls = [
+      ['c1','c2'],['c2','c6'],['c6','c5'],  /* bottom */
+      ['c5','c17'],['c17','c15'],            /* right */
+      ['c15','c19'],['c19','c8'],['c8','c7'],['c7','c14'],['c14','c10'],['c10','c9'], /* top */
+      ['c9','c4'],['c4','c1'],               /* left */
+    ];
+    extWalls.forEach(function(w) { addLine(planGroup, C[w[0]][0], C[w[0]][1], C[w[1]][0], C[w[1]][1], wallMat); });
 
-    /* Window markers (small ticks on exterior walls) */
-    var wt = 0.35;
-    /* Left bedroom windows */
-    addLine(planGroup, x0, z0 + 2, x0 - wt, z0 + 2, dimMat);
-    addLine(planGroup, x0, z0 + 4, x0 - wt, z0 + 4, dimMat);
-    addLine(planGroup, x0 - wt, z0 + 2, x0 - wt, z0 + 4, dimMat);
-    /* Right bedroom windows */
-    addLine(planGroup, x1, z0 + 2, x1 + wt, z0 + 2, dimMat);
-    addLine(planGroup, x1, z0 + 4, x1 + wt, z0 + 4, dimMat);
-    addLine(planGroup, x1 + wt, z0 + 2, x1 + wt, z0 + 4, dimMat);
-    /* Living room window (front) */
-    addLine(planGroup, -2, z1, -2, z1 + wt, dimMat);
-    addLine(planGroup, 2, z1, 2, z1 + wt, dimMat);
-    addLine(planGroup, -2, z1 + wt, 2, z1 + wt, dimMat);
+    /* Interior walls */
+    var intWalls = [
+      ['c2','c3'],['c3','c13'],['c13','c4'], /* central vertical (left wing) */
+      ['c6','c16'],['c16','c18'],['c18','c17'], /* horizontal interior */
+      ['c16','c21'],['c21','c8'],            /* right wing vertical */
+      ['c18','c20'],['c20','c19'],           /* bathroom divider right */
+      ['c20','c21'],                         /* horizontal bath */
+      ['c10','c11'],['c11','c12'],['c12','c13'], /* closet */
+      ['c14','c12'],                         /* closet top connection */
+      ['c14','c7'],                          /* top left interior */
+      ['c3','c7'],                           /* left wing full height */
+    ];
+    intWalls.forEach(function(w) { addLine(planGroup, C[w[0]][0], C[w[0]][1], C[w[1]][0], C[w[1]][1], partMat); });
 
-    /* ── Dimension lines ── */
-    var dOff = 1.2;
-    /* Width dimension */
-    addLine(planGroup, x0, z0 - dOff, x1, z0 - dOff, dimMat);
-    addLine(planGroup, x0, z0 - dOff + 0.2, x0, z0 - dOff - 0.2, dimMat);
-    addLine(planGroup, x1, z0 - dOff + 0.2, x1, z0 - dOff - 0.2, dimMat);
-    /* Depth dimension */
-    addLine(planGroup, x0 - dOff, z0, x0 - dOff, z1, dimMat);
-    addLine(planGroup, x0 - dOff + 0.2, z0, x0 - dOff - 0.2, z0, dimMat);
-    addLine(planGroup, x0 - dOff + 0.2, z1, x0 - dOff - 0.2, z1, dimMat);
+    /* Room floor fills */
+    /* Bedroom 1 (left bottom) */
+    addFloor(planGroup, [C.c1, C.c2, C.c3, C.c4], roomFill1);
+    /* Living/Kitchen (center) */
+    addFloor(planGroup, [C.c7, C.c8, C.c16, C.c3], fillMat);
+    /* Bedroom 2 (right bottom) */
+    addFloor(planGroup, [C.c6, C.c5, C.c17, C.c16], roomFill1);
+    /* Bathroom 1 (right top) */
+    addFloor(planGroup, [C.c21, C.c20, C.c19, C.c8], roomFill2);
+    /* Bathroom 2 (right far) */
+    addFloor(planGroup, [C.c18, C.c17, C.c15, C.c19], roomFill2);
+    /* Closet */
+    addFloor(planGroup, [C.c10, C.c11, C.c12, C.c14], roomFill2);
 
-    /* ── Second plan ghost (Casielo, offset) ── */
-    var g2 = new THREE.Group();
-    var ghostWall = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.18 });
-    var ghostPart = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.1 });
-    addRect(g2, 9, 5.5, 9, -5, ghostWall);
-    addLine(g2, 9 - 4.5, -5 - 2.75, 9 - 4.5, -5 + 2.75, ghostPart);
-    addLine(g2, 9 - 4.5, -5 + 1.5, 9 - 2, -5 + 1.5, ghostPart);
-    planGroup.add(g2);
+    /* Door arcs */
+    addArc(planGroup, C.c3[0], C.c3[1]+0.3, 1.2*S, 0, Math.PI/2);
+    addArc(planGroup, C.c16[0], C.c16[1]+0.3, 1.2*S, Math.PI/2, Math.PI);
+    addArc(planGroup, C.c12[0]+0.3, C.c12[1], 1.0*S, -Math.PI/2, 0);
+    addArc(planGroup, C.c21[0]+0.3, C.c21[1], 1.0*S, Math.PI, Math.PI*1.5);
 
-    /* ── Third plan ghost (Elega, offset other side) ── */
-    var g3 = new THREE.Group();
-    addRect(g3, 8, 5, -9, 5, ghostWall);
-    addLine(g3, -9 - 4, 5 - 2.5, -9 - 4, 5 + 2.5, ghostPart);
-    addLine(g3, -9, 5 + 1.2, -9 + 2.5, 5 + 1.2, ghostPart);
-    planGroup.add(g3);
+    /* Window markers on exterior walls */
+    /* Left wall */
+    addWindowMark(planGroup, C.c9[0], (C.c9[1]+C.c4[1])*0.55, C.c9[0], (C.c9[1]+C.c4[1])*0.45);
+    /* Bottom wall - bedroom 1 */
+    addWindowMark(planGroup, (C.c1[0]+C.c2[0])*0.4, C.c1[1], (C.c1[0]+C.c2[0])*0.6, C.c1[1]);
+    /* Bottom wall - bedroom 2 */
+    addWindowMark(planGroup, (C.c6[0]+C.c5[0])*0.4, C.c6[1], (C.c6[0]+C.c5[0])*0.6, C.c6[1]);
+    /* Right wall */
+    addWindowMark(planGroup, C.c5[0], (C.c5[1]+C.c17[1])*0.5, C.c5[0], (C.c5[1]+C.c17[1])*0.45);
+    /* Top wall - living */
+    addWindowMark(planGroup, (C.c7[0]+C.c8[0])*0.4, C.c8[1], (C.c7[0]+C.c8[0])*0.6, C.c8[1]);
 
-    gridGroup.rotation.y = -0.3;
-    planGroup.rotation.y = -0.3;
+    /* Dimension lines */
+    var dO = 1.5;
+    /* Width */
+    addLine(planGroup, C.c1[0], C.c1[1]-dO, C.c5[0], C.c5[1]-dO, dimMat);
+    addLine(planGroup, C.c1[0], C.c1[1]-dO-0.3, C.c1[0], C.c1[1]-dO+0.3, dimMat);
+    addLine(planGroup, C.c5[0], C.c5[1]-dO-0.3, C.c5[0], C.c5[1]-dO+0.3, dimMat);
+    /* Depth */
+    addLine(planGroup, C.c9[0]-dO, C.c9[1], C.c1[0]-dO, C.c1[1], dimMat);
+    addLine(planGroup, C.c9[0]-dO-0.3, C.c9[1], C.c9[0]-dO+0.3, C.c9[1], dimMat);
+    addLine(planGroup, C.c1[0]-dO-0.3, C.c1[1], C.c1[0]-dO+0.3, C.c1[1], dimMat);
+
     scene.add(gridGroup);
     scene.add(planGroup);
-
-    /* ── Lighting ── */
-    scene.add(new THREE.AmbientLight(0xffffff, 0.3));
-    var pointLight = new THREE.PointLight(0xffeedd, 0.6, 80);
-    pointLight.position.set(8, 12, 8);
-    scene.add(pointLight);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
     /* ── Mouse interaction ── */
     var mouseX = 0, mouseY = 0;
@@ -272,9 +303,7 @@
     var heroVisible = true;
     if (window.IntersectionObserver) {
       var observer = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-          heroVisible = entry.isIntersecting;
-        });
+        entries.forEach(function(entry) { heroVisible = entry.isIntersecting; });
       }, { threshold: 0.05 });
       observer.observe(canvas);
     }
@@ -283,14 +312,12 @@
     function animate() {
       requestAnimationFrame(animate);
       if (!heroVisible) return;
-      time += 0.008;
-      /* Slow rotation + mouse influence */
-      var targetY = -0.3 + time * 0.15 + mouseX * 0.3;
-      planGroup.rotation.y += (targetY - planGroup.rotation.y) * 0.02;
-      gridGroup.rotation.y += (targetY * 0.4 - gridGroup.rotation.y) * 0.015;
-      /* Gentle camera bob */
-      camera.position.y = 14 + Math.sin(time * 0.5) * 0.4 + mouseY * -1.5;
-      camera.lookAt(0, 0, 0);
+      time += 0.006;
+      /* Gentle top-down drift + mouse parallax */
+      camera.position.x = Math.sin(time * 0.3) * 3 + mouseX * 4;
+      camera.position.z = Math.cos(time * 0.3) * 2 + mouseY * 3 + 0.01;
+      camera.position.y = 45 + Math.sin(time * 0.15) * 1.5;
+      camera.lookAt(mouseX * 1.5, 0, mouseY * 1.5);
       resize();
       renderer.render(scene, camera);
     }
@@ -584,6 +611,36 @@
     }
   }
 
+  function initProgressBar() {
+    var sections = document.querySelectorAll('[data-adu-plan-section]');
+    if (!sections.length) return null;
+
+    var bar = document.createElement('div');
+    bar.id = 'adu-plan-progress';
+    var labels = { belle: 'Bellecielo', bellecielo: 'Bellecielo', casielo: 'Casielo', elega: 'Elega' };
+    var dots = [];
+
+    Array.prototype.slice.call(sections).forEach(function(section, i) {
+      if (i > 0) {
+        var line = document.createElement('div');
+        line.className = 'adu-prog-line';
+        bar.appendChild(line);
+      }
+      var dot = document.createElement('div');
+      dot.className = 'adu-prog-dot' + (i === 0 ? ' is-active' : '');
+      var key = section.getAttribute('data-adu-plan-section');
+      dot.innerHTML = '<span class="adu-prog-label">' + (labels[key] || key) + '</span>';
+      dot.addEventListener('click', function() {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      bar.appendChild(dot);
+      dots.push(dot);
+    });
+
+    document.body.appendChild(bar);
+    return { bar: bar, dots: dots };
+  }
+
   function initAnimations() {
     if (!window.gsap || !window.ScrollTrigger) return;
 
@@ -628,135 +685,70 @@
       });
     }
 
-    Array.prototype.slice.call(document.querySelectorAll('[data-adu-plan-section]')).forEach(function(section) {
+    /* ── Plan sections: scroll-lock with progress bar ── */
+    var sections = Array.prototype.slice.call(document.querySelectorAll('[data-adu-plan-section]'));
+    var progress = initProgressBar();
+
+    sections.forEach(function(section, idx) {
       var stage = section.querySelector('[data-adu-role="plan-stage"]');
       var panel = section.querySelector('[data-adu-role="plan-panel"]');
       var copyItems = section.querySelectorAll('[data-adu-animate="section-copy"]');
-      var gallery = section.querySelector('[data-adu-animate="section-gallery"]');
-      var thumbs = section.querySelectorAll('[data-adu-thumb]');
-      var mainImage = section.querySelector('[data-adu-main-image]');
 
+      /* Pin each section */
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top top',
+        end: 'bottom top',
+        pin: true,
+        pinSpacing: true,
+        onEnter: function() {
+          if (progress) {
+            progress.bar.classList.add('is-visible');
+            progress.dots.forEach(function(d, di) {
+              d.classList.toggle('is-active', di === idx);
+            });
+          }
+        },
+        onEnterBack: function() {
+          if (progress) {
+            progress.bar.classList.add('is-visible');
+            progress.dots.forEach(function(d, di) {
+              d.classList.toggle('is-active', di === idx);
+            });
+          }
+        },
+        onLeaveBack: function() {
+          if (idx === 0 && progress) {
+            progress.bar.classList.remove('is-visible');
+          }
+        },
+        onLeave: function() {
+          if (idx === sections.length - 1 && progress) {
+            progress.bar.classList.remove('is-visible');
+          }
+        }
+      });
+
+      /* Entrance animations */
       if (stage) {
         gsap.from(stage, {
-          opacity: 0,
-          x: -36,
-          y: 20,
-          duration: 1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top 78%'
-          }
+          opacity: 0, x: -36, y: 20, duration: 1, ease: 'power3.out',
+          scrollTrigger: { trigger: section, start: 'top 78%' }
         });
       }
 
       if (panel) {
         gsap.from(panel, {
-          opacity: 0,
-          x: 36,
-          y: 20,
-          duration: 1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top 78%'
-          }
+          opacity: 0, x: 36, y: 20, duration: 1, ease: 'power3.out',
+          scrollTrigger: { trigger: section, start: 'top 78%' }
         });
       }
 
       if (copyItems.length) {
         gsap.from(copyItems, {
-          opacity: 0,
-          y: 22,
-          duration: 0.8,
-          stagger: 0.08,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top 72%'
-          }
+          opacity: 0, y: 22, duration: 0.8, stagger: 0.08, ease: 'power3.out',
+          scrollTrigger: { trigger: section, start: 'top 72%' }
         });
-      }
-
-      if (gallery) {
-        gsap.from(gallery, {
-          opacity: 0,
-          y: 26,
-          duration: 0.95,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top 70%'
-          }
-        });
-      }
-
-      if (thumbs.length) {
-        gsap.from(thumbs, {
-          opacity: 0,
-          y: 16,
-          duration: 0.55,
-          stagger: 0.05,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top 68%'
-          }
-        });
-      }
-
-      if (mainImage) {
-        gsap.from(mainImage, {
-          opacity: 0.35,
-          scale: 1.06,
-          duration: 1.1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: mainImage,
-            start: 'top 88%'
-          }
-        });
-      }
-
-      if (window.innerWidth > 991) {
-        if (stage) {
-          gsap.to(stage, {
-            yPercent: -5,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: section,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: 0.9
-            }
-          });
-        }
-
-        if (panel) {
-          gsap.to(panel, {
-            yPercent: -2.5,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: section,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: 0.9
-            }
-          });
-        }
-
-        if (mainImage) {
-          gsap.to(mainImage, {
-            yPercent: -6,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: section,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: 1
-            }
-          });
-        }
       }
     });
 
