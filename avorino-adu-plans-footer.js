@@ -729,72 +729,76 @@
 
     var fill = bar.querySelector('.adu-plans-bar-fill');
     var numSlides = sections.length;
-    var currentSlide = 0;
-    var isAnimating = false;
 
-    function updateUI(idx) {
-      /* Dots — only update on slide change */
-      dots.forEach(function(d, di) { d.classList.toggle('is-active', di === idx); });
-      /* Arrows */
-      prevArrow.classList.toggle('is-hidden', idx === 0);
-      nextArrow.classList.toggle('is-hidden', idx === numSlides - 1);
+    /* Arrow/keyboard: scroll to the right position to trigger timeline */
+    function scrollToSlide(idx) {
+      if (idx < 0 || idx >= numSlides) return;
+      var st = ScrollTrigger.getAll().find(function(s) { return s.trigger === wrapper; });
+      if (!st) return;
+      var targetProgress = idx / numSlides + 0.01;
+      var scrollTarget = st.start + (st.end - st.start) * targetProgress;
+      window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
     }
 
-    function goToSlide(idx) {
-      if (idx === currentSlide || idx < 0 || idx >= numSlides) return;
-      var prev = currentSlide;
-      currentSlide = idx;
-      updateUI(idx);
-
-      /* Hide all, show target */
-      sections.forEach(function(s, i) {
-        if (i === idx) {
-          gsap.to(s, { opacity: 1, duration: 0.4, ease: 'power2.inOut' });
-          s.style.pointerEvents = 'auto';
-        } else {
-          gsap.to(s, { opacity: 0, duration: 0.3, ease: 'power2.inOut' });
-          s.style.pointerEvents = 'none';
-        }
-      });
-
-      /* Panel slide-in */
-      var stage = sections[idx].querySelector('[data-adu-role="plan-stage"]');
-      var panel = sections[idx].querySelector('[data-adu-role="plan-panel"]');
-      var dir = idx > prev ? 1 : -1;
-      if (stage) gsap.fromTo(stage, { x: -30 * dir, opacity: 0 }, { x: 0, opacity: 1, duration: 0.65, ease: 'power3.out', delay: 0.15 });
-      if (panel) gsap.fromTo(panel, { x: 30 * dir, opacity: 0 }, { x: 0, opacity: 1, duration: 0.65, ease: 'power3.out', delay: 0.2 });
-    }
-
-    prevArrow.addEventListener('click', function() { goToSlide(currentSlide - 1); });
-    nextArrow.addEventListener('click', function() { goToSlide(currentSlide + 1); });
+    prevArrow.addEventListener('click', function() {
+      var st = ScrollTrigger.getAll().find(function(s) { return s.trigger === wrapper; });
+      if (!st) return;
+      var curIdx = Math.min(Math.floor(st.progress * numSlides), numSlides - 1);
+      scrollToSlide(curIdx - 1);
+    });
+    nextArrow.addEventListener('click', function() {
+      var st = ScrollTrigger.getAll().find(function(s) { return s.trigger === wrapper; });
+      if (!st) return;
+      var curIdx = Math.min(Math.floor(st.progress * numSlides), numSlides - 1);
+      scrollToSlide(curIdx + 1);
+    });
 
     /* Keyboard navigation */
     document.addEventListener('keydown', function(e) {
-      if (e.key === 'ArrowLeft') goToSlide(currentSlide - 1);
-      if (e.key === 'ArrowRight') goToSlide(currentSlide + 1);
+      var st = ScrollTrigger.getAll().find(function(s) { return s.trigger === wrapper; });
+      if (!st) return;
+      var curIdx = Math.min(Math.floor(st.progress * numSlides), numSlides - 1);
+      if (e.key === 'ArrowLeft') scrollToSlide(curIdx - 1);
+      if (e.key === 'ArrowRight') scrollToSlide(curIdx + 1);
     });
 
     /* Pin the wrapper and drive slide transitions on scroll */
-    var lastScrollIdx = 0;
-    ScrollTrigger.create({
-      trigger: wrapper,
-      start: 'top top',
-      end: '+=200%',
-      pin: true,
-      pinSpacing: true,
-      onUpdate: function(self) {
-        var prog = self.progress;
-        /* Equal thirds: 0-0.33 = Belle, 0.33-0.66 = Casielo, 0.66-1 = Elega */
-        var idx = Math.min(Math.floor(prog * numSlides), numSlides - 1);
-        if (idx !== lastScrollIdx) {
-          lastScrollIdx = idx;
-          goToSlide(idx);
+    var tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: wrapper,
+        start: 'top top',
+        end: '+=' + (numSlides * 80) + '%',
+        pin: true,
+        pinSpacing: true,
+        scrub: 1,
+        onUpdate: function(self) {
+          /* Smooth progressive fill bar */
+          if (fill) fill.style.transform = 'translateY(-50%) scaleX(' + self.progress + ')';
+          /* Update active dot */
+          var idx = Math.min(Math.floor(self.progress * numSlides), numSlides - 1);
+          dots.forEach(function(d, di) { d.classList.toggle('is-active', di === idx); });
         }
-        if (fill) fill.style.transform = 'translateY(-50%) scaleX(' + prog + ')';
       }
     });
 
-    updateUI(0);
+    /* Build timeline: each slide gets equal screen time */
+    var slideDur = 1 / numSlides;
+    sections.forEach(function(section, i) {
+      if (i === 0) return; /* First slide starts visible */
+      var prev = i - 1;
+      /* At this point in the timeline, fade out previous, fade in current */
+      tl.to(sections[prev], { opacity: 0, duration: 0.3, ease: 'power2.inOut' }, i * slideDur - 0.15);
+      tl.fromTo(sections[i],
+        { opacity: 0, pointerEvents: 'none' },
+        { opacity: 1, pointerEvents: 'auto', duration: 0.3, ease: 'power2.inOut' },
+        i * slideDur - 0.05
+      );
+      /* Slide-in panels */
+      var stage = sections[i].querySelector('[data-adu-role="plan-stage"]');
+      var panel = sections[i].querySelector('[data-adu-role="plan-panel"]');
+      if (stage) tl.fromTo(stage, { x: -40 }, { x: 0, duration: 0.4, ease: 'power3.out' }, i * slideDur);
+      if (panel) tl.fromTo(panel, { x: 40 }, { x: 0, duration: 0.4, ease: 'power3.out' }, i * slideDur + 0.05);
+    });
 
     requestAnimationFrame(function() {
       requestAnimationFrame(function() { ScrollTrigger.refresh(); });
