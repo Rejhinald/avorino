@@ -58,8 +58,19 @@
   justify-content: space-between;
   background-color: transparent;
   mix-blend-mode: normal !important;
+  overflow: visible !important;
   transition: background-color 0.4s ease, backdrop-filter 0.4s ease,
               -webkit-backdrop-filter 0.4s ease, box-shadow 0.4s ease, padding 0.3s ease;
+}
+
+/* Force dropdown visibility — override any Webflow wrapper constraints */
+.site-nav,
+.site-nav *:not(.nav-dropdown):not(.nav-dropdown *) {
+  overflow: visible !important;
+}
+
+.nav-dropdown {
+  z-index: 1001 !important;
 }
 
 /* ── Nav spacer — transparent push-down so hero clears the fixed nav ── */
