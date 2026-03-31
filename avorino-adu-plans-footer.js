@@ -100,60 +100,162 @@
     canvas.dataset.bound = '1';
 
     var THREE = window.THREE;
-    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    var isMobile = window.innerWidth < 768;
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: !isMobile, alpha: true });
     renderer.setClearColor(0x111111, 0);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
 
     var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera(42, 1, 0.1, 200);
-    camera.position.set(12, 10, 15);
+    var camera = new THREE.PerspectiveCamera(38, 1, 0.1, 300);
+    camera.position.set(18, 14, 22);
     camera.lookAt(0, 0, 0);
 
-    var wireMat = new THREE.LineBasicMaterial({ color: 0xc8a86e, transparent: true, opacity: 0.62 });
-    var ghostMat = new THREE.LineBasicMaterial({ color: 0xc8a86e, transparent: true, opacity: 0.12 });
+    /* ── Materials ── */
+    var goldColor = 0xc8a86e;
+    var accentColor = 0xc8222a;
+    var wallMat = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.7 });
+    var partMat = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.45 });
+    var gridMat = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.08 });
+    var dimMat = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.2 });
+    var doorMat = new THREE.LineBasicMaterial({ color: accentColor, transparent: true, opacity: 0.55 });
+    var fillMat = new THREE.MeshBasicMaterial({ color: goldColor, transparent: true, opacity: 0.03, side: THREE.DoubleSide });
 
     var gridGroup = new THREE.Group();
     var planGroup = new THREE.Group();
 
-    function addLine(group, x1, z1, x2, z2, material) {
+    function addLine(group, x1, z1, x2, z2, material, y) {
+      var yy = y || 0;
       var geometry = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(x1, 0, z1),
-        new THREE.Vector3(x2, 0, z2)
+        new THREE.Vector3(x1, yy, z1),
+        new THREE.Vector3(x2, yy, z2)
       ]);
       group.add(new THREE.Line(geometry, material));
     }
 
-    function addRect(group, width, depth, x, z, material) {
-      var hw = width / 2;
-      var hd = depth / 2;
-      addLine(group, x - hw, z - hd, x + hw, z - hd, material);
-      addLine(group, x + hw, z - hd, x + hw, z + hd, material);
-      addLine(group, x + hw, z + hd, x - hw, z + hd, material);
-      addLine(group, x - hw, z + hd, x - hw, z - hd, material);
+    function addRect(group, x1, z1, x2, z2, material) {
+      addLine(group, x1, z1, x2, z1, material);
+      addLine(group, x2, z1, x2, z2, material);
+      addLine(group, x2, z2, x1, z2, material);
+      addLine(group, x1, z2, x1, z1, material);
     }
 
-    var gridSize = 16;
-    var gridStep = 2;
-    for (var pos = -gridSize; pos <= gridSize; pos += gridStep) {
-      addLine(gridGroup, -gridSize, pos, gridSize, pos, ghostMat);
-      addLine(gridGroup, pos, -gridSize, pos, gridSize, ghostMat);
+    function addFloor(group, x1, z1, x2, z2) {
+      var shape = new THREE.Shape();
+      shape.moveTo(x1, z1);
+      shape.lineTo(x2, z1);
+      shape.lineTo(x2, z2);
+      shape.lineTo(x1, z2);
+      shape.closePath();
+      var geo = new THREE.ShapeGeometry(shape);
+      geo.rotateX(-Math.PI / 2);
+      group.add(new THREE.Mesh(geo, fillMat));
     }
 
-    addRect(planGroup, 9, 6, 0, 0, wireMat);
-    addLine(planGroup, -1.5, -3, -1.5, 3, wireMat);
-    addLine(planGroup, 2.25, -3, 2.25, 0.75, wireMat);
-    addLine(planGroup, -1.5, 0.75, 2.25, 0.75, wireMat);
-    addRect(planGroup, 3.75, 3.75, 6.2, -1.15, wireMat);
-    addLine(planGroup, 4.35, -3.025, 4.35, 0.725, wireMat);
-    addLine(planGroup, 0.9, -3, 1.9, -3, wireMat);
-    addLine(planGroup, 2.2, -3, 3.4, -3, wireMat);
-    addLine(planGroup, 6.2, 0.725, 7.3, 0.725, wireMat);
+    function addDoorArc(group, cx, cz, radius, startAngle, endAngle) {
+      var pts = [];
+      for (var i = 0; i <= 16; i++) {
+        var a = startAngle + (endAngle - startAngle) * (i / 16);
+        pts.push(new THREE.Vector3(cx + Math.cos(a) * radius, 0, cz + Math.sin(a) * radius));
+      }
+      group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), doorMat));
+    }
 
-    gridGroup.rotation.y = -0.24;
-    planGroup.rotation.y = -0.24;
+    /* ── Blueprint grid ── */
+    var gridSize = 20;
+    for (var g = -gridSize; g <= gridSize; g += 2) {
+      addLine(gridGroup, -gridSize, g, gridSize, g, gridMat);
+      addLine(gridGroup, g, -gridSize, g, gridSize, gridMat);
+    }
+
+    /* ── Bellecielo floor plan (830 sqft, 2bed/2bath) ── */
+    /* Exterior walls — main rectangle */
+    var W = 13.5, D = 7;
+    var x0 = -W / 2, x1 = W / 2, z0 = -D / 2, z1 = D / 2;
+    addRect(planGroup, x0, z0, x1, z1, wallMat);
+    addFloor(planGroup, x0, z0, x1, z1);
+
+    /* Interior partitions */
+    /* Bedroom 1 (left) */
+    addLine(planGroup, x0 + 4.5, z0, x0 + 4.5, z1, partMat);
+    /* Bedroom 2 (right) */
+    addLine(planGroup, x1 - 4.5, z0, x1 - 4.5, z1, partMat);
+    /* Bathrooms (inset from bedrooms) */
+    addLine(planGroup, x0 + 4.5, z0 + 3, x0 + 2, z0 + 3, partMat);
+    addLine(planGroup, x0 + 2, z0, x0 + 2, z0 + 3, partMat);
+    addLine(planGroup, x1 - 4.5, z0 + 3, x1 - 2, z0 + 3, partMat);
+    addLine(planGroup, x1 - 2, z0, x1 - 2, z0 + 3, partMat);
+    /* Kitchen peninsula */
+    addLine(planGroup, x0 + 4.5, z1 - 2.2, x0 + 6.5, z1 - 2.2, partMat);
+
+    /* Door swing arcs */
+    addDoorArc(planGroup, x0 + 4.5, z0 + 4.2, 1.5, 0, Math.PI / 2);
+    addDoorArc(planGroup, x1 - 4.5, z0 + 4.2, 1.5, Math.PI / 2, Math.PI);
+    addDoorArc(planGroup, x0 + 2.8, z0 + 3, 1.2, -Math.PI / 2, 0);
+    addDoorArc(planGroup, x1 - 2.8, z0 + 3, 1.2, Math.PI, Math.PI * 1.5);
+    /* Front door */
+    addDoorArc(planGroup, 0, z1, 1.5, Math.PI, Math.PI * 1.5);
+
+    /* Window markers (small ticks on exterior walls) */
+    var wt = 0.35;
+    /* Left bedroom windows */
+    addLine(planGroup, x0, z0 + 2, x0 - wt, z0 + 2, dimMat);
+    addLine(planGroup, x0, z0 + 4, x0 - wt, z0 + 4, dimMat);
+    addLine(planGroup, x0 - wt, z0 + 2, x0 - wt, z0 + 4, dimMat);
+    /* Right bedroom windows */
+    addLine(planGroup, x1, z0 + 2, x1 + wt, z0 + 2, dimMat);
+    addLine(planGroup, x1, z0 + 4, x1 + wt, z0 + 4, dimMat);
+    addLine(planGroup, x1 + wt, z0 + 2, x1 + wt, z0 + 4, dimMat);
+    /* Living room window (front) */
+    addLine(planGroup, -2, z1, -2, z1 + wt, dimMat);
+    addLine(planGroup, 2, z1, 2, z1 + wt, dimMat);
+    addLine(planGroup, -2, z1 + wt, 2, z1 + wt, dimMat);
+
+    /* ── Dimension lines ── */
+    var dOff = 1.2;
+    /* Width dimension */
+    addLine(planGroup, x0, z0 - dOff, x1, z0 - dOff, dimMat);
+    addLine(planGroup, x0, z0 - dOff + 0.2, x0, z0 - dOff - 0.2, dimMat);
+    addLine(planGroup, x1, z0 - dOff + 0.2, x1, z0 - dOff - 0.2, dimMat);
+    /* Depth dimension */
+    addLine(planGroup, x0 - dOff, z0, x0 - dOff, z1, dimMat);
+    addLine(planGroup, x0 - dOff + 0.2, z0, x0 - dOff - 0.2, z0, dimMat);
+    addLine(planGroup, x0 - dOff + 0.2, z1, x0 - dOff - 0.2, z1, dimMat);
+
+    /* ── Second plan ghost (Casielo, offset) ── */
+    var g2 = new THREE.Group();
+    var ghostWall = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.18 });
+    var ghostPart = new THREE.LineBasicMaterial({ color: goldColor, transparent: true, opacity: 0.1 });
+    addRect(g2, 9, 5.5, 9, -5, ghostWall);
+    addLine(g2, 9 - 4.5, -5 - 2.75, 9 - 4.5, -5 + 2.75, ghostPart);
+    addLine(g2, 9 - 4.5, -5 + 1.5, 9 - 2, -5 + 1.5, ghostPart);
+    planGroup.add(g2);
+
+    /* ── Third plan ghost (Elega, offset other side) ── */
+    var g3 = new THREE.Group();
+    addRect(g3, 8, 5, -9, 5, ghostWall);
+    addLine(g3, -9 - 4, 5 - 2.5, -9 - 4, 5 + 2.5, ghostPart);
+    addLine(g3, -9, 5 + 1.2, -9 + 2.5, 5 + 1.2, ghostPart);
+    planGroup.add(g3);
+
+    gridGroup.rotation.y = -0.3;
+    planGroup.rotation.y = -0.3;
     scene.add(gridGroup);
     scene.add(planGroup);
-    scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+
+    /* ── Lighting ── */
+    scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+    var pointLight = new THREE.PointLight(0xffeedd, 0.6, 80);
+    pointLight.position.set(8, 12, 8);
+    scene.add(pointLight);
+
+    /* ── Mouse interaction ── */
+    var mouseX = 0, mouseY = 0;
+    if (!isMobile) {
+      document.addEventListener('mousemove', function(e) {
+        mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+        mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+      });
+    }
 
     function resize() {
       var width = canvas.clientWidth;
@@ -177,11 +279,18 @@
       observer.observe(canvas);
     }
 
+    var time = 0;
     function animate() {
       requestAnimationFrame(animate);
       if (!heroVisible) return;
-      planGroup.rotation.y += 0.0014;
-      gridGroup.rotation.y += 0.00055;
+      time += 0.008;
+      /* Slow rotation + mouse influence */
+      var targetY = -0.3 + time * 0.15 + mouseX * 0.3;
+      planGroup.rotation.y += (targetY - planGroup.rotation.y) * 0.02;
+      gridGroup.rotation.y += (targetY * 0.4 - gridGroup.rotation.y) * 0.015;
+      /* Gentle camera bob */
+      camera.position.y = 14 + Math.sin(time * 0.5) * 0.4 + mouseY * -1.5;
+      camera.lookAt(0, 0, 0);
       resize();
       renderer.render(scene, camera);
     }
@@ -407,54 +516,72 @@
     });
   }
 
-  function initHeroCharCascade() {
-    var h1 = document.querySelector('#adu-plans-hero h1');
-    if (!h1 || h1.dataset.cascadeBound === '1') return;
-    h1.dataset.cascadeBound = '1';
-
-    var text = h1.textContent || '';
-    h1.textContent = '';
-    h1.style.opacity = '1';
-
+  function splitIntoChars(el) {
+    var text = el.textContent || '';
+    el.textContent = '';
+    el.style.opacity = '1';
     var chars = [];
     for (var i = 0; i < text.length; i++) {
       var ch = text[i];
       if (ch === '\n') {
-        h1.appendChild(document.createElement('br'));
+        el.appendChild(document.createElement('br'));
         continue;
       }
       var span = document.createElement('span');
       span.textContent = ch === ' ' ? '\u00A0' : ch;
       span.style.display = 'inline-block';
-      span.style.opacity = '0';
-      span.style.transform = 'translateY(24px)';
-      h1.appendChild(span);
+      el.appendChild(span);
       chars.push(span);
     }
-
-    if (window.gsap && chars.length) {
-      window.gsap.to(chars, {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        stagger: 0.03,
-        ease: 'power3.out',
-        delay: 0.2
-      });
-    }
+    return chars;
   }
 
-  function initHeroGoldLine() {
+  function initHeroTextAnimations() {
     var hero = document.getElementById('adu-plans-hero');
     if (!hero || !window.gsap) return;
-    var lines = hero.querySelectorAll('[class*="gold-line"]');
-    if (!lines.length) return;
-    window.gsap.to(lines, {
-      width: '80px',
-      duration: 1.2,
-      ease: 'power3.out',
-      delay: 0.8
+
+    var gsap = window.gsap;
+    var h1 = hero.querySelector('h1');
+    var goldLine = hero.querySelector('[class*="gold-line"]');
+    var label = hero.querySelector('[class*="label"]');
+    var subtitle = hero.querySelector('p');
+    var scrollHint = hero.querySelector('[class*="scroll-hint"]');
+    var scrollLine = hero.querySelector('[class*="scroll-line"]');
+
+    /* Remove data-animate so avorino-animations.js doesn't double-animate */
+    [h1, label, subtitle, scrollHint].forEach(function(el) {
+      if (el) el.removeAttribute('data-animate');
     });
+
+    /* Timed entrance sequence matching service pages */
+    if (label) {
+      gsap.fromTo(label, { opacity: 0, y: 20 }, { opacity: 0.45, y: 0, duration: 0.8, delay: 0.2, ease: 'power3.out' });
+    }
+
+    if (h1) {
+      var chars = splitIntoChars(h1);
+      gsap.set(chars, { yPercent: 120, opacity: 0, rotateX: -90, filter: 'blur(8px)' });
+      gsap.to(chars, { yPercent: 0, opacity: 1, rotateX: 0, filter: 'blur(0px)', duration: 1.2, stagger: 0.025, ease: 'elastic.out(1, 0.6)', delay: 0.4 });
+    }
+
+    if (goldLine) {
+      gsap.fromTo(goldLine, { width: 0 }, { width: '80px', duration: 1.2, delay: 1.0, ease: 'power3.out' });
+    }
+
+    if (subtitle) {
+      gsap.fromTo(subtitle, { opacity: 0, filter: 'blur(4px)' }, { opacity: 0.55, filter: 'blur(0px)', duration: 1.0, delay: 1.3, ease: 'power3.out' });
+    }
+
+    if (scrollHint) {
+      gsap.fromTo(scrollHint, { opacity: 0 }, { opacity: 0.5, duration: 0.8, delay: 2.0, ease: 'power2.out' });
+    }
+
+    if (scrollLine) {
+      gsap.fromTo(scrollLine,
+        { scaleY: 0.25, transformOrigin: 'top center' },
+        { scaleY: 1, duration: 1.2, repeat: -1, yoyo: true, ease: 'sine.inOut' }
+      );
+    }
   }
 
   function initAnimations() {
@@ -467,32 +594,9 @@
     var hero = document.getElementById('adu-plans-hero');
     var heroCanvas = document.getElementById('adu-plans-hero-canvas');
 
-    var heroLabel = hero ? hero.querySelector('[data-animate="fade-up"]') : null;
-    var heroSubtitle = hero ? hero.querySelector('p[data-animate="fade-up"]') : null;
-    var heroScrollHint = hero ? hero.querySelector('div[data-animate="fade-up"]:last-of-type') : null;
-    var heroScrollLine = hero ? hero.querySelector('[class*="scroll-line"]') : null;
-
-    var fadeUpTargets = hero ? hero.querySelectorAll('[data-animate="fade-up"]') : [];
-    if (fadeUpTargets.length) {
-      gsap.from(fadeUpTargets, {
-        opacity: 0,
-        y: 28,
-        duration: 0.95,
-        stagger: 0.12,
-        ease: 'power3.out',
-        delay: 0.1
-      });
-    }
-
-    if (heroScrollLine) {
-      gsap.fromTo(heroScrollLine,
-        { scaleY: 0.25, transformOrigin: 'top center' },
-        { scaleY: 1, duration: 1.2, repeat: -1, yoyo: true, ease: 'sine.inOut' }
-      );
-    }
-
+    /* Hero content parallax on scroll */
     if (hero) {
-      var heroContent = hero.querySelectorAll('[data-animate]');
+      var heroContent = hero.querySelectorAll('h1, p, [class*="label"], [class*="gold-line"], [class*="scroll-hint"]');
       if (heroContent.length) {
         gsap.to(heroContent, {
           y: -72,
@@ -674,8 +778,7 @@
     initLenis();
     injectRuntimeStyles();
     initHeroWireframe();
-    initHeroCharCascade();
-    initHeroGoldLine();
+    initHeroTextAnimations();
     initPlanSections();
     initMessaging();
     initAnimations();
