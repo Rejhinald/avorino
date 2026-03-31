@@ -6,6 +6,8 @@
 
   function initLenis() {
     if (!window.Lenis || !window.gsap || !window.ScrollTrigger) return;
+    // Skip if avorino-animations.js already initialized Lenis
+    if (document.documentElement.classList.contains('lenis-smooth')) return;
     try {
       var lenis = new window.Lenis({
         duration: 1.2,
@@ -396,6 +398,21 @@
       var data = event && event.data;
       if (!data || data.type !== 'adu-plan-room-select' || !data.plan || !data.room) return;
       selectRoom(data.plan, data.room);
+
+      // Open lightbox with the room image
+      var lightbox = ensureLightbox();
+      var section = document.querySelector('[data-adu-plan-section="' + data.plan + '"]');
+      if (data.image) {
+        // Use the image URL sent directly from the 3D viewer
+        lightbox.open([{
+          src: data.image,
+          alt: data.room,
+          caption: data.description || data.room
+        }], 0);
+      } else if (section) {
+        // Fallback: open the section gallery at the selected room
+        openSectionLightbox(section);
+      }
     });
   }
 
