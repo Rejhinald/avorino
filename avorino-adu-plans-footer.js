@@ -2,7 +2,7 @@
   'use strict';
 
   if (window.__AVORINO_ADU_PLANS_RUNTIME__) return;
-  window.__AVORINO_ADU_PLANS_RUNTIME__ = { version: 'inline-runtime-v1' };
+  window.__AVORINO_ADU_PLANS_RUNTIME__ = { version: 'inline-runtime-v3' };
 
   function initLenis() {
     if (!window.Lenis || !window.gsap || !window.ScrollTrigger) return;
@@ -22,47 +22,55 @@
     }
   }
 
-  function injectResponsiveOverrides() {
+  function injectRuntimeStyles() {
     if (document.getElementById('adu-plans-runtime-overrides')) return;
 
     var style = document.createElement('style');
     style.id = 'adu-plans-runtime-overrides';
     style.textContent = [
-      ':root{--adu-plans-dark:#111111;--adu-plans-cream:#f0ede8;--adu-plans-gold:#c8a86e;}',
+      ':root{--adu-plans-dark:#111111;--adu-plans-cream:#f0ede8;--adu-plans-warm:#e8e4df;--adu-plans-gold:#c8a86e;--adu-plans-surface:#faf9f7;--adu-plans-surface-2:#ece6db;--adu-plans-text:#111111;}',
       'html,body{overflow-x:hidden !important;}',
-      '#adu-plans-hero{position:relative;isolation:isolate;}',
-      '#adu-plans-hero [data-adu-role="hero-inner"]{width:min(100%,1440px);margin-inline:auto;}',
-      '#adu-plans-hero [data-adu-role="hero-media"]{display:block;}',
+      '#adu-plans-hero{position:relative;isolation:isolate;background:var(--adu-plans-dark);}',
+      '#adu-plans-hero #hero-canvas{position:absolute;inset:0;z-index:1;pointer-events:none;}',
       '#adu-plans-hero-canvas{display:block;width:100% !important;height:100% !important;}',
-      '[data-adu-plan-section]{position:relative;}',
+      '[data-adu-plan-section]{position:relative;background:var(--adu-plans-cream);}',
+      '[data-adu-plan-section="casielo"]{background:var(--adu-plans-warm);}',
       '[data-adu-plan-section] [data-adu-role="plan-layout"]{align-items:flex-start;}',
       '[data-adu-plan-section] [data-adu-role="plan-stage"],[data-adu-plan-section] [data-adu-role="plan-panel"]{will-change:transform,opacity;}',
-      '[data-adu-plan-section] [data-adu-role="plan-stage"] iframe{display:block;width:100% !important;}',
+      '[data-adu-plan-section] [data-adu-role="plan-stage"] iframe{display:block;width:100% !important;background:var(--adu-plans-surface) !important;}',
+      '[data-adu-gallery-hero],[data-adu-main-image]{cursor:zoom-in;}',
       '[data-adu-main-image]{display:block;width:100% !important;height:100% !important;object-fit:cover;}',
       '[data-adu-thumbs]{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px !important;}',
       '[data-adu-thumb]{cursor:pointer;transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease,opacity .35s ease;transform:translateY(0);}',
       '[data-adu-thumb]:hover{transform:translateY(-2px);border-color:rgba(200,168,110,.45) !important;}',
       '[data-adu-thumb].is-active{transform:translateY(-2px);border-color:rgba(200,168,110,.6) !important;box-shadow:0 18px 40px rgba(17,17,17,.12);}',
+      '#adu-plans-lightbox{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;}',
+      '#adu-plans-lightbox.is-active{display:flex;}',
+      '#adu-plans-lightbox .adu-plans-lightbox-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.92);}',
+      '#adu-plans-lightbox .adu-plans-lightbox-content{position:relative;z-index:1;max-width:92vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;gap:14px;}',
+      '#adu-plans-lightbox img{display:block;max-width:92vw;max-height:82vh;object-fit:contain;border-radius:12px;box-shadow:0 32px 80px rgba(0,0,0,.45);}',
+      '#adu-plans-lightbox .adu-plans-lightbox-caption{font:500 14px/1.6 "DM Sans",system-ui,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:rgba(240,237,232,.72);text-align:center;}',
+      '#adu-plans-lightbox .adu-plans-lightbox-counter{font:500 12px/1 "DM Sans",system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:rgba(240,237,232,.46);}',
+      '#adu-plans-lightbox .adu-plans-lightbox-btn{position:absolute;display:flex;align-items:center;justify-content:center;width:48px;height:48px;border:1px solid rgba(240,237,232,.14);border-radius:999px;background:rgba(17,17,17,.58);color:var(--adu-plans-cream);cursor:pointer;transition:background-color .25s ease,border-color .25s ease,transform .25s ease;}',
+      '#adu-plans-lightbox .adu-plans-lightbox-btn:hover{background:rgba(40,40,40,.82);border-color:rgba(240,237,232,.28);transform:translateY(-1px);}',
+      '#adu-plans-lightbox .adu-plans-lightbox-close{top:16px;right:16px;font-size:24px;z-index:2;}',
+      '#adu-plans-lightbox .adu-plans-lightbox-prev{left:20px;top:50%;transform:translateY(-50%);font-size:24px;}',
+      '#adu-plans-lightbox .adu-plans-lightbox-next{right:20px;top:50%;transform:translateY(-50%);font-size:24px;}',
+      '#adu-plans-lightbox .adu-plans-lightbox-prev:hover,#adu-plans-lightbox .adu-plans-lightbox-next:hover{transform:translateY(calc(-50% - 1px));}',
       '@media (max-width: 991px){',
-      '  #adu-plans-hero{padding:104px 24px 56px !important;min-height:auto !important;}',
-      '  #adu-plans-hero [data-adu-role="hero-inner"]{display:grid !important;grid-template-columns:minmax(0,1fr) !important;gap:32px !important;}',
-      '  #adu-plans-hero [data-adu-role="hero-media"]{order:2;}',
-      '  #adu-plans-hero h1{font-size:clamp(42px,9vw,56px) !important;max-width:12ch !important;}',
-      '  #adu-plans-hero p{max-width:none !important;}',
-      '  #adu-plans-hero-canvas{min-height:320px !important;height:clamp(320px,56vw,440px) !important;max-height:440px !important;}',
+      '  #adu-plans-hero{padding:120px 24px 56px !important;min-height:72vh !important;}',
+      '  #adu-plans-hero h1{font-size:clamp(48px,11vw,64px) !important;max-width:10ch !important;}',
+      '  #adu-plans-hero p{max-width:540px !important;}',
       '  [data-adu-plan-section]{padding:88px 24px !important;}',
       '  [data-adu-plan-section] [data-adu-role="plan-layout"]{display:flex !important;flex-direction:column !important;gap:36px !important;}',
-      '  [data-adu-plan-section] [data-adu-role="plan-stage"],',
-      '  [data-adu-plan-section] [data-adu-role="plan-panel"]{width:100% !important;}',
+      '  [data-adu-plan-section] [data-adu-role="plan-stage"],[data-adu-plan-section] [data-adu-role="plan-panel"]{width:100% !important;}',
       '  [data-adu-plan-section] [data-adu-role="plan-stage"] iframe{min-height:520px !important;height:520px !important;}',
       '  [data-adu-plan-section] [data-adu-main-image]{height:420px !important;}',
       '}',
       '@media (max-width: 767px){',
-      '  #adu-plans-hero{padding:92px 16px 44px !important;}',
-      '  #adu-plans-hero [data-adu-role="hero-inner"]{gap:24px !important;}',
-      '  #adu-plans-hero h1{font-size:clamp(36px,12vw,48px) !important;line-height:1.02 !important;}',
-      '  #adu-plans-hero p{font-size:16px !important;line-height:1.65 !important;}',
-      '  #adu-plans-hero-canvas{min-height:280px !important;height:clamp(280px,64vw,360px) !important;max-height:360px !important;}',
+      '  #adu-plans-hero{padding:104px 16px 44px !important;min-height:66vh !important;}',
+      '  #adu-plans-hero h1{font-size:clamp(40px,13vw,52px) !important;line-height:1.02 !important;}',
+      '  #adu-plans-hero p{font-size:16px !important;line-height:1.7 !important;max-width:none !important;}',
       '  [data-adu-plan-section]{padding:72px 16px !important;}',
       '  [data-adu-plan-section] [data-adu-role="plan-stage"] iframe{min-height:400px !important;height:400px !important;}',
       '  [data-adu-plan-section] [data-adu-main-image]{height:280px !important;}',
@@ -70,16 +78,21 @@
       '  [data-adu-plan-section] p{font-size:15px !important;line-height:1.7 !important;}',
       '  [data-adu-thumbs]{gap:10px !important;}',
       '  [data-adu-thumb]{min-height:96px !important;}',
+      '  #adu-plans-lightbox .adu-plans-lightbox-btn{width:42px;height:42px;}',
+      '  #adu-plans-lightbox .adu-plans-lightbox-prev{left:12px;}',
+      '  #adu-plans-lightbox .adu-plans-lightbox-next{right:12px;}',
       '}',
       '@media (prefers-reduced-motion: reduce){',
-      '  [data-adu-thumb]{transition:none !important;}',
+      '  [data-adu-thumb],#adu-plans-lightbox .adu-plans-lightbox-btn{transition:none !important;}',
       '}'
     ].join('\n');
+
     document.head.appendChild(style);
   }
 
   function initHeroWireframe() {
     if (!window.THREE) return;
+
     var canvas = document.getElementById('adu-plans-hero-canvas');
     if (!canvas || canvas.dataset.bound === '1') return;
     canvas.dataset.bound = '1';
@@ -90,63 +103,62 @@
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
     var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-    camera.position.set(14, 10, 14);
-    camera.lookAt(0, 2, 0);
+    var camera = new THREE.PerspectiveCamera(42, 1, 0.1, 200);
+    camera.position.set(12, 10, 15);
+    camera.lookAt(0, 0, 0);
 
-    var wireMat = new THREE.LineBasicMaterial({ color: 0xc8a86e, transparent: true, opacity: 0.6 });
-    var ghostMat = new THREE.LineBasicMaterial({ color: 0xc8a86e, transparent: true, opacity: 0.15 });
-    var houseGroup = new THREE.Group();
+    var wireMat = new THREE.LineBasicMaterial({ color: 0xc8a86e, transparent: true, opacity: 0.62 });
+    var ghostMat = new THREE.LineBasicMaterial({ color: 0xc8a86e, transparent: true, opacity: 0.12 });
 
-    var baseGeo = new THREE.BoxGeometry(8, 5, 6);
-    var baseLine = new THREE.LineSegments(new THREE.EdgesGeometry(baseGeo), wireMat);
-    baseLine.position.y = 2.5;
-    houseGroup.add(baseLine);
+    var gridGroup = new THREE.Group();
+    var planGroup = new THREE.Group();
 
-    var roofVerts = [
-      new THREE.Vector3(-4, 5, -3), new THREE.Vector3(-4, 5, 3),
-      new THREE.Vector3(4, 5, 3), new THREE.Vector3(4, 5, -3),
-      new THREE.Vector3(0, 7.5, -3), new THREE.Vector3(0, 7.5, 3)
-    ];
-    var roofPairs = [[0, 4], [4, 3], [1, 5], [5, 2], [0, 1], [3, 2], [4, 5], [0, 3], [1, 2]];
-    var roofPts = [];
-    roofPairs.forEach(function(pair) {
-      roofPts.push(roofVerts[pair[0]], roofVerts[pair[1]]);
-    });
-    houseGroup.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(roofPts), wireMat));
-
-    var aduLine = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(4, 3.5, 4)), wireMat);
-    aduLine.position.set(6, 1.75, -1);
-    houseGroup.add(aduLine);
-
-    var aduRoofLine = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(4.4, 0.2, 4.4)), wireMat);
-    aduRoofLine.position.set(6, 3.6, -1);
-    houseGroup.add(aduRoofLine);
-
-    var lotGrid = new THREE.Group();
-    [-10, -5, 0, 5, 10].forEach(function(offset) {
-      var lineX = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(-12, 0, offset),
-        new THREE.Vector3(12, 0, offset)
+    function addLine(group, x1, z1, x2, z2, material) {
+      var geometry = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(x1, 0, z1),
+        new THREE.Vector3(x2, 0, z2)
       ]);
-      var lineZ = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(offset, 0, -12),
-        new THREE.Vector3(offset, 0, 12)
-      ]);
-      lotGrid.add(new THREE.LineSegments(lineX, ghostMat));
-      lotGrid.add(new THREE.LineSegments(lineZ, ghostMat));
-    });
+      group.add(new THREE.Line(geometry, material));
+    }
 
-    scene.add(lotGrid);
-    scene.add(houseGroup);
-    scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+    function addRect(group, width, depth, x, z, material) {
+      var hw = width / 2;
+      var hd = depth / 2;
+      addLine(group, x - hw, z - hd, x + hw, z - hd, material);
+      addLine(group, x + hw, z - hd, x + hw, z + hd, material);
+      addLine(group, x + hw, z + hd, x - hw, z + hd, material);
+      addLine(group, x - hw, z + hd, x - hw, z - hd, material);
+    }
+
+    var gridSize = 16;
+    var gridStep = 2;
+    for (var pos = -gridSize; pos <= gridSize; pos += gridStep) {
+      addLine(gridGroup, -gridSize, pos, gridSize, pos, ghostMat);
+      addLine(gridGroup, pos, -gridSize, pos, gridSize, ghostMat);
+    }
+
+    addRect(planGroup, 9, 6, 0, 0, wireMat);
+    addLine(planGroup, -1.5, -3, -1.5, 3, wireMat);
+    addLine(planGroup, 2.25, -3, 2.25, 0.75, wireMat);
+    addLine(planGroup, -1.5, 0.75, 2.25, 0.75, wireMat);
+    addRect(planGroup, 3.75, 3.75, 6.2, -1.15, wireMat);
+    addLine(planGroup, 4.35, -3.025, 4.35, 0.725, wireMat);
+    addLine(planGroup, 0.9, -3, 1.9, -3, wireMat);
+    addLine(planGroup, 2.2, -3, 3.4, -3, wireMat);
+    addLine(planGroup, 6.2, 0.725, 7.3, 0.725, wireMat);
+
+    gridGroup.rotation.y = -0.24;
+    planGroup.rotation.y = -0.24;
+    scene.add(gridGroup);
+    scene.add(planGroup);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.35));
 
     function resize() {
-      var w = canvas.clientWidth;
-      var h = canvas.clientHeight;
-      if (!w || !h) return;
-      renderer.setSize(w, h, false);
-      camera.aspect = w / h;
+      var width = canvas.clientWidth;
+      var height = canvas.clientHeight;
+      if (!width || !height) return;
+      renderer.setSize(width, height, false);
+      camera.aspect = width / height;
       camera.updateProjectionMatrix();
     }
 
@@ -166,8 +178,8 @@
     function animate() {
       requestAnimationFrame(animate);
       if (!heroVisible) return;
-      houseGroup.rotation.y += 0.003;
-      lotGrid.rotation.y -= 0.0015;
+      planGroup.rotation.y += 0.0014;
+      gridGroup.rotation.y += 0.00055;
       resize();
       renderer.render(scene, camera);
     }
@@ -200,11 +212,8 @@
 
   function setActiveThumbs(section, activeName) {
     Array.prototype.slice.call(section.querySelectorAll('[data-adu-thumb]')).forEach(function(button) {
-      if (button.getAttribute('data-adu-thumb') === activeName) {
-        button.classList.add('is-active');
-      } else {
-        button.classList.remove('is-active');
-      }
+      if (button.getAttribute('data-adu-thumb') === activeName) button.classList.add('is-active');
+      else button.classList.remove('is-active');
     });
   }
 
@@ -212,8 +221,13 @@
     var section = document.querySelector('[data-adu-plan-section="' + planKey + '"]');
     if (!section) return;
 
+    var image = section.querySelector('[data-adu-main-image]');
     var normalized = normalizeRoomName(roomName);
     if (!normalized || normalized === 'Overview') {
+      if (image) {
+        section.setAttribute('data-adu-current-room', 'Overview');
+        image.setAttribute('data-adu-current-room', 'Overview');
+      }
       setActiveThumbs(section, '__none__');
       return;
     }
@@ -221,20 +235,149 @@
     var thumb = findThumb(section, normalized);
     if (!thumb) return;
 
-    var image = section.querySelector('[data-adu-main-image]');
     var thumbImage = thumb.querySelector('img');
-
     if (image && thumbImage && thumbImage.getAttribute('src')) {
       image.setAttribute('src', thumbImage.getAttribute('src'));
       image.setAttribute('alt', normalized);
+      image.setAttribute('data-adu-current-room', normalized);
+      section.setAttribute('data-adu-current-room', normalized);
     }
 
     setActiveThumbs(section, thumb.getAttribute('data-adu-thumb'));
   }
 
+  function ensureLightbox() {
+    if (window.__AVORINO_ADU_PLANS_LIGHTBOX__) return window.__AVORINO_ADU_PLANS_LIGHTBOX__;
+
+    var root = document.createElement('div');
+    root.id = 'adu-plans-lightbox';
+    root.innerHTML = [
+      '<div class="adu-plans-lightbox-backdrop"></div>',
+      '<button class="adu-plans-lightbox-btn adu-plans-lightbox-close" type="button" aria-label="Close">&times;</button>',
+      '<button class="adu-plans-lightbox-btn adu-plans-lightbox-prev" type="button" aria-label="Previous">&#8249;</button>',
+      '<button class="adu-plans-lightbox-btn adu-plans-lightbox-next" type="button" aria-label="Next">&#8250;</button>',
+      '<div class="adu-plans-lightbox-content">',
+      '  <img alt="">',
+      '  <div class="adu-plans-lightbox-caption"></div>',
+      '  <div class="adu-plans-lightbox-counter"></div>',
+      '</div>'
+    ].join('');
+    document.body.appendChild(root);
+
+    var image = root.querySelector('img');
+    var caption = root.querySelector('.adu-plans-lightbox-caption');
+    var counter = root.querySelector('.adu-plans-lightbox-counter');
+    var closeBtn = root.querySelector('.adu-plans-lightbox-close');
+    var prevBtn = root.querySelector('.adu-plans-lightbox-prev');
+    var nextBtn = root.querySelector('.adu-plans-lightbox-next');
+    var backdrop = root.querySelector('.adu-plans-lightbox-backdrop');
+
+    var api = {
+      root: root,
+      image: image,
+      caption: caption,
+      counter: counter,
+      items: [],
+      index: 0,
+      render: function() {
+        if (!api.items.length) return;
+        var current = api.items[api.index];
+        image.setAttribute('src', current.src);
+        image.setAttribute('alt', current.alt || '');
+        caption.textContent = current.caption || current.alt || '';
+        counter.textContent = (api.index + 1) + ' / ' + api.items.length;
+        prevBtn.style.display = api.items.length > 1 ? 'flex' : 'none';
+        nextBtn.style.display = api.items.length > 1 ? 'flex' : 'none';
+      },
+      open: function(items, startIndex) {
+        api.items = items || [];
+        api.index = Math.max(0, Math.min(startIndex || 0, api.items.length - 1));
+        api.render();
+        root.classList.add('is-active');
+        document.body.style.overflow = 'hidden';
+      },
+      close: function() {
+        root.classList.remove('is-active');
+        document.body.style.overflow = '';
+      },
+      next: function(step) {
+        if (!api.items.length) return;
+        api.index = (api.index + step + api.items.length) % api.items.length;
+        api.render();
+      }
+    };
+
+    closeBtn.addEventListener('click', api.close);
+    backdrop.addEventListener('click', api.close);
+    prevBtn.addEventListener('click', function() { api.next(-1); });
+    nextBtn.addEventListener('click', function() { api.next(1); });
+    document.addEventListener('keydown', function(event) {
+      if (!root.classList.contains('is-active')) return;
+      if (event.key === 'Escape') api.close();
+      if (event.key === 'ArrowLeft') api.next(-1);
+      if (event.key === 'ArrowRight') api.next(1);
+    });
+
+    window.__AVORINO_ADU_PLANS_LIGHTBOX__ = api;
+    return api;
+  }
+
+  function collectGalleryItems(section) {
+    var items = [];
+    var seen = new Set();
+
+    function pushItem(src, alt) {
+      if (!src || seen.has(src)) return;
+      seen.add(src);
+      items.push({
+        src: src,
+        alt: alt || '',
+        caption: alt || ''
+      });
+    }
+
+    var mainImage = section.querySelector('[data-adu-main-image]');
+    if (mainImage) pushItem(mainImage.getAttribute('src'), mainImage.getAttribute('alt'));
+
+    Array.prototype.slice.call(section.querySelectorAll('[data-adu-thumb] img')).forEach(function(img) {
+      pushItem(img.getAttribute('src'), img.getAttribute('alt'));
+    });
+
+    return items;
+  }
+
+  function openSectionLightbox(section) {
+    var lightbox = ensureLightbox();
+    var items = collectGalleryItems(section);
+    if (!items.length) return;
+
+    var mainImage = section.querySelector('[data-adu-main-image]');
+    var currentSrc = mainImage ? mainImage.getAttribute('src') : '';
+    var startIndex = items.findIndex(function(item) { return item.src === currentSrc; });
+    lightbox.open(items, startIndex >= 0 ? startIndex : 0);
+  }
+
+  function bindGalleryLightbox(section) {
+    var mainImage = section.querySelector('[data-adu-main-image]');
+    var heroWrap = section.querySelector('[data-adu-gallery-hero]');
+    var clickTarget = heroWrap || mainImage;
+    if (!clickTarget || clickTarget.dataset.lightboxBound === '1') return;
+
+    clickTarget.dataset.lightboxBound = '1';
+    clickTarget.addEventListener('click', function() {
+      openSectionLightbox(section);
+    });
+  }
+
   function initPlanSections() {
     Array.prototype.slice.call(document.querySelectorAll('[data-adu-plan-section]')).forEach(function(section) {
       var planKey = section.getAttribute('data-adu-plan-section');
+      var mainImage = section.querySelector('[data-adu-main-image]');
+      if (mainImage && !mainImage.getAttribute('data-adu-current-room')) {
+        mainImage.setAttribute('data-adu-current-room', 'Overview');
+      }
+      section.setAttribute('data-adu-current-room', 'Overview');
+
       Array.prototype.slice.call(section.querySelectorAll('[data-adu-thumb]')).forEach(function(button) {
         if (button.dataset.bound === '1') return;
         button.dataset.bound = '1';
@@ -242,6 +385,8 @@
           selectRoom(planKey, button.getAttribute('data-adu-thumb'));
         });
       });
+
+      bindGalleryLightbox(section);
       setActiveThumbs(section, '__none__');
     });
   }
@@ -254,6 +399,56 @@
     });
   }
 
+  function initHeroCharCascade() {
+    var h1 = document.querySelector('#adu-plans-hero h1');
+    if (!h1 || h1.dataset.cascadeBound === '1') return;
+    h1.dataset.cascadeBound = '1';
+
+    var text = h1.textContent || '';
+    h1.textContent = '';
+    h1.style.opacity = '1';
+
+    var chars = [];
+    for (var i = 0; i < text.length; i++) {
+      var ch = text[i];
+      if (ch === '\n') {
+        h1.appendChild(document.createElement('br'));
+        continue;
+      }
+      var span = document.createElement('span');
+      span.textContent = ch === ' ' ? '\u00A0' : ch;
+      span.style.display = 'inline-block';
+      span.style.opacity = '0';
+      span.style.transform = 'translateY(24px)';
+      h1.appendChild(span);
+      chars.push(span);
+    }
+
+    if (window.gsap && chars.length) {
+      window.gsap.to(chars, {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        stagger: 0.03,
+        ease: 'power3.out',
+        delay: 0.2
+      });
+    }
+  }
+
+  function initHeroGoldLine() {
+    var hero = document.getElementById('adu-plans-hero');
+    if (!hero || !window.gsap) return;
+    var lines = hero.querySelectorAll('[class*="gold-line"]');
+    if (!lines.length) return;
+    window.gsap.to(lines, {
+      width: '80px',
+      duration: 1.2,
+      ease: 'power3.out',
+      delay: 0.8
+    });
+  }
+
   function initAnimations() {
     if (!window.gsap || !window.ScrollTrigger) return;
 
@@ -262,18 +457,22 @@
     gsap.registerPlugin(ScrollTrigger);
 
     var hero = document.getElementById('adu-plans-hero');
-    var heroTargets = document.querySelectorAll('#adu-plans-hero [data-adu-animate]');
-    var heroCopyTargets = document.querySelectorAll('#adu-plans-hero [data-adu-animate="hero-copy"]');
     var heroCanvas = document.getElementById('adu-plans-hero-canvas');
-    var heroScrollLine = document.querySelector('.adu-plans-hero-scroll-line');
 
-    if (heroTargets.length) {
-      gsap.from(heroTargets, {
+    var heroLabel = hero ? hero.querySelector('[data-animate="fade-up"]') : null;
+    var heroSubtitle = hero ? hero.querySelector('p[data-animate="fade-up"]') : null;
+    var heroScrollHint = hero ? hero.querySelector('div[data-animate="fade-up"]:last-of-type') : null;
+    var heroScrollLine = hero ? hero.querySelector('[class*="scroll-line"]') : null;
+
+    var fadeUpTargets = hero ? hero.querySelectorAll('[data-animate="fade-up"]') : [];
+    if (fadeUpTargets.length) {
+      gsap.from(fadeUpTargets, {
         opacity: 0,
         y: 28,
         duration: 0.95,
-        stagger: 0.1,
-        ease: 'power3.out'
+        stagger: 0.12,
+        ease: 'power3.out',
+        delay: 0.1
       });
     }
 
@@ -284,25 +483,28 @@
       );
     }
 
-    if (hero && heroCopyTargets.length) {
-      gsap.to(heroCopyTargets, {
-        y: -72,
-        opacity: 0,
-        ease: 'none',
-        stagger: 0.02,
-        scrollTrigger: {
-          trigger: hero,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.65
-        }
-      });
+    if (hero) {
+      var heroContent = hero.querySelectorAll('[data-animate]');
+      if (heroContent.length) {
+        gsap.to(heroContent, {
+          y: -72,
+          opacity: 0,
+          ease: 'none',
+          stagger: 0.03,
+          scrollTrigger: {
+            trigger: hero,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 0.65
+          }
+        });
+      }
     }
 
     if (hero && heroCanvas) {
       gsap.to(heroCanvas, {
-        yPercent: -8,
-        scale: 1.05,
+        yPercent: -6,
+        scale: 1.04,
         transformOrigin: '50% 50%',
         ease: 'none',
         scrollTrigger: {
@@ -462,8 +664,10 @@
 
   function init() {
     initLenis();
-    injectResponsiveOverrides();
+    injectRuntimeStyles();
     initHeroWireframe();
+    initHeroCharCascade();
+    initHeroGoldLine();
     initPlanSections();
     initMessaging();
     initAnimations();

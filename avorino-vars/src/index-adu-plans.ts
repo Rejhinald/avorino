@@ -7,31 +7,29 @@ import {
 } from './shared.js';
 import { ADU_PLAN_IMAGE_DATA } from './adu-plan-image-data.js';
 import { ADU_PLAN_VIEWER_DATA } from './adu-plan-viewer-data.js';
-import { ADU_PLANS_FOOTER_INLINE } from './adu-plans-footer-inline.js';
-
 const PAGE_NAME = 'ADU Plan Samples';
 const PAGE_SLUG = 'adu-plan-samples';
 const PAGE_TITLE = 'ADU Floor Plans & Designs | Avorino Orange County';
 const PAGE_DESC = 'Explore Bellecielo, Casielo, and Elega with interactive 3D floor plans and matched room render references.';
-const HEAD_CODE = '';
-const getFooterCode = () => {
-  return [
-    '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
-    '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
-    '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
-    '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
-    `<script>${ADU_PLANS_FOOTER_INLINE}<\/script>`,
-  ].join('\n');
-};
+const CDN = '0a5bf9d';
+const HEAD_CODE = [
+  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
+  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
+  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-adu.css">`,
+].join('\n');
+const FOOTER_CODE = [
+  '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
+  '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
+  '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
+  `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-adu-plans-footer.js"><\/script>`,
+].join('\n');
 
 document.getElementById('page-name')!.textContent = PAGE_NAME;
 const headCodeEl = document.getElementById('head-code');
 const footerCodeEl = document.getElementById('footer-code');
-const renderCodeSnippets = () => {
-  if (headCodeEl) headCodeEl.textContent = HEAD_CODE;
-  if (footerCodeEl) footerCodeEl.textContent = getFooterCode();
-};
-renderCodeSnippets();
+if (headCodeEl) headCodeEl.textContent = HEAD_CODE;
+if (footerCodeEl) footerCodeEl.textContent = FOOTER_CODE;
 
 type PlanRoom = { name: string; img: string; desc: string };
 type PlanData = {
@@ -138,6 +136,7 @@ async function buildPlansPage() {
   const heroCopyStyle = await getOrCreateStyle('adu-plans-hero-copy-wrap');
   const heroLabelStyle = await getOrCreateStyle('adu-plans-hero-label');
   const heroTitleStyle = await getOrCreateStyle('adu-plans-hero-title');
+  const heroGoldLineStyle = await getOrCreateStyle('adu-plans-hero-gold-line');
   const heroSubtitleStyle = await getOrCreateStyle('adu-plans-hero-subtitle');
   const heroMediaStyle = await getOrCreateStyle('adu-plans-hero-media');
   const heroMediaImgStyle = await getOrCreateStyle('adu-plans-hero-media-img');
@@ -173,11 +172,11 @@ async function buildPlansPage() {
     await setSharedStyleProps(s, v);
 
     await clearAndSet(await freshStyle('adu-plans-hero'), 'adu-plans-hero', {
-      'min-height': '100vh',
+      'min-height': '80vh',
       'display': 'flex',
-      'align-items': 'center',
-      'padding-top': '120px',
-      'padding-bottom': '72px',
+      'align-items': 'flex-end',
+      'padding-top': '160px',
+      'padding-bottom': v['av-section-pad-y'],
       'padding-left': v['av-section-pad-x'],
       'padding-right': v['av-section-pad-x'],
       'background-color': v['av-dark'],
@@ -188,60 +187,65 @@ async function buildPlansPage() {
     });
 
     await clearAndSet(await freshStyle('adu-plans-hero-inner'), 'adu-plans-hero-inner', {
-      'display': 'grid',
-      'grid-template-columns': '0.95fr 1.05fr',
-      'grid-column-gap': '64px',
-      'align-items': 'center',
-      'max-width': '1440px',
-      'margin-left': 'auto',
-      'margin-right': 'auto',
+      'position': 'relative',
+      'z-index': '2',
+      'max-width': '800px',
     });
 
     await clearAndSet(await freshStyle('adu-plans-hero-copy-wrap'), 'adu-plans-hero-copy-wrap', {
       'display': 'flex',
       'flex-direction': 'column',
       'align-items': 'flex-start',
-      'justify-content': 'center',
-      'max-width': '520px',
+      'justify-content': 'flex-end',
     });
 
     await clearAndSet(await freshStyle('adu-plans-hero-label'), 'adu-plans-hero-label', {
       'font-family': 'DM Sans',
-      'font-size': '14px',
-      'font-weight': '600',
-      'letter-spacing': '0.22em',
+      'font-size': v['av-text-xs'],
+      'letter-spacing': '0.3em',
       'text-transform': 'uppercase',
-      'color': '#c8a86e',
-      'margin-bottom': '20px',
+      'opacity': '0',
+      'color': v['av-cream'],
+      'margin-bottom': '32px',
     });
 
     await clearAndSet(await freshStyle('adu-plans-hero-title'), 'adu-plans-hero-title', {
       'font-family': 'DM Serif Display',
-      'font-size': '64px',
-      'line-height': '1.1',
+      'font-size': '76px',
+      'line-height': '1.02',
       'font-weight': '400',
       'letter-spacing': '-0.02em',
       'color': v['av-cream'],
       'margin-top': '0px',
       'margin-bottom': '24px',
-      'max-width': '10ch',
+      'max-width': '9ch',
+    });
+
+    await clearAndSet(await freshStyle('adu-plans-hero-gold-line'), 'adu-plans-hero-gold-line', {
+      'width': '0px',
+      'height': '1px',
+      'background-color': '#c9a96e',
+      'margin-bottom': '24px',
     });
 
     await clearAndSet(await freshStyle('adu-plans-hero-subtitle'), 'adu-plans-hero-subtitle', {
       'font-family': 'DM Sans',
-      'font-size': '18px',
-      'line-height': '1.7',
-      'color': 'rgba(240,237,232,0.7)',
-      'margin-top': '0px',
-      'margin-bottom': '0px',
-      'max-width': '440px',
+      'font-size': v['av-text-body'],
+      'line-height': '1.9',
+      'opacity': '0',
+      'margin-top': '24px',
+      'color': v['av-cream'],
+      'max-width': '520px',
     });
 
     await clearAndSet(await freshStyle('adu-plans-hero-media'), 'adu-plans-hero-media', {
-      'height': '80vh',
-      'min-height': '520px',
-      'max-height': '720px',
-      'position': 'relative',
+      'position': 'absolute',
+      'top': '0px',
+      'left': '0px',
+      'width': '100%',
+      'height': '100%',
+      'z-index': '1',
+      'pointer-events': 'none',
       'overflow-x': 'hidden',
       'overflow-y': 'hidden',
       'background-color': 'transparent',
@@ -257,17 +261,13 @@ async function buildPlansPage() {
     await clearAndSet(await freshStyle('adu-plans-hero-scroll'), 'adu-plans-hero-scroll', {
       'position': 'absolute',
       'bottom': '40px',
-      'left': '0px',
-      'width': '100%',
+      'left': '50%',
+      'z-index': '3',
       'display': 'flex',
       'flex-direction': 'column',
       'align-items': 'center',
-      'grid-row-gap': '8px',
-      'color': 'rgba(240,237,232,0.4)',
-      'font-family': 'DM Sans',
-      'font-size': '12px',
-      'letter-spacing': '0.18em',
-      'text-transform': 'uppercase',
+      'gap': '8px',
+      'opacity': '0',
     });
 
     await clearAndSet(await freshStyle('adu-plans-hero-scroll-line'), 'adu-plans-hero-scroll-line', {
@@ -281,7 +281,7 @@ async function buildPlansPage() {
       'padding-bottom': '128px',
       'padding-left': v['av-section-pad-x'],
       'padding-right': v['av-section-pad-x'],
-      'background-color': '#ffffff',
+      'background-color': v['av-cream'],
       'border-top-width': '1px',
       'border-top-color': 'rgba(17,17,17,0.08)',
     });
@@ -311,7 +311,7 @@ async function buildPlansPage() {
       'border-bottom-right-radius': '12px',
       'overflow-x': 'hidden',
       'overflow-y': 'hidden',
-      'background-color': '#111111',
+      'background-color': '#faf9f7',
       'border-top-width': '1px',
       'border-right-width': '1px',
       'border-bottom-width': '1px',
@@ -331,7 +331,7 @@ async function buildPlansPage() {
       'border-right-width': '0px',
       'border-top-width': '0px',
       'border-bottom-width': '0px',
-      'background-color': '#111111',
+      'background-color': '#faf9f7',
     });
 
     await clearAndSet(await freshStyle('adu-plans-viewer-hint'), 'adu-plans-viewer-hint', {
@@ -344,7 +344,7 @@ async function buildPlansPage() {
       'font-size': '12px',
       'letter-spacing': '0.08em',
       'text-transform': 'uppercase',
-      'color': 'rgba(240,237,232,0.42)',
+      'color': 'rgba(17,17,17,0.42)',
       'pointer-events': 'none',
     });
 
@@ -479,6 +479,7 @@ async function buildPlansPage() {
       'overflow-x': 'hidden',
       'overflow-y': 'hidden',
       'margin-bottom': '12px',
+      'cursor': 'zoom-in',
       'border-top-width': '1px',
       'border-right-width': '1px',
       'border-bottom-width': '1px',
@@ -542,36 +543,53 @@ async function buildPlansPage() {
   hero.setStyles([heroStyle]);
   hero.setAttribute('id', 'adu-plans-hero');
 
-  const heroInner = hero.append(webflow.elementPresets.DOM);
-  heroInner.setTag('div');
-  heroInner.setStyles([heroInnerStyle]);
-  heroInner.setAttribute('data-adu-role', 'hero-inner');
-
-  const heroCopy = heroInner.append(webflow.elementPresets.DOM);
-  heroCopy.setTag('div');
-  heroCopy.setStyles([heroCopyStyle]);
-
-  createTextEl(heroCopy, 'div', '// Our Plans', { 'data-adu-animate': 'hero-copy' }, [heroLabelStyle]);
-  createTextEl(heroCopy, 'h1', 'ADU Floor Plan Collection', { 'data-adu-animate': 'hero-copy' }, [heroTitleStyle]);
-  createTextEl(heroCopy, 'p', 'Explore our signature floor plans — each designed for Orange County living.', { 'data-adu-animate': 'hero-copy' }, [heroSubtitleStyle]);
-
-  const heroMedia = heroInner.append(webflow.elementPresets.DOM);
+  // Canvas wrap
+  const heroMedia = hero.append(webflow.elementPresets.DOM);
   heroMedia.setTag('div');
   heroMedia.setStyles([heroMediaStyle]);
-  heroMedia.setAttribute('data-adu-role', 'hero-media');
+  heroMedia.setAttribute('id', 'hero-canvas');
 
   const heroCanvas = heroMedia.append(webflow.elementPresets.DOM);
   heroCanvas.setTag('canvas');
   heroCanvas.setStyles([heroMediaImgStyle]);
   heroCanvas.setAttribute('id', 'adu-plans-hero-canvas');
   heroCanvas.setAttribute('aria-label', 'ADU plan wireframe animation');
-  heroCanvas.setAttribute('data-adu-animate', 'hero-media');
 
+  // Content overlay
+  const heroInner = hero.append(webflow.elementPresets.DOM);
+  heroInner.setTag('div');
+  heroInner.setStyles([heroInnerStyle]);
+
+  const heroLabel = heroInner.append(webflow.elementPresets.DOM);
+  heroLabel.setTag('div');
+  heroLabel.setStyles([heroLabelStyle]);
+  heroLabel.setTextContent('// ADU Plan Samples');
+  heroLabel.setAttribute('data-animate', 'fade-up');
+
+  const heroH = heroInner.append(webflow.elementPresets.DOM);
+  heroH.setTag('h1');
+  heroH.setStyles([s.headingXL]);
+  heroH.setTextContent('ADU Plan\nSamples');
+  heroH.setAttribute('data-animate', 'char-cascade');
+
+  const heroGoldLine = heroInner.append(webflow.elementPresets.DOM);
+  heroGoldLine.setTag('div');
+  heroGoldLine.setStyles([heroGoldLineStyle]);
+
+  const heroSub = heroInner.append(webflow.elementPresets.DOM);
+  heroSub.setTag('p');
+  heroSub.setStyles([heroSubtitleStyle]);
+  heroSub.setTextContent('Interactive floor plans with room-by-room render references for Bellecielo, Casielo, and Elega.');
+  heroSub.setAttribute('data-animate', 'fade-up');
+
+  // Scroll hint
   const scroll = hero.append(webflow.elementPresets.DOM);
   scroll.setTag('div');
   scroll.setStyles([heroScrollStyle]);
-  scroll.setAttribute('data-adu-animate', 'hero-copy');
-  createTextEl(scroll, 'span', 'Scroll');
+  scroll.setAttribute('data-animate', 'fade-up');
+  const scrollText = scroll.append(webflow.elementPresets.DOM);
+  scrollText.setTag('span');
+  scrollText.setTextContent('Scroll');
   const scrollLine = scroll.append(webflow.elementPresets.DOM);
   scrollLine.setTag('div');
   scrollLine.setStyles([heroScrollLineStyle]);
@@ -651,6 +669,7 @@ async function buildPlansPage() {
     const heroMediaWrap = gallery.append(webflow.elementPresets.DOM);
     heroMediaWrap.setTag('div');
     heroMediaWrap.setStyles([galleryHeroStyle]);
+    heroMediaWrap.setAttribute('data-adu-gallery-hero', plan.key);
 
     const mainImg = heroMediaWrap.append(webflow.elementPresets.DOM);
     mainImg.setTag('img');
@@ -710,8 +729,7 @@ document.getElementById('inject-btn')?.addEventListener('click', async () => {
 document.querySelectorAll('.copy-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const type = (btn as HTMLElement).dataset.copy;
-    const text = type === 'head' ? HEAD_CODE : type === 'footer' ? getFooterCode() : '';
-    if (type === 'footer' && footerCodeEl) footerCodeEl.textContent = text;
+    const text = type === 'head' ? HEAD_CODE : type === 'footer' ? FOOTER_CODE : '';
     navigator.clipboard.writeText(text).then(() => {
       (btn as HTMLElement).textContent = 'Copied!';
       setTimeout(() => {
@@ -725,7 +743,6 @@ document.getElementById('build-page')?.addEventListener('click', async () => {
   const btn = document.getElementById('build-page') as HTMLButtonElement;
   btn.disabled = true;
   try {
-    renderCodeSnippets();
     await buildPlansPage();
   } catch (err: any) {
     log(`Error: ${err.message || err}`, 'error');
