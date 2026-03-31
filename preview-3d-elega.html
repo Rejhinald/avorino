@@ -38,6 +38,7 @@
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
     const EMBED_MODE =
+      window.parent !== window ||
       new URLSearchParams(window.location.search).get('embed') === '1' ||
       window.location.hash.indexOf('embed=1') !== -1;
     const PLAN_SLUG = 'elega';
