@@ -86,9 +86,10 @@ form label {
 }
 
 .w-form select option {
-  background-color: #111111;
-  color: #f0ede8;
+  background-color: #f0ede8;
+  color: #111111;
   font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 15px;
   padding: 10px 14px;
 }
 
