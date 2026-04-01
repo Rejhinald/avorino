@@ -400,13 +400,12 @@ async function buildContactPage() {
   formSub.setStyles([ctFormSub]);
   formSub.setTextContent("Fill out the form and we'll respond within 24 hours.");
 
-  // Form — uses shared buildCleanForm (div-based, not <form>)
   const formCol = heroRight.append(webflow.elementPresets.DOM);
   formCol.setTag('div');
   formCol.setStyles([ctFormCol]);
   formCol.setAttribute('class', 'ct-form');
 
-  buildCleanForm(formCol, FORM_FIELDS, s, 'Send Message');
+  await buildCleanForm(formCol, FORM_FIELDS, s, 'Send Message', 'Contact Form');
 
   await safeCall('append:hero', () => body.append(hero));
   logDetail('Section 1: Split Hero appended', 'ok');

@@ -495,7 +495,7 @@ async function buildCareersPage() {
   formCol.setStyles([crFormCol]);
   formCol.setAttribute('class', 'cr-form');
 
-  buildCleanForm(formCol, FORM_FIELDS, s, 'Submit Application');
+  await buildCleanForm(formCol, FORM_FIELDS, s, 'Submit Application', 'Careers Application');
 
   await safeCall('append:apply', () => body.append(applySection));
   logDetail('Section 3: Application Form appended', 'ok');

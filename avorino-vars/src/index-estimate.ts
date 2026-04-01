@@ -264,7 +264,7 @@ async function buildEstimatePage() {
   formCol.setTag('div');
   formCol.setStyles([estFormCol]);
 
-  buildCleanForm(formCol, FORM_FIELDS, s, 'Request Estimate');
+  await buildCleanForm(formCol, FORM_FIELDS, s, 'Request Estimate', 'Free Estimate');
 
   await safeCall('append:form', () => body.append(formSection));
   logDetail('Section 2: Form appended', 'ok');
