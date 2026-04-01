@@ -555,13 +555,17 @@ document.getElementById('fill-form')?.addEventListener('click', async () => {
   btn.disabled = true;
   try {
     const el = await webflow.getSelectedElement();
-    if (!el) { log('No element selected. Select the Form element first.', 'error'); return; }
+    if (!el) { log('No element selected. Select the Form Block first.', 'error'); return; }
 
-    // el is the Form element directly (child of Form Block)
-    // Clear its default children (Name label, Text Field, Email, Submit, etc.)
-    const defaults = await el.getChildren();
+    // el = Form Block → children: [Form, Success Message, Error Message]
+    const blockChildren = await el.getChildren();
+    const formEl = blockChildren[0]; // The Form element
+    if (!formEl) { log('Could not find Form inside Form Block.', 'error'); return; }
+
+    // Clear only Form's default children (labels, inputs, submit)
+    const defaults = await formEl.getChildren();
     for (const child of defaults) { child.remove(); }
-    const formInputs = el;
+    const formInputs = formEl;
 
     // Build fields inside the form
     for (let i = 0; i < FORM_FIELDS.length; i++) {
@@ -569,19 +573,19 @@ document.getElementById('fill-form')?.addEventListener('click', async () => {
       const next = FORM_FIELDS[i + 1];
 
       if (field.halfWidth && next?.halfWidth) {
-        const row = formInputs.append(webflow.elementPresets.DOM);
+        const row = await formInputs.append(webflow.elementPresets.DOM);
         row.setTag('div');
         row.setAttribute('class', 'av-form-row');
-        _addFormField(row, field);
-        _addFormField(row, next);
+        await _addFormField(row, field);
+        await _addFormField(row, next);
         i++; // skip next since we handled it
       } else {
-        _addFormField(formInputs, field);
+        await _addFormField(formInputs, field);
       }
     }
 
     // Submit button
-    const submitBtn = formInputs.append(webflow.elementPresets.DOM);
+    const submitBtn = await formInputs.append(webflow.elementPresets.DOM);
     submitBtn.setTag('button');
     submitBtn.setAttribute('class', 'av-form-submit');
     submitBtn.setTextContent('Send Message');
@@ -594,43 +598,43 @@ document.getElementById('fill-form')?.addEventListener('click', async () => {
   } finally { btn.disabled = false; }
 });
 
-function _addFormField(parent: any, field: FormField) {
-  const wrap = parent.append(webflow.elementPresets.DOM);
+async function _addFormField(parent: any, field: FormField) {
+  const wrap = await parent.append(webflow.elementPresets.DOM);
   wrap.setTag('div');
   wrap.setAttribute('class', 'av-form-field');
 
-  const label = wrap.append(webflow.elementPresets.DOM);
+  const label = await wrap.append(webflow.elementPresets.DOM);
   label.setTag('label');
   label.setAttribute('class', 'av-form-label');
   label.setTextContent(field.label);
 
   if (field.type === 'textarea') {
-    const el = wrap.append(webflow.elementPresets.DOM);
+    const el = await wrap.append(webflow.elementPresets.DOM);
     el.setTag('textarea');
     el.setAttribute('class', 'av-form-textarea');
     el.setAttribute('name', field.name);
     if (field.placeholder) el.setAttribute('placeholder', field.placeholder);
   } else if (field.type === 'select') {
-    const el = wrap.append(webflow.elementPresets.DOM);
+    const el = await wrap.append(webflow.elementPresets.DOM);
     el.setTag('select');
     el.setAttribute('class', 'av-form-select');
     el.setAttribute('name', field.name);
     if (field.options) {
-      const blank = el.append(webflow.elementPresets.DOM);
+      const blank = await el.append(webflow.elementPresets.DOM);
       blank.setTag('option');
       blank.setTextContent('Select...');
       blank.setAttribute('value', '');
       blank.setAttribute('disabled', 'true');
       blank.setAttribute('selected', 'true');
       for (const opt of field.options) {
-        const o = el.append(webflow.elementPresets.DOM);
+        const o = await el.append(webflow.elementPresets.DOM);
         o.setTag('option');
         o.setTextContent(opt);
         o.setAttribute('value', opt);
       }
     }
   } else {
-    const el = wrap.append(webflow.elementPresets.DOM);
+    const el = await wrap.append(webflow.elementPresets.DOM);
     el.setTag('input');
     el.setAttribute('class', 'av-form-input');
     el.setAttribute('type', field.type);
