@@ -40,8 +40,8 @@
       '#adu-plans-hero [class*="scroll-hint"] span,#adu-plans-hero [class*="scroll"] > span{font-family:"DM Sans",system-ui,sans-serif !important;font-size:11px !important;letter-spacing:0.25em !important;text-transform:uppercase !important;color:rgba(200,168,110,0.55) !important;}',
 
       /* 100vh scroll-locked stage */
-      '#adu-plans-stage{position:relative;width:100%;height:100vh;overflow:hidden;}',
-      '.adu-plans-viewport{position:relative;width:100%;height:100%;overflow:hidden;}',
+      '#adu-plans-stage{position:relative;width:100%;height:100vh;min-height:100vh;overflow:hidden;will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;}',
+      '.adu-plans-viewport{position:relative;width:100%;height:100%;min-height:100vh;overflow:hidden;}',
 
       /* Plan sections as slides */
       '[data-adu-plan-section]{background:var(--adu-plans-cream);padding:48px 64px 80px !important;display:flex !important;align-items:center !important;justify-content:center !important;}',
@@ -724,6 +724,7 @@
         end: '+=' + (numSlides * 80) + '%',
         pin: true,
         pinSpacing: true,
+        anticipatePin: 1,
         scrub: 1,
         onUpdate: function(self) {
           /* Smooth progressive fill bar */
