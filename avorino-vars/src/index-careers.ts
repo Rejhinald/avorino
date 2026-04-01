@@ -579,3 +579,95 @@ document.getElementById('build-page')?.addEventListener('click', async () => {
     await webflow.notify({ type: 'Error', message: `Failed: ${err.message || err}` });
   } finally { btn.disabled = false; }
 });
+
+// ── Fill Form: select a native Webflow Form Block, click to populate fields ──
+document.getElementById('fill-form')?.addEventListener('click', async () => {
+  const btn = document.getElementById('fill-form') as HTMLButtonElement;
+  btn.disabled = true;
+  try {
+    const el = await webflow.getSelectedElement();
+    if (!el) { log('No element selected. Select the Form Block first.', 'error'); return; }
+
+    const blockChildren = await el.getChildren();
+    const formEl = blockChildren[0];
+    if (!formEl) { log('Could not find Form inside Form Block.', 'error'); return; }
+
+    const defaults = await formEl.getChildren();
+    for (const child of defaults) { child.remove(); }
+
+    const s = await createSharedStyles();
+
+    let i = 0;
+    while (i < FORM_FIELDS.length) {
+      const field = FORM_FIELDS[i];
+      const next = FORM_FIELDS[i + 1];
+
+      if (field.halfWidth && next?.halfWidth) {
+        const row = await formEl.append(webflow.elementPresets.DOM);
+        row.setTag('div');
+        row.setStyles([s.formGrid2]);
+        await _fillField(row, field, s);
+        await _fillField(row, next, s);
+        i += 2;
+      } else {
+        await _fillField(formEl, field, s);
+        i += 1;
+      }
+    }
+
+    const submitBtn = await formEl.append(webflow.elementPresets.DOM);
+    submitBtn.setTag('button');
+    submitBtn.setStyles([s.submitBtn]);
+    submitBtn.setTextContent('Submit Application');
+    submitBtn.setAttribute('type', 'submit');
+
+    log('Form fields populated!', 'success');
+    await webflow.notify({ type: 'Success', message: 'Careers form fields added!' });
+  } catch (err: any) {
+    log(`Error: ${err.message || err}`, 'error');
+  } finally { btn.disabled = false; }
+});
+
+async function _fillField(parent: any, field: FormField, s: Record<string, any>) {
+  const wrap = await parent.append(webflow.elementPresets.DOM);
+  wrap.setTag('div');
+
+  const label = await wrap.append(webflow.elementPresets.DOM);
+  label.setTag('label');
+  label.setStyles([s.formLabel]);
+  label.setTextContent(field.label);
+
+  if (field.type === 'textarea') {
+    const el = await wrap.append(webflow.elementPresets.DOM);
+    el.setTag('textarea');
+    el.setStyles([s.textareaClean]);
+    el.setAttribute('name', field.name);
+    if (field.placeholder) el.setAttribute('placeholder', field.placeholder);
+  } else if (field.type === 'select') {
+    const el = await wrap.append(webflow.elementPresets.DOM);
+    el.setTag('select');
+    el.setStyles([s.selectClean]);
+    el.setAttribute('name', field.name);
+    if (field.options) {
+      const blank = await el.append(webflow.elementPresets.DOM);
+      blank.setTag('option');
+      blank.setTextContent('Select...');
+      blank.setAttribute('value', '');
+      blank.setAttribute('disabled', 'true');
+      blank.setAttribute('selected', 'true');
+      for (const opt of field.options) {
+        const o = await el.append(webflow.elementPresets.DOM);
+        o.setTag('option');
+        o.setTextContent(opt);
+        o.setAttribute('value', opt);
+      }
+    }
+  } else {
+    const el = await wrap.append(webflow.elementPresets.DOM);
+    el.setTag('input');
+    el.setStyles([s.inputClean]);
+    el.setAttribute('type', field.type);
+    el.setAttribute('name', field.name);
+    if (field.placeholder) el.setAttribute('placeholder', field.placeholder);
+  }
+}

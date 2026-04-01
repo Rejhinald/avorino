@@ -1,8 +1,8 @@
 // ════════════════════════════════════════════════════════════════
-// Avorino Builder — CONTACT PAGE (v4 complete rework)
-// Split hero (dark 3D left + cream form right), trust signals,
-// map + office info, CTA — no Calendly
-// All animations via CDN: avorino-contact-footer.js
+// Avorino Builder — CAREERS PAGE (v2 complete rework)
+// Split hero (dark 3D left + cream culture right), positions
+// accordion, application form, stats strip, CTA
+// All animations via CDN: avorino-careers-footer.js
 // ════════════════════════════════════════════════════════════════
 
 import {
@@ -15,15 +15,14 @@ import {
 } from './shared.js';
 
 // ── Page config ──
-const PAGE_NAME = 'Contact';
-const PAGE_SLUG = 'contact';
-const PAGE_TITLE = 'Contact Avorino — Orange County Construction & ADU Builders';
-const PAGE_DESC = 'Get in touch with Avorino Construction. Call (714) 900-3676 or fill out our contact form. Serving all 37 cities in Orange County.';
-const CDN = '5958106';
+const PAGE_NAME = 'Careers';
+const PAGE_SLUG = 'careers';
+const PAGE_TITLE = 'Careers at Avorino — Join Our Team | Orange County Construction';
+const PAGE_DESC = 'Join the Avorino team. We build luxury homes, ADUs, and commercial projects across Orange County. Explore open positions and apply today.';
+const CDN = '75864a2';
 const HEAD_CODE = [
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
   `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
-  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-contact.css">`,
 ].join('\n');
 const FOOTER_CODE = [
   '<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"><\/script>',
@@ -31,7 +30,7 @@ const FOOTER_CODE = [
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
   '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
   `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-animations.js"><\/script>`,
-  `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-contact-footer.js"><\/script>`,
+  `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-careers-footer.js"><\/script>`,
 ].join('\n');
 
 // ── Update panel UI ──
@@ -41,39 +40,38 @@ const footerCodeEl = document.getElementById('footer-code');
 if (headCodeEl) headCodeEl.textContent = HEAD_CODE;
 if (footerCodeEl) footerCodeEl.textContent = FOOTER_CODE;
 
-// ── Form fields config ──
+// ── Form fields ──
 const FORM_FIELDS: FormField[] = [
-  { name: 'name', label: 'Full Name', type: 'text', placeholder: 'Your full name' },
+  { name: 'name', label: 'Full Name', type: 'text', placeholder: 'Your full name', halfWidth: true },
   { name: 'email', label: 'Email', type: 'email', placeholder: 'you@email.com', halfWidth: true },
   { name: 'phone', label: 'Phone', type: 'tel', placeholder: '(000) 000-0000', halfWidth: true },
-  { name: 'address', label: 'Property Address', type: 'text', placeholder: 'Street address, City, CA' },
-  { name: 'service', label: 'Service Type', type: 'select', options: ['ADU', 'Custom Home', 'Renovation', 'Addition', 'Garage Conversion', 'Commercial', 'Other'] },
-  { name: 'message', label: 'Message', type: 'textarea', placeholder: 'Tell us about your project' },
-  { name: 'attachments', label: 'Attach Blueprints / Documents', type: 'file' },
+  { name: 'position', label: 'Position of Interest', type: 'select', halfWidth: true, options: ['Project Manager', 'Site Superintendent', 'Carpenter / Framer', 'Electrician', 'Plumber', 'General Laborer', 'Estimator', 'Architect / Designer', 'Other'] },
+  { name: 'experience', label: 'Years of Experience', type: 'select', options: ['0–2 years', '3–5 years', '5–10 years', '10+ years'] },
+  { name: 'message', label: 'Tell Us About Yourself', type: 'textarea', placeholder: 'Relevant experience, certifications, availability, etc.' },
 ];
 
-// Trust signal data
-const TRUST_STATS = [
-  { value: '4.8', suffix: '', label: 'Yelp Rating' },
+// ── Culture values (removed per client request) ──
+
+// ── Open positions (currently none) ──
+
+// ── Stats ──
+const STATS = [
+  { value: '4.8', suffix: '/5', label: 'Yelp Rating' },
   { value: '35', suffix: '+', label: '5-Star Reviews' },
   { value: '50', suffix: '+', label: 'Projects Completed' },
   { value: '37', suffix: '', label: 'Cities Served' },
 ];
 
-// Office info data
-const OFFICE_INFO = [
-  { label: 'Headquarters', lines: ['Irvine, California', 'Orange County'] },
-  { label: 'Business Hours', lines: ['Mon — Fri  8:00 AM – 6:00 PM', 'Sat  By appointment', 'Sun  Closed'] },
-  { label: 'License', lines: ['General-B #1107538', 'State of California'] },
-  { label: 'Direct Contact', lines: ['(714) 900-3676', 'construction@avorino.com'] },
+// ── Perks ──
+const PERKS = [
+  'Year-round work across Orange County',
+  'Work on luxury custom homes & commercial builds',
 ];
 
-const MAP_URL = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d212828.43785693522!2d-118.0064652!3d33.7174708!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80dcdd0e689140e3%3A0xa77ab575604a9a39!2sOrange%20County%2C%20CA!5e0!3m2!1sen!2sus!4v1';
-
 // ── Build function ──
-async function buildContactPage() {
+async function buildCareersPage() {
   clearErrorLog();
-  logDetail('Starting Contact page build (v4 rework)...', 'info');
+  logDetail('Starting Careers page build (v2 rework)...', 'info');
   const v = await getAvorinVars();
   logDetail('Loaded Avorino variable collection', 'ok');
 
@@ -81,43 +79,51 @@ async function buildContactPage() {
   const s = await createSharedStyles();
 
   // ── Page-specific styles (all via Webflow Designer API) ──
-  log('Creating contact-specific styles...');
+  log('Creating careers-specific styles...');
 
-  // Hero section
-  const ctHeroSection = await getOrCreateStyle('ct-hero');
-  const ctHeroLeft = await getOrCreateStyle('ct-hero-left');
-  const ctCanvasWrap = await getOrCreateStyle('ct-canvas-wrap');
-  const ctHeroContent = await getOrCreateStyle('ct-hero-content');
-  const ctHeroLabel = await getOrCreateStyle('ct-hero-label');
-  const ctHeroHeading = await getOrCreateStyle('ct-hero-heading');
-  const ctHeroSub = await getOrCreateStyle('ct-hero-sub');
-  const ctContactRow = await getOrCreateStyle('ct-contact-row');
-  const ctContactLabel = await getOrCreateStyle('ct-contact-label');
-  const ctContactValue = await getOrCreateStyle('ct-contact-value');
-  const ctHeroRight = await getOrCreateStyle('ct-hero-right');
-  const ctFormHeading = await getOrCreateStyle('ct-form-heading');
-  const ctFormSub = await getOrCreateStyle('ct-form-sub');
-  const ctFormCol = await getOrCreateStyle('ct-form-col');
+  // Hero
+  const crHero = await getOrCreateStyle('cr-hero');
+  const crHeroLeft = await getOrCreateStyle('cr-hero-left');
+  const crCanvasWrap = await getOrCreateStyle('cr-canvas-wrap');
+  const crHeroContent = await getOrCreateStyle('cr-hero-content');
+  const crHeroLabel = await getOrCreateStyle('cr-hero-label');
+  const crHeroHeading = await getOrCreateStyle('cr-hero-heading');
+  const crHeroSub = await getOrCreateStyle('cr-hero-sub');
+  const crHeroRight = await getOrCreateStyle('cr-hero-right');
+  const crValuesLabel = await getOrCreateStyle('cr-values-label');
+  const crValueItem = await getOrCreateStyle('cr-value-item');
+  const crValueNum = await getOrCreateStyle('cr-value-number');
+  const crValueHeading = await getOrCreateStyle('cr-value-heading');
+  const crValueBody = await getOrCreateStyle('cr-value-body');
 
-  // Trust section
-  const ctTrust = await getOrCreateStyle('ct-trust');
-  const ctTrustGrid = await getOrCreateStyle('ct-trust-grid');
-  const ctTrustItem = await getOrCreateStyle('ct-trust-item');
-  const ctTrustValue = await getOrCreateStyle('ct-trust-value');
-  const ctTrustLabel = await getOrCreateStyle('ct-trust-label');
+  // Positions
+  const crPositions = await getOrCreateStyle('cr-positions');
+  const crPosLabel = await getOrCreateStyle('cr-positions-label');
+  const crPosHeading = await getOrCreateStyle('cr-positions-heading');
+  const crPosList = await getOrCreateStyle('cr-pos-list');
+  const crPosItem = await getOrCreateStyle('cr-pos-item');
+  const crPosHeader = await getOrCreateStyle('cr-pos-header');
+  const crPosTitle = await getOrCreateStyle('cr-pos-title');
+  const crPosTags = await getOrCreateStyle('cr-pos-tags');
+  const crPosTag = await getOrCreateStyle('cr-pos-tag');
+  const crPosDesc = await getOrCreateStyle('cr-pos-desc');
 
-  // Location section
-  const ctLocation = await getOrCreateStyle('ct-location');
-  const ctLocHeader = await getOrCreateStyle('ct-loc-header');
-  const ctLocLabel = await getOrCreateStyle('ct-loc-label');
-  const ctLocHeading = await getOrCreateStyle('ct-loc-heading');
-  const ctLocGrid = await getOrCreateStyle('ct-loc-grid');
-  const ctMapWrap = await getOrCreateStyle('ct-map-wrap');
-  const ctOfficeInfo = await getOrCreateStyle('ct-office-info');
-  const ctOfficeBlock = await getOrCreateStyle('ct-office-block');
-  const ctOfficeLabel = await getOrCreateStyle('ct-office-label');
-  const ctOfficeValue = await getOrCreateStyle('ct-office-value');
-  const ctOfficeDivider = await getOrCreateStyle('ct-office-divider');
+  // Apply section
+  const crApply = await getOrCreateStyle('cr-apply');
+  const crApplyGrid = await getOrCreateStyle('cr-apply-grid');
+  const crApplyLabel = await getOrCreateStyle('cr-apply-label');
+  const crApplyHeading = await getOrCreateStyle('cr-apply-heading');
+  const crApplyBody = await getOrCreateStyle('cr-apply-body');
+  const crApplyPerks = await getOrCreateStyle('cr-apply-perks');
+  const crPerk = await getOrCreateStyle('cr-perk');
+  const crPerkText = await getOrCreateStyle('cr-perk-text');
+  const crFormCol = await getOrCreateStyle('cr-form-col');
+
+  // Stats
+  const crStats = await getOrCreateStyle('cr-stats');
+  const crStatsGrid = await getOrCreateStyle('cr-stats-grid');
+  const crStatValue = await getOrCreateStyle('cr-stat-value');
+  const crStatLabel = await getOrCreateStyle('cr-stat-label');
 
   // ── Create page ──
   const { body } = await createPageWithSlug(PAGE_NAME, PAGE_SLUG, PAGE_TITLE, PAGE_DESC);
@@ -128,170 +134,198 @@ async function buildContactPage() {
     await setSharedStyleProps(s, v);
     await wait(1000);
 
-    log('Setting contact-specific style properties...');
+    log('Setting careers-specific style properties...');
 
-    // ── HERO SECTION ──
-    await clearAndSet(await freshStyle('ct-hero'), 'ct-hero', {
+    // ── HERO ──
+    await clearAndSet(crHero, 'cr-hero', {
+      'display': 'grid', 'grid-template-columns': '1fr 1fr',
       'min-height': '100vh',
-      'display': 'grid',
-      'grid-template-columns': '1fr 1fr',
-      'position': 'relative',
-      'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
-    await clearAndSet(await freshStyle('ct-hero-left'), 'ct-hero-left', {
+    await clearAndSet(crHeroLeft, 'cr-hero-left', {
       'position': 'relative',
       'display': 'flex', 'flex-direction': 'column', 'justify-content': 'flex-end',
-      'padding-top': '160px', 'padding-bottom': '80px',
-      'padding-left': '64px', 'padding-right': '64px',
+      'padding-top': '180px', 'padding-bottom': '80px',
+      'padding-left': '80px', 'padding-right': '80px',
       'background-color': v['av-dark'],
       'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
-    await clearAndSet(await freshStyle('ct-canvas-wrap'), 'ct-canvas-wrap', {
+    await clearAndSet(crCanvasWrap, 'cr-canvas-wrap', {
       'position': 'absolute', 'top': '0px', 'left': '0px',
       'width': '100%', 'height': '100%',
-      'z-index': '0', 'pointer-events': 'none',
-      'opacity': '0.6',
+      'z-index': '0', 'pointer-events': 'none', 'opacity': '0.6',
     });
-    await clearAndSet(await freshStyle('ct-hero-content'), 'ct-hero-content', {
+    await clearAndSet(crHeroContent, 'cr-hero-content', {
       'position': 'relative', 'z-index': '2',
     });
-    await clearAndSet(await freshStyle('ct-hero-label'), 'ct-hero-label', {
+    await clearAndSet(crHeroLabel, 'cr-hero-label', {
       'font-family': 'DM Sans', 'font-size': '12px', 'font-weight': '500',
-      'letter-spacing': '0.3em', 'text-transform': 'uppercase',
-      'color': v['av-cream'], 'opacity': '0.4',
-      'margin-bottom': '20px',
+      'letter-spacing': '0.2em', 'text-transform': 'uppercase',
+      'color': v['av-cream'], 'opacity': '0.4', 'margin-bottom': '20px',
     });
-    await clearAndSet(await freshStyle('ct-hero-heading'), 'ct-hero-heading', {
+    await clearAndSet(crHeroHeading, 'cr-hero-heading', {
       'font-family': 'DM Serif Display', 'font-size': v['av-text-h1'],
-      'font-weight': '400', 'line-height': '1.08', 'letter-spacing': '-0.02em',
+      'font-weight': '400', 'line-height': '1.05', 'letter-spacing': '-0.02em',
       'color': v['av-cream'], 'margin-bottom': '20px',
     });
-    await clearAndSet(await freshStyle('ct-hero-sub'), 'ct-hero-sub', {
+    await clearAndSet(crHeroSub, 'cr-hero-sub', {
       'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'line-height': '1.8', 'color': v['av-cream'], 'opacity': '0.55',
-      'max-width': '440px',
-    });
-    await clearAndSet(await freshStyle('ct-contact-row'), 'ct-contact-row', {
-      'display': 'flex', 'grid-column-gap': '40px',
-      'margin-top': '32px', 'padding-top': '32px',
-      'border-top-width': '1px', 'border-top-style': 'solid', 'border-top-color': 'rgba(240,237,232,0.08)',
-    });
-    await clearAndSet(await freshStyle('ct-contact-label'), 'ct-contact-label', {
-      'font-family': 'DM Sans', 'font-size': '11px', 'font-weight': '500',
-      'letter-spacing': '0.25em', 'text-transform': 'uppercase',
-      'color': v['av-cream'], 'opacity': '0.3',
-      'margin-bottom': '6px',
-    });
-    await clearAndSet(await freshStyle('ct-contact-value'), 'ct-contact-value', {
-      'font-family': 'DM Serif Display', 'font-size': '20px',
-      'color': v['av-cream'], 'font-weight': '400',
+      'line-height': '1.7', 'color': v['av-cream'], 'opacity': '0.5',
+      'max-width': '480px',
     });
     await wait(500);
 
-    // ── RIGHT SIDE: FORM ──
-    await clearAndSet(await freshStyle('ct-hero-right'), 'ct-hero-right', {
-      'background-color': v['av-cream'],
+    // ── RIGHT: Culture values ──
+    await clearAndSet(crHeroRight, 'cr-hero-right', {
+      'background-color': v['av-cream'], 'color': v['av-dark'],
       'display': 'flex', 'flex-direction': 'column', 'justify-content': 'center',
-      'padding-top': '160px', 'padding-bottom': '80px',
-      'padding-left': '64px', 'padding-right': '64px',
+      'padding-top': '120px', 'padding-bottom': '120px',
+      'padding-left': '80px', 'padding-right': '80px',
     });
-    await clearAndSet(await freshStyle('ct-form-heading'), 'ct-form-heading', {
+    await clearAndSet(crValuesLabel, 'cr-values-label', {
+      'font-family': 'DM Sans', 'font-size': '11px', 'font-weight': '500',
+      'letter-spacing': '0.2em', 'text-transform': 'uppercase',
+      'opacity': '0.35', 'margin-bottom': '48px',
+    });
+    await clearAndSet(crValueItem, 'cr-value-item', {
+      'padding-top': '36px', 'padding-bottom': '36px',
+      'border-bottom-width': '1px', 'border-bottom-style': 'solid',
+      'border-bottom-color': 'rgba(17,17,17,0.1)',
+    });
+    await clearAndSet(crValueNum, 'cr-value-number', {
+      'font-family': 'DM Serif Display', 'font-size': '14px',
+      'opacity': '0.25', 'margin-bottom': '12px',
+    });
+    await clearAndSet(crValueHeading, 'cr-value-heading', {
+      'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
+      'font-weight': '400', 'line-height': '1.2', 'margin-bottom': '10px',
+    });
+    await clearAndSet(crValueBody, 'cr-value-body', {
+      'font-family': 'DM Sans', 'font-size': '16px',
+      'line-height': '1.7', 'opacity': '0.5', 'max-width': '400px',
+    });
+    await wait(500);
+
+    // ── POSITIONS ──
+    await clearAndSet(crPositions, 'cr-positions', {
+      'background-color': v['av-dark'],
+      'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
+      'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
+    });
+    await clearAndSet(crPosLabel, 'cr-positions-label', {
+      'font-family': 'DM Sans', 'font-size': '11px', 'font-weight': '500',
+      'letter-spacing': '0.2em', 'text-transform': 'uppercase',
+      'color': v['av-cream'], 'opacity': '0.35', 'margin-bottom': '16px',
+    });
+    await clearAndSet(crPosHeading, 'cr-positions-heading', {
       'font-family': 'DM Serif Display', 'font-size': v['av-text-h2'],
-      'font-weight': '400', 'line-height': '1.15', 'letter-spacing': '-0.02em',
-      'color': v['av-dark'], 'margin-bottom': '8px',
+      'font-weight': '400', 'line-height': '1.1',
+      'color': v['av-cream'], 'margin-bottom': '64px', 'max-width': '700px',
     });
-    await clearAndSet(await freshStyle('ct-form-sub'), 'ct-form-sub', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'line-height': '1.7', 'color': v['av-dark'], 'opacity': '0.5',
-      'margin-bottom': '40px',
+    await wait(300);
+    await clearAndSet(crPosList, 'cr-pos-list', {
+      'max-width': '900px', 'margin-left': 'auto', 'margin-right': 'auto',
     });
-    await clearAndSet(await freshStyle('ct-form-col'), 'ct-form-col', {
+    await clearAndSet(crPosItem, 'cr-pos-item', {
+      'border-top-width': '1px', 'border-top-style': 'solid',
+      'border-top-color': 'rgba(240,237,232,0.08)',
+      'padding-top': '32px', 'padding-bottom': '32px',
+      'cursor': 'pointer',
+    });
+    await clearAndSet(crPosHeader, 'cr-pos-header', {
+      'display': 'flex', 'align-items': 'center', 'justify-content': 'space-between',
+      'grid-column-gap': '24px',
+    });
+    await clearAndSet(crPosTitle, 'cr-pos-title', {
+      'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
+      'font-weight': '400', 'line-height': '1.3', 'color': v['av-cream'],
+    });
+    await clearAndSet(crPosTags, 'cr-pos-tags', {
+      'display': 'flex', 'grid-column-gap': '12px', 'flex-shrink': '0',
+    });
+    await clearAndSet(crPosTag, 'cr-pos-tag', {
+      'font-family': 'DM Sans', 'font-size': '11px',
+      'text-transform': 'uppercase', 'letter-spacing': '0.15em',
+      'padding-top': '6px', 'padding-bottom': '6px',
+      'padding-left': '16px', 'padding-right': '16px',
+      'border-width': '1px', 'border-style': 'solid',
+      'border-color': 'rgba(240,237,232,0.12)',
+      'border-top-left-radius': '100px', 'border-top-right-radius': '100px',
+      'border-bottom-left-radius': '100px', 'border-bottom-right-radius': '100px',
+      'color': v['av-cream'], 'opacity': '0.4',
+    });
+    await clearAndSet(crPosDesc, 'cr-pos-desc', {
+      'font-family': 'DM Sans', 'font-size': '17px',
+      'line-height': '1.8', 'color': v['av-cream'], 'opacity': '0.5',
+      'margin-top': '20px', 'max-width': '600px',
+    });
+    await wait(500);
+
+    // ── APPLY SECTION ──
+    await clearAndSet(crApply, 'cr-apply', {
+      'background-color': '#1a1917',
+      'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
+      'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
+    });
+    await clearAndSet(crApplyGrid, 'cr-apply-grid', {
+      'display': 'grid', 'grid-template-columns': '1fr 1.2fr',
+      'grid-column-gap': '80px', 'max-width': '1200px',
+      'margin-left': 'auto', 'margin-right': 'auto',
+    });
+    await clearAndSet(crApplyLabel, 'cr-apply-label', {
+      'font-family': 'DM Sans', 'font-size': '11px', 'font-weight': '500',
+      'letter-spacing': '0.2em', 'text-transform': 'uppercase',
+      'color': v['av-cream'], 'opacity': '0.35', 'margin-bottom': '16px',
+    });
+    await clearAndSet(crApplyHeading, 'cr-apply-heading', {
+      'font-family': 'DM Serif Display', 'font-size': v['av-text-h2'],
+      'font-weight': '400', 'line-height': '1.1',
+      'color': v['av-cream'], 'margin-bottom': '24px',
+    });
+    await clearAndSet(crApplyBody, 'cr-apply-body', {
+      'font-family': 'DM Sans', 'font-size': '17px',
+      'line-height': '1.7', 'color': v['av-cream'], 'opacity': '0.45',
+      'max-width': '420px', 'margin-bottom': '48px',
+    });
+    await wait(300);
+    await clearAndSet(crApplyPerks, 'cr-apply-perks', {
+      'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '20px',
+    });
+    await clearAndSet(crPerk, 'cr-perk', {
+      'display': 'flex', 'align-items': 'flex-start', 'grid-column-gap': '16px',
+    });
+    await clearAndSet(crPerkText, 'cr-perk-text', {
+      'font-family': 'DM Sans', 'font-size': '15px',
+      'line-height': '1.5', 'color': v['av-cream'], 'opacity': '0.6',
+    });
+    await clearAndSet(crFormCol, 'cr-form-col', {
       'display': 'flex', 'flex-direction': 'column',
     });
     await wait(500);
 
-    // ── TRUST SECTION ──
-    await clearAndSet(await freshStyle('ct-trust'), 'ct-trust', {
+    // ── STATS ──
+    await clearAndSet(crStats, 'cr-stats', {
       'background-color': v['av-dark'],
-      'padding-top': '80px', 'padding-bottom': '80px',
+      'padding-top': '96px', 'padding-bottom': '96px',
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
-      'border-top-width': '1px', 'border-top-style': 'solid', 'border-top-color': 'rgba(240,237,232,0.06)',
+      'border-top-width': '1px', 'border-top-style': 'solid',
+      'border-top-color': 'rgba(240,237,232,0.06)',
+      'border-bottom-width': '1px', 'border-bottom-style': 'solid',
+      'border-bottom-color': 'rgba(240,237,232,0.06)',
     });
-    await clearAndSet(await freshStyle('ct-trust-grid'), 'ct-trust-grid', {
+    await clearAndSet(crStatsGrid, 'cr-stats-grid', {
       'display': 'grid', 'grid-template-columns': '1fr 1fr 1fr 1fr',
-      'grid-column-gap': '48px', 'grid-row-gap': '48px',
-      'max-width': '1200px', 'margin-left': 'auto', 'margin-right': 'auto',
+      'grid-column-gap': '48px', 'max-width': '1100px',
+      'margin-left': 'auto', 'margin-right': 'auto', 'text-align': 'center',
     });
-    await clearAndSet(await freshStyle('ct-trust-item'), 'ct-trust-item', {
-      'text-align': 'center',
-      'padding-top': '40px', 'padding-bottom': '40px',
-      'padding-left': '24px', 'padding-right': '24px',
-      'border-top-left-radius': '8px', 'border-top-right-radius': '8px',
-      'border-bottom-left-radius': '8px', 'border-bottom-right-radius': '8px',
-      'background-color': 'rgba(240,237,232,0.02)',
-      'border-width': '1px', 'border-style': 'solid', 'border-color': 'rgba(240,237,232,0.04)',
-    });
-    await clearAndSet(await freshStyle('ct-trust-value'), 'ct-trust-value', {
+    await clearAndSet(crStatValue, 'cr-stat-value', {
       'font-family': 'DM Serif Display', 'font-size': v['av-text-h2'],
-      'font-weight': '400', 'color': v['av-cream'],
-      'line-height': '1', 'margin-bottom': '12px',
+      'font-weight': '400', 'line-height': '1',
+      'color': v['av-cream'], 'margin-bottom': '8px',
     });
-    await clearAndSet(await freshStyle('ct-trust-label'), 'ct-trust-label', {
-      'font-family': 'DM Sans', 'font-size': '12px', 'font-weight': '500',
-      'letter-spacing': '0.2em', 'text-transform': 'uppercase',
+    await clearAndSet(crStatLabel, 'cr-stat-label', {
+      'font-family': 'DM Sans', 'font-size': '13px', 'font-weight': '500',
+      'letter-spacing': '0.15em', 'text-transform': 'uppercase',
       'color': v['av-cream'], 'opacity': '0.35',
-    });
-    await wait(500);
-
-    // ── LOCATION SECTION ──
-    await clearAndSet(await freshStyle('ct-location'), 'ct-location', {
-      'background-color': '#0d0d0d',
-      'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
-      'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
-    });
-    await clearAndSet(await freshStyle('ct-loc-header'), 'ct-loc-header', {
-      'text-align': 'center', 'margin-bottom': '72px',
-    });
-    await clearAndSet(await freshStyle('ct-loc-label'), 'ct-loc-label', {
-      'font-family': 'DM Sans', 'font-size': '12px', 'font-weight': '500',
-      'letter-spacing': '0.3em', 'text-transform': 'uppercase',
-      'color': v['av-cream'], 'opacity': '0.35',
-      'margin-bottom': '16px',
-    });
-    await clearAndSet(await freshStyle('ct-loc-heading'), 'ct-loc-heading', {
-      'font-family': 'DM Serif Display', 'font-size': v['av-text-h2'],
-      'font-weight': '400', 'line-height': '1.1',
-      'color': v['av-cream'],
-    });
-    await clearAndSet(await freshStyle('ct-loc-grid'), 'ct-loc-grid', {
-      'display': 'grid', 'grid-template-columns': '1.4fr 1fr',
-      'grid-column-gap': '64px', 'grid-row-gap': '64px',
-      'max-width': '1200px', 'margin-left': 'auto', 'margin-right': 'auto',
-    });
-    await clearAndSet(await freshStyle('ct-map-wrap'), 'ct-map-wrap', {
-      'border-top-left-radius': '12px', 'border-top-right-radius': '12px',
-      'border-bottom-left-radius': '12px', 'border-bottom-right-radius': '12px',
-      'overflow-x': 'hidden', 'overflow-y': 'hidden',
-      'background-color': '#1a1a1a',
-      'min-height': '400px',
-    });
-    await clearAndSet(await freshStyle('ct-office-info'), 'ct-office-info', {
-      'display': 'flex', 'flex-direction': 'column', 'justify-content': 'center',
-      'grid-row-gap': '36px',
-    });
-    await clearAndSet(await freshStyle('ct-office-label'), 'ct-office-label', {
-      'font-family': 'DM Sans', 'font-size': '11px', 'font-weight': '600',
-      'letter-spacing': '0.25em', 'text-transform': 'uppercase',
-      'color': v['av-cream'], 'opacity': '0.3',
-      'margin-bottom': '12px',
-    });
-    await clearAndSet(await freshStyle('ct-office-value'), 'ct-office-value', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
-      'line-height': '1.8', 'color': v['av-cream'], 'opacity': '0.7',
-    });
-    await clearAndSet(await freshStyle('ct-office-divider'), 'ct-office-divider', {
-      'width': '100%', 'height': '1px',
-      'background-color': 'rgba(240,237,232,0.08)',
     });
     await wait(500);
 
@@ -306,248 +340,245 @@ async function buildContactPage() {
   log('Building Section 1: Split Hero...');
   const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
   hero.setTag('section');
-  hero.setStyles([ctHeroSection]);
-  hero.setAttribute('id', 'ct-hero');
+  hero.setStyles([crHero]);
+  hero.setAttribute('id', 'cr-hero');
 
-  // ── Left side: 3D canvas + content ──
+  // Left: dark + 3D canvas
   const heroLeft = hero.append(webflow.elementPresets.DOM);
   heroLeft.setTag('div');
-  heroLeft.setStyles([ctHeroLeft]);
-  heroLeft.setAttribute('class', 'ct-hero-left');
+  heroLeft.setStyles([crHeroLeft]);
+  heroLeft.setAttribute('class', 'cr-hero-left');
 
-  // Canvas container (Three.js renders here via footer JS)
   const canvasWrap = heroLeft.append(webflow.elementPresets.DOM);
   canvasWrap.setTag('div');
-  canvasWrap.setStyles([ctCanvasWrap]);
-  canvasWrap.setAttribute('id', 'ct-canvas');
-  canvasWrap.setAttribute('class', 'ct-canvas-wrap');
+  canvasWrap.setStyles([crCanvasWrap]);
+  canvasWrap.setAttribute('id', 'cr-canvas');
+  canvasWrap.setAttribute('class', 'cr-canvas-wrap');
 
-  // Content overlay
   const heroContent = heroLeft.append(webflow.elementPresets.DOM);
   heroContent.setTag('div');
-  heroContent.setStyles([ctHeroContent]);
+  heroContent.setStyles([crHeroContent]);
 
-  // Label
   const heroLabel = heroContent.append(webflow.elementPresets.DOM);
   heroLabel.setTag('div');
-  heroLabel.setStyles([ctHeroLabel]);
-  heroLabel.setTextContent('// Contact');
-  heroLabel.setAttribute('class', 'ct-hero-label');
+  heroLabel.setStyles([crHeroLabel]);
+  heroLabel.setTextContent('// Careers');
+  heroLabel.setAttribute('class', 'cr-hero-label');
 
-  // Heading
   const heroH = heroContent.append(webflow.elementPresets.DOM);
   heroH.setTag('h1');
-  heroH.setStyles([ctHeroHeading]);
-  heroH.setTextContent("Let's build something extraordinary");
-  heroH.setAttribute('class', 'ct-hero-heading');
+  heroH.setStyles([crHeroHeading]);
+  heroH.setTextContent('Build your future with us');
+  heroH.setAttribute('class', 'cr-hero-heading');
 
-  // Subtitle
   const heroSub = heroContent.append(webflow.elementPresets.DOM);
   heroSub.setTag('p');
-  heroSub.setStyles([ctHeroSub]);
-  heroSub.setTextContent('Your vision, our expertise. Start your Orange County construction project with a conversation.');
-  heroSub.setAttribute('class', 'ct-hero-sub');
+  heroSub.setStyles([crHeroSub]);
+  heroSub.setTextContent("Join Orange County\u2019s trusted builder of luxury homes, ADUs, and commercial projects. We\u2019re growing \u2014 and hiring.");
+  heroSub.setAttribute('class', 'cr-hero-sub');
 
-  // Contact row (phone + email)
-  const contactRow = heroContent.append(webflow.elementPresets.DOM);
-  contactRow.setTag('div');
-  contactRow.setStyles([ctContactRow]);
-  contactRow.setAttribute('class', 'ct-contact-row');
-
-  // Phone
-  const phoneItem = contactRow.append(webflow.elementPresets.DOM);
-  phoneItem.setTag('div');
-
-  const phoneLabel = phoneItem.append(webflow.elementPresets.DOM);
-  phoneLabel.setTag('div');
-  phoneLabel.setStyles([ctContactLabel]);
-  phoneLabel.setTextContent('Phone');
-
-  const phoneVal = phoneItem.append(webflow.elementPresets.DOM);
-  phoneVal.setTag('a');
-  phoneVal.setStyles([ctContactValue]);
-  phoneVal.setAttribute('href', 'tel:7149003676');
-  phoneVal.setTextContent('(714) 900-3676');
-
-  // Email
-  const emailItem = contactRow.append(webflow.elementPresets.DOM);
-  emailItem.setTag('div');
-
-  const emailLabel = emailItem.append(webflow.elementPresets.DOM);
-  emailLabel.setTag('div');
-  emailLabel.setStyles([ctContactLabel]);
-  emailLabel.setTextContent('Email');
-
-  const emailVal = emailItem.append(webflow.elementPresets.DOM);
-  emailVal.setTag('a');
-  emailVal.setStyles([ctContactValue]);
-  emailVal.setAttribute('href', 'mailto:construction@avorino.com');
-  emailVal.setTextContent('construction@avorino.com');
-
-  // ── Right side: Form ──
+  // Right: culture values
   const heroRight = hero.append(webflow.elementPresets.DOM);
   heroRight.setTag('div');
-  heroRight.setStyles([ctHeroRight]);
-  heroRight.setAttribute('class', 'ct-hero-right');
+  heroRight.setStyles([crHeroRight]);
+  heroRight.setAttribute('class', 'cr-hero-right');
 
-  const formHeading = heroRight.append(webflow.elementPresets.DOM);
-  formHeading.setTag('h2');
-  formHeading.setStyles([ctFormHeading]);
-  formHeading.setTextContent('Start your project');
+  const valLabel = heroRight.append(webflow.elementPresets.DOM);
+  valLabel.setTag('div');
+  valLabel.setStyles([crValuesLabel]);
+  valLabel.setTextContent('// Why Avorino');
+  valLabel.setAttribute('class', 'cr-values-label');
 
-  const formSub = heroRight.append(webflow.elementPresets.DOM);
-  formSub.setTag('p');
-  formSub.setStyles([ctFormSub]);
-  formSub.setTextContent("Fill out the form and we'll respond within 24 hours.");
+  const valH = heroRight.append(webflow.elementPresets.DOM);
+  valH.setTag('h2');
+  valH.setStyles([crValueHeading]);
+  valH.setTextContent('We build luxury homes, ADUs, and commercial projects across Orange County.');
 
-  const formCol = heroRight.append(webflow.elementPresets.DOM);
-  formCol.setTag('div');
-  formCol.setStyles([ctFormCol]);
-  formCol.setAttribute('class', 'ct-form');
-
-  await buildCleanForm(formCol, FORM_FIELDS, s, 'Send Message', 'Contact Form');
+  const valB = heroRight.append(webflow.elementPresets.DOM);
+  valB.setTag('p');
+  valB.setStyles([crValueBody]);
+  valB.setTextContent('Every project is built to last. If you take pride in your craft and want to be part of a growing team, we want to hear from you.');
 
   await safeCall('append:hero', () => body.append(hero));
   logDetail('Section 1: Split Hero appended', 'ok');
 
   // ──────────────────────────────────────────────
-  // SECTION 2: TRUST SIGNALS
+  // SECTION 2: OPEN POSITIONS (currently none)
   // ──────────────────────────────────────────────
-  log('Building Section 2: Trust Signals...');
-  const trust = webflow.elementBuilder(webflow.elementPresets.DOM);
-  trust.setTag('section');
-  trust.setStyles([ctTrust]);
-  trust.setAttribute('id', 'ct-trust');
+  log('Building Section 2: Open Positions...');
+  const posSection = webflow.elementBuilder(webflow.elementPresets.DOM);
+  posSection.setTag('section');
+  posSection.setStyles([crPositions]);
+  posSection.setAttribute('id', 'cr-positions');
 
-  const trustGrid = trust.append(webflow.elementPresets.DOM);
-  trustGrid.setTag('div');
-  trustGrid.setStyles([ctTrustGrid]);
+  const posInner = posSection.append(webflow.elementPresets.DOM);
+  posInner.setTag('div');
+  posInner.setStyles([crPosList]);
 
-  for (const stat of TRUST_STATS) {
-    const item = trustGrid.append(webflow.elementPresets.DOM);
+  const posLabel = posInner.append(webflow.elementPresets.DOM);
+  posLabel.setTag('div');
+  posLabel.setStyles([crPosLabel]);
+  posLabel.setTextContent('// Open Positions');
+
+  const posH = posInner.append(webflow.elementPresets.DOM);
+  posH.setTag('h2');
+  posH.setStyles([crPosHeading]);
+  posH.setTextContent("We\u2019re always looking for skilled professionals");
+
+  const posBody = posInner.append(webflow.elementPresets.DOM);
+  posBody.setTag('p');
+  posBody.setStyles([crPosDesc]);
+  posBody.setTextContent("There are no current open positions right now, but we\u2019re always interested in hearing from talented people. Submit your application below and we\u2019ll reach out when a role opens up.");
+
+  await safeCall('append:positions', () => body.append(posSection));
+  logDetail('Section 2: Open Positions appended', 'ok');
+
+  // ──────────────────────────────────────────────
+  // SECTION 3: APPLICATION FORM
+  // ──────────────────────────────────────────────
+  log('Building Section 3: Application Form...');
+  const applySection = webflow.elementBuilder(webflow.elementPresets.DOM);
+  applySection.setTag('section');
+  applySection.setStyles([crApply]);
+  applySection.setAttribute('id', 'cr-apply');
+
+  const applyGrid = applySection.append(webflow.elementPresets.DOM);
+  applyGrid.setTag('div');
+  applyGrid.setStyles([crApplyGrid]);
+
+  // Left: info + perks
+  const applyLeft = applyGrid.append(webflow.elementPresets.DOM);
+  applyLeft.setTag('div');
+  applyLeft.setAttribute('class', 'cr-apply-left');
+
+  const apLabel = applyLeft.append(webflow.elementPresets.DOM);
+  apLabel.setTag('div');
+  apLabel.setStyles([crApplyLabel]);
+  apLabel.setTextContent('// Apply Now');
+
+  const apH = applyLeft.append(webflow.elementPresets.DOM);
+  apH.setTag('h2');
+  apH.setStyles([crApplyHeading]);
+  apH.setTextContent('Ready to join the team?');
+
+  const apBody = applyLeft.append(webflow.elementPresets.DOM);
+  apBody.setTag('p');
+  apBody.setStyles([crApplyBody]);
+  apBody.setTextContent("Fill out the form and we\u2019ll get back to you within 48 hours. You can also email us directly at construction@avorino.com.");
+
+  const perksWrap = applyLeft.append(webflow.elementPresets.DOM);
+  perksWrap.setTag('div');
+  perksWrap.setStyles([crApplyPerks]);
+  perksWrap.setAttribute('class', 'cr-apply-perks');
+
+  for (const perkText of PERKS) {
+    const perkEl = perksWrap.append(webflow.elementPresets.DOM);
+    perkEl.setTag('div');
+    perkEl.setStyles([crPerk]);
+    perkEl.setAttribute('class', 'cr-perk');
+
+    // Checkmark (text, no SVG since Webflow DOM doesn't support inline SVG easily)
+    const check = perkEl.append(webflow.elementPresets.DOM);
+    check.setTag('span');
+    check.setTextContent('\u2713');
+    check.setAttribute('style', 'color:#c8222a;font-size:16px;flex-shrink:0;margin-top:2px;');
+
+    const text = perkEl.append(webflow.elementPresets.DOM);
+    text.setTag('span');
+    text.setStyles([crPerkText]);
+    text.setTextContent(perkText);
+  }
+
+  // Right: form
+  const formCol = applyGrid.append(webflow.elementPresets.DOM);
+  formCol.setTag('div');
+  formCol.setStyles([crFormCol]);
+  formCol.setAttribute('class', 'cr-form');
+
+  await buildCleanForm(formCol, FORM_FIELDS, s, 'Submit Application', 'Careers Application');
+
+  await safeCall('append:apply', () => body.append(applySection));
+  logDetail('Section 3: Application Form appended', 'ok');
+
+  // ──────────────────────────────────────────────
+  // SECTION 4: STATS
+  // ──────────────────────────────────────────────
+  log('Building Section 4: Stats...');
+  const statsSection = webflow.elementBuilder(webflow.elementPresets.DOM);
+  statsSection.setTag('section');
+  statsSection.setStyles([crStats]);
+  statsSection.setAttribute('id', 'cr-stats');
+
+  const statsGrid = statsSection.append(webflow.elementPresets.DOM);
+  statsGrid.setTag('div');
+  statsGrid.setStyles([crStatsGrid]);
+
+  for (const stat of STATS) {
+    const item = statsGrid.append(webflow.elementPresets.DOM);
     item.setTag('div');
-    item.setStyles([ctTrustItem]);
-    item.setAttribute('class', 'ct-trust-item');
-    item.setAttribute('data-animate', 'fade-up');
+    item.setAttribute('class', 'cr-stat-item');
 
     const val = item.append(webflow.elementPresets.DOM);
     val.setTag('div');
-    val.setStyles([ctTrustValue]);
-    val.setAttribute('class', 'ct-trust-value');
+    val.setStyles([crStatValue]);
+    val.setAttribute('class', 'cr-stat-value');
     val.setAttribute('data-value', stat.value);
     val.setAttribute('data-suffix', stat.suffix);
     val.setTextContent(stat.value + stat.suffix);
 
     const lbl = item.append(webflow.elementPresets.DOM);
     lbl.setTag('div');
-    lbl.setStyles([ctTrustLabel]);
+    lbl.setStyles([crStatLabel]);
     lbl.setTextContent(stat.label);
   }
 
-  await safeCall('append:trust', () => body.append(trust));
-  logDetail('Section 2: Trust Signals appended', 'ok');
+  await safeCall('append:stats', () => body.append(statsSection));
+  logDetail('Section 4: Stats appended', 'ok');
 
   // ──────────────────────────────────────────────
-  // SECTION 3: MAP + OFFICE INFO
+  // SECTION 5: CTA (shared builder)
   // ──────────────────────────────────────────────
-  log('Building Section 3: Map + Office Info...');
-  const location = webflow.elementBuilder(webflow.elementPresets.DOM);
-  location.setTag('section');
-  location.setStyles([ctLocation]);
-  location.setAttribute('id', 'ct-location');
-
-  // Header
-  const locHeader = location.append(webflow.elementPresets.DOM);
-  locHeader.setTag('div');
-  locHeader.setStyles([ctLocHeader]);
-
-  const locLabel = locHeader.append(webflow.elementPresets.DOM);
-  locLabel.setTag('div');
-  locLabel.setStyles([ctLocLabel]);
-  locLabel.setTextContent('// Our Location');
-  locLabel.setAttribute('class', 'ct-location-label');
-
-  const locH = locHeader.append(webflow.elementPresets.DOM);
-  locH.setTag('h2');
-  locH.setStyles([ctLocHeading]);
-  locH.setTextContent('Serving all of Orange County');
-  locH.setAttribute('data-animate', 'blur-focus');
-  locH.setAttribute('class', 'ct-location-heading');
-
-  // Grid
-  const locGrid = location.append(webflow.elementPresets.DOM);
-  locGrid.setTag('div');
-  locGrid.setStyles([ctLocGrid]);
-
-  // Map iframe wrapper
-  const mapWrap = locGrid.append(webflow.elementPresets.DOM);
-  mapWrap.setTag('div');
-  mapWrap.setStyles([ctMapWrap]);
-  mapWrap.setAttribute('class', 'ct-map-wrapper');
-  mapWrap.setAttribute('data-animate', 'fade-up');
-
-  // Iframe as DOM element
-  const mapFrame = mapWrap.append(webflow.elementPresets.DOM);
-  mapFrame.setTag('iframe');
-  mapFrame.setAttribute('src', MAP_URL);
-  mapFrame.setAttribute('loading', 'lazy');
-  mapFrame.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
-  mapFrame.setAttribute('title', 'Avorino service area — Orange County, CA');
-  mapFrame.setAttribute('style', 'width:100%;height:100%;min-height:400px;border:0;filter:grayscale(1) invert(1) contrast(0.9) brightness(0.6);');
-
-  // Office info column
-  const officeInfo = locGrid.append(webflow.elementPresets.DOM);
-  officeInfo.setTag('div');
-  officeInfo.setStyles([ctOfficeInfo]);
-  officeInfo.setAttribute('class', 'ct-office-info');
-
-  for (let i = 0; i < OFFICE_INFO.length; i++) {
-    const info = OFFICE_INFO[i];
-
-    if (i > 0) {
-      const divider = officeInfo.append(webflow.elementPresets.DOM);
-      divider.setTag('div');
-      divider.setStyles([ctOfficeDivider]);
-    }
-
-    const block = officeInfo.append(webflow.elementPresets.DOM);
-    block.setTag('div');
-    block.setAttribute('class', 'ct-office-block');
-
-    const lbl = block.append(webflow.elementPresets.DOM);
-    lbl.setTag('div');
-    lbl.setStyles([ctOfficeLabel]);
-    lbl.setTextContent(info.label);
-
-    // Each line as its own div for proper line breaks
-    for (const line of info.lines) {
-      const lineEl = block.append(webflow.elementPresets.DOM);
-      lineEl.setTag('div');
-      lineEl.setStyles([ctOfficeValue]);
-      lineEl.setTextContent(line);
-    }
-  }
-
-  await safeCall('append:location', () => body.append(location));
-  logDetail('Section 3: Map + Office Info appended', 'ok');
-
-  // ──────────────────────────────────────────────
-  // SECTION 4: CTA (shared builder — matches all other pages)
-  // ──────────────────────────────────────────────
-  log('Building Section 4: CTA...');
+  log('Building Section 5: CTA...');
   await buildCTASection(
     body, v,
-    'Ready to start building?',
+    'Ready to build something extraordinary?',
     'Call (714) 900-3676', 'tel:7149003676',
-    'Fill Out the Form', '#ct-hero',
+    'Contact Us', '/contact',
   );
 
   // ═══════════════ APPLY STYLES ═══════════════
   await applyStyleProperties();
 
-  log('Contact page built!', 'success');
-  await webflow.notify({ type: 'Success', message: 'Contact page created!' });
+  log('Careers page built!', 'success');
+  await webflow.notify({ type: 'Success', message: 'Careers page created!' });
 }
+
+// ── Event listeners ──
+document.getElementById('inject-btn')?.addEventListener('click', async () => {
+  const btn = document.getElementById('inject-btn') as HTMLButtonElement;
+  btn.disabled = true;
+  try { await createAllVariables(); } catch (err: any) { log(`Error: ${err.message || err}`, 'error'); } finally { btn.disabled = false; }
+});
+
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const type = (btn as HTMLElement).dataset.copy;
+    let text = type === 'head' ? HEAD_CODE : type === 'footer' ? FOOTER_CODE : '';
+    navigator.clipboard.writeText(text).then(() => {
+      (btn as HTMLElement).textContent = 'Copied!';
+      setTimeout(() => { (btn as HTMLElement).textContent = 'Copy'; }, 2000);
+    });
+  });
+});
+
+document.getElementById('build-page')?.addEventListener('click', async () => {
+  const btn = document.getElementById('build-page') as HTMLButtonElement;
+  btn.disabled = true;
+  try { await buildCareersPage(); } catch (err: any) {
+    log(`Error: ${err.message || err}`, 'error');
+    await webflow.notify({ type: 'Error', message: `Failed: ${err.message || err}` });
+  } finally { btn.disabled = false; }
+});
 
 // ── Fill Form: select a native Webflow Form Block, click to populate fields ──
 document.getElementById('fill-form')?.addEventListener('click', async () => {
@@ -557,26 +588,21 @@ document.getElementById('fill-form')?.addEventListener('click', async () => {
     const el = await webflow.getSelectedElement();
     if (!el) { log('No element selected. Select the Form Block first.', 'error'); return; }
 
-    // el = Form Block → children: [Form, Success Message, Error Message]
     const blockChildren = await el.getChildren();
-    const formEl = blockChildren[0]; // The Form element
+    const formEl = blockChildren[0];
     if (!formEl) { log('Could not find Form inside Form Block.', 'error'); return; }
 
-    // Clear only Form's default children (labels, inputs, submit)
     const defaults = await formEl.getChildren();
     for (const child of defaults) { child.remove(); }
 
-    // Get Webflow styles for proper Designer rendering
     const s = await createSharedStyles();
 
-    // Build styled fields inside native Form
     let i = 0;
     while (i < FORM_FIELDS.length) {
       const field = FORM_FIELDS[i];
       const next = FORM_FIELDS[i + 1];
 
       if (field.halfWidth && next?.halfWidth) {
-        // 2-column row
         const row = await formEl.append(webflow.elementPresets.DOM);
         row.setTag('div');
         row.setStyles([s.formGrid2]);
@@ -589,15 +615,14 @@ document.getElementById('fill-form')?.addEventListener('click', async () => {
       }
     }
 
-    // Submit button
     const submitBtn = await formEl.append(webflow.elementPresets.DOM);
     submitBtn.setTag('button');
     submitBtn.setStyles([s.submitBtn]);
-    submitBtn.setTextContent('Send Message');
+    submitBtn.setTextContent('Submit Application');
     submitBtn.setAttribute('type', 'submit');
 
     log('Form fields populated!', 'success');
-    await webflow.notify({ type: 'Success', message: 'Form fields added with Webflow styles!' });
+    await webflow.notify({ type: 'Success', message: 'Careers form fields added!' });
   } catch (err: any) {
     log(`Error: ${err.message || err}`, 'error');
   } finally { btn.disabled = false; }
@@ -637,12 +662,6 @@ async function _fillField(parent: any, field: FormField, s: Record<string, any>)
         o.setAttribute('value', opt);
       }
     }
-  } else if (field.type === 'file') {
-    const el = await wrap.append(webflow.elementPresets.DOM);
-    el.setTag('input');
-    el.setStyles([s.inputClean]);
-    el.setAttribute('type', 'file');
-    el.setAttribute('name', field.name);
   } else {
     const el = await wrap.append(webflow.elementPresets.DOM);
     el.setTag('input');
@@ -652,30 +671,3 @@ async function _fillField(parent: any, field: FormField, s: Record<string, any>)
     if (field.placeholder) el.setAttribute('placeholder', field.placeholder);
   }
 }
-
-// ── Event listeners ──
-document.getElementById('inject-btn')?.addEventListener('click', async () => {
-  const btn = document.getElementById('inject-btn') as HTMLButtonElement;
-  btn.disabled = true;
-  try { await createAllVariables(); } catch (err: any) { log(`Error: ${err.message || err}`, 'error'); } finally { btn.disabled = false; }
-});
-
-document.querySelectorAll('.copy-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const type = (btn as HTMLElement).dataset.copy;
-    let text = type === 'head' ? HEAD_CODE : type === 'footer' ? FOOTER_CODE : '';
-    navigator.clipboard.writeText(text).then(() => {
-      (btn as HTMLElement).textContent = 'Copied!';
-      setTimeout(() => { (btn as HTMLElement).textContent = 'Copy'; }, 2000);
-    });
-  });
-});
-
-document.getElementById('build-page')?.addEventListener('click', async () => {
-  const btn = document.getElementById('build-page') as HTMLButtonElement;
-  btn.disabled = true;
-  try { await buildContactPage(); } catch (err: any) {
-    log(`Error: ${err.message || err}`, 'error');
-    await webflow.notify({ type: 'Error', message: `Failed: ${err.message || err}` });
-  } finally { btn.disabled = false; }
-});
