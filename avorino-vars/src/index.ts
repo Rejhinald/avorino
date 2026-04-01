@@ -565,73 +565,93 @@ document.getElementById('fill-form')?.addEventListener('click', async () => {
     // Clear only Form's default children (labels, inputs, submit)
     const defaults = await formEl.getChildren();
     for (const child of defaults) { child.remove(); }
-    const formInputs = formEl;
 
-    // Build fields directly inside Form — no wrapper divs
-    for (let i = 0; i < FORM_FIELDS.length; i++) {
+    // Get Webflow styles for proper Designer rendering
+    const s = await createSharedStyles();
+
+    // Build styled fields inside native Form
+    let i = 0;
+    while (i < FORM_FIELDS.length) {
       const field = FORM_FIELDS[i];
+      const next = FORM_FIELDS[i + 1];
 
-      // Label
-      const label = await formInputs.append(webflow.elementPresets.DOM);
-      label.setTag('label');
-      label.setAttribute('class', 'av-form-label');
-      label.setTextContent(field.label);
-
-      // Input
-      if (field.type === 'textarea') {
-        const el = await formInputs.append(webflow.elementPresets.DOM);
-        el.setTag('textarea');
-        el.setAttribute('class', 'av-form-textarea');
-        el.setAttribute('name', field.name);
-        if (field.placeholder) el.setAttribute('placeholder', field.placeholder);
-      } else if (field.type === 'select') {
-        const el = await formInputs.append(webflow.elementPresets.DOM);
-        el.setTag('select');
-        el.setAttribute('class', 'av-form-select');
-        el.setAttribute('name', field.name);
-        if (field.options) {
-          const blank = await el.append(webflow.elementPresets.DOM);
-          blank.setTag('option');
-          blank.setTextContent('Select...');
-          blank.setAttribute('value', '');
-          blank.setAttribute('disabled', 'true');
-          blank.setAttribute('selected', 'true');
-          for (const opt of field.options) {
-            const o = await el.append(webflow.elementPresets.DOM);
-            o.setTag('option');
-            o.setTextContent(opt);
-            o.setAttribute('value', opt);
-          }
-        }
-      } else if (field.type === 'file') {
-        const el = await formInputs.append(webflow.elementPresets.DOM);
-        el.setTag('input');
-        el.setAttribute('class', 'av-form-input');
-        el.setAttribute('type', 'file');
-        el.setAttribute('name', field.name);
+      if (field.halfWidth && next?.halfWidth) {
+        // 2-column row
+        const row = await formEl.append(webflow.elementPresets.DOM);
+        row.setTag('div');
+        row.setStyles([s.formGrid2]);
+        await _fillField(row, field, s);
+        await _fillField(row, next, s);
+        i += 2;
       } else {
-        const el = await formInputs.append(webflow.elementPresets.DOM);
-        el.setTag('input');
-        el.setAttribute('class', 'av-form-input');
-        el.setAttribute('type', field.type);
-        el.setAttribute('name', field.name);
-        if (field.placeholder) el.setAttribute('placeholder', field.placeholder);
+        await _fillField(formEl, field, s);
+        i += 1;
       }
     }
 
     // Submit button
-    const submitBtn = await formInputs.append(webflow.elementPresets.DOM);
+    const submitBtn = await formEl.append(webflow.elementPresets.DOM);
     submitBtn.setTag('button');
-    submitBtn.setAttribute('class', 'av-form-submit');
+    submitBtn.setStyles([s.submitBtn]);
     submitBtn.setTextContent('Send Message');
     submitBtn.setAttribute('type', 'submit');
 
     log('Form fields populated!', 'success');
-    await webflow.notify({ type: 'Success', message: 'Form fields added! Add avorino-forms.css to page head.' });
+    await webflow.notify({ type: 'Success', message: 'Form fields added with Webflow styles!' });
   } catch (err: any) {
     log(`Error: ${err.message || err}`, 'error');
   } finally { btn.disabled = false; }
 });
+
+async function _fillField(parent: any, field: FormField, s: Record<string, any>) {
+  const wrap = await parent.append(webflow.elementPresets.DOM);
+  wrap.setTag('div');
+
+  const label = await wrap.append(webflow.elementPresets.DOM);
+  label.setTag('label');
+  label.setStyles([s.formLabel]);
+  label.setTextContent(field.label);
+
+  if (field.type === 'textarea') {
+    const el = await wrap.append(webflow.elementPresets.DOM);
+    el.setTag('textarea');
+    el.setStyles([s.textareaClean]);
+    el.setAttribute('name', field.name);
+    if (field.placeholder) el.setAttribute('placeholder', field.placeholder);
+  } else if (field.type === 'select') {
+    const el = await wrap.append(webflow.elementPresets.DOM);
+    el.setTag('select');
+    el.setStyles([s.selectClean]);
+    el.setAttribute('name', field.name);
+    if (field.options) {
+      const blank = await el.append(webflow.elementPresets.DOM);
+      blank.setTag('option');
+      blank.setTextContent('Select...');
+      blank.setAttribute('value', '');
+      blank.setAttribute('disabled', 'true');
+      blank.setAttribute('selected', 'true');
+      for (const opt of field.options) {
+        const o = await el.append(webflow.elementPresets.DOM);
+        o.setTag('option');
+        o.setTextContent(opt);
+        o.setAttribute('value', opt);
+      }
+    }
+  } else if (field.type === 'file') {
+    const el = await wrap.append(webflow.elementPresets.DOM);
+    el.setTag('input');
+    el.setStyles([s.inputClean]);
+    el.setAttribute('type', 'file');
+    el.setAttribute('name', field.name);
+  } else {
+    const el = await wrap.append(webflow.elementPresets.DOM);
+    el.setTag('input');
+    el.setStyles([s.inputClean]);
+    el.setAttribute('type', field.type);
+    el.setAttribute('name', field.name);
+    if (field.placeholder) el.setAttribute('placeholder', field.placeholder);
+  }
+}
 
 // ── Event listeners ──
 document.getElementById('inject-btn')?.addEventListener('click', async () => {
