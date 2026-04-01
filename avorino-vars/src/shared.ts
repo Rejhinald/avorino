@@ -668,14 +668,12 @@ export async function buildCleanForm(
   submitText: string = 'Send Message',
   formName: string = 'Contact Form',
 ) {
-  // Use <form> tag so submissions work via Formspree or native action
   const formWrap = parent.append(webflow.elementPresets.DOM);
-  formWrap.setTag('form');
+  formWrap.setTag('div');
   formWrap.setStyles([s.flexCol]);
+  formWrap.setAttribute('class', 'av-form');
+  formWrap.setAttribute('data-form', formName);
   formWrap.setAttribute('data-animate', 'fade-up');
-  formWrap.setAttribute('data-name', formName);
-  formWrap.setAttribute('name', formName);
-  formWrap.setAttribute('method', 'post');
 
   let i = 0;
   while (i < fields.length) {
@@ -685,7 +683,7 @@ export async function buildCleanForm(
     if (field.halfWidth && next?.halfWidth) {
       const row = formWrap.append(webflow.elementPresets.DOM);
       row.setTag('div');
-      row.setStyles([s.formGrid2]);
+      row.setAttribute('class', 'av-form-row');
 
       _buildField(row, field, s);
       _buildField(row, next, s);
@@ -699,7 +697,7 @@ export async function buildCleanForm(
   // Submit button
   const submitBtn = formWrap.append(webflow.elementPresets.DOM);
   submitBtn.setTag('button');
-  submitBtn.setStyles([s.submitBtn]);
+  submitBtn.setAttribute('class', 'av-form-submit');
   submitBtn.setTextContent(submitText);
   submitBtn.setAttribute('type', 'submit');
 
@@ -709,35 +707,50 @@ export async function buildCleanForm(
 function _buildField(parent: any, field: FormField, s: Record<string, any>) {
   const wrap = parent.append(webflow.elementPresets.DOM);
   wrap.setTag('div');
+  wrap.setAttribute('class', 'av-form-field');
 
   const label = wrap.append(webflow.elementPresets.DOM);
   label.setTag('label');
-  label.setStyles([s.formLabel]);
+  label.setAttribute('class', 'av-form-label');
   label.setTextContent(field.label);
 
   if (field.type === 'textarea') {
     const el = wrap.append(webflow.elementPresets.DOM);
     el.setTag('textarea');
-    el.setStyles([s.textareaClean]);
+    el.setAttribute('class', 'av-form-textarea');
     el.setAttribute('name', field.name);
     if (field.placeholder) el.setAttribute('placeholder', field.placeholder);
   } else if (field.type === 'select') {
     const el = wrap.append(webflow.elementPresets.DOM);
     el.setTag('select');
-    el.setStyles([s.selectClean]);
+    el.setAttribute('class', 'av-form-select');
     el.setAttribute('name', field.name);
+    // Add options if provided
+    if (field.options) {
+      const blank = el.append(webflow.elementPresets.DOM);
+      blank.setTag('option');
+      blank.setTextContent('Select...');
+      blank.setAttribute('value', '');
+      blank.setAttribute('disabled', 'true');
+      blank.setAttribute('selected', 'true');
+      for (const opt of field.options) {
+        const o = el.append(webflow.elementPresets.DOM);
+        o.setTag('option');
+        o.setTextContent(opt);
+        o.setAttribute('value', opt);
+      }
+    }
   } else if (field.type === 'file') {
     const el = wrap.append(webflow.elementPresets.DOM);
     el.setTag('input');
-    el.setStyles([s.inputClean]);
+    el.setAttribute('class', 'av-form-input');
     el.setAttribute('type', 'file');
     el.setAttribute('name', field.name);
     el.setAttribute('accept', '.pdf,.jpg,.jpeg,.png,.doc,.docx,.dwg');
-    el.setAttribute('multiple', 'true');
   } else {
     const el = wrap.append(webflow.elementPresets.DOM);
     el.setTag('input');
-    el.setStyles([s.inputClean]);
+    el.setAttribute('class', 'av-form-input');
     el.setAttribute('type', field.type);
     el.setAttribute('name', field.name);
     if (field.placeholder) el.setAttribute('placeholder', field.placeholder);
