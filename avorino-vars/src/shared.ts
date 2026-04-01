@@ -668,24 +668,14 @@ export async function buildCleanForm(
   submitText: string = 'Send Message',
   formName: string = 'Contact Form',
 ) {
-  // Native Webflow FormForm — submissions appear in Site Settings → Forms
-  const formWrapper = parent.append(webflow.elementPresets.FormForm);
-  formWrapper.setAttribute('data-animate', 'fade-up');
-
-  // Configure form settings
-  if (formWrapper.setSettings) {
-    await formWrapper.setSettings({ name: formName, method: 'post' });
-  }
-
-  // FormForm creates children: [formInputs, successMsg, errorMsg]
-  const formChildren = await formWrapper.getChildren();
-  const formInputs = formChildren[0]; // The actual form inputs container
-
-  // Clear default fields that Webflow auto-creates
-  const defaultChildren = await formInputs.getChildren();
-  for (const child of defaultChildren) {
-    child.remove();
-  }
+  // Use <form> tag so submissions work via Formspree or native action
+  const formWrap = parent.append(webflow.elementPresets.DOM);
+  formWrap.setTag('form');
+  formWrap.setStyles([s.flexCol]);
+  formWrap.setAttribute('data-animate', 'fade-up');
+  formWrap.setAttribute('data-name', formName);
+  formWrap.setAttribute('name', formName);
+  formWrap.setAttribute('method', 'post');
 
   let i = 0;
   while (i < fields.length) {
@@ -693,50 +683,60 @@ export async function buildCleanForm(
     const next = fields[i + 1];
 
     if (field.halfWidth && next?.halfWidth) {
-      const row = formInputs.append(webflow.elementPresets.DivBlock);
+      const row = formWrap.append(webflow.elementPresets.DOM);
+      row.setTag('div');
       row.setStyles([s.formGrid2]);
 
       _buildField(row, field, s);
       _buildField(row, next, s);
       i += 2;
     } else {
-      _buildField(formInputs, field, s);
+      _buildField(formWrap, field, s);
       i += 1;
     }
   }
 
-  // Submit button — native Webflow FormButton
-  const submitBtn = formInputs.append(webflow.elementPresets.FormButton);
+  // Submit button
+  const submitBtn = formWrap.append(webflow.elementPresets.DOM);
+  submitBtn.setTag('button');
   submitBtn.setStyles([s.submitBtn]);
   submitBtn.setTextContent(submitText);
+  submitBtn.setAttribute('type', 'submit');
 
-  return formWrapper;
+  return formWrap;
 }
 
 function _buildField(parent: any, field: FormField, s: Record<string, any>) {
-  const wrap = parent.append(webflow.elementPresets.DivBlock);
+  const wrap = parent.append(webflow.elementPresets.DOM);
+  wrap.setTag('div');
 
-  // Native Webflow form label
-  const label = wrap.append(webflow.elementPresets.FormBlockLabel);
+  const label = wrap.append(webflow.elementPresets.DOM);
+  label.setTag('label');
   label.setStyles([s.formLabel]);
   label.setTextContent(field.label);
 
   if (field.type === 'textarea') {
-    const el = wrap.append(webflow.elementPresets.FormTextarea);
+    const el = wrap.append(webflow.elementPresets.DOM);
+    el.setTag('textarea');
     el.setStyles([s.textareaClean]);
     el.setAttribute('name', field.name);
     if (field.placeholder) el.setAttribute('placeholder', field.placeholder);
   } else if (field.type === 'select') {
-    const el = wrap.append(webflow.elementPresets.FormSelect);
+    const el = wrap.append(webflow.elementPresets.DOM);
+    el.setTag('select');
     el.setStyles([s.selectClean]);
     el.setAttribute('name', field.name);
   } else if (field.type === 'file') {
-    const el = wrap.append(webflow.elementPresets.FormFileUploadWrapper);
+    const el = wrap.append(webflow.elementPresets.DOM);
+    el.setTag('input');
     el.setStyles([s.inputClean]);
+    el.setAttribute('type', 'file');
     el.setAttribute('name', field.name);
+    el.setAttribute('accept', '.pdf,.jpg,.jpeg,.png,.doc,.docx,.dwg');
+    el.setAttribute('multiple', 'true');
   } else {
-    // text, email, tel
-    const el = wrap.append(webflow.elementPresets.FormTextInput);
+    const el = wrap.append(webflow.elementPresets.DOM);
+    el.setTag('input');
     el.setStyles([s.inputClean]);
     el.setAttribute('type', field.type);
     el.setAttribute('name', field.name);
