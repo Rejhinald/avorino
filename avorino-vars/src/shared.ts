@@ -594,6 +594,118 @@ export async function applyCTAStyleProps(v: Record<string, any>) {
   });
 }
 
+// ── Magazine embed section (dark bg, click-to-interact iframe) ──
+export interface MagazineConfig {
+  url: string;
+  title: string;
+  heading: string;
+  desc: string;
+}
+
+export async function buildMagazineSection(
+  body: any,
+  v: Record<string, any>,
+  config: MagazineConfig,
+) {
+  const magSection = await getOrCreateStyle('av-mag-section');
+  const magInner = await getOrCreateStyle('av-mag-inner');
+  const magHeader = await getOrCreateStyle('av-mag-header');
+  const magHeading = await getOrCreateStyle('av-mag-heading');
+  const magDesc = await getOrCreateStyle('av-mag-desc');
+  const magFrame = await getOrCreateStyle('av-mag-frame');
+  const magHolder = await getOrCreateStyle('av-mag-holder');
+
+  const section = webflow.elementBuilder(webflow.elementPresets.DOM);
+  section.setTag('section');
+  section.setStyles([magSection]);
+  section.setAttribute('id', 'av-magazine');
+
+  const inner = section.append(webflow.elementPresets.DOM);
+  inner.setTag('div');
+  inner.setStyles([magInner]);
+
+  // Header
+  const header = inner.append(webflow.elementPresets.DOM);
+  header.setTag('div');
+  header.setStyles([magHeader]);
+
+  const labelEl = header.append(webflow.elementPresets.DOM);
+  labelEl.setTag('div');
+  const labelStyle = await getOrCreateStyle('av-label');
+  labelEl.setStyles([labelStyle]);
+  labelEl.setTextContent('// Magazine');
+  labelEl.setAttribute('data-animate', 'fade-up');
+
+  const headingEl = header.append(webflow.elementPresets.DOM);
+  headingEl.setTag('h2');
+  headingEl.setStyles([magHeading]);
+  headingEl.setTextContent(config.heading);
+  headingEl.setAttribute('data-animate', 'blur-focus');
+
+  const descEl = header.append(webflow.elementPresets.DOM);
+  descEl.setTag('p');
+  descEl.setStyles([magDesc]);
+  descEl.setTextContent(config.desc);
+  descEl.setAttribute('data-animate', 'fade-up');
+
+  // Frame (holds the iframe placeholder)
+  const frame = inner.append(webflow.elementPresets.DOM);
+  frame.setTag('div');
+  frame.setStyles([magFrame]);
+  frame.setAttribute('data-animate', 'fade-up');
+
+  const holder = frame.append(webflow.elementPresets.DOM);
+  holder.setTag('div');
+  holder.setStyles([magHolder]);
+  holder.setAttribute('id', 'magazine-holder');
+  holder.setAttribute('data-magazine-url', config.url);
+  holder.setAttribute('data-magazine-title', config.title);
+
+  await safeCall('append:magazine', () => body.append(section));
+  logDetail('Magazine section appended', 'ok');
+}
+
+export async function applyMagazineStyleProps(v: Record<string, any>) {
+  await clearAndSet(await freshStyle('av-mag-section'), 'av-mag-section', {
+    'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
+    'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
+    'background-color': v['av-dark'], 'color': v['av-cream'],
+    'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
+  });
+  await clearAndSet(await freshStyle('av-mag-inner'), 'av-mag-inner', {
+    'max-width': '1280px', 'margin-left': 'auto', 'margin-right': 'auto',
+  });
+  await clearAndSet(await freshStyle('av-mag-header'), 'av-mag-header', {
+    'margin-bottom': v['av-gap-md'],
+  });
+  await clearAndSet(await freshStyle('av-mag-heading'), 'av-mag-heading', {
+    'font-family': 'DM Serif Display', 'font-size': v['av-text-h2'],
+    'line-height': '1.12', 'letter-spacing': '-0.02em', 'font-weight': '400',
+    'margin-bottom': '16px', 'color': v['av-cream'],
+  });
+  await clearAndSet(await freshStyle('av-mag-desc'), 'av-mag-desc', {
+    'font-family': 'DM Sans', 'font-size': v['av-text-body'],
+    'line-height': '1.7', 'opacity': '0.5', 'color': v['av-cream'],
+    'max-width': '560px',
+  });
+  await clearAndSet(await freshStyle('av-mag-frame'), 'av-mag-frame', {
+    'position': 'relative', 'width': '100%', 'height': '85vh', 'min-height': '600px',
+    'border-top-left-radius': '16px', 'border-top-right-radius': '16px',
+    'border-bottom-left-radius': '16px', 'border-bottom-right-radius': '16px',
+    'overflow-x': 'hidden', 'overflow-y': 'hidden',
+    'border-top-width': '1px', 'border-bottom-width': '1px',
+    'border-left-width': '1px', 'border-right-width': '1px',
+    'border-top-style': 'solid', 'border-bottom-style': 'solid',
+    'border-left-style': 'solid', 'border-right-style': 'solid',
+    'border-top-color': 'rgba(201, 169, 110, 0.1)', 'border-bottom-color': 'rgba(201, 169, 110, 0.1)',
+    'border-left-color': 'rgba(201, 169, 110, 0.1)', 'border-right-color': 'rgba(201, 169, 110, 0.1)',
+    'background-color': '#0a0a0a',
+  });
+  await clearAndSet(await freshStyle('av-mag-holder'), 'av-mag-holder', {
+    'width': '100%', 'height': '100%',
+  });
+}
+
 // ── Calendly integration ──
 export const CALENDLY_URL = 'https://calendly.com/avorino/client-meetings';
 export const CALENDLY_CSS = '<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">';

@@ -1,10 +1,7 @@
 // ════════════════════════════════════════════════════════════════
-// Avorino Builder — TOOL EMBED PAGE TEMPLATE
-// Rename this to index.ts to build a tool embed page.
-// Change TOOL_INDEX below:
-//   0 = ADU Cost Estimator (/adu-cost-estimator)
-//   1 = ROI Calculator (/roi-calculator)
-//   2 = ADU Eligibility (/adu-eligibility)
+// Avorino Builder — ADU CONSTRUCTION PAGE
+// Full-viewport hero + scroll-locked types + ROI stats + horizontal timeline + CTA
+// Three.js canvas backdrops, char-cascade, scramble values, progress bar
 // ════════════════════════════════════════════════════════════════
 
 import {
@@ -13,42 +10,19 @@ import {
   clearAndSet, createSharedStyles, setSharedStyleProps,
   createAllVariables, createPageWithSlug,
   buildCTASection, applyCTAStyleProps,
+  buildMagazineSection, applyMagazineStyleProps,
   CALENDLY_CSS, CALENDLY_JS,
 } from './shared.js';
 
-// ═══ CHANGE THIS INDEX TO BUILD A DIFFERENT TOOL PAGE ═══
-const TOOL_INDEX = 0;
-
-const TOOLS = [
-  {
-    slug: 'adu-cost-estimator', name: 'ADU Cost Estimator',
-    subtitle: 'Get an instant, detailed cost breakdown for your ADU project — by city, size, finish level, and ADU type. Powered by real 2025 Orange County construction data.',
-    embedUrl: 'https://aducost.avorino.com/',
-    title: 'ADU Cost Estimator — Avorino', seoDesc: 'Estimate your ADU construction cost in Orange County.',
-    preview: 'cost',
-  },
-  {
-    slug: 'roi-calculator', name: 'ROI Calculator',
-    subtitle: 'See your projected rental income, property value increase, and payback timeline. Make confident investment decisions backed by real Orange County market data.',
-    embedUrl: 'https://roi-estimator.avorino.com/',
-    title: 'ROI Calculator — Avorino', seoDesc: 'Calculate ADU return on investment for your Orange County property.',
-    preview: 'roi',
-  },
-  {
-    slug: 'adu-eligibility', name: 'ADU Loan Qualifier',
-    subtitle: 'Check your financing eligibility in 60 seconds. Get personalized loan options, interest rates, and monthly payment estimates tailored to your property and budget.',
-    embedUrl: 'https://aduloan.avorino.com/',
-    title: 'ADU Loan Qualifier — Avorino', seoDesc: 'Check ADU eligibility and loan qualification for your Orange County property.',
-    preview: 'loan',
-  },
-];
-
-const TOOL = TOOLS[TOOL_INDEX];
-const OTHER_TOOLS = TOOLS.filter((_, i) => i !== TOOL_INDEX);
-
+const PAGE_NAME = 'ADU Construction';
+const PAGE_SLUG = 'adu-construction';
+const PAGE_TITLE = 'ADU Construction in Orange County — Avorino';
+const PAGE_DESC = 'Detached, attached, and garage conversion ADUs in Orange County. Fully permitted, designed, and built by Avorino.';
+const CDN = '0a5bf9d';
 const HEAD_CODE = [
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@b14c0ca/avorino-responsive.css">',
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@b14c0ca/avorino-nav-footer.css">',
+  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
+  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,
+  `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-adu.css">`,
   CALENDLY_CSS,
 ].join('\n');
 const FOOTER_CODE = [
@@ -56,55 +30,93 @@ const FOOTER_CODE = [
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
   '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
-  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@b14c0ca/avorino-animations.js"><\/script>',
-  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@b14c0ca/avorino-tools-footer.js"><\/script>',
+  `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-animations.js"><\/script>`,
+  `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-adu-construction-footer.js"><\/script>`,
   CALENDLY_JS,
 ].join('\n');
 
-document.getElementById('page-name')!.textContent = TOOL.name;
+const ADU_TYPES = [
+  { number: '01', title: 'Detached ADU', desc: 'Standalone unit in your backyard — maximum privacy and design flexibility. Popular for rental income or multigenerational living.' },
+  { number: '02', title: 'Attached ADU', desc: 'Extension connected to your home with its own private entrance. Shares a wall for cost savings while maintaining complete independence.' },
+  { number: '03', title: 'Garage Conversion', desc: 'Convert your existing garage into a fully permitted living space. The most affordable option — starting at $75K with the fastest turnaround.' },
+  { number: '04', title: 'Above-Garage ADU', desc: 'Second story above your garage. Keeps parking, adds living space, and maximizes your lot without sacrificing yard area.' },
+];
+
+const PROCESS_STEPS = [
+  { number: '01', title: 'Design', time: '4–6 months', desc: 'Custom architectural plans, structural engineering, and Title 24 energy calculations — all included.' },
+  { number: '02', title: 'Permits', time: 'Included in design', desc: 'We submit to your city and manage all plan-check corrections and approvals.' },
+  { number: '03', title: 'Build', time: '6–8 months', desc: 'Licensed crew, weekly progress updates, and on-budget delivery from foundation to final inspection.' },
+];
+
+// ── Panel UI ──
+document.getElementById('page-name')!.textContent = PAGE_NAME;
 const headCodeEl = document.getElementById('head-code');
 const footerCodeEl = document.getElementById('footer-code');
 if (headCodeEl) headCodeEl.textContent = HEAD_CODE;
 if (footerCodeEl) footerCodeEl.textContent = FOOTER_CODE;
 
-async function buildToolPage() {
+async function buildADUConstructionPage() {
   clearErrorLog();
-  logDetail(`Starting ${TOOL.name} page build...`, 'info');
+  logDetail('Starting ADU Construction page build...', 'info');
   const v = await getAvorinVars();
 
   log('Creating shared styles...');
   const s = await createSharedStyles();
 
   log('Creating page-specific styles...');
-  const tlHero = await getOrCreateStyle('tl-hero');
-  const tlCanvasWrap = await getOrCreateStyle('tl-canvas-wrap');
-  const tlContentOverlay = await getOrCreateStyle('tl-content-overlay');
-  const tlHeroContent = await getOrCreateStyle('tl-hero-content');
-  const tlHeroLabel = await getOrCreateStyle('tl-hero-label');
-  const tlHeroGoldLine = await getOrCreateStyle('tl-hero-gold-line');
-  const tlHeroSubtitle = await getOrCreateStyle('tl-hero-subtitle');
-  const tlHeroScrollHint = await getOrCreateStyle('tl-hero-scroll-hint');
-  const tlHeroScrollLine = await getOrCreateStyle('tl-hero-scroll-line');
-  const tlEmbed = await getOrCreateStyle('tl-embed');
-  const tlIframe = await getOrCreateStyle('tl-iframe');
-  const tlRelatedGrid = await getOrCreateStyle('tl-related-grid');
-  const tlRelatedCard = await getOrCreateStyle('tl-related-card');
-  const tlRelatedPreview = await getOrCreateStyle('tl-related-preview');
-  const tlRelatedTitle = await getOrCreateStyle('tl-related-title');
-  const tlRelatedDesc = await getOrCreateStyle('tl-related-desc');
-  const tlRelatedCta = await getOrCreateStyle('tl-related-cta');
-  const tlPreviewBar = await getOrCreateStyle('tl-preview-bar');
-  const tlPreviewBarAccent = await getOrCreateStyle('tl-preview-bar-accent');
-  const tlPreviewRow = await getOrCreateStyle('tl-preview-row');
-  const tlPreviewLabel = await getOrCreateStyle('tl-preview-label');
-  const tlPreviewValue = await getOrCreateStyle('tl-preview-value');
-  const tlPreviewGauge = await getOrCreateStyle('tl-preview-gauge');
-  const tlPreviewGaugeFill = await getOrCreateStyle('tl-preview-gauge-fill');
-  const tlMb32 = await getOrCreateStyle('tl-mb-32');
-  const tlMb64 = await getOrCreateStyle('tl-mb-64');
-  const tlLabelLine = await getOrCreateStyle('tl-label-line');
+  // Hero
+  const aducHero = await getOrCreateStyle('aduc-hero');
+  const aducHeroCanvasWrap = await getOrCreateStyle('aduc-hero-canvas-wrap');
+  const aducHeroContent = await getOrCreateStyle('aduc-hero-content');
+  const aducHeroLabel = await getOrCreateStyle('aduc-hero-label');
+  const aducHeroGoldLine = await getOrCreateStyle('aduc-hero-gold-line');
+  const aducHeroSubtitle = await getOrCreateStyle('aduc-hero-subtitle');
+  const aducHeroScrollHint = await getOrCreateStyle('aduc-hero-scroll-hint');
+  const aducHeroScrollLine = await getOrCreateStyle('aduc-hero-scroll-line');
+  // Types (scroll-lock)
+  const aducTypes = await getOrCreateStyle('aduc-types');
+  const aducTypesCanvasWrap = await getOrCreateStyle('aduc-types-canvas-wrap');
+  const aducTypesContent = await getOrCreateStyle('aduc-types-content');
+  const aducTypesPinned = await getOrCreateStyle('aduc-types-pinned');
+  const aducTypesHeader = await getOrCreateStyle('aduc-types-header');
+  const aducTypesInfo = await getOrCreateStyle('aduc-types-info');
+  const aducTypeCard = await getOrCreateStyle('aduc-type-card');
+  const aducTypeCardNum = await getOrCreateStyle('aduc-type-card-num');
+  const aducTypeCardTitle = await getOrCreateStyle('aduc-type-card-title');
+  const aducTypeCardDesc = await getOrCreateStyle('aduc-type-card-desc');
+  const aducTypesProgress = await getOrCreateStyle('aduc-types-progress');
+  const aducTypesTrack = await getOrCreateStyle('aduc-types-track');
+  const aducTypesFill = await getOrCreateStyle('aduc-types-fill');
+  const aducTypesDots = await getOrCreateStyle('aduc-types-dots');
+  const aducTdot = await getOrCreateStyle('aduc-tdot');
+  // ROI
+  const aducRoi = await getOrCreateStyle('aduc-roi');
+  const aducRoiHeader = await getOrCreateStyle('aduc-roi-header');
+  const aducRoiGrid = await getOrCreateStyle('aduc-roi-grid');
+  const aducRoiCard = await getOrCreateStyle('aduc-roi-card');
+  const aducRoiValue = await getOrCreateStyle('aduc-roi-value');
+  const aducRoiLabel = await getOrCreateStyle('aduc-roi-label');
+  // Process (horizontal timeline)
+  const aducProcess = await getOrCreateStyle('aduc-process');
+  const aducProcessHeader = await getOrCreateStyle('aduc-process-header');
+  const aducHtlWrap = await getOrCreateStyle('aduc-htl-wrap');
+  const aducHtlTrackWrap = await getOrCreateStyle('aduc-htl-track-wrap');
+  const aducHtlTrackBg = await getOrCreateStyle('aduc-htl-track-bg');
+  const aducHtlTrackFill = await getOrCreateStyle('aduc-htl-track-fill');
+  const aducHtlSteps = await getOrCreateStyle('aduc-htl-steps');
+  const aducHtlStep = await getOrCreateStyle('aduc-htl-step');
+  const aducHtlNode = await getOrCreateStyle('aduc-htl-node');
+  const aducHtlNumber = await getOrCreateStyle('aduc-htl-number');
+  const aducHtlTitle = await getOrCreateStyle('aduc-htl-title');
+  const aducHtlTime = await getOrCreateStyle('aduc-htl-time');
+  const aducHtlDesc = await getOrCreateStyle('aduc-htl-desc');
+  const aducHtlNote = await getOrCreateStyle('aduc-htl-note');
+  // Utility
+  const mb48 = await getOrCreateStyle('av-mb-48');
+  const mb64 = await getOrCreateStyle('av-mb-64');
+  const aducLabelLine = await getOrCreateStyle('aduc-label-line');
 
-  const { body } = await createPageWithSlug(TOOL.name, TOOL.slug, TOOL.title, TOOL.seoDesc);
+  const { body } = await createPageWithSlug(PAGE_NAME, PAGE_SLUG, PAGE_TITLE, PAGE_DESC);
 
   async function applyStyleProperties() {
     log('Setting shared style properties...');
@@ -113,337 +125,564 @@ async function buildToolPage() {
 
     log('Setting page-specific style properties...');
 
-    await clearAndSet(await freshStyle('tl-hero'), 'tl-hero', {
-      'min-height': '80vh', 'display': 'flex', 'align-items': 'flex-end',
+    // ── Hero ──
+    await clearAndSet(await freshStyle('aduc-hero'), 'aduc-hero', {
+      'min-height': '80vh',
+      'display': 'flex', 'align-items': 'flex-end',
       'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
       'background-color': v['av-dark'], 'color': v['av-cream'],
       'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
-    await clearAndSet(await freshStyle('tl-canvas-wrap'), 'tl-canvas-wrap', {
+    await clearAndSet(await freshStyle('aduc-hero-canvas-wrap'), 'aduc-hero-canvas-wrap', {
       'position': 'absolute', 'top': '0px', 'left': '0px',
       'width': '100%', 'height': '100%',
-      'z-index': '1', 'pointer-events': 'none',
-      'overflow-x': 'hidden', 'overflow-y': 'hidden',
+      'z-index': '1', 'pointer-events': 'none', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
-    await clearAndSet(await freshStyle('tl-content-overlay'), 'tl-content-overlay', {
-      'position': 'relative', 'z-index': '2',
+    await clearAndSet(await freshStyle('aduc-hero-content'), 'aduc-hero-content', {
+      'position': 'relative', 'z-index': '2', 'max-width': '800px',
     });
-    await clearAndSet(await freshStyle('tl-hero-content'), 'tl-hero-content', {
-      'max-width': '700px',
-    });
-    await clearAndSet(await freshStyle('tl-hero-label'), 'tl-hero-label', {
+    await clearAndSet(await freshStyle('aduc-hero-label'), 'aduc-hero-label', {
       'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
       'letter-spacing': '0.3em', 'text-transform': 'uppercase',
       'opacity': '0', 'margin-bottom': '32px', 'color': v['av-cream'],
     });
-    await clearAndSet(await freshStyle('tl-hero-gold-line'), 'tl-hero-gold-line', {
-      'width': '0px', 'height': '1px',
-      'background-color': '#c9a96e', 'margin-bottom': '24px',
+    await clearAndSet(await freshStyle('aduc-hero-gold-line'), 'aduc-hero-gold-line', {
+      'width': '0px', 'height': '1px', 'background-color': '#c9a96e',
+      'margin-bottom': '24px',
     });
-    await clearAndSet(await freshStyle('tl-hero-subtitle'), 'tl-hero-subtitle', {
+    await clearAndSet(await freshStyle('aduc-hero-subtitle'), 'aduc-hero-subtitle', {
       'font-family': 'DM Sans', 'font-size': v['av-text-body'],
       'line-height': '1.9', 'opacity': '0', 'margin-top': '24px',
-      'color': v['av-cream'], 'max-width': '560px',
+      'color': v['av-cream'], 'max-width': '520px',
     });
-    await clearAndSet(await freshStyle('tl-hero-scroll-hint'), 'tl-hero-scroll-hint', {
+    await clearAndSet(await freshStyle('aduc-hero-scroll-hint'), 'aduc-hero-scroll-hint', {
       'position': 'absolute', 'bottom': '40px', 'left': '50%',
       'z-index': '3', 'display': 'flex', 'flex-direction': 'column',
-      'align-items': 'center', 'grid-row-gap': '8px', 'opacity': '0',
+      'align-items': 'center', 'gap': '8px', 'opacity': '0',
     });
-    await clearAndSet(await freshStyle('tl-hero-scroll-line'), 'tl-hero-scroll-line', {
+    await clearAndSet(await freshStyle('aduc-hero-scroll-line'), 'aduc-hero-scroll-line', {
       'width': '1px', 'height': '40px', 'background-color': '#c9a96e',
     });
     await wait(500);
 
-    // Embed container — full viewport
-    await clearAndSet(await freshStyle('tl-embed'), 'tl-embed', {
-      'width': '100vw', 'margin-left': 'calc(-50vw + 50%)',
+    // ── Types (scroll-lock) ──
+    await clearAndSet(await freshStyle('aduc-types'), 'aduc-types', {
+      'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden', 'background-color': '#ffffff',
     });
-    await clearAndSet(await freshStyle('tl-iframe'), 'tl-iframe', {
-      'width': '100%', 'height': '100vh', 'min-height': '700px',
-      'overflow-x': 'hidden', 'overflow-y': 'hidden',
+    await clearAndSet(await freshStyle('aduc-types-canvas-wrap'), 'aduc-types-canvas-wrap', {
+      'position': 'absolute', 'top': '0px', 'left': '0px',
+      'width': '100%', 'height': '100%',
+      'z-index': '1', 'pointer-events': 'none', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
+    });
+    await clearAndSet(await freshStyle('aduc-types-content'), 'aduc-types-content', {
+      'position': 'relative', 'z-index': '2',
+    });
+    await clearAndSet(await freshStyle('aduc-types-pinned'), 'aduc-types-pinned', {
+      'height': '100vh', 'display': 'flex', 'align-items': 'center',
+      'position': 'relative',
+      'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
+    });
+    await clearAndSet(await freshStyle('aduc-types-header'), 'aduc-types-header', {
+      'position': 'absolute', 'top': '48px',
+      'left': v['av-section-pad-x'], 'right': v['av-section-pad-x'],
+    });
+    await clearAndSet(await freshStyle('aduc-types-info'), 'aduc-types-info', {
+      'margin-left': 'auto', 'position': 'relative',
+      'width': '480px', 'max-width': '100%', 'min-height': '300px',
+    });
+    await clearAndSet(await freshStyle('aduc-type-card'), 'aduc-type-card', {
+      'background-color': '#ffffff', 'color': v['av-dark'],
+      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
+      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
+      'padding-top': '56px', 'padding-bottom': '56px',
+      'padding-left': '48px', 'padding-right': '48px',
+      'position': 'absolute', 'top': '50%', 'width': '100%',
+      'opacity': '0',
+    });
+    await clearAndSet(await freshStyle('aduc-type-card-num'), 'aduc-type-card-num', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
+      'letter-spacing': '0.2em', 'text-transform': 'uppercase',
+      'color': '#c9a96e', 'margin-bottom': '16px',
+    });
+    await clearAndSet(await freshStyle('aduc-type-card-title'), 'aduc-type-card-title', {
+      'font-family': 'DM Serif Display', 'font-size': '28px',
+      'line-height': '1.2', 'font-weight': '400',
+      'margin-bottom': '14px', 'color': v['av-dark'],
+    });
+    await clearAndSet(await freshStyle('aduc-type-card-desc'), 'aduc-type-card-desc', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
+      'line-height': '1.7', 'opacity': '0.55', 'color': v['av-dark'],
+    });
+    await clearAndSet(await freshStyle('aduc-types-progress'), 'aduc-types-progress', {
+      'position': 'absolute', 'bottom': '40px', 'left': '50%',
+      'z-index': '3', 'display': 'flex', 'align-items': 'center', 'gap': '32px',
+    });
+    await clearAndSet(await freshStyle('aduc-types-track'), 'aduc-types-track', {
+      'width': '200px', 'height': '2px',
+      'background-color': 'rgba(17,17,17,0.08)', 'position': 'relative',
+    });
+    await clearAndSet(await freshStyle('aduc-types-fill'), 'aduc-types-fill', {
+      'height': '100%', 'background-color': v['av-red'], 'width': '0%',
+    });
+    await clearAndSet(await freshStyle('aduc-types-dots'), 'aduc-types-dots', {
+      'display': 'flex', 'gap': '24px',
+    });
+    await clearAndSet(await freshStyle('aduc-tdot'), 'aduc-tdot', {
+      'font-family': 'DM Sans', 'font-size': '12px', 'font-weight': '500',
+      'opacity': '0.3', 'color': v['av-dark'],
     });
     await wait(500);
 
-    // Related tools
-    await clearAndSet(await freshStyle('tl-related-grid'), 'tl-related-grid', {
-      'display': 'grid', 'grid-template-columns': '1fr 1fr',
-      'grid-column-gap': '24px', 'grid-row-gap': '24px',
+    // ── ROI ──
+    await clearAndSet(await freshStyle('aduc-roi'), 'aduc-roi', {
+      'position': 'relative',
     });
-    await clearAndSet(await freshStyle('tl-related-card'), 'tl-related-card', {
+    await clearAndSet(await freshStyle('aduc-roi-header'), 'aduc-roi-header', {
+      'text-align': 'center', 'margin-bottom': '80px',
+    });
+    await clearAndSet(await freshStyle('aduc-roi-grid'), 'aduc-roi-grid', {
+      'display': 'grid', 'grid-template-columns': '1fr 1fr 1fr 1fr',
+      'grid-column-gap': '24px', 'grid-row-gap': '24px',
+      'max-width': '1000px', 'margin-left': 'auto', 'margin-right': 'auto',
+    });
+    await clearAndSet(await freshStyle('aduc-roi-card'), 'aduc-roi-card', {
       'background-color': v['av-dark'], 'color': v['av-cream'],
       'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
       'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
-      'padding-top': '48px', 'padding-bottom': '48px',
-      'padding-left': '40px', 'padding-right': '40px',
-      'text-decoration': 'none', 'display': 'flex', 'flex-direction': 'column',
-      'grid-row-gap': '24px', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
+      'padding-top': '40px', 'padding-bottom': '40px',
+      'padding-left': '24px', 'padding-right': '24px',
+      'text-align': 'center',
     });
-    await clearAndSet(await freshStyle('tl-related-preview'), 'tl-related-preview', {
-      'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '8px',
-      'padding-top': '20px', 'padding-bottom': '20px', 'padding-left': '20px', 'padding-right': '20px',
-      'border-top-left-radius': '8px', 'border-top-right-radius': '8px',
-      'border-bottom-left-radius': '8px', 'border-bottom-right-radius': '8px',
-      'background-color': 'rgba(201, 169, 110, 0.04)',
-    });
-    await clearAndSet(await freshStyle('tl-related-title'), 'tl-related-title', {
+    await clearAndSet(await freshStyle('aduc-roi-value'), 'aduc-roi-value', {
       'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
-      'line-height': '1.12', 'font-weight': '400',
-      'color': v['av-cream'],
+      'font-weight': '400', 'color': '#c9a96e', 'margin-bottom': '12px', 'line-height': '1.1',
     });
-    await clearAndSet(await freshStyle('tl-related-desc'), 'tl-related-desc', {
-      'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
-      'line-height': '1.7', 'opacity': '0.5', 'color': v['av-cream'],
-    });
-    await clearAndSet(await freshStyle('tl-related-cta'), 'tl-related-cta', {
-      'font-family': 'DM Sans', 'font-size': '14px', 'font-weight': '500',
-      'letter-spacing': '0.08em', 'text-transform': 'uppercase',
-      'color': 'rgba(201, 169, 110, 0.7)', 'margin-top': '8px',
-    });
-    await clearAndSet(await freshStyle('tl-preview-bar'), 'tl-preview-bar', {
-      'height': '3px',
-      'border-top-left-radius': '2px', 'border-top-right-radius': '2px',
-      'border-bottom-left-radius': '2px', 'border-bottom-right-radius': '2px',
-      'background-color': 'rgba(201, 169, 110, 0.2)',
-    });
-    await clearAndSet(await freshStyle('tl-preview-bar-accent'), 'tl-preview-bar-accent', {
-      'background-color': 'rgba(201, 169, 110, 0.45)',
-    });
-    await clearAndSet(await freshStyle('tl-preview-row'), 'tl-preview-row', {
-      'display': 'flex', 'justify-content': 'space-between', 'align-items': 'baseline',
-    });
-    await clearAndSet(await freshStyle('tl-preview-label'), 'tl-preview-label', {
-      'font-family': 'DM Sans', 'font-size': '11px', 'font-weight': '500',
-      'letter-spacing': '0.15em', 'text-transform': 'uppercase',
-      'color': 'rgba(240, 237, 232, 0.3)',
-    });
-    await clearAndSet(await freshStyle('tl-preview-value'), 'tl-preview-value', {
-      'font-family': 'DM Serif Display', 'font-size': '22px',
-      'color': 'rgba(201, 169, 110, 0.7)', 'letter-spacing': '-0.02em',
-    });
-    await clearAndSet(await freshStyle('tl-preview-gauge'), 'tl-preview-gauge', {
-      'width': '48px', 'height': '48px',
-      'border-top-left-radius': '50%', 'border-top-right-radius': '50%',
-      'border-bottom-left-radius': '50%', 'border-bottom-right-radius': '50%',
-      'border-top-width': '2px', 'border-bottom-width': '2px',
-      'border-left-width': '2px', 'border-right-width': '2px',
-      'border-top-color': 'rgba(201, 169, 110, 0.1)', 'border-bottom-color': 'rgba(201, 169, 110, 0.1)',
-      'border-left-color': 'rgba(201, 169, 110, 0.1)', 'border-right-color': 'rgba(201, 169, 110, 0.1)',
-      'border-top-style': 'solid', 'border-bottom-style': 'solid',
-      'border-left-style': 'solid', 'border-right-style': 'solid',
-      'position': 'relative',
-    });
-    await clearAndSet(await freshStyle('tl-preview-gauge-fill'), 'tl-preview-gauge-fill', {
-      'position': 'absolute', 'top': '-2px', 'left': '-2px', 'right': '-2px', 'bottom': '-2px',
-      'border-top-left-radius': '50%', 'border-top-right-radius': '50%',
-      'border-bottom-left-radius': '50%', 'border-bottom-right-radius': '50%',
-      'border-top-width': '2px', 'border-bottom-width': '2px',
-      'border-left-width': '2px', 'border-right-width': '2px',
-      'border-top-color': 'rgba(201, 169, 110, 0.5)', 'border-right-color': 'rgba(201, 169, 110, 0.3)',
-      'border-bottom-color': 'transparent', 'border-left-color': 'transparent',
-      'border-top-style': 'solid', 'border-bottom-style': 'solid',
-      'border-left-style': 'solid', 'border-right-style': 'solid',
+    await clearAndSet(await freshStyle('aduc-roi-label'), 'aduc-roi-label', {
+      'font-family': 'DM Sans', 'font-size': '12px',
+      'text-transform': 'uppercase', 'letter-spacing': '0.15em', 'opacity': '0.4',
     });
     await wait(500);
 
-    await clearAndSet(await freshStyle('tl-mb-32'), 'tl-mb-32', { 'margin-bottom': v['av-gap-sm'] });
-    await clearAndSet(await freshStyle('tl-mb-64'), 'tl-mb-64', { 'margin-bottom': v['av-gap-md'] });
-    await clearAndSet(await freshStyle('tl-label-line'), 'tl-label-line', { 'flex-grow': '1', 'height': '1px', 'background-color': v['av-dark-15'] });
+    // ── Process (horizontal timeline) ──
+    await clearAndSet(await freshStyle('aduc-process'), 'aduc-process', {
+      'position': 'relative',
+    });
+    await clearAndSet(await freshStyle('aduc-process-header'), 'aduc-process-header', {
+      'text-align': 'center', 'margin-bottom': '80px',
+    });
+    await clearAndSet(await freshStyle('aduc-htl-wrap'), 'aduc-htl-wrap', {
+      'position': 'relative', 'max-width': '900px',
+      'margin-left': 'auto', 'margin-right': 'auto',
+      'padding-top': '60px',
+    });
+    await clearAndSet(await freshStyle('aduc-htl-track-wrap'), 'aduc-htl-track-wrap', {
+      'position': 'absolute', 'top': '18px', 'left': '0px', 'right': '0px',
+      'height': '4px',
+    });
+    await clearAndSet(await freshStyle('aduc-htl-track-bg'), 'aduc-htl-track-bg', {
+      'width': '100%', 'height': '100%',
+      'background-color': 'rgba(17,17,17,0.08)',
+      'border-top-left-radius': '2px', 'border-top-right-radius': '2px',
+      'border-bottom-left-radius': '2px', 'border-bottom-right-radius': '2px',
+    });
+    await clearAndSet(await freshStyle('aduc-htl-track-fill'), 'aduc-htl-track-fill', {
+      'position': 'absolute', 'top': '0px', 'left': '0px',
+      'height': '100%', 'width': '0%',
+      'background-color': v['av-red'],
+      'border-top-left-radius': '2px', 'border-top-right-radius': '2px',
+      'border-bottom-left-radius': '2px', 'border-bottom-right-radius': '2px',
+    });
+    await clearAndSet(await freshStyle('aduc-htl-steps'), 'aduc-htl-steps', {
+      'display': 'grid', 'grid-template-columns': '1fr 1fr 1fr',
+      'grid-column-gap': '48px',
+    });
+    await clearAndSet(await freshStyle('aduc-htl-step'), 'aduc-htl-step', {
+      'text-align': 'center', 'position': 'relative',
+    });
+    await clearAndSet(await freshStyle('aduc-htl-node'), 'aduc-htl-node', {
+      'width': '20px', 'height': '20px',
+      'border-top-left-radius': '50%', 'border-top-right-radius': '50%',
+      'border-bottom-left-radius': '50%', 'border-bottom-right-radius': '50%',
+      'border-top-width': '2px', 'border-bottom-width': '2px',
+      'border-left-width': '2px', 'border-right-width': '2px',
+      'border-top-style': 'solid', 'border-bottom-style': 'solid',
+      'border-left-style': 'solid', 'border-right-style': 'solid',
+      'border-top-color': 'rgba(17,17,17,0.15)', 'border-bottom-color': 'rgba(17,17,17,0.15)',
+      'border-left-color': 'rgba(17,17,17,0.15)', 'border-right-color': 'rgba(17,17,17,0.15)',
+      'background-color': v['av-warm'],
+      'position': 'absolute', 'top': '-51px', 'left': '50%',
+      'z-index': '2',
+    });
+    await clearAndSet(await freshStyle('aduc-htl-number'), 'aduc-htl-number', {
+      'font-family': 'DM Serif Display', 'font-size': '64px',
+      'line-height': '1', 'opacity': '0.15',
+      'display': 'block', 'margin-bottom': '4px',
+    });
+    await clearAndSet(await freshStyle('aduc-htl-title'), 'aduc-htl-title', {
+      'font-family': 'DM Serif Display', 'font-size': '28px',
+      'line-height': '1.2', 'margin-bottom': '8px',
+    });
+    await clearAndSet(await freshStyle('aduc-htl-time'), 'aduc-htl-time', {
+      'font-size': '14px', 'color': v['av-red'],
+      'display': 'block', 'margin-bottom': '12px', 'opacity': '0',
+    });
+    await clearAndSet(await freshStyle('aduc-htl-desc'), 'aduc-htl-desc', {
+      'font-size': v['av-text-sm'], 'line-height': '1.7',
+      'opacity': '0', 'max-width': '280px',
+      'margin-left': 'auto', 'margin-right': 'auto',
+    });
+    await clearAndSet(await freshStyle('aduc-htl-note'), 'aduc-htl-note', {
+      'text-align': 'center', 'margin-top': '48px',
+      'font-size': '14px', 'opacity': '0.4',
+    });
+
+    // ── Utility ──
+    await clearAndSet(await freshStyle('av-mb-48'), 'av-mb-48', { 'margin-bottom': '48px' });
+    await clearAndSet(await freshStyle('av-mb-64'), 'av-mb-64', { 'margin-bottom': '64px' });
+    await clearAndSet(await freshStyle('aduc-label-line'), 'aduc-label-line', {
+      'flex-grow': '1', 'height': '1px', 'background-color': 'rgba(17,17,17,0.15)',
+    });
+    await wait(500);
 
     await applyCTAStyleProps(v);
+    await applyMagazineStyleProps(v);
   }
 
   // ═══════════════ BUILD ELEMENTS ═══════════════
 
-  // SECTION 1: HERO (with Three.js canvas)
+  // SECTION 1: HERO — Full-viewport cinematic
   log('Building Section 1: Hero...');
   const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
   hero.setTag('section');
-  hero.setStyles([tlHero]);
-  hero.setAttribute('id', 'tl-hero');
+  hero.setStyles([aducHero]);
+  hero.setAttribute('id', 'aduc-hero');
 
-  // Canvas wrapper for Three.js (layer 1)
+  // Canvas wrap
   const heroCanvasWrap = hero.append(webflow.elementPresets.DOM);
   heroCanvasWrap.setTag('div');
-  heroCanvasWrap.setStyles([tlCanvasWrap]);
+  heroCanvasWrap.setStyles([aducHeroCanvasWrap]);
   heroCanvasWrap.setAttribute('id', 'hero-canvas');
 
-  // Content overlay (layer 2)
-  const heroOverlay = hero.append(webflow.elementPresets.DOM);
-  heroOverlay.setTag('div');
-  heroOverlay.setStyles([tlContentOverlay, tlHeroContent]);
+  // Content overlay
+  const heroC = hero.append(webflow.elementPresets.DOM);
+  heroC.setTag('div');
+  heroC.setStyles([aducHeroContent]);
 
-  const heroLabel = heroOverlay.append(webflow.elementPresets.DOM);
+  const heroLabel = heroC.append(webflow.elementPresets.DOM);
   heroLabel.setTag('div');
-  heroLabel.setStyles([tlHeroLabel]);
-  heroLabel.setTextContent(`// ${TOOL.name}`);
+  heroLabel.setStyles([aducHeroLabel]);
+  heroLabel.setTextContent('// ADU Construction');
   heroLabel.setAttribute('data-animate', 'fade-up');
 
-  const heroH = heroOverlay.append(webflow.elementPresets.DOM);
+  const heroH = heroC.append(webflow.elementPresets.DOM);
   heroH.setTag('h1');
   heroH.setStyles([s.headingXL]);
-  heroH.setTextContent(TOOL.name);
-  heroH.setAttribute('data-animate', 'blur-focus');
+  heroH.setTextContent('ADU Construction');
+  heroH.setAttribute('data-animate', 'char-cascade');
 
-  const heroGoldLine = heroOverlay.append(webflow.elementPresets.DOM);
+  const heroGoldLine = heroC.append(webflow.elementPresets.DOM);
   heroGoldLine.setTag('div');
-  heroGoldLine.setStyles([tlHeroGoldLine]);
+  heroGoldLine.setStyles([aducHeroGoldLine]);
 
-  const heroSub = heroOverlay.append(webflow.elementPresets.DOM);
+  const heroSub = heroC.append(webflow.elementPresets.DOM);
   heroSub.setTag('p');
-  heroSub.setStyles([tlHeroSubtitle]);
-  heroSub.setTextContent(TOOL.subtitle);
+  heroSub.setStyles([aducHeroSubtitle]);
+  heroSub.setTextContent('An accessory dwelling unit is an independent residential unit on the same lot as your home. Detached, attached, or converted — Avorino designs, permits, and builds it all.');
   heroSub.setAttribute('data-animate', 'fade-up');
 
   // Scroll hint
-  const scrollHint = hero.append(webflow.elementPresets.DOM);
-  scrollHint.setTag('div');
-  scrollHint.setStyles([tlHeroScrollHint]);
-  scrollHint.setAttribute('data-animate', 'fade-up');
-  const scrollHintText = scrollHint.append(webflow.elementPresets.DOM);
-  scrollHintText.setTag('span');
-  scrollHintText.setTextContent('Scroll');
-  const scrollHintLine = scrollHint.append(webflow.elementPresets.DOM);
-  scrollHintLine.setTag('div');
-  scrollHintLine.setStyles([tlHeroScrollLine]);
+  const heroScrollHint = hero.append(webflow.elementPresets.DOM);
+  heroScrollHint.setTag('div');
+  heroScrollHint.setStyles([aducHeroScrollHint]);
+  heroScrollHint.setAttribute('data-animate', 'fade-up');
+  const heroScrollText = heroScrollHint.append(webflow.elementPresets.DOM);
+  heroScrollText.setTag('span');
+  heroScrollText.setTextContent('Scroll');
+  const heroScrollLine = heroScrollHint.append(webflow.elementPresets.DOM);
+  heroScrollLine.setTag('div');
+  heroScrollLine.setStyles([aducHeroScrollLine]);
 
   await safeCall('append:hero', () => body.append(hero));
+  logDetail('Section 1: Hero appended', 'ok');
 
-  // SECTION 2: EMBED (warm bg — uses div with inline iframe via custom code)
-  log('Building Section 2: Embed...');
-  const embedSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  embedSection.setTag('section');
-  embedSection.setStyles([s.section, s.sectionWarm]);
-  embedSection.setAttribute('id', 'tl-embed');
+  // SECTION 2: ADU TYPES — Scroll-locked + Three.js
+  log('Building Section 2: ADU Types...');
+  const typesSection = webflow.elementBuilder(webflow.elementPresets.DOM);
+  typesSection.setTag('section');
+  typesSection.setStyles([aducTypes]);
+  typesSection.setAttribute('id', 'aduc-types');
 
-  const embedWrap = embedSection.append(webflow.elementPresets.DOM);
-  embedWrap.setTag('div');
-  embedWrap.setStyles([tlEmbed]);
+  // Canvas wrap
+  const typesCanvasWrap = typesSection.append(webflow.elementPresets.DOM);
+  typesCanvasWrap.setTag('div');
+  typesCanvasWrap.setStyles([aducTypesCanvasWrap]);
+  typesCanvasWrap.setAttribute('id', 'types-canvas');
 
-  // Webflow Designer API doesn't support setTag('iframe'), so we use a
-  // styled div container. The actual iframe is injected via page custom code
-  // or Webflow's native Embed element after the page is built.
-  const iframeHolder = embedWrap.append(webflow.elementPresets.DOM);
-  iframeHolder.setTag('div');
-  iframeHolder.setStyles([tlIframe]);
-  iframeHolder.setAttribute('id', 'tool-iframe-holder');
-  iframeHolder.setAttribute('data-embed-url', TOOL.embedUrl);
-  iframeHolder.setAttribute('data-embed-title', TOOL.name);
+  // Content layer
+  const typesContent = typesSection.append(webflow.elementPresets.DOM);
+  typesContent.setTag('div');
+  typesContent.setStyles([aducTypesContent]);
 
-  await safeCall('append:embed', () => body.append(embedSection));
+  // Pinned container
+  const typesPinned = typesContent.append(webflow.elementPresets.DOM);
+  typesPinned.setTag('div');
+  typesPinned.setStyles([aducTypesPinned]);
+  typesPinned.setAttribute('data-types-pinned', '');
 
-  // SECTION 3: RELATED TOOLS (cream bg)
-  log('Building Section 3: Related Tools...');
-  const relatedSection = webflow.elementBuilder(webflow.elementPresets.DOM);
-  relatedSection.setTag('section');
-  relatedSection.setStyles([s.section, s.sectionCream]);
-  relatedSection.setAttribute('id', 'tl-related');
+  // Header inside pinned
+  const typesHeader = typesPinned.append(webflow.elementPresets.DOM);
+  typesHeader.setTag('div');
+  typesHeader.setStyles([aducTypesHeader]);
+  const typesLabel = typesHeader.append(webflow.elementPresets.DOM);
+  typesLabel.setTag('div');
+  typesLabel.setStyles([s.label, mb48]);
+  const typesLabelTxt = typesLabel.append(webflow.elementPresets.DOM);
+  typesLabelTxt.setTag('div');
+  typesLabelTxt.setTextContent('ADU Types');
+  const typesLabelLine = typesLabel.append(webflow.elementPresets.DOM);
+  typesLabelLine.setTag('div');
+  typesLabelLine.setStyles([aducLabelLine]);
 
-  const relHeader = relatedSection.append(webflow.elementPresets.DOM);
-  relHeader.setTag('div');
-  relHeader.setStyles([tlMb64]);
+  // Info card stack
+  const typesInfo = typesPinned.append(webflow.elementPresets.DOM);
+  typesInfo.setTag('div');
+  typesInfo.setStyles([aducTypesInfo]);
 
-  const relLabel = relHeader.append(webflow.elementPresets.DOM);
-  relLabel.setTag('div');
-  relLabel.setStyles([s.label, tlMb32]);
-  const relLabelTxt = relLabel.append(webflow.elementPresets.DOM);
-  relLabelTxt.setTag('div');
-  relLabelTxt.setTextContent('More Tools');
-  const relLabelLine = relLabel.append(webflow.elementPresets.DOM);
-  relLabelLine.setTag('div');
-  relLabelLine.setStyles([tlLabelLine]);
+  ADU_TYPES.forEach((type, i) => {
+    const card = typesInfo.append(webflow.elementPresets.DOM);
+    card.setTag('div');
+    card.setStyles([aducTypeCard]);
+    card.setAttribute('data-step', String(i));
 
-  const relGrid = relatedSection.append(webflow.elementPresets.DOM);
-  relGrid.setTag('div');
-  relGrid.setStyles([tlRelatedGrid]);
-
-  OTHER_TOOLS.forEach(tool => {
-    const card = relGrid.append(webflow.elementPresets.DOM);
-    card.setTag('a');
-    card.setStyles([tlRelatedCard]);
-    card.setAttribute('href', `/${tool.slug}`);
-    card.setAttribute('data-animate', 'fade-up');
-
-    // CSS preview visual
-    const preview = card.append(webflow.elementPresets.DOM);
-    preview.setTag('div');
-    preview.setStyles([tlRelatedPreview]);
-
-    if (tool.preview === 'cost') {
-      // Cost preview: 3 bars + estimated total
-      const bar1 = preview.append(webflow.elementPresets.DOM);
-      bar1.setTag('div'); bar1.setStyles([tlPreviewBar]);
-      bar1.setAttribute('style', 'width:65%');
-      const bar2 = preview.append(webflow.elementPresets.DOM);
-      bar2.setTag('div'); bar2.setStyles([tlPreviewBar]);
-      bar2.setAttribute('style', 'width:40%');
-      const bar3 = preview.append(webflow.elementPresets.DOM);
-      bar3.setTag('div'); bar3.setStyles([tlPreviewBar, tlPreviewBarAccent]);
-      bar3.setAttribute('style', 'width:85%');
-      const row = preview.append(webflow.elementPresets.DOM);
-      row.setTag('div'); row.setStyles([tlPreviewRow]);
-      const lbl = row.append(webflow.elementPresets.DOM);
-      lbl.setTag('span'); lbl.setStyles([tlPreviewLabel]); lbl.setTextContent('Estimated Cost');
-      const val = row.append(webflow.elementPresets.DOM);
-      val.setTag('span'); val.setStyles([tlPreviewValue]); val.setTextContent('$185K');
-    } else if (tool.preview === 'roi') {
-      // ROI preview: stat row + bars
-      const row = preview.append(webflow.elementPresets.DOM);
-      row.setTag('div'); row.setStyles([tlPreviewRow]);
-      const lbl = row.append(webflow.elementPresets.DOM);
-      lbl.setTag('span'); lbl.setStyles([tlPreviewLabel]); lbl.setTextContent('Annual Return');
-      const val = row.append(webflow.elementPresets.DOM);
-      val.setTag('span'); val.setStyles([tlPreviewValue]); val.setTextContent('18.4%');
-      const bar1 = preview.append(webflow.elementPresets.DOM);
-      bar1.setTag('div'); bar1.setStyles([tlPreviewBar]);
-      bar1.setAttribute('style', 'width:35%');
-      const bar2 = preview.append(webflow.elementPresets.DOM);
-      bar2.setTag('div'); bar2.setStyles([tlPreviewBar]);
-      bar2.setAttribute('style', 'width:55%');
-      const bar3 = preview.append(webflow.elementPresets.DOM);
-      bar3.setTag('div'); bar3.setStyles([tlPreviewBar, tlPreviewBarAccent]);
-      bar3.setAttribute('style', 'width:100%');
-    } else if (tool.preview === 'loan') {
-      // Loan preview: gauge + amount
-      const row = preview.append(webflow.elementPresets.DOM);
-      row.setTag('div'); row.setStyles([tlPreviewRow]);
-      const gauge = row.append(webflow.elementPresets.DOM);
-      gauge.setTag('div'); gauge.setStyles([tlPreviewGauge]);
-      const gaugeFill = gauge.append(webflow.elementPresets.DOM);
-      gaugeFill.setTag('div'); gaugeFill.setStyles([tlPreviewGaugeFill]);
-      const val = row.append(webflow.elementPresets.DOM);
-      val.setTag('span'); val.setStyles([tlPreviewValue]); val.setTextContent('$350K');
-      const lbl = preview.append(webflow.elementPresets.DOM);
-      lbl.setTag('span'); lbl.setStyles([tlPreviewLabel]); lbl.setTextContent('Pre-Qualified');
-    }
+    const num = card.append(webflow.elementPresets.DOM);
+    num.setTag('div');
+    num.setStyles([aducTypeCardNum]);
+    num.setTextContent(`${type.number} / 04`);
 
     const title = card.append(webflow.elementPresets.DOM);
     title.setTag('h3');
-    title.setStyles([tlRelatedTitle]);
-    title.setTextContent(tool.name);
+    title.setStyles([aducTypeCardTitle]);
+    title.setTextContent(type.title);
 
     const desc = card.append(webflow.elementPresets.DOM);
     desc.setTag('p');
-    desc.setStyles([tlRelatedDesc]);
-    desc.setTextContent(tool.subtitle);
-
-    const cta = card.append(webflow.elementPresets.DOM);
-    cta.setTag('span');
-    cta.setStyles([tlRelatedCta]);
-    cta.setTextContent('Try This Tool →');
+    desc.setStyles([aducTypeCardDesc]);
+    desc.setTextContent(type.desc);
   });
 
-  await safeCall('append:related', () => body.append(relatedSection));
+  // Progress bar
+  const typesProgress = typesPinned.append(webflow.elementPresets.DOM);
+  typesProgress.setTag('div');
+  typesProgress.setStyles([aducTypesProgress]);
 
-  // SECTION 4: CTA
-  log('Building Section 4: CTA...');
-  await buildCTASection(body, v, 'Book a consultation', 'Schedule a Meeting', '/schedule-a-meeting');
+  const typesTrack = typesProgress.append(webflow.elementPresets.DOM);
+  typesTrack.setTag('div');
+  typesTrack.setStyles([aducTypesTrack]);
+  const typesFill = typesTrack.append(webflow.elementPresets.DOM);
+  typesFill.setTag('div');
+  typesFill.setStyles([aducTypesFill]);
+
+  const typesDots = typesProgress.append(webflow.elementPresets.DOM);
+  typesDots.setTag('div');
+  typesDots.setStyles([aducTypesDots]);
+  const dotLabels = ['01', '02', '03', '04'];
+  for (const dl of dotLabels) {
+    const dot = typesDots.append(webflow.elementPresets.DOM);
+    dot.setTag('span');
+    dot.setStyles([aducTdot]);
+    dot.setTextContent(dl);
+  }
+
+  await safeCall('append:types', () => body.append(typesSection));
+  logDetail('Section 2: Types appended', 'ok');
+
+  // SECTION 3: ROI / COST
+  log('Building Section 3: Cost & ROI...');
+  const roiSection = webflow.elementBuilder(webflow.elementPresets.DOM);
+  roiSection.setTag('section');
+  roiSection.setStyles([s.section, s.sectionWarm, aducRoi]);
+  roiSection.setAttribute('id', 'aduc-roi');
+
+  // ROI Header
+  const roiHeader = roiSection.append(webflow.elementPresets.DOM);
+  roiHeader.setTag('div');
+  roiHeader.setStyles([aducRoiHeader]);
+
+  const roiLabel = roiHeader.append(webflow.elementPresets.DOM);
+  roiLabel.setTag('div');
+  roiLabel.setStyles([s.label, mb64]);
+  roiLabel.setAttribute('data-animate', 'fade-up');
+  const roiLabelTxt = roiLabel.append(webflow.elementPresets.DOM);
+  roiLabelTxt.setTag('div');
+  roiLabelTxt.setTextContent('The Numbers');
+  const roiLabelLine = roiLabel.append(webflow.elementPresets.DOM);
+  roiLabelLine.setTag('div');
+  roiLabelLine.setStyles([aducLabelLine]);
+
+  const roiH = roiHeader.append(webflow.elementPresets.DOM);
+  roiH.setTag('h2');
+  roiH.setStyles([s.headingLG]);
+  roiH.setTextContent('The numbers make sense');
+  roiH.setAttribute('data-animate', 'line-wipe');
+
+  // ROI Grid
+  const roiGrid = roiSection.append(webflow.elementPresets.DOM);
+  roiGrid.setTag('div');
+  roiGrid.setStyles([aducRoiGrid]);
+
+  const roiData = [
+    { value: '$250K–$400K', label: 'Avg. project cost' },
+    { value: '$2K–$4.5K+', label: 'Monthly rental' },
+    { value: '5–12%', label: 'Annual ROI' },
+    { value: '8–15 yrs', label: 'Break-even' },
+  ];
+  roiData.forEach((rd, i) => {
+    const card = roiGrid.append(webflow.elementPresets.DOM);
+    card.setTag('div');
+    card.setStyles([aducRoiCard]);
+    card.setAttribute('data-stat', String(i));
+    card.setAttribute('data-animate', 'fade-up');
+
+    const val = card.append(webflow.elementPresets.DOM);
+    val.setTag('div');
+    val.setStyles([aducRoiValue]);
+    val.setTextContent(rd.value);
+    val.setAttribute('data-count', rd.value);
+    val.setAttribute('data-animate', 'scramble');
+
+    const lbl = card.append(webflow.elementPresets.DOM);
+    lbl.setTag('div');
+    lbl.setStyles([aducRoiLabel]);
+    lbl.setTextContent(rd.label);
+  });
+
+  await safeCall('append:roi', () => body.append(roiSection));
+  logDetail('Section 3: ROI appended', 'ok');
+
+  // SECTION 4: PROCESS — Horizontal Timeline
+  log('Building Section 4: Process...');
+  const procSection = webflow.elementBuilder(webflow.elementPresets.DOM);
+  procSection.setTag('section');
+  procSection.setStyles([s.section, s.sectionWarm, aducProcess]);
+  procSection.setAttribute('id', 'aduc-process');
+
+  // Process header
+  const procHeader = procSection.append(webflow.elementPresets.DOM);
+  procHeader.setTag('div');
+  procHeader.setStyles([aducProcessHeader]);
+
+  const procLabel = procHeader.append(webflow.elementPresets.DOM);
+  procLabel.setTag('div');
+  procLabel.setStyles([s.label, mb64]);
+  procLabel.setAttribute('data-animate', 'fade-up');
+  const procLabelTxt = procLabel.append(webflow.elementPresets.DOM);
+  procLabelTxt.setTag('div');
+  procLabelTxt.setTextContent('Our Process');
+  const procLabelLine = procLabel.append(webflow.elementPresets.DOM);
+  procLabelLine.setTag('div');
+  procLabelLine.setStyles([aducLabelLine]);
+
+  const procH = procHeader.append(webflow.elementPresets.DOM);
+  procH.setTag('h2');
+  procH.setStyles([s.headingLG]);
+  procH.setTextContent('Three steps to your ADU');
+  procH.setAttribute('data-animate', 'line-wipe');
+
+  // Horizontal timeline wrapper
+  const htlWrap = procSection.append(webflow.elementPresets.DOM);
+  htlWrap.setTag('div');
+  htlWrap.setStyles([aducHtlWrap]);
+  htlWrap.setAttribute('id', 'aduc-htl-wrap');
+
+  // Track
+  const htlTrackWrap = htlWrap.append(webflow.elementPresets.DOM);
+  htlTrackWrap.setTag('div');
+  htlTrackWrap.setStyles([aducHtlTrackWrap]);
+  const htlTrackBg = htlTrackWrap.append(webflow.elementPresets.DOM);
+  htlTrackBg.setTag('div');
+  htlTrackBg.setStyles([aducHtlTrackBg]);
+  const htlTrackFill = htlTrackWrap.append(webflow.elementPresets.DOM);
+  htlTrackFill.setTag('div');
+  htlTrackFill.setStyles([aducHtlTrackFill]);
+  htlTrackFill.setAttribute('id', 'aduc-htl-fill');
+
+  // Steps grid
+  const htlSteps = htlWrap.append(webflow.elementPresets.DOM);
+  htlSteps.setTag('div');
+  htlSteps.setStyles([aducHtlSteps]);
+
+  PROCESS_STEPS.forEach((step, i) => {
+    const stepEl = htlSteps.append(webflow.elementPresets.DOM);
+    stepEl.setTag('div');
+    stepEl.setStyles([aducHtlStep]);
+    stepEl.setAttribute('data-step', String(i));
+
+    // Node circle
+    const node = stepEl.append(webflow.elementPresets.DOM);
+    node.setTag('div');
+    node.setStyles([aducHtlNode]);
+
+    // Number
+    const num = stepEl.append(webflow.elementPresets.DOM);
+    num.setTag('span');
+    num.setStyles([aducHtlNumber]);
+    num.setTextContent(step.number);
+
+    // Title with .word spans
+    const title = stepEl.append(webflow.elementPresets.DOM);
+    title.setTag('h3');
+    title.setStyles([aducHtlTitle]);
+    // Each word wrapped in a span — single-word titles here
+    const wordSpan = title.append(webflow.elementPresets.DOM);
+    wordSpan.setTag('span');
+    wordSpan.setAttribute('class', 'word');
+    wordSpan.setTextContent(step.title);
+
+    // Time
+    const time = stepEl.append(webflow.elementPresets.DOM);
+    time.setTag('span');
+    time.setStyles([aducHtlTime]);
+    time.setTextContent(step.time);
+
+    // Description
+    const desc = stepEl.append(webflow.elementPresets.DOM);
+    desc.setTag('p');
+    desc.setStyles([aducHtlDesc]);
+    desc.setTextContent(step.desc);
+  });
+
+  // Timeline note
+  const htlNote = htlWrap.append(webflow.elementPresets.DOM);
+  htlNote.setTag('p');
+  htlNote.setStyles([aducHtlNote]);
+  htlNote.setTextContent('Total timeline: 10–14 months from design to move-in.');
+
+  await safeCall('append:process', () => body.append(procSection));
+  logDetail('Section 4: Process appended', 'ok');
+
+  // SECTION 5: MAGAZINE
+  log('Building Section 5: Magazine...');
+  await buildMagazineSection(body, v, {
+    url: 'https://online.fliphtml5.com/avorino/zgke/#p=2',
+    title: 'ADU Construction Magazine',
+    heading: 'Your Complete ADU Guide',
+    desc: 'Everything you need to know about building an ADU in Orange County — regulations, costs, timelines, and design inspiration.',
+  });
+
+  // SECTION 6: CTA
+  log('Building Section 6: CTA...');
+  await buildCTASection(
+    body, v,
+    'Get your ADU estimate',
+    'ADU Cost Calculator', '/adu-cost-estimator',
+    'Schedule a Meeting', '/schedule-a-meeting',
+  );
 
   await applyStyleProperties();
 
-  log(`${TOOL.name} page built!`, 'success');
-  await webflow.notify({ type: 'Success', message: `${TOOL.name} page created!` });
+  log('ADU Construction page built!', 'success');
+  await webflow.notify({ type: 'Success', message: 'ADU Construction page created!' });
 }
 
 // ── Event listeners ──
@@ -467,7 +706,7 @@ document.querySelectorAll('.copy-btn').forEach(btn => {
 document.getElementById('build-page')?.addEventListener('click', async () => {
   const btn = document.getElementById('build-page') as HTMLButtonElement;
   btn.disabled = true;
-  try { await buildToolPage(); } catch (err: any) {
+  try { await buildADUConstructionPage(); } catch (err: any) {
     log(`Error: ${err.message || err}`, 'error');
     await webflow.notify({ type: 'Error', message: `Failed: ${err.message || err}` });
   } finally { btn.disabled = false; }

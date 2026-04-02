@@ -10,6 +10,7 @@ import {
   clearAndSet, createSharedStyles, setSharedStyleProps,
   createAllVariables, createPageWithSlug,
   buildCTASection, applyCTAStyleProps,
+  buildMagazineSection, applyMagazineStyleProps,
   CALENDLY_CSS, CALENDLY_JS,
 } from './shared.js';
 
@@ -345,6 +346,7 @@ async function buildADUConstructionPage() {
     await wait(500);
 
     await applyCTAStyleProps(v);
+    await applyMagazineStyleProps(v);
   }
 
   // ═══════════════ BUILD ELEMENTS ═══════════════
@@ -659,8 +661,17 @@ async function buildADUConstructionPage() {
   await safeCall('append:process', () => body.append(procSection));
   logDetail('Section 4: Process appended', 'ok');
 
-  // SECTION 5: CTA
-  log('Building Section 5: CTA...');
+  // SECTION 5: MAGAZINE
+  log('Building Section 5: Magazine...');
+  await buildMagazineSection(body, v, {
+    url: 'https://online.fliphtml5.com/avorino/zgke/#p=2',
+    title: 'ADU Construction Magazine',
+    heading: 'Your Complete ADU Guide',
+    desc: 'Everything you need to know about building an ADU in Orange County — regulations, costs, timelines, and design inspiration.',
+  });
+
+  // SECTION 6: CTA
+  log('Building Section 6: CTA...');
   await buildCTASection(
     body, v,
     'Get your ADU estimate',
