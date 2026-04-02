@@ -1,29 +1,36 @@
 /*
   Avorino Magazine Embed
-  Injects a FlipHTML5 magazine section into pages via data attributes.
-  Add to any page's footer code with:
-    <script src="...avorino-magazine-embed.js"
-      data-magazine-url="https://online.fliphtml5.com/avorino/..."
-      data-magazine-title="..."
-      data-magazine-heading="..."
-      data-magazine-desc="..."
-      data-magazine-insert="before-cta|after-hero|end"
-    ></script>
-  No dependencies beyond vanilla JS.
+  Injects FlipHTML5 magazine sections into pages.
+  Usage — add TWO script tags to footer code:
+
+  1. Config (inline):
+    <script>
+    window.__avMagazines = [{
+      url: "https://online.fliphtml5.com/avorino/...",
+      title: "Magazine Title",
+      heading: "Section Heading",
+      desc: "Description text.",
+      insert: "before-cta"
+    }];
+    </script>
+
+  2. This script (external):
+    <script src="...avorino-magazine-embed.js"></script>
+
+  No other dependencies.
 */
 (function () {
   'use strict';
 
-  /* ── Read config from the script tag's data attributes ── */
-  var scripts = document.querySelectorAll('script[data-magazine-url]');
-  if (!scripts.length) return;
+  var configs = window.__avMagazines;
+  if (!configs || !configs.length) return;
 
-  scripts.forEach(function (scriptTag) {
-    var url = scriptTag.getAttribute('data-magazine-url');
-    var title = scriptTag.getAttribute('data-magazine-title') || 'Magazine';
-    var heading = scriptTag.getAttribute('data-magazine-heading') || 'Explore Our Magazine';
-    var desc = scriptTag.getAttribute('data-magazine-desc') || '';
-    var insertMode = scriptTag.getAttribute('data-magazine-insert') || 'before-cta';
+  configs.forEach(function (cfg) {
+    var url = cfg.url;
+    var title = cfg.title || 'Magazine';
+    var heading = cfg.heading || 'Explore Our Magazine';
+    var desc = cfg.desc || '';
+    var insertMode = cfg.insert || 'before-cta';
 
     if (!url) return;
 
