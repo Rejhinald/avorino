@@ -22,6 +22,7 @@
 (function () {
   'use strict';
 
+  function initMagazines() {
   var configs = window.__avMagazines;
   if (!configs || !configs.length) return;
 
@@ -69,7 +70,13 @@
     /* ── Insert into page ── */
     var target = null;
     if (insertMode === 'before-cta') {
-      target = document.querySelector('.av-cta, [class*="cta-section"], section:last-of-type');
+      /* Try multiple selectors — Webflow generates class names from style names */
+      target = document.querySelector('[class*="av-cta"], [class*="cta-section"], .av-cta, .cta');
+      /* Fallback: last section before footer */
+      if (!target) {
+        var allSections = document.querySelectorAll('section');
+        if (allSections.length > 1) target = allSections[allSections.length - 1];
+      }
     } else if (insertMode === 'after-hero') {
       target = document.querySelector('[id*="hero"]');
       if (target) target = target.nextElementSibling;
@@ -80,7 +87,13 @@
     if (target && target.parentNode) {
       target.parentNode.insertBefore(section, target);
     } else {
-      document.body.appendChild(section);
+      /* Ultimate fallback: append before the footer or at end of body */
+      var footer = document.querySelector('footer, [class*="footer"]');
+      if (footer && footer.parentNode) {
+        footer.parentNode.insertBefore(section, footer);
+      } else {
+        document.body.appendChild(section);
+      }
     }
 
     /* ── Interaction logic ── */
@@ -132,6 +145,15 @@
       if (e.key === 'Escape' && isActive) deactivateMagazine();
     });
   });
+
+  } /* end initMagazines */
+
+  /* ── Run when DOM is ready ── */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMagazines);
+  } else {
+    initMagazines();
+  }
 
   /* ── Inject styles (once) ── */
   if (document.getElementById('av-magazine-styles')) return;
