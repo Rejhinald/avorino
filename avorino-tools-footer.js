@@ -4,7 +4,7 @@
   gsap.registerPlugin(ScrollTrigger);
 
   /* ── Preserve original text before avorino-animations.js modifies DOM ── */
-  document.querySelectorAll('#tl-hero h1, .av-cta-heading, [data-animate="char-cascade"]').forEach(function(el) {
+  document.querySelectorAll('.av-cta-heading').forEach(function(el) {
     if (!el.dataset.origText) el.dataset.origText = el.textContent.trim();
   });
 
@@ -67,12 +67,7 @@
     var scrollHint = hero.querySelector('[class*="scroll-hint"]');
 
     if (label) { label.removeAttribute('data-animate'); gsap.fromTo(label, { opacity: 0, y: 20 }, { opacity: 0.45, y: 0, duration: 0.8, delay: 0.2, ease: 'power3.out' }); }
-    if (h1) {
-      h1.removeAttribute('data-animate');
-      var chars = splitIntoChars(h1);
-      gsap.set(chars, { yPercent: 120, opacity: 0, rotateX: -90, filter: 'blur(8px)' });
-      gsap.to(chars, { yPercent: 0, opacity: 1, rotateX: 0, filter: 'blur(0px)', duration: 1.2, stagger: 0.025, ease: 'elastic.out(1, 0.6)', delay: 0.4 });
-    }
+    /* h1 uses blur-focus handled by avorino-animations.js — no override needed */
     if (goldLine) gsap.fromTo(goldLine, { width: 0 }, { width: '80px', duration: 1.2, delay: 1.0, ease: 'power3.out' });
     if (subtitle) { subtitle.removeAttribute('data-animate'); gsap.to(subtitle, { opacity: 0.55, filter: 'blur(0px)', duration: 1.0, delay: 1.3, ease: 'power3.out' }); }
     if (scrollHint) { scrollHint.removeAttribute('data-animate'); gsap.to(scrollHint, { opacity: 0.5, duration: 0.8, delay: 2.0, ease: 'power2.out' }); }
@@ -427,9 +422,9 @@
     iframe.title = title;
     iframe.loading = 'lazy';
     iframe.style.width = '100%';
+    iframe.style.height = '100vh';
     iframe.style.minHeight = '700px';
     iframe.style.border = 'none';
-    iframe.style.borderRadius = 'inherit';
     iframe.style.display = 'block';
     holder.innerHTML = '';
     holder.appendChild(iframe);

@@ -22,21 +22,24 @@ const TOOL_INDEX = 0;
 const TOOLS = [
   {
     slug: 'adu-cost-estimator', name: 'ADU Cost Estimator',
-    subtitle: 'Get an instant estimate for your ADU project.',
+    subtitle: 'Get an instant, detailed cost breakdown for your ADU project — by city, size, finish level, and ADU type. Powered by real 2025 Orange County construction data.',
     embedUrl: 'https://aducost.avorino.com/',
     title: 'ADU Cost Estimator — Avorino', seoDesc: 'Estimate your ADU construction cost in Orange County.',
+    preview: 'cost',
   },
   {
     slug: 'roi-calculator', name: 'ROI Calculator',
-    subtitle: 'Calculate your return on investment for an ADU.',
+    subtitle: 'See your projected rental income, property value increase, and payback timeline. Make confident investment decisions backed by real Orange County market data.',
     embedUrl: 'https://roi-estimator.avorino.com/',
     title: 'ROI Calculator — Avorino', seoDesc: 'Calculate ADU return on investment for your Orange County property.',
+    preview: 'roi',
   },
   {
-    slug: 'adu-eligibility', name: 'ADU Eligibility',
-    subtitle: 'Check if your property qualifies for an ADU.',
+    slug: 'adu-eligibility', name: 'ADU Loan Qualifier',
+    subtitle: 'Check your financing eligibility in 60 seconds. Get personalized loan options, interest rates, and monthly payment estimates tailored to your property and budget.',
     embedUrl: 'https://aduloan.avorino.com/',
-    title: 'ADU Eligibility Check — Avorino', seoDesc: 'Check ADU eligibility and loan qualification for your Orange County property.',
+    title: 'ADU Loan Qualifier — Avorino', seoDesc: 'Check ADU eligibility and loan qualification for your Orange County property.',
+    preview: 'loan',
   },
 ];
 
@@ -44,8 +47,8 @@ const TOOL = TOOLS[TOOL_INDEX];
 const OTHER_TOOLS = TOOLS.filter((_, i) => i !== TOOL_INDEX);
 
 const HEAD_CODE = [
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@main/avorino-responsive.css">',
-  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@main/avorino-nav-footer.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@b14c0ca/avorino-responsive.css">',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@b14c0ca/avorino-nav-footer.css">',
   CALENDLY_CSS,
 ].join('\n');
 const FOOTER_CODE = [
@@ -53,8 +56,8 @@ const FOOTER_CODE = [
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>',
   '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>',
   '<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>',
-  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@main/avorino-animations.js"><\/script>',
-  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@main/avorino-tools-footer.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@b14c0ca/avorino-animations.js"><\/script>',
+  '<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@b14c0ca/avorino-tools-footer.js"><\/script>',
   CALENDLY_JS,
 ].join('\n');
 
@@ -86,8 +89,17 @@ async function buildToolPage() {
   const tlIframe = await getOrCreateStyle('tl-iframe');
   const tlRelatedGrid = await getOrCreateStyle('tl-related-grid');
   const tlRelatedCard = await getOrCreateStyle('tl-related-card');
+  const tlRelatedPreview = await getOrCreateStyle('tl-related-preview');
   const tlRelatedTitle = await getOrCreateStyle('tl-related-title');
   const tlRelatedDesc = await getOrCreateStyle('tl-related-desc');
+  const tlRelatedCta = await getOrCreateStyle('tl-related-cta');
+  const tlPreviewBar = await getOrCreateStyle('tl-preview-bar');
+  const tlPreviewBarAccent = await getOrCreateStyle('tl-preview-bar-accent');
+  const tlPreviewRow = await getOrCreateStyle('tl-preview-row');
+  const tlPreviewLabel = await getOrCreateStyle('tl-preview-label');
+  const tlPreviewValue = await getOrCreateStyle('tl-preview-value');
+  const tlPreviewGauge = await getOrCreateStyle('tl-preview-gauge');
+  const tlPreviewGaugeFill = await getOrCreateStyle('tl-preview-gauge-fill');
   const tlMb32 = await getOrCreateStyle('tl-mb-32');
   const tlMb64 = await getOrCreateStyle('tl-mb-64');
   const tlLabelLine = await getOrCreateStyle('tl-label-line');
@@ -144,14 +156,12 @@ async function buildToolPage() {
     });
     await wait(500);
 
-    // Embed container
+    // Embed container — full viewport
     await clearAndSet(await freshStyle('tl-embed'), 'tl-embed', {
-      'max-width': '960px', 'margin-left': 'auto', 'margin-right': 'auto',
+      'width': '100vw', 'margin-left': 'calc(-50vw + 50%)',
     });
     await clearAndSet(await freshStyle('tl-iframe'), 'tl-iframe', {
-      'width': '100%', 'min-height': '700px',
-      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
-      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
+      'width': '100%', 'height': '100vh', 'min-height': '700px',
       'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
     await wait(500);
@@ -167,16 +177,73 @@ async function buildToolPage() {
       'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
       'padding-top': '48px', 'padding-bottom': '48px',
       'padding-left': '40px', 'padding-right': '40px',
-      'text-decoration': 'none', 'display': 'block',
+      'text-decoration': 'none', 'display': 'flex', 'flex-direction': 'column',
+      'grid-row-gap': '24px', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
+    });
+    await clearAndSet(await freshStyle('tl-related-preview'), 'tl-related-preview', {
+      'display': 'flex', 'flex-direction': 'column', 'grid-row-gap': '8px',
+      'padding-top': '20px', 'padding-bottom': '20px', 'padding-left': '20px', 'padding-right': '20px',
+      'border-top-left-radius': '8px', 'border-top-right-radius': '8px',
+      'border-bottom-left-radius': '8px', 'border-bottom-right-radius': '8px',
+      'background-color': 'rgba(201, 169, 110, 0.04)',
     });
     await clearAndSet(await freshStyle('tl-related-title'), 'tl-related-title', {
       'font-family': 'DM Serif Display', 'font-size': v['av-text-h3'],
       'line-height': '1.12', 'font-weight': '400',
-      'margin-bottom': '12px', 'color': v['av-cream'],
+      'color': v['av-cream'],
     });
     await clearAndSet(await freshStyle('tl-related-desc'), 'tl-related-desc', {
       'font-family': 'DM Sans', 'font-size': v['av-text-sm'],
-      'line-height': '1.7', 'opacity': '0.6', 'color': v['av-cream'],
+      'line-height': '1.7', 'opacity': '0.5', 'color': v['av-cream'],
+    });
+    await clearAndSet(await freshStyle('tl-related-cta'), 'tl-related-cta', {
+      'font-family': 'DM Sans', 'font-size': '14px', 'font-weight': '500',
+      'letter-spacing': '0.08em', 'text-transform': 'uppercase',
+      'color': 'rgba(201, 169, 110, 0.7)', 'margin-top': '8px',
+    });
+    await clearAndSet(await freshStyle('tl-preview-bar'), 'tl-preview-bar', {
+      'height': '3px',
+      'border-top-left-radius': '2px', 'border-top-right-radius': '2px',
+      'border-bottom-left-radius': '2px', 'border-bottom-right-radius': '2px',
+      'background-color': 'rgba(201, 169, 110, 0.2)',
+    });
+    await clearAndSet(await freshStyle('tl-preview-bar-accent'), 'tl-preview-bar-accent', {
+      'background-color': 'rgba(201, 169, 110, 0.45)',
+    });
+    await clearAndSet(await freshStyle('tl-preview-row'), 'tl-preview-row', {
+      'display': 'flex', 'justify-content': 'space-between', 'align-items': 'baseline',
+    });
+    await clearAndSet(await freshStyle('tl-preview-label'), 'tl-preview-label', {
+      'font-family': 'DM Sans', 'font-size': '11px', 'font-weight': '500',
+      'letter-spacing': '0.15em', 'text-transform': 'uppercase',
+      'color': 'rgba(240, 237, 232, 0.3)',
+    });
+    await clearAndSet(await freshStyle('tl-preview-value'), 'tl-preview-value', {
+      'font-family': 'DM Serif Display', 'font-size': '22px',
+      'color': 'rgba(201, 169, 110, 0.7)', 'letter-spacing': '-0.02em',
+    });
+    await clearAndSet(await freshStyle('tl-preview-gauge'), 'tl-preview-gauge', {
+      'width': '48px', 'height': '48px',
+      'border-top-left-radius': '50%', 'border-top-right-radius': '50%',
+      'border-bottom-left-radius': '50%', 'border-bottom-right-radius': '50%',
+      'border-top-width': '2px', 'border-bottom-width': '2px',
+      'border-left-width': '2px', 'border-right-width': '2px',
+      'border-top-color': 'rgba(201, 169, 110, 0.1)', 'border-bottom-color': 'rgba(201, 169, 110, 0.1)',
+      'border-left-color': 'rgba(201, 169, 110, 0.1)', 'border-right-color': 'rgba(201, 169, 110, 0.1)',
+      'border-top-style': 'solid', 'border-bottom-style': 'solid',
+      'border-left-style': 'solid', 'border-right-style': 'solid',
+      'position': 'relative',
+    });
+    await clearAndSet(await freshStyle('tl-preview-gauge-fill'), 'tl-preview-gauge-fill', {
+      'position': 'absolute', 'top': '-2px', 'left': '-2px', 'right': '-2px', 'bottom': '-2px',
+      'border-top-left-radius': '50%', 'border-top-right-radius': '50%',
+      'border-bottom-left-radius': '50%', 'border-bottom-right-radius': '50%',
+      'border-top-width': '2px', 'border-bottom-width': '2px',
+      'border-left-width': '2px', 'border-right-width': '2px',
+      'border-top-color': 'rgba(201, 169, 110, 0.5)', 'border-right-color': 'rgba(201, 169, 110, 0.3)',
+      'border-bottom-color': 'transparent', 'border-left-color': 'transparent',
+      'border-top-style': 'solid', 'border-bottom-style': 'solid',
+      'border-left-style': 'solid', 'border-right-style': 'solid',
     });
     await wait(500);
 
@@ -217,7 +284,7 @@ async function buildToolPage() {
   heroH.setTag('h1');
   heroH.setStyles([s.headingXL]);
   heroH.setTextContent(TOOL.name);
-  heroH.setAttribute('data-animate', 'char-cascade');
+  heroH.setAttribute('data-animate', 'blur-focus');
 
   const heroGoldLine = heroOverlay.append(webflow.elementPresets.DOM);
   heroGoldLine.setTag('div');
@@ -298,6 +365,59 @@ async function buildToolPage() {
     card.setAttribute('href', `/${tool.slug}`);
     card.setAttribute('data-animate', 'fade-up');
 
+    // CSS preview visual
+    const preview = card.append(webflow.elementPresets.DOM);
+    preview.setTag('div');
+    preview.setStyles([tlRelatedPreview]);
+
+    if (tool.preview === 'cost') {
+      // Cost preview: 3 bars + estimated total
+      const bar1 = preview.append(webflow.elementPresets.DOM);
+      bar1.setTag('div'); bar1.setStyles([tlPreviewBar]);
+      bar1.setAttribute('style', 'width:65%');
+      const bar2 = preview.append(webflow.elementPresets.DOM);
+      bar2.setTag('div'); bar2.setStyles([tlPreviewBar]);
+      bar2.setAttribute('style', 'width:40%');
+      const bar3 = preview.append(webflow.elementPresets.DOM);
+      bar3.setTag('div'); bar3.setStyles([tlPreviewBar, tlPreviewBarAccent]);
+      bar3.setAttribute('style', 'width:85%');
+      const row = preview.append(webflow.elementPresets.DOM);
+      row.setTag('div'); row.setStyles([tlPreviewRow]);
+      const lbl = row.append(webflow.elementPresets.DOM);
+      lbl.setTag('span'); lbl.setStyles([tlPreviewLabel]); lbl.setTextContent('Estimated Cost');
+      const val = row.append(webflow.elementPresets.DOM);
+      val.setTag('span'); val.setStyles([tlPreviewValue]); val.setTextContent('$185K');
+    } else if (tool.preview === 'roi') {
+      // ROI preview: stat row + bars
+      const row = preview.append(webflow.elementPresets.DOM);
+      row.setTag('div'); row.setStyles([tlPreviewRow]);
+      const lbl = row.append(webflow.elementPresets.DOM);
+      lbl.setTag('span'); lbl.setStyles([tlPreviewLabel]); lbl.setTextContent('Annual Return');
+      const val = row.append(webflow.elementPresets.DOM);
+      val.setTag('span'); val.setStyles([tlPreviewValue]); val.setTextContent('18.4%');
+      const bar1 = preview.append(webflow.elementPresets.DOM);
+      bar1.setTag('div'); bar1.setStyles([tlPreviewBar]);
+      bar1.setAttribute('style', 'width:35%');
+      const bar2 = preview.append(webflow.elementPresets.DOM);
+      bar2.setTag('div'); bar2.setStyles([tlPreviewBar]);
+      bar2.setAttribute('style', 'width:55%');
+      const bar3 = preview.append(webflow.elementPresets.DOM);
+      bar3.setTag('div'); bar3.setStyles([tlPreviewBar, tlPreviewBarAccent]);
+      bar3.setAttribute('style', 'width:100%');
+    } else if (tool.preview === 'loan') {
+      // Loan preview: gauge + amount
+      const row = preview.append(webflow.elementPresets.DOM);
+      row.setTag('div'); row.setStyles([tlPreviewRow]);
+      const gauge = row.append(webflow.elementPresets.DOM);
+      gauge.setTag('div'); gauge.setStyles([tlPreviewGauge]);
+      const gaugeFill = gauge.append(webflow.elementPresets.DOM);
+      gaugeFill.setTag('div'); gaugeFill.setStyles([tlPreviewGaugeFill]);
+      const val = row.append(webflow.elementPresets.DOM);
+      val.setTag('span'); val.setStyles([tlPreviewValue]); val.setTextContent('$350K');
+      const lbl = preview.append(webflow.elementPresets.DOM);
+      lbl.setTag('span'); lbl.setStyles([tlPreviewLabel]); lbl.setTextContent('Pre-Qualified');
+    }
+
     const title = card.append(webflow.elementPresets.DOM);
     title.setTag('h3');
     title.setStyles([tlRelatedTitle]);
@@ -307,6 +427,11 @@ async function buildToolPage() {
     desc.setTag('p');
     desc.setStyles([tlRelatedDesc]);
     desc.setTextContent(tool.subtitle);
+
+    const cta = card.append(webflow.elementPresets.DOM);
+    cta.setTag('span');
+    cta.setStyles([tlRelatedCta]);
+    cta.setTextContent('Try This Tool →');
   });
 
   await safeCall('append:related', () => body.append(relatedSection));
