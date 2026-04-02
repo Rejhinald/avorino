@@ -48,8 +48,8 @@
       }
 
       var children = dropdown.querySelectorAll(
-        '.nav-dd-service-card, .nav-dd-link, .nav-dd-link--featured, ' +
-        '.nav-dd-city-col, .nav-dd-label, .nav-dd-divider'
+        '.nav-dd-service-card, .nav-dd-tool-card, .nav-dd-link, .nav-dd-link--featured, ' +
+        '.nav-dd-city-col, .nav-dd-label, .nav-dd-tools-badge, .nav-dd-divider'
       );
 
       for (var i = 0; i < children.length; i++) {

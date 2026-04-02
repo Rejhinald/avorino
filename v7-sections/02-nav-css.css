@@ -179,10 +179,12 @@ nav.site-nav.nav--dropdown-open .nav-link:hover {
 }
 
 .nav-item.is-open .nav-dd-service-card,
+.nav-item.is-open .nav-dd-tool-card,
 .nav-item.is-open .nav-dd-link,
 .nav-item.is-open .nav-dd-link--featured,
 .nav-item.is-open .nav-dd-city-col,
 .nav-item.is-open .nav-dd-label,
+.nav-item.is-open .nav-dd-tools-badge,
 .nav-item.is-open .nav-dd-divider {
   opacity: 0;
   animation: navItemFadeUp 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
@@ -375,6 +377,240 @@ nav.site-nav.nav--dropdown-open .nav-link:hover {
 .nav-dd-city:hover {
   opacity: 1;
   color: #c8222a;
+}
+
+/* ═══════════════════════════════════════════
+   TOOLS DROPDOWN — rich cards with mini visuals
+   ═══════════════════════════════════════════ */
+.nav-dd-tools-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.nav-dd-tools-header .nav-dd-label {
+  margin-bottom: 0;
+}
+
+.nav-dd-tools-badge {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(201, 169, 110, 0.85);
+  background-color: rgba(201, 169, 110, 0.08);
+  border: 1px solid rgba(201, 169, 110, 0.12);
+  padding: 6px 14px;
+  border-radius: 100px;
+}
+
+.nav-dd-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+/* Tool card — larger than service cards */
+.nav-dd-tool-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 32px 28px;
+  text-decoration: none;
+  border-radius: 12px;
+  transition: background-color 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-dd-tool-card:hover {
+  background-color: rgba(201, 169, 110, 0.04);
+}
+
+/* Gold top accent on hover */
+.nav-dd-tool-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to right, rgba(201, 169, 110, 0.6), rgba(201, 169, 110, 0.1));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.nav-dd-tool-card:hover::before {
+  transform: scaleX(1);
+}
+
+/* Icon */
+.nav-dd-tool-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background-color: rgba(201, 169, 110, 0.06);
+  border: 1px solid rgba(201, 169, 110, 0.1);
+  color: rgba(201, 169, 110, 0.7);
+  margin-bottom: 20px;
+  transition: opacity 0.3s ease, border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-dd-tool-card:hover .nav-dd-tool-icon {
+  color: rgba(201, 169, 110, 0.95);
+  border-color: rgba(201, 169, 110, 0.25);
+  background-color: rgba(201, 169, 110, 0.1);
+}
+
+.nav-dd-tool-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Text */
+.nav-dd-tool-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.nav-dd-tool-title {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 21px;
+  font-weight: 400;
+  color: #f0ede8;
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+
+.nav-dd-tool-card:hover .nav-dd-tool-title {
+  opacity: 1;
+  color: #ffffff;
+}
+
+.nav-dd-tool-desc {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.65;
+  color: #f0ede8;
+  opacity: 0.3;
+  transition: opacity 0.3s ease;
+}
+
+.nav-dd-tool-card:hover .nav-dd-tool-desc {
+  opacity: 0.5;
+}
+
+.nav-dd-tool-cta {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(201, 169, 110, 0.65);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease, gap 0.3s ease;
+}
+
+.nav-dd-tool-card:hover .nav-dd-tool-cta {
+  opacity: 1;
+  transform: translateY(0);
+  color: rgba(201, 169, 110, 0.9);
+}
+
+.nav-dd-tool-cta svg {
+  transition: transform 0.3s ease;
+}
+
+.nav-dd-tool-card:hover .nav-dd-tool-cta svg {
+  transform: translateX(2px);
+}
+
+/* Mini visual previews (right-aligned, subtle) */
+.nav-dd-tool-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 16px 0 0;
+  border-top: 1px solid rgba(201, 169, 110, 0.06);
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+}
+
+.nav-dd-tool-card:hover .nav-dd-tool-visual {
+  opacity: 0.7;
+}
+
+/* Horizontal bars (cost estimator) */
+.nav-dd-tv-bar {
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(to right, rgba(201, 169, 110, 0.35), rgba(201, 169, 110, 0.08));
+}
+
+.nav-dd-tv-bar--accent {
+  background: linear-gradient(to right, rgba(201, 169, 110, 0.6), rgba(201, 169, 110, 0.15));
+}
+
+/* Vertical bars (ROI) */
+.nav-dd-tv-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 32px;
+  width: 100%;
+}
+
+.nav-dd-tv-vbar {
+  flex: 1;
+  border-radius: 2px 2px 0 0;
+  background: rgba(201, 169, 110, 0.2);
+}
+
+.nav-dd-tv-vbar--accent {
+  background: rgba(201, 169, 110, 0.45);
+}
+
+/* Gauge ring (loan) */
+.nav-dd-tv-gauge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid rgba(201, 169, 110, 0.1);
+  position: relative;
+}
+
+.nav-dd-tv-gauge-fill {
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: rgba(201, 169, 110, 0.5);
+  border-right-color: rgba(201, 169, 110, 0.3);
+  transform: rotate(-45deg);
+}
+
+.nav-dd-tv-amount {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 18px;
+  color: rgba(201, 169, 110, 0.6);
+  letter-spacing: -0.02em;
+  line-height: 1;
 }
 
 /* ═══════════════════════════════════════════
