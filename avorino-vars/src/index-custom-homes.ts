@@ -94,6 +94,13 @@ const SERVICE_DATA: ServiceData = {
   },
 
   ctaHeading: 'Ready to build your dream home?',
+
+  magazine: {
+    url: 'https://online.fliphtml5.com/avorino/Copy-of-Custom-Home---Magazine/#p=1',
+    title: 'Custom Homes Magazine',
+    heading: 'Custom Home Inspiration',
+    desc: 'Explore our portfolio of luxury custom homes built across Orange County — from modern architectural statements to timeless estate residences.',
+  },
 };
 
 // ── Panel UI ──

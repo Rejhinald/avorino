@@ -610,6 +610,7 @@ export async function buildMagazineSection(
   const magSection = await getOrCreateStyle('av-mag-section');
   const magInner = await getOrCreateStyle('av-mag-inner');
   const magHeader = await getOrCreateStyle('av-mag-header');
+  const magLabel = await getOrCreateStyle('av-mag-label');
   const magHeading = await getOrCreateStyle('av-mag-heading');
   const magDesc = await getOrCreateStyle('av-mag-desc');
   const magFrame = await getOrCreateStyle('av-mag-frame');
@@ -631,8 +632,7 @@ export async function buildMagazineSection(
 
   const labelEl = header.append(webflow.elementPresets.DOM);
   labelEl.setTag('div');
-  const labelStyle = await getOrCreateStyle('av-label');
-  labelEl.setStyles([labelStyle]);
+  labelEl.setStyles([magLabel]);
   labelEl.setTextContent('// Magazine');
   labelEl.setAttribute('data-animate', 'fade-up');
 
@@ -677,6 +677,11 @@ export async function applyMagazineStyleProps(v: Record<string, any>) {
   });
   await clearAndSet(await freshStyle('av-mag-header'), 'av-mag-header', {
     'margin-bottom': v['av-gap-md'],
+  });
+  await clearAndSet(await freshStyle('av-mag-label'), 'av-mag-label', {
+    'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
+    'font-weight': '400', 'letter-spacing': '0.3em', 'text-transform': 'uppercase',
+    'color': v['av-cream'], 'opacity': '0.35', 'margin-bottom': '28px',
   });
   await clearAndSet(await freshStyle('av-mag-heading'), 'av-mag-heading', {
     'font-family': 'DM Serif Display', 'font-size': v['av-text-h2'],
@@ -904,6 +909,7 @@ export interface ServiceData {
   process: ServiceProcess[];
   whyAvorino: { heading: string; body: string; stats?: { value: string; label: string }[] };
   ctaHeading: string;
+  magazine?: MagazineConfig;
 }
 
 export async function buildServicePage(data: ServiceData) {
@@ -1522,8 +1528,15 @@ export async function buildServicePage(data: ServiceData) {
   await safeCall('append:why', () => body.append(whySection));
   logDetail('Section 5: Why Avorino appended', 'ok');
 
-  // SECTION 6: CTA
-  log('Building Section 6: CTA...');
+  // SECTION 6: MAGAZINE (optional)
+  if (data.magazine) {
+    log('Building Section 6: Magazine...');
+    await buildMagazineSection(body, v, data.magazine);
+    await applyMagazineStyleProps(v);
+  }
+
+  // SECTION 7: CTA
+  log('Building Section 7: CTA...');
   await buildCTASection(
     body, v,
     data.ctaHeading,

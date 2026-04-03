@@ -1849,6 +1849,67 @@
   }
 
   /* ═══════════════════════════════════════════════
+     MAGAZINE — click-to-interact overlay + iframe injection
+     Targets #magazine-holder built by Designer API
+     ═══════════════════════════════════════════════ */
+  function initMagazine() {
+    var holder = document.getElementById('magazine-holder');
+    if (!holder) return;
+
+    var url = holder.getAttribute('data-magazine-url');
+    var title = holder.getAttribute('data-magazine-title') || 'Magazine';
+    if (!url) return;
+
+    holder.innerHTML =
+      '<div class="av-mag-overlay" style="position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,rgba(10,10,10,0.7) 0%,rgba(10,10,10,0.92) 100%);cursor:pointer;transition:opacity 0.4s ease;">' +
+        '<div style="display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;">' +
+          '<svg width="48" height="48" viewBox="0 0 48 48" fill="none" style="transition:transform 0.3s ease;">' +
+            '<rect x="6" y="8" width="36" height="32" rx="3" stroke="rgba(201,169,110,0.6)" stroke-width="1.5"/>' +
+            '<path d="M6 16h36" stroke="rgba(201,169,110,0.3)" stroke-width="1"/>' +
+            '<path d="M24 16v24" stroke="rgba(201,169,110,0.2)" stroke-width="1"/>' +
+          '</svg>' +
+          '<span style="font-family:DM Serif Display,Georgia,serif;font-size:28px;color:#f0ede8;opacity:0.9;">' + title + '</span>' +
+          '<span style="font-family:DM Sans,system-ui,sans-serif;font-size:14px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:rgba(201,169,110,0.75);">Click to explore magazine</span>' +
+          '<span style="font-family:DM Sans,system-ui,sans-serif;font-size:12px;color:#f0ede8;opacity:0.25;margin-top:4px;">Use arrows or swipe to flip pages</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="av-mag-close" style="display:none;position:absolute;top:16px;right:20px;z-index:4;font-family:DM Sans,system-ui,sans-serif;font-size:13px;font-weight:500;letter-spacing:0.06em;color:rgba(201,169,110,0.7);background:rgba(17,17,17,0.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:8px 16px;border-radius:100px;border:1px solid rgba(201,169,110,0.12);cursor:pointer;align-items:center;gap:6px;">\u2715 Back to page</div>' +
+      '<iframe style="width:100%;height:100%;border:none;display:block;pointer-events:none;" src="" data-src="' + url + '" title="' + title + '" allowfullscreen></iframe>';
+
+    holder.style.position = 'relative';
+
+    var overlay = holder.querySelector('.av-mag-overlay');
+    var closeBtn = holder.querySelector('.av-mag-close');
+    var iframe = holder.querySelector('iframe');
+    var isActive = false;
+
+    function activate() {
+      if (isActive) return;
+      isActive = true;
+      if (!iframe.src || iframe.src === window.location.href) iframe.src = iframe.getAttribute('data-src');
+      overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none';
+      setTimeout(function () { overlay.style.display = 'none'; }, 400);
+      iframe.style.pointerEvents = 'auto';
+      closeBtn.style.display = 'flex';
+      if (window.__lenis) window.__lenis.stop();
+    }
+
+    function deactivate() {
+      if (!isActive) return;
+      isActive = false;
+      overlay.style.display = 'flex';
+      setTimeout(function () { overlay.style.opacity = '1'; overlay.style.pointerEvents = 'auto'; }, 50);
+      iframe.style.pointerEvents = 'none';
+      closeBtn.style.display = 'none';
+      if (window.__lenis) window.__lenis.start();
+    }
+
+    overlay.addEventListener('click', activate);
+    closeBtn.addEventListener('click', function (e) { e.stopPropagation(); deactivate(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && isActive) deactivate(); });
+  }
+
+  /* ═══════════════════════════════════════════════
      INIT
      ═══════════════════════════════════════════════ */
   window.addEventListener('DOMContentLoaded', function() {
@@ -1856,6 +1917,7 @@
     initTypesShowcase();
     initProcessTimeline();
     initScrollAnimations();
+    initMagazine();
   });
 
 })();
