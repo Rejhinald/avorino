@@ -1559,7 +1559,7 @@
 
     /* ── If no pinned container, build carousel from existing rows ── */
     if (!pinned) {
-      var rows = Array.prototype.slice.call(section.querySelectorAll('.sv-process-row'));
+      var rows = Array.prototype.slice.call(section.querySelectorAll('.sv-process-row, [class*="sv-process-step"]'));
       if (!rows.length) { initProcessFallback(); return; }
 
       /* Create carousel container */
@@ -1572,9 +1572,9 @@
 
       /* Transform each row into a card */
       rows.forEach(function(row) {
-        var num = row.querySelector('.sv-process-num');
-        var title = row.querySelector('.sv-process-title');
-        var desc = row.querySelector('.sv-process-desc');
+        var num = row.querySelector('.sv-process-num, [class*="sv-process-step-num"]');
+        var title = row.querySelector('.sv-process-title, [class*="sv-process-step-title"]');
+        var desc = row.querySelector('.sv-process-desc, [class*="sv-process-step-desc"]');
         var card = document.createElement('div');
         card.className = 'sv-process-card';
         var cardNum = document.createElement('div');
@@ -1599,9 +1599,9 @@
       pinned.appendChild(_track);
       pinned.appendChild(_nav);
 
-      /* Remove old rows and dividers, insert carousel after header */
-      var header = section.querySelector('.sv-process-header');
-      var toRemove = Array.prototype.slice.call(section.querySelectorAll('.sv-process-row, .sv-process-divider'));
+      /* Remove old rows/steps and dividers, insert carousel after header */
+      var header = section.querySelector('[class*="sv-process-header"]');
+      var toRemove = Array.prototype.slice.call(section.querySelectorAll('.sv-process-row, [class*="sv-process-step"], [class*="sv-process-steps"], .sv-process-divider, [class*="sv-process-bar"]'));
       toRemove.forEach(function(el) { el.remove(); });
       if (header) {
         header.insertAdjacentElement('afterend', pinned);
