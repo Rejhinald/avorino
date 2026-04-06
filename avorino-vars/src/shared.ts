@@ -912,6 +912,60 @@ export interface ServiceData {
   magazine?: MagazineConfig;
 }
 
+export interface CommercialPageData {
+  slug: string;
+  pageName: string;
+  title: string;
+  seoDesc: string;
+
+  hero: {
+    label: string;
+    title: string;
+    subtitle: string;
+  };
+
+  trustStrip: {
+    words: string[];
+    proof: { value: string; label: string };
+  };
+
+  comparison: {
+    heading: string;
+    items: { typical: string; avorino: string }[];
+    proof: { number: string; text: string; subtext?: string };
+  };
+
+  preconstruction: {
+    heading: string;
+    subtitle: string;
+    layers: { title: string; desc: string }[];
+  };
+
+  projectTypes: {
+    heading: string;
+    subtitle: string;
+    types: { number: string; title: string; desc: string }[];
+  };
+
+  idealFit: {
+    heading: string;
+    body: string;
+    fits: string[];
+    proofLine: string;
+  };
+
+  process: {
+    heading: string;
+    steps: { number: string; title: string; desc: string }[];
+  };
+
+  cta: {
+    heading: string;
+    primaryBtn: { text: string; href: string };
+    secondaryBtn: { text: string; href: string };
+  };
+}
+
 export async function buildServicePage(data: ServiceData) {
   const v = await getAvorinVars();
   logDetail('Loaded Avorino variable collection', 'ok');
