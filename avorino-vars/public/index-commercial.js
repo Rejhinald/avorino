@@ -1,8 +1,8 @@
 // ════════════════════════════════════════════════════════════════
-// Avorino Builder — COMMERCIAL PAGE
+// Avorino Builder — COMMERCIAL PAGE (Custom Builder)
 // Rename this to index.ts to build the Commercial service page.
 // ════════════════════════════════════════════════════════════════
-import { webflow, log, logDetail, clearErrorLog, createAllVariables, buildServicePage, CALENDLY_CSS, CALENDLY_JS, } from './shared.js';
+import { webflow, log, logDetail, clearErrorLog, createAllVariables, buildCommercialPage, CALENDLY_CSS, CALENDLY_JS, } from './shared.js';
 const CDN = '0a5bf9d';
 const HEAD_CODE = [
     `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
@@ -19,70 +19,84 @@ const FOOTER_CODE = [
     `<script src="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-commercial-footer.js"><\/script>`,
     CALENDLY_JS,
 ].join('\n');
-const SERVICE_DATA = {
+const COMMERCIAL_DATA = {
     slug: 'commercial',
     pageName: 'Commercial',
     title: 'Commercial Construction in Orange County — Avorino Construction',
-    seoDesc: 'Commercial construction, tenant improvements, and restaurant buildouts in Orange County. Licensed contractor for retail, office, restaurant, and mixed-use projects. Code-compliant construction with ADA accessibility.',
-    heroLabel: '// Commercial',
-    heroTitle: 'Built for business',
-    heroSubtitle: 'Tenant improvements, restaurant buildouts, retail construction, and office renovations in Orange County. Code-compliant commercial construction that opens on time and on budget.',
-    approach: {
-        heading: 'Commercial demands a different standard',
-        body: 'Commercial construction operates under different codes, different timelines, and different stakes than residential. ADA compliance, fire-rated assemblies, commercial HVAC, grease traps, Type I hoods — we navigate the complexity so you can focus on your business. Every day of delay costs you revenue, which is why we build to schedules, not estimates.',
-        highlights: [
-            'ADA accessibility compliance from design through final inspection — no costly retrofits.',
-            'Commercial building code expertise — CBC, CFC, CPC, CMC, and CEC requirements understood and built to.',
-            'Health department coordination for restaurant and food-service projects.',
-            'Phased construction schedules that minimize revenue disruption for operating businesses.',
+    seoDesc: 'Select commercial construction in Orange County. Tenant improvements, restaurant buildouts, medical offices, and retail construction. Licensed General-B contractor with disciplined preconstruction, strong communication, and hands-on project management.',
+    hero: {
+        label: '// Commercial',
+        title: 'Select commercial construction, executed with precision.',
+        subtitle: 'Avorino delivers high-touch construction management for private commercial projects — disciplined coordination, strong communication, and a smoother owner experience from preconstruction through closeout.',
+    },
+    trustStrip: {
+        words: ['Responsive', 'Organized', 'Accountable', 'Selective'],
+        proof: { value: 'CA License #1107538', label: 'General-B · Irvine, CA' },
+    },
+    comparison: {
+        heading: 'Not the typical construction experience',
+        items: [
+            { typical: 'Updates when you chase them', avorino: 'Weekly owner reports, same-day responses' },
+            { typical: 'Preconstruction is a napkin estimate', avorino: 'Line-item budgets with scope-matched pricing' },
+            { typical: 'Your project competes with 15 others', avorino: 'Selective portfolio — fewer projects, deeper attention' },
+            { typical: 'Scope gaps surface during framing', avorino: 'Scope gaps caught and resolved in preconstruction' },
+            { typical: 'Punch list drags for months', avorino: 'Closeout managed with the same urgency as day one' },
+        ],
+        proof: {
+            number: '3',
+            text: 'Repeat commercial clients in the last 24 months.',
+            subtext: 'Owners who came back because the process worked.',
+        },
+    },
+    preconstruction: {
+        heading: 'Preconstruction that adds real value',
+        subtitle: 'Strong projects begin long before construction starts. We help clients think through scope, budgeting, coordination, and constructability early.',
+        layers: [
+            { title: 'Site Shell', desc: 'Understanding the raw commercial space — demising walls, slab, shell openings — before touching anything.' },
+            { title: 'Code & MEP Overlay', desc: 'Duct routing, electrical runs, plumbing risers, fire sprinkler mains. Identifying what the plans require and what the space demands.' },
+            { title: 'Procurement & Schedule', desc: 'Locking scopes, sequencing trades, and buying long-lead materials before the first hammer swings.' },
+            { title: 'Built Environment', desc: 'The build phase moves with clarity because preconstruction did the thinking.' },
         ],
     },
-    serviceTypes: [
-        {
-            number: '01',
-            title: 'Tenant Improvements',
-            desc: 'Transform raw or second-generation commercial space into your ideal business environment. Offices, clinics, salons, and professional spaces built to your brand and workflow.',
-            features: ['Space planning and partition layout', 'Commercial HVAC and electrical', 'ADA-compliant restrooms and access', 'IT infrastructure and low-voltage'],
-        },
-        {
-            number: '02',
-            title: 'Restaurant Buildout',
-            desc: 'Full restaurant construction from shell to service. Kitchen exhaust systems, grease interceptors, walk-in coolers, bar builds, and dining room finishes.',
-            features: ['Type I and Type II hood systems', 'Grease trap and interceptor installation', 'Health department plan check coordination', 'Bar and front-of-house millwork'],
-        },
-        {
-            number: '03',
-            title: 'Retail Construction',
-            desc: 'Storefront buildouts that create customer experiences. Display fixtures, lighting design, dressing rooms, checkout counters, and branded environments.',
-            features: ['Storefront glazing and signage prep', 'Custom display and fixture installation', 'Lighting design for merchandising', 'Security system pre-wire'],
-        },
-        {
-            number: '04',
-            title: 'Office Renovation',
-            desc: 'Modernize existing office space. Open-plan conversions, conference rooms, executive suites, and collaborative work areas with updated MEP systems.',
-            features: ['Open plan and private office hybrid layouts', 'Acoustic treatment and sound masking', 'Conference and collaboration spaces', 'Updated lighting and HVAC controls'],
-        },
-    ],
-    process: [
-        { number: '01', title: 'Scope & Code Review', desc: 'Evaluate the space, review lease requirements, identify code requirements (ADA, fire, health), and establish scope and budget framework.' },
-        { number: '02', title: 'Design & Permitting', desc: 'Architectural plans, MEP design, and full permit submission. Commercial plan check with building department, fire department, and health department as applicable.' },
-        { number: '03', title: 'Procurement & Scheduling', desc: 'Long-lead items ordered, subcontractors locked, and construction schedule published. Equipment procurement coordinated with kitchen/specialty vendors.' },
-        { number: '04', title: 'Construction', desc: 'Demolition, rough-in, framing, MEP installation, finishes. Daily progress tracking with project management communication to ownership.' },
-        { number: '05', title: 'Inspections & Turnover', desc: 'Final inspections, fire department sign-off, health department approval, Certificate of Occupancy. Keys handed over with your space ready for business.' },
-    ],
-    whyAvorino: {
-        heading: 'Your opening date is our deadline',
-        body: 'Commercial construction is about business outcomes. Lease clocks are running, staff is hired, inventory is ordered. We build to schedules with weekly milestone tracking because we understand that construction delays cost you more than just time — they cost revenue.',
-        stats: [
-            { value: '$80–300', label: 'Per sqft TI' },
-            { value: '6–16wk', label: 'Typical timeline' },
-            { value: '100%', label: 'Code compliance' },
+    projectTypes: {
+        heading: 'Where we add the most value',
+        subtitle: 'We work on select private commercial projects where planning, coordination, and responsiveness determine the outcome.',
+        types: [
+            { number: '01', title: 'Dental & Medical Offices', desc: 'ADA-compliant clinical buildouts with specialized MEP, sterilization plumbing, and health department coordination.' },
+            { number: '02', title: 'Restaurants & Food Service', desc: 'Full kitchen buildouts including Type I/II hoods, grease interceptors, walk-in coolers, and health department plan check.' },
+            { number: '03', title: 'Retail & Storefront', desc: 'Branded environments with storefront glazing, display fixtures, lighting design, and customer flow optimization.' },
+            { number: '04', title: 'Office Interiors', desc: 'Tenant improvements, open-plan conversions, conference suites, and updated MEP systems for modern workplaces.' },
         ],
     },
-    ctaHeading: 'Ready to build your business space?',
+    idealFit: {
+        heading: 'The projects we are best positioned for',
+        body: 'Avorino is a strong fit for private commercial projects where ownership values responsiveness, clean execution, and a contractor who stays on top of the process.',
+        fits: [
+            'Projects that require strong coordination across multiple trades',
+            'Owners who want direct, same-day communication with project leadership',
+            'Teams that value preconstruction rigor before breaking ground',
+            'Commercial work where service quality and accountability matter as much as price',
+            'Operators opening on a deadline who need schedule certainty',
+        ],
+        proofLine: 'Recent projects include restaurant buildouts, medical office TIs, and multi-unit retail — all in Orange County, all delivered to schedule.',
+    },
+    process: {
+        heading: 'How we execute',
+        steps: [
+            { number: '01', title: 'Review', desc: 'Plans, scope, site conditions, timeline goals, and practical constraints — understood before moving forward.' },
+            { number: '02', title: 'Mobilize', desc: 'Scopes locked, trades scheduled, long-lead items procured. Construction starts with momentum, not ambiguity.' },
+            { number: '03', title: 'Build', desc: 'Scheduling, trade coordination, field execution, and owner communication — managed with accountability and urgency.' },
+            { number: '04', title: 'Close', desc: 'Punch, documentation, final inspections, and handover — carried through with the same professionalism as day one.' },
+        ],
+    },
+    cta: {
+        heading: 'Planning a commercial project? Let\'s talk.',
+        primaryBtn: { text: 'Start the Conversation', href: '/schedule-a-meeting' },
+        secondaryBtn: { text: 'Call (714) 900-3676', href: 'tel:7149003676' },
+    },
 };
 // ── Panel UI ──
-document.getElementById('page-name').textContent = `${SERVICE_DATA.pageName}`;
+document.getElementById('page-name').textContent = `${COMMERCIAL_DATA.pageName}`;
 const headCodeEl = document.getElementById('head-code');
 const footerCodeEl = document.getElementById('footer-code');
 if (headCodeEl)
@@ -119,7 +133,7 @@ document.getElementById('build-page')?.addEventListener('click', async () => {
     clearErrorLog();
     logDetail('Starting Commercial page build...', 'info');
     try {
-        await buildServicePage(SERVICE_DATA);
+        await buildCommercialPage(COMMERCIAL_DATA);
     }
     catch (err) {
         log(`Error: ${err.message || err}`, 'error');
