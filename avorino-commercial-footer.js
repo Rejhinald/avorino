@@ -89,11 +89,12 @@
 
   /* ═══════════════════════════════════════════════
      HERO LIFECYCLE
+     Two teardown paths:
+       teardownHero()           — reversible (breakpoint resize)
+       disposeHeroPermanently() — one-way (scroll past comparison)
      ═══════════════════════════════════════════════ */
   function teardownHero(rt) {
-    if (rt.heroDisposed) return;
-    rt.heroDisposed = true;
-    if (rt.heroRaf) cancelAnimationFrame(rt.heroRaf);
+    if (rt.heroRaf) { cancelAnimationFrame(rt.heroRaf); rt.heroRaf = null; }
     if (rt.onHeroResize) rt.onHeroResize = null;
     if (rt.heroRenderer) {
       rt.heroRenderer.dispose();
@@ -101,6 +102,12 @@
       rt.heroRenderer.domElement.remove();
       rt.heroRenderer = null;
     }
+  }
+
+  function disposeHeroPermanently(rt) {
+    if (rt.heroDisposed) return;
+    teardownHero(rt);
+    rt.heroDisposed = true;
   }
 
   /* ═══════════════════════════════════════════════
@@ -988,7 +995,7 @@
       trigger: '#cm-comparison',
       start: 'top bottom',
       once: true,
-      onEnter: function() { teardownHero(runtime); },
+      onEnter: function() { disposeHeroPermanently(runtime); },
     });
 
     window.addEventListener('resize', onResize);
