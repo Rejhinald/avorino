@@ -132,9 +132,10 @@
       if (!rt.heroRenderer && !rt.heroDisposed) initCommercialHero(rt);
     }
 
-    // Desktop → Mobile: destroy precon (hero disposed separately via scroll)
-    if (!wasMobile && rt.isMobile && rt.preconRenderer) {
-      teardownPrecon(rt);
+    // Desktop → Mobile: destroy both precon and hero
+    if (!wasMobile && rt.isMobile) {
+      if (rt.preconRenderer) teardownPrecon(rt);
+      teardownHero(rt);
     }
   }
 

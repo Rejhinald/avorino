@@ -2007,6 +2007,23 @@ export async function buildCommercialPage(data: CommercialPageData) {
     await wait(500);
 
     await applyCTAStyleProps(v);
+
+    // CTA button variants (commercial-specific: primary red + ghost outline)
+    await clearAndSet(await freshStyle('av-cta-subtitle'), 'av-cta-subtitle', {
+      'font-family': 'DM Sans', 'font-size': '12px',
+      'letter-spacing': '0.3em', 'text-transform': 'uppercase',
+      'opacity': '0.4', 'margin-bottom': '32px', 'color': v['av-cream'],
+    });
+    await clearAndSet(await freshStyle('av-cta-btn-primary'), 'av-cta-btn-primary', {
+      'background-color': v['av-red'], 'color': v['av-cream'],
+    });
+    await clearAndSet(await freshStyle('av-cta-btn-ghost'), 'av-cta-btn-ghost', {
+      'background-color': 'rgba(240,237,232,0.08)', 'color': v['av-cream'],
+      'border-top-width': '1px', 'border-top-style': 'solid', 'border-top-color': 'rgba(240,237,232,0.2)',
+      'border-right-width': '1px', 'border-right-style': 'solid', 'border-right-color': 'rgba(240,237,232,0.2)',
+      'border-bottom-width': '1px', 'border-bottom-style': 'solid', 'border-bottom-color': 'rgba(240,237,232,0.2)',
+      'border-left-width': '1px', 'border-left-style': 'solid', 'border-left-color': 'rgba(240,237,232,0.2)',
+    });
   }
 
   // ═══════════════ BUILD ELEMENTS ═══════════════
@@ -2419,14 +2436,57 @@ export async function buildCommercialPage(data: CommercialPageData) {
   await safeCall('append:process', () => body.append(processSection));
   logDetail('Section 7: Process appended', 'ok');
 
-  // SECTION 8: CTA
+  // SECTION 8: CTA (inline — uses primary/ghost button variants)
   log('Building Section 8: CTA...');
-  await buildCTASection(
-    body, v,
-    data.cta.heading,
-    data.cta.primaryBtn.text, data.cta.primaryBtn.href,
-    data.cta.secondaryBtn.text, data.cta.secondaryBtn.href,
-  );
+  const cmCtaSection = await getOrCreateStyle('av-cta');
+  const cmCtaContainer = await getOrCreateStyle('av-cta-container');
+  const cmCtaHeading = await getOrCreateStyle('av-cta-heading');
+  const cmCtaSubtitle = await getOrCreateStyle('av-cta-subtitle');
+  const cmCtaBtn = await getOrCreateStyle('av-cta-btn');
+  const cmCtaBtnPrimary = await getOrCreateStyle('av-cta-btn-primary');
+  const cmCtaBtnGhost = await getOrCreateStyle('av-cta-btn-ghost');
+  const cmCtaBtns = await getOrCreateStyle('av-cta-btns');
+
+  const cta = webflow.elementBuilder(webflow.elementPresets.DOM);
+  cta.setTag('section');
+  cta.setStyles([cmCtaSection]);
+
+  const ctaC = cta.append(webflow.elementPresets.DOM);
+  ctaC.setTag('div');
+  ctaC.setStyles([cmCtaContainer]);
+
+  const ctaSub = ctaC.append(webflow.elementPresets.DOM);
+  ctaSub.setTag('div');
+  ctaSub.setStyles([cmCtaSubtitle]);
+  ctaSub.setTextContent('// Get Started');
+
+  const ctaH = ctaC.append(webflow.elementPresets.DOM);
+  ctaH.setTag('h2');
+  ctaH.setStyles([cmCtaHeading]);
+  ctaH.setTextContent(data.cta.heading);
+  ctaH.setAttribute('data-animate', 'word-stagger-elastic');
+
+  const btnsWrap = ctaC.append(webflow.elementPresets.DOM);
+  btnsWrap.setTag('div');
+  btnsWrap.setStyles([cmCtaBtns]);
+  btnsWrap.setAttribute('data-animate', 'fade-up');
+
+  const a1 = btnsWrap.append(webflow.elementPresets.DOM);
+  a1.setTag('a');
+  a1.setStyles([cmCtaBtn, cmCtaBtnPrimary]);
+  a1.setTextContent(data.cta.primaryBtn.text);
+  a1.setAttribute('href', data.cta.primaryBtn.href);
+  a1.setAttribute('data-magnetic', '');
+
+  const a2 = btnsWrap.append(webflow.elementPresets.DOM);
+  a2.setTag('a');
+  a2.setStyles([cmCtaBtn, cmCtaBtnGhost]);
+  a2.setTextContent(data.cta.secondaryBtn.text);
+  a2.setAttribute('href', data.cta.secondaryBtn.href);
+  a2.setAttribute('data-magnetic', '');
+
+  await safeCall('append:cta', () => body.append(cta));
+  logDetail('Section 8: CTA appended', 'ok');
 
   // ═══════════════ APPLY STYLES ═══════════════
   await applyCommercialStyleProps();
