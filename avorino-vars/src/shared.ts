@@ -1606,6 +1606,836 @@ export async function buildServicePage(data: ServiceData) {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// COMMERCIAL PAGE BUILDER
+// ═══════════════════════════════════════════════════════════════
+
+export async function buildCommercialPage(data: CommercialPageData) {
+  const v = await getAvorinVars();
+  logDetail('Loaded Avorino variable collection', 'ok');
+
+  log('Creating shared styles...');
+  const s = await createSharedStyles();
+
+  // ── Commercial page styles (cm- namespace) ──
+  log('Creating commercial page styles...');
+
+  // Hero
+  const cmHero = await getOrCreateStyle('cm-hero');
+  const cmHeroContent = await getOrCreateStyle('cm-hero-content');
+  const cmHeroLabel = await getOrCreateStyle('cm-hero-label');
+  const cmHeroGoldLine = await getOrCreateStyle('cm-hero-gold-line');
+  const cmHeroSubtitle = await getOrCreateStyle('cm-hero-subtitle');
+  const cmHeroScrollHint = await getOrCreateStyle('cm-hero-scroll-hint');
+  const cmHeroScrollLine = await getOrCreateStyle('cm-hero-scroll-line');
+  const cmCanvasWrap = await getOrCreateStyle('cm-canvas-wrap');
+  const cmContentOverlay = await getOrCreateStyle('cm-content-overlay');
+
+  // Trust Strip
+  const cmTrustStrip = await getOrCreateStyle('cm-trust-strip');
+  const cmTrustWord = await getOrCreateStyle('cm-trust-word');
+  const cmTrustDot = await getOrCreateStyle('cm-trust-dot');
+  const cmTrustProof = await getOrCreateStyle('cm-trust-proof');
+  const cmTrustProofValue = await getOrCreateStyle('cm-trust-proof-value');
+  const cmTrustProofLabel = await getOrCreateStyle('cm-trust-proof-label');
+
+  // Comparison
+  const cmComparison = await getOrCreateStyle('cm-comparison');
+  const cmCompInner = await getOrCreateStyle('cm-comparison-inner');
+  const cmCompHeader = await getOrCreateStyle('cm-comparison-header');
+  const cmCompRow = await getOrCreateStyle('cm-comparison-row');
+  const cmCompTypical = await getOrCreateStyle('cm-comp-typical');
+  const cmCompAvorino = await getOrCreateStyle('cm-comp-avorino');
+  const cmProofStat = await getOrCreateStyle('cm-proof-stat');
+  const cmProofStatNumber = await getOrCreateStyle('cm-proof-stat-number');
+  const cmProofStatText = await getOrCreateStyle('cm-proof-stat-text');
+
+  // Preconstruction
+  const cmPrecon = await getOrCreateStyle('cm-precon');
+  const cmPreconHeader = await getOrCreateStyle('cm-precon-header');
+  const cmPreconDesktop = await getOrCreateStyle('cm-precon-desktop');
+  const cmPreconCanvas = await getOrCreateStyle('cm-precon-canvas');
+  const cmPreconCard = await getOrCreateStyle('cm-precon-card');
+  const cmPreconCardNum = await getOrCreateStyle('cm-precon-card-num');
+  const cmPreconCardTitle = await getOrCreateStyle('cm-precon-card-title');
+  const cmPreconCardDesc = await getOrCreateStyle('cm-precon-card-desc');
+  const cmPreconNav = await getOrCreateStyle('cm-precon-nav');
+  const cmPreconMobile = await getOrCreateStyle('cm-precon-mobile');
+  const cmPreconMobileStep = await getOrCreateStyle('cm-precon-mobile-step');
+  const cmPreconMobileNum = await getOrCreateStyle('cm-precon-mobile-num');
+  const cmPreconMobileTitle = await getOrCreateStyle('cm-precon-mobile-title');
+  const cmPreconMobileDesc = await getOrCreateStyle('cm-precon-mobile-desc');
+
+  // Project Types
+  const cmTypes = await getOrCreateStyle('cm-types');
+  const cmTypesInner = await getOrCreateStyle('cm-types-inner');
+  const cmTypesSubtitle = await getOrCreateStyle('cm-types-subtitle');
+  const cmTypesList = await getOrCreateStyle('cm-types-list');
+  const cmTypeItem = await getOrCreateStyle('cm-type-item');
+  const cmTypeNum = await getOrCreateStyle('cm-type-num');
+  const cmTypeBody = await getOrCreateStyle('cm-type-body');
+  const cmTypeTitle = await getOrCreateStyle('cm-type-title');
+  const cmTypeDesc = await getOrCreateStyle('cm-type-desc');
+
+  // Ideal Fit
+  const cmFit = await getOrCreateStyle('cm-fit');
+  const cmFitInner = await getOrCreateStyle('cm-fit-inner');
+  const cmFitBody = await getOrCreateStyle('cm-fit-body');
+  const cmFitItems = await getOrCreateStyle('cm-fit-items');
+  const cmFitItem = await getOrCreateStyle('cm-fit-item');
+  const cmFitNum = await getOrCreateStyle('cm-fit-num');
+  const cmFitText = await getOrCreateStyle('cm-fit-text');
+  const cmFitProof = await getOrCreateStyle('cm-fit-proof');
+
+  // Process
+  const cmProcess = await getOrCreateStyle('cm-process');
+  const cmProcessInner = await getOrCreateStyle('cm-process-inner');
+  const cmProcessGrid = await getOrCreateStyle('cm-process-grid');
+  const cmProcessStep = await getOrCreateStyle('cm-process-step');
+  const cmProcessNum = await getOrCreateStyle('cm-process-num');
+  const cmProcessTitle = await getOrCreateStyle('cm-process-title');
+  const cmProcessDesc = await getOrCreateStyle('cm-process-desc');
+
+  // ── Create page ──
+  const { body } = await createPageWithSlug(
+    data.pageName, data.slug, data.title, data.seoDesc,
+  );
+
+  // ── Style properties (applied after elements are built) ──
+  async function applyCommercialStyleProps() {
+    log('Setting shared style properties...');
+    await setSharedStyleProps(s, v);
+    await wait(1000);
+
+    log('Setting commercial page style properties...');
+
+    // Hero
+    await clearAndSet(await freshStyle('cm-hero'), 'cm-hero', {
+      'min-height': '80vh',
+      'display': 'flex', 'align-items': 'flex-end',
+      'padding-top': '160px', 'padding-bottom': v['av-section-pad-y'],
+      'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
+      'background-color': v['av-dark'], 'color': v['av-cream'],
+      'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
+    });
+    await clearAndSet(await freshStyle('cm-canvas-wrap'), 'cm-canvas-wrap', {
+      'position': 'absolute', 'top': '0px', 'left': '0px',
+      'width': '100%', 'height': '100%',
+      'z-index': '1', 'pointer-events': 'none',
+      'overflow-x': 'hidden', 'overflow-y': 'hidden',
+    });
+    await clearAndSet(await freshStyle('cm-content-overlay'), 'cm-content-overlay', {
+      'position': 'relative', 'z-index': '2',
+    });
+    await clearAndSet(await freshStyle('cm-hero-content'), 'cm-hero-content', {
+      'max-width': '720px',
+    });
+    await clearAndSet(await freshStyle('cm-hero-label'), 'cm-hero-label', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
+      'letter-spacing': '0.3em', 'text-transform': 'uppercase',
+      'opacity': '0', 'margin-bottom': '32px', 'color': v['av-cream'],
+    });
+    await clearAndSet(await freshStyle('cm-hero-gold-line'), 'cm-hero-gold-line', {
+      'width': '0px', 'height': '1px',
+      'background-color': '#c9a96e', 'margin-bottom': '24px',
+    });
+    await clearAndSet(await freshStyle('cm-hero-subtitle'), 'cm-hero-subtitle', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
+      'line-height': '1.9', 'opacity': '0', 'margin-top': '24px',
+      'color': v['av-cream'], 'max-width': '560px',
+    });
+    await clearAndSet(await freshStyle('cm-hero-scroll-hint'), 'cm-hero-scroll-hint', {
+      'position': 'absolute', 'bottom': '40px', 'left': '50%',
+      'z-index': '3', 'display': 'flex', 'flex-direction': 'column',
+      'align-items': 'center', 'grid-row-gap': '8px', 'opacity': '0',
+    });
+    await clearAndSet(await freshStyle('cm-hero-scroll-line'), 'cm-hero-scroll-line', {
+      'width': '1px', 'height': '40px', 'background-color': '#c9a96e',
+    });
+    await wait(500);
+
+    // Trust Strip
+    await clearAndSet(await freshStyle('cm-trust-strip'), 'cm-trust-strip', {
+      'padding-top': '52px', 'padding-bottom': '52px',
+      'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
+      'display': 'flex', 'align-items': 'center', 'justify-content': 'center',
+      'grid-column-gap': '28px', 'flex-wrap': 'wrap',
+      'background-color': v['av-cream'], 'color': v['av-dark'],
+    });
+    await clearAndSet(await freshStyle('cm-trust-word'), 'cm-trust-word', {
+      'font-family': 'DM Serif Display', 'font-size': '24px',
+      'letter-spacing': '-0.01em',
+    });
+    await clearAndSet(await freshStyle('cm-trust-dot'), 'cm-trust-dot', {
+      'width': '4px', 'height': '4px', 'border-radius': '50%',
+      'background-color': '#c9a96e', 'opacity': '0.5',
+    });
+    await clearAndSet(await freshStyle('cm-trust-proof'), 'cm-trust-proof', {
+      'margin-left': 'auto', 'text-align': 'right', 'padding-left': '28px',
+      'border-left-width': '1px', 'border-left-style': 'solid', 'border-left-color': 'rgba(17,17,17,0.1)',
+    });
+    await clearAndSet(await freshStyle('cm-trust-proof-value'), 'cm-trust-proof-value', {
+      'font-family': 'DM Sans', 'font-size': '13px',
+      'font-weight': '600', 'letter-spacing': '0.02em',
+    });
+    await clearAndSet(await freshStyle('cm-trust-proof-label'), 'cm-trust-proof-label', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
+      'letter-spacing': '0.12em', 'text-transform': 'uppercase',
+      'opacity': '0.35', 'margin-top': '2px',
+    });
+    await wait(500);
+
+    // Comparison
+    await clearAndSet(await freshStyle('cm-comparison'), 'cm-comparison', {
+      'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
+      'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
+      'background-color': v['av-dark'], 'color': v['av-cream'],
+    });
+    await clearAndSet(await freshStyle('cm-comparison-inner'), 'cm-comparison-inner', {
+      'max-width': '1000px', 'margin-left': 'auto', 'margin-right': 'auto',
+    });
+    await clearAndSet(await freshStyle('cm-comparison-header'), 'cm-comparison-header', {
+      'display': 'grid', 'grid-template-columns': '1fr 1fr', 'grid-column-gap': '48px',
+      'padding-bottom': '20px',
+      'border-bottom-width': '1px', 'border-bottom-style': 'solid', 'border-bottom-color': 'rgba(240,237,232,0.08)',
+    });
+    await clearAndSet(await freshStyle('cm-comparison-row'), 'cm-comparison-row', {
+      'display': 'grid', 'grid-template-columns': '1fr 1fr', 'grid-column-gap': '48px',
+      'padding-top': '28px', 'padding-bottom': '28px',
+      'border-bottom-width': '1px', 'border-bottom-style': 'solid', 'border-bottom-color': 'rgba(240,237,232,0.06)',
+    });
+    await clearAndSet(await freshStyle('cm-comp-typical'), 'cm-comp-typical', {
+      'font-family': 'DM Sans', 'font-size': '15px', 'line-height': '1.7',
+      'opacity': '0.35', 'font-style': 'italic',
+    });
+    await clearAndSet(await freshStyle('cm-comp-avorino'), 'cm-comp-avorino', {
+      'font-family': 'DM Sans', 'font-size': '15px', 'line-height': '1.7',
+      'opacity': '0.85', 'padding-left': '20px',
+      'border-left-width': '2px', 'border-left-style': 'solid', 'border-left-color': '#c9a96e',
+    });
+    await clearAndSet(await freshStyle('cm-proof-stat'), 'cm-proof-stat', {
+      'margin-top': '48px', 'padding-top': '28px', 'padding-bottom': '28px',
+      'padding-left': '32px', 'padding-right': '32px',
+      'background-color': 'rgba(201,169,110,0.04)',
+      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
+      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
+      'border-left-width': '3px', 'border-left-style': 'solid', 'border-left-color': '#c9a96e',
+      'display': 'flex', 'align-items': 'center', 'grid-column-gap': '24px',
+    });
+    await clearAndSet(await freshStyle('cm-proof-stat-number'), 'cm-proof-stat-number', {
+      'font-family': 'DM Serif Display', 'font-size': '40px',
+      'color': '#c9a96e', 'line-height': '1',
+    });
+    await clearAndSet(await freshStyle('cm-proof-stat-text'), 'cm-proof-stat-text', {
+      'font-family': 'DM Sans', 'font-size': '15px', 'line-height': '1.6',
+      'opacity': '0.6',
+    });
+    await wait(500);
+
+    // Preconstruction
+    await clearAndSet(await freshStyle('cm-precon'), 'cm-precon', {
+      'background-color': v['av-dark'], 'color': v['av-cream'],
+      'position': 'relative',
+    });
+    await clearAndSet(await freshStyle('cm-precon-header'), 'cm-precon-header', {
+      'text-align': 'center', 'padding-top': v['av-section-pad-y'],
+      'padding-bottom': '48px', 'padding-left': v['av-section-pad-x'],
+      'padding-right': v['av-section-pad-x'],
+      'border-top-width': '1px', 'border-top-style': 'solid', 'border-top-color': 'rgba(240,237,232,0.06)',
+    });
+    await clearAndSet(await freshStyle('cm-precon-desktop'), 'cm-precon-desktop', {
+      'position': 'relative', 'width': '100%', 'min-height': '100vh',
+      'overflow-x': 'hidden', 'overflow-y': 'hidden',
+    });
+    await clearAndSet(await freshStyle('cm-precon-canvas'), 'cm-precon-canvas', {
+      'position': 'absolute', 'top': '0px', 'left': '0px',
+      'width': '100%', 'height': '100%', 'z-index': '1',
+    });
+    await clearAndSet(await freshStyle('cm-precon-card'), 'cm-precon-card', {
+      'position': 'absolute', 'z-index': '2',
+      'max-width': '380px', 'padding-top': '36px', 'padding-bottom': '36px',
+      'padding-left': '32px', 'padding-right': '32px',
+      'background-color': 'rgba(17,17,17,0.88)',
+      'border-top-left-radius': '16px', 'border-top-right-radius': '16px',
+      'border-bottom-left-radius': '16px', 'border-bottom-right-radius': '16px',
+      'border-width': '1px', 'border-style': 'solid', 'border-color': 'rgba(240,237,232,0.08)',
+    });
+    await clearAndSet(await freshStyle('cm-precon-card-num'), 'cm-precon-card-num', {
+      'font-family': 'DM Sans', 'font-size': '12px',
+      'letter-spacing': '0.2em', 'color': '#c9a96e', 'font-weight': '600',
+      'margin-bottom': '12px',
+    });
+    await clearAndSet(await freshStyle('cm-precon-card-title'), 'cm-precon-card-title', {
+      'font-family': 'DM Serif Display', 'font-size': '24px',
+      'line-height': '1.2', 'font-weight': '400', 'margin-bottom': '12px',
+    });
+    await clearAndSet(await freshStyle('cm-precon-card-desc'), 'cm-precon-card-desc', {
+      'font-family': 'DM Sans', 'font-size': '15px',
+      'line-height': '1.8', 'opacity': '0.6',
+    });
+    await clearAndSet(await freshStyle('cm-precon-nav'), 'cm-precon-nav', {
+      'text-align': 'center', 'padding-top': '32px', 'padding-bottom': '80px',
+    });
+    await clearAndSet(await freshStyle('cm-precon-mobile'), 'cm-precon-mobile', {
+      'display': 'none', 'padding-left': v['av-section-pad-x'],
+      'padding-right': v['av-section-pad-x'], 'padding-bottom': '80px',
+    });
+    await clearAndSet(await freshStyle('cm-precon-mobile-step'), 'cm-precon-mobile-step', {
+      'padding-top': '32px', 'padding-bottom': '32px',
+      'border-top-width': '1px', 'border-top-style': 'solid', 'border-top-color': 'rgba(240,237,232,0.06)',
+    });
+    await clearAndSet(await freshStyle('cm-precon-mobile-num'), 'cm-precon-mobile-num', {
+      'font-family': 'DM Serif Display', 'font-size': '36px',
+      'color': '#c9a96e', 'opacity': '0.3', 'line-height': '1', 'min-width': '48px',
+    });
+    await clearAndSet(await freshStyle('cm-precon-mobile-title'), 'cm-precon-mobile-title', {
+      'font-family': 'DM Serif Display', 'font-size': '22px',
+      'font-weight': '400', 'line-height': '1.2',
+    });
+    await clearAndSet(await freshStyle('cm-precon-mobile-desc'), 'cm-precon-mobile-desc', {
+      'font-family': 'DM Sans', 'font-size': '15px',
+      'line-height': '1.8', 'opacity': '0.55', 'padding-left': '64px',
+    });
+    await wait(500);
+
+    // Project Types
+    await clearAndSet(await freshStyle('cm-types'), 'cm-types', {
+      'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
+      'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
+      'background-color': v['av-warm'], 'color': v['av-dark'],
+    });
+    await clearAndSet(await freshStyle('cm-types-inner'), 'cm-types-inner', {
+      'max-width': '1000px', 'margin-left': 'auto', 'margin-right': 'auto',
+    });
+    await clearAndSet(await freshStyle('cm-types-subtitle'), 'cm-types-subtitle', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
+      'line-height': '1.8', 'opacity': '0.55', 'margin-bottom': '56px',
+      'max-width': '600px',
+    });
+    await clearAndSet(await freshStyle('cm-types-list'), 'cm-types-list', {
+      'display': 'flex', 'flex-direction': 'column',
+    });
+    await clearAndSet(await freshStyle('cm-type-item'), 'cm-type-item', {
+      'display': 'grid', 'grid-template-columns': '60px 1fr', 'grid-column-gap': '24px',
+      'padding-top': '32px', 'padding-bottom': '32px', 'align-items': 'baseline',
+      'border-top-width': '1px', 'border-top-style': 'solid', 'border-top-color': 'rgba(17,17,17,0.08)',
+    });
+    await clearAndSet(await freshStyle('cm-type-num'), 'cm-type-num', {
+      'font-family': 'DM Serif Display', 'font-size': '28px',
+      'color': '#c9a96e', 'opacity': '0.4', 'line-height': '1',
+    });
+    await clearAndSet(await freshStyle('cm-type-body'), 'cm-type-body', {});
+    await clearAndSet(await freshStyle('cm-type-title'), 'cm-type-title', {
+      'font-family': 'DM Serif Display', 'font-size': '24px',
+      'font-weight': '400', 'line-height': '1.2', 'margin-bottom': '8px',
+    });
+    await clearAndSet(await freshStyle('cm-type-desc'), 'cm-type-desc', {
+      'font-family': 'DM Sans', 'font-size': '15px',
+      'line-height': '1.7', 'opacity': '0.55', 'max-width': '640px',
+    });
+    await wait(500);
+
+    // Ideal Fit
+    await clearAndSet(await freshStyle('cm-fit'), 'cm-fit', {
+      'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
+      'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
+      'background-color': v['av-cream'], 'color': v['av-dark'],
+    });
+    await clearAndSet(await freshStyle('cm-fit-inner'), 'cm-fit-inner', {
+      'max-width': '900px', 'margin-left': 'auto', 'margin-right': 'auto',
+      'text-align': 'center',
+    });
+    await clearAndSet(await freshStyle('cm-fit-body'), 'cm-fit-body', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-body'],
+      'line-height': '1.8', 'opacity': '0.65', 'margin-bottom': '48px',
+    });
+    await clearAndSet(await freshStyle('cm-fit-items'), 'cm-fit-items', {
+      'text-align': 'left', 'max-width': '700px',
+      'margin-left': 'auto', 'margin-right': 'auto',
+    });
+    await clearAndSet(await freshStyle('cm-fit-item'), 'cm-fit-item', {
+      'display': 'flex', 'grid-column-gap': '20px', 'align-items': 'flex-start',
+      'padding-top': '20px', 'padding-bottom': '20px',
+      'border-top-width': '1px', 'border-top-style': 'solid', 'border-top-color': 'rgba(17,17,17,0.08)',
+    });
+    await clearAndSet(await freshStyle('cm-fit-num'), 'cm-fit-num', {
+      'font-family': 'DM Sans', 'font-size': v['av-text-xs'],
+      'letter-spacing': '0.2em', 'color': '#c9a96e', 'font-weight': '600',
+      'min-width': '32px', 'padding-top': '4px',
+    });
+    await clearAndSet(await freshStyle('cm-fit-text'), 'cm-fit-text', {
+      'font-family': 'DM Sans', 'font-size': '15px', 'line-height': '1.7',
+    });
+    await clearAndSet(await freshStyle('cm-fit-proof'), 'cm-fit-proof', {
+      'font-family': 'DM Sans', 'font-size': '14px', 'font-style': 'italic',
+      'opacity': '0.45', 'margin-top': '48px', 'text-align': 'center',
+    });
+    await wait(500);
+
+    // Process
+    await clearAndSet(await freshStyle('cm-process'), 'cm-process', {
+      'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
+      'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
+      'background-color': v['av-dark'], 'color': v['av-cream'],
+    });
+    await clearAndSet(await freshStyle('cm-process-inner'), 'cm-process-inner', {
+      'max-width': '1100px', 'margin-left': 'auto', 'margin-right': 'auto',
+    });
+    await clearAndSet(await freshStyle('cm-process-grid'), 'cm-process-grid', {
+      'display': 'grid', 'grid-template-columns': '1fr 1fr',
+      'grid-column-gap': '24px', 'grid-row-gap': '24px',
+    });
+    await clearAndSet(await freshStyle('cm-process-step'), 'cm-process-step', {
+      'padding-top': '40px', 'padding-bottom': '40px',
+      'padding-left': '32px', 'padding-right': '32px',
+      'background-color': 'rgba(240,237,232,0.03)',
+      'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
+      'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
+      'border-top-width': '1px', 'border-top-style': 'solid', 'border-top-color': 'rgba(240,237,232,0.06)',
+    });
+    await clearAndSet(await freshStyle('cm-process-num'), 'cm-process-num', {
+      'font-family': 'DM Serif Display', 'font-size': '48px',
+      'opacity': '0.12', 'line-height': '1', 'margin-bottom': '16px',
+    });
+    await clearAndSet(await freshStyle('cm-process-title'), 'cm-process-title', {
+      'font-family': 'DM Serif Display', 'font-size': '24px',
+      'font-weight': '400', 'line-height': '1.2', 'margin-bottom': '12px',
+    });
+    await clearAndSet(await freshStyle('cm-process-desc'), 'cm-process-desc', {
+      'font-family': 'DM Sans', 'font-size': '14px',
+      'line-height': '1.8', 'opacity': '0.5',
+    });
+    await wait(500);
+
+    await applyCTAStyleProps(v);
+  }
+
+  // ═══════════════ BUILD ELEMENTS ═══════════════
+
+  // SECTION 1: HERO
+  log('Building Section 1: Hero...');
+  const hero = webflow.elementBuilder(webflow.elementPresets.DOM);
+  hero.setTag('section');
+  hero.setStyles([cmHero]);
+  hero.setAttribute('id', 'cm-hero');
+
+  const heroCanvasWrap = hero.append(webflow.elementPresets.DOM);
+  heroCanvasWrap.setTag('div');
+  heroCanvasWrap.setStyles([cmCanvasWrap]);
+  heroCanvasWrap.setAttribute('id', 'cm-hero-canvas');
+
+  const heroOverlay = hero.append(webflow.elementPresets.DOM);
+  heroOverlay.setTag('div');
+  heroOverlay.setStyles([cmContentOverlay, cmHeroContent]);
+
+  const heroLabel = heroOverlay.append(webflow.elementPresets.DOM);
+  heroLabel.setTag('div');
+  heroLabel.setStyles([cmHeroLabel]);
+  heroLabel.setTextContent(data.hero.label);
+  heroLabel.setAttribute('data-animate', 'fade-up');
+
+  const heroH = heroOverlay.append(webflow.elementPresets.DOM);
+  heroH.setTag('h1');
+  heroH.setStyles([s.headingXL]);
+  heroH.setTextContent(data.hero.title);
+  heroH.setAttribute('data-animate', 'char-cascade');
+
+  const heroGoldLine = heroOverlay.append(webflow.elementPresets.DOM);
+  heroGoldLine.setTag('div');
+  heroGoldLine.setStyles([cmHeroGoldLine]);
+
+  const heroSub = heroOverlay.append(webflow.elementPresets.DOM);
+  heroSub.setTag('p');
+  heroSub.setStyles([cmHeroSubtitle]);
+  heroSub.setTextContent(data.hero.subtitle);
+  heroSub.setAttribute('data-animate', 'fade-up');
+
+  const scrollHint = hero.append(webflow.elementPresets.DOM);
+  scrollHint.setTag('div');
+  scrollHint.setStyles([cmHeroScrollHint]);
+  scrollHint.setAttribute('data-animate', 'fade-up');
+  const scrollHintText = scrollHint.append(webflow.elementPresets.DOM);
+  scrollHintText.setTag('span');
+  scrollHintText.setTextContent('Scroll');
+  const scrollHintLine = scrollHint.append(webflow.elementPresets.DOM);
+  scrollHintLine.setTag('div');
+  scrollHintLine.setStyles([cmHeroScrollLine]);
+
+  await safeCall('append:hero', () => body.append(hero));
+  logDetail('Section 1: Hero appended', 'ok');
+
+  // SECTION 2: TRUST STRIP
+  log('Building Section 2: Trust Strip...');
+  const trustSection = webflow.elementBuilder(webflow.elementPresets.DOM);
+  trustSection.setTag('section');
+  trustSection.setStyles([cmTrustStrip]);
+  trustSection.setAttribute('id', 'cm-trust-strip');
+
+  data.trustStrip.words.forEach((word, i) => {
+    if (i > 0) {
+      const dot = trustSection.append(webflow.elementPresets.DOM);
+      dot.setTag('span');
+      dot.setStyles([cmTrustDot]);
+    }
+    const wordEl = trustSection.append(webflow.elementPresets.DOM);
+    wordEl.setTag('span');
+    wordEl.setStyles([cmTrustWord]);
+    wordEl.setTextContent(word);
+    wordEl.setAttribute('data-animate', 'fade-up');
+  });
+
+  const trustProof = trustSection.append(webflow.elementPresets.DOM);
+  trustProof.setTag('div');
+  trustProof.setStyles([cmTrustProof]);
+
+  const trustProofVal = trustProof.append(webflow.elementPresets.DOM);
+  trustProofVal.setTag('div');
+  trustProofVal.setStyles([cmTrustProofValue]);
+  trustProofVal.setTextContent(data.trustStrip.proof.value);
+
+  const trustProofLbl = trustProof.append(webflow.elementPresets.DOM);
+  trustProofLbl.setTag('div');
+  trustProofLbl.setStyles([cmTrustProofLabel]);
+  trustProofLbl.setTextContent(data.trustStrip.proof.label);
+
+  await safeCall('append:trust', () => body.append(trustSection));
+  logDetail('Section 2: Trust Strip appended', 'ok');
+
+  // SECTION 3: COMPARISON
+  log('Building Section 3: Comparison...');
+  const compSection = webflow.elementBuilder(webflow.elementPresets.DOM);
+  compSection.setTag('section');
+  compSection.setStyles([cmComparison]);
+  compSection.setAttribute('id', 'cm-comparison');
+
+  const compInner = compSection.append(webflow.elementPresets.DOM);
+  compInner.setTag('div');
+  compInner.setStyles([cmCompInner]);
+
+  const compH = compInner.append(webflow.elementPresets.DOM);
+  compH.setTag('h2');
+  compH.setStyles([s.headingLG]);
+  compH.setTextContent(data.comparison.heading);
+  compH.setAttribute('data-animate', 'word-stagger-elastic');
+
+  // Column headers
+  const compHeaderRow = compInner.append(webflow.elementPresets.DOM);
+  compHeaderRow.setTag('div');
+  compHeaderRow.setStyles([cmCompHeader]);
+  const compHeaderL = compHeaderRow.append(webflow.elementPresets.DOM);
+  compHeaderL.setTag('span');
+  compHeaderL.setStyles([s.label]);
+  compHeaderL.setTextContent('Typical Contractor');
+  const compHeaderR = compHeaderRow.append(webflow.elementPresets.DOM);
+  compHeaderR.setTag('span');
+  compHeaderR.setStyles([s.label]);
+  compHeaderR.setTextContent('Avorino');
+
+  // Comparison rows
+  data.comparison.items.forEach(item => {
+    const row = compInner.append(webflow.elementPresets.DOM);
+    row.setTag('div');
+    row.setStyles([cmCompRow]);
+    row.setAttribute('data-animate', 'fade-up');
+
+    const typicalEl = row.append(webflow.elementPresets.DOM);
+    typicalEl.setTag('div');
+    typicalEl.setStyles([cmCompTypical]);
+    typicalEl.setTextContent(item.typical);
+
+    const avorinoEl = row.append(webflow.elementPresets.DOM);
+    avorinoEl.setTag('div');
+    avorinoEl.setStyles([cmCompAvorino]);
+    avorinoEl.setTextContent(item.avorino);
+  });
+
+  // Proof stat
+  const proofStat = compInner.append(webflow.elementPresets.DOM);
+  proofStat.setTag('div');
+  proofStat.setStyles([cmProofStat]);
+  proofStat.setAttribute('data-animate', 'fade-up');
+
+  const proofNum = proofStat.append(webflow.elementPresets.DOM);
+  proofNum.setTag('div');
+  proofNum.setStyles([cmProofStatNumber]);
+  proofNum.setTextContent(data.comparison.proof.number);
+
+  const proofText = proofStat.append(webflow.elementPresets.DOM);
+  proofText.setTag('div');
+  proofText.setStyles([cmProofStatText]);
+  proofText.setTextContent(data.comparison.proof.text);
+
+  if (data.comparison.proof.subtext) {
+    const proofSub = proofStat.append(webflow.elementPresets.DOM);
+    proofSub.setTag('div');
+    proofSub.setStyles([cmProofStatText]);
+    proofSub.setTextContent(data.comparison.proof.subtext);
+  }
+
+  await safeCall('append:comparison', () => body.append(compSection));
+  logDetail('Section 3: Comparison appended', 'ok');
+
+  // SECTION 4: PRECONSTRUCTION
+  log('Building Section 4: Preconstruction...');
+  const preconSection = webflow.elementBuilder(webflow.elementPresets.DOM);
+  preconSection.setTag('section');
+  preconSection.setStyles([cmPrecon]);
+  preconSection.setAttribute('id', 'cm-precon');
+
+  const preconHeader = preconSection.append(webflow.elementPresets.DOM);
+  preconHeader.setTag('div');
+  preconHeader.setStyles([cmPreconHeader]);
+
+  const preconH = preconHeader.append(webflow.elementPresets.DOM);
+  preconH.setTag('h2');
+  preconH.setStyles([s.headingLG]);
+  preconH.setTextContent(data.preconstruction.heading);
+  preconH.setAttribute('data-animate', 'word-stagger-elastic');
+
+  const preconSub = preconHeader.append(webflow.elementPresets.DOM);
+  preconSub.setTag('p');
+  preconSub.setStyles([s.body]);
+  preconSub.setTextContent(data.preconstruction.subtitle);
+  preconSub.setAttribute('data-animate', 'fade-up');
+
+  // Desktop: pinned canvas + floating cards
+  const preconDesktop = preconSection.append(webflow.elementPresets.DOM);
+  preconDesktop.setTag('div');
+  preconDesktop.setStyles([cmPreconDesktop]);
+
+  const preconCanvas = preconDesktop.append(webflow.elementPresets.DOM);
+  preconCanvas.setTag('div');
+  preconCanvas.setStyles([cmPreconCanvas]);
+  preconCanvas.setAttribute('id', 'cm-precon-canvas');
+
+  // Precon cards (one per layer, positioned by JS)
+  data.preconstruction.layers.forEach((layer, i) => {
+    const card = preconDesktop.append(webflow.elementPresets.DOM);
+    card.setTag('div');
+    card.setStyles([cmPreconCard]);
+
+    const cardNum = card.append(webflow.elementPresets.DOM);
+    cardNum.setTag('div');
+    cardNum.setStyles([cmPreconCardNum]);
+    cardNum.setTextContent(`STEP ${String(i + 1).padStart(2, '0')} / ${String(data.preconstruction.layers.length).padStart(2, '0')}`);
+
+    const cardTitle = card.append(webflow.elementPresets.DOM);
+    cardTitle.setTag('h3');
+    cardTitle.setStyles([cmPreconCardTitle]);
+    cardTitle.setTextContent(layer.title);
+
+    const cardDesc = card.append(webflow.elementPresets.DOM);
+    cardDesc.setTag('p');
+    cardDesc.setStyles([cmPreconCardDesc]);
+    cardDesc.setTextContent(layer.desc);
+  });
+
+  // Navigation (step counter + progress bar)
+  const preconNav = preconSection.append(webflow.elementPresets.DOM);
+  preconNav.setTag('div');
+  preconNav.setStyles([cmPreconNav]);
+
+  // Mobile fallback
+  const preconMobile = preconSection.append(webflow.elementPresets.DOM);
+  preconMobile.setTag('div');
+  preconMobile.setStyles([cmPreconMobile]);
+
+  data.preconstruction.layers.forEach((layer, i) => {
+    const step = preconMobile.append(webflow.elementPresets.DOM);
+    step.setTag('div');
+    step.setStyles([cmPreconMobileStep]);
+    step.setAttribute('data-animate', 'fade-up');
+
+    const stepNum = step.append(webflow.elementPresets.DOM);
+    stepNum.setTag('div');
+    stepNum.setStyles([cmPreconMobileNum]);
+    stepNum.setTextContent(String(i + 1).padStart(2, '0'));
+
+    const stepTitle = step.append(webflow.elementPresets.DOM);
+    stepTitle.setTag('h3');
+    stepTitle.setStyles([cmPreconMobileTitle]);
+    stepTitle.setTextContent(layer.title);
+
+    const stepDesc = step.append(webflow.elementPresets.DOM);
+    stepDesc.setTag('p');
+    stepDesc.setStyles([cmPreconMobileDesc]);
+    stepDesc.setTextContent(layer.desc);
+  });
+
+  await safeCall('append:precon', () => body.append(preconSection));
+  logDetail('Section 4: Preconstruction appended', 'ok');
+
+  // SECTION 5: PROJECT TYPES
+  log('Building Section 5: Project Types...');
+  const typesSection = webflow.elementBuilder(webflow.elementPresets.DOM);
+  typesSection.setTag('section');
+  typesSection.setStyles([cmTypes]);
+  typesSection.setAttribute('id', 'cm-types');
+
+  const typesInner = typesSection.append(webflow.elementPresets.DOM);
+  typesInner.setTag('div');
+  typesInner.setStyles([cmTypesInner]);
+
+  const typesH = typesInner.append(webflow.elementPresets.DOM);
+  typesH.setTag('h2');
+  typesH.setStyles([s.headingLG]);
+  typesH.setTextContent(data.projectTypes.heading);
+  typesH.setAttribute('data-animate', 'word-stagger-elastic');
+
+  const typesSub = typesInner.append(webflow.elementPresets.DOM);
+  typesSub.setTag('p');
+  typesSub.setStyles([cmTypesSubtitle]);
+  typesSub.setTextContent(data.projectTypes.subtitle);
+  typesSub.setAttribute('data-animate', 'fade-up');
+
+  const typesList = typesInner.append(webflow.elementPresets.DOM);
+  typesList.setTag('div');
+  typesList.setStyles([cmTypesList]);
+
+  data.projectTypes.types.forEach(t => {
+    const item = typesList.append(webflow.elementPresets.DOM);
+    item.setTag('div');
+    item.setStyles([cmTypeItem]);
+    item.setAttribute('data-animate', 'fade-up');
+
+    const numEl = item.append(webflow.elementPresets.DOM);
+    numEl.setTag('div');
+    numEl.setStyles([cmTypeNum]);
+    numEl.setTextContent(t.number);
+
+    const bodyEl = item.append(webflow.elementPresets.DOM);
+    bodyEl.setTag('div');
+    bodyEl.setStyles([cmTypeBody]);
+
+    const titleEl = bodyEl.append(webflow.elementPresets.DOM);
+    titleEl.setTag('h3');
+    titleEl.setStyles([cmTypeTitle]);
+    titleEl.setTextContent(t.title);
+
+    const descEl = bodyEl.append(webflow.elementPresets.DOM);
+    descEl.setTag('p');
+    descEl.setStyles([cmTypeDesc]);
+    descEl.setTextContent(t.desc);
+  });
+
+  await safeCall('append:types', () => body.append(typesSection));
+  logDetail('Section 5: Project Types appended', 'ok');
+
+  // SECTION 6: IDEAL FIT
+  log('Building Section 6: Ideal Fit...');
+  const fitSection = webflow.elementBuilder(webflow.elementPresets.DOM);
+  fitSection.setTag('section');
+  fitSection.setStyles([cmFit]);
+  fitSection.setAttribute('id', 'cm-fit');
+
+  const fitInner = fitSection.append(webflow.elementPresets.DOM);
+  fitInner.setTag('div');
+  fitInner.setStyles([cmFitInner]);
+
+  const fitH = fitInner.append(webflow.elementPresets.DOM);
+  fitH.setTag('h2');
+  fitH.setStyles([s.headingLG]);
+  fitH.setTextContent(data.idealFit.heading);
+  fitH.setAttribute('data-animate', 'word-stagger-elastic');
+
+  const fitBody = fitInner.append(webflow.elementPresets.DOM);
+  fitBody.setTag('p');
+  fitBody.setStyles([cmFitBody]);
+  fitBody.setTextContent(data.idealFit.body);
+  fitBody.setAttribute('data-animate', 'fade-up');
+
+  const fitItems = fitInner.append(webflow.elementPresets.DOM);
+  fitItems.setTag('div');
+  fitItems.setStyles([cmFitItems]);
+
+  data.idealFit.fits.forEach((fit, i) => {
+    const item = fitItems.append(webflow.elementPresets.DOM);
+    item.setTag('div');
+    item.setStyles([cmFitItem]);
+    item.setAttribute('data-animate', 'fade-up');
+
+    const numEl = item.append(webflow.elementPresets.DOM);
+    numEl.setTag('span');
+    numEl.setStyles([cmFitNum]);
+    numEl.setTextContent(String(i + 1).padStart(2, '0'));
+
+    const textEl = item.append(webflow.elementPresets.DOM);
+    textEl.setTag('span');
+    textEl.setStyles([cmFitText]);
+    textEl.setTextContent(fit);
+  });
+
+  const fitProof = fitInner.append(webflow.elementPresets.DOM);
+  fitProof.setTag('p');
+  fitProof.setStyles([cmFitProof]);
+  fitProof.setTextContent(data.idealFit.proofLine);
+  fitProof.setAttribute('data-animate', 'fade-up');
+
+  await safeCall('append:fit', () => body.append(fitSection));
+  logDetail('Section 6: Ideal Fit appended', 'ok');
+
+  // SECTION 7: PROCESS
+  log('Building Section 7: Process...');
+  const processSection = webflow.elementBuilder(webflow.elementPresets.DOM);
+  processSection.setTag('section');
+  processSection.setStyles([cmProcess]);
+  processSection.setAttribute('id', 'cm-process');
+
+  const processInner = processSection.append(webflow.elementPresets.DOM);
+  processInner.setTag('div');
+  processInner.setStyles([cmProcessInner]);
+
+  const processH = processInner.append(webflow.elementPresets.DOM);
+  processH.setTag('h2');
+  processH.setStyles([s.headingLG]);
+  processH.setTextContent(data.process.heading);
+  processH.setAttribute('data-animate', 'word-stagger-elastic');
+
+  const processGrid = processInner.append(webflow.elementPresets.DOM);
+  processGrid.setTag('div');
+  processGrid.setStyles([cmProcessGrid]);
+
+  data.process.steps.forEach(step => {
+    const stepEl = processGrid.append(webflow.elementPresets.DOM);
+    stepEl.setTag('div');
+    stepEl.setStyles([cmProcessStep]);
+    stepEl.setAttribute('data-animate', 'fade-up');
+
+    const numEl = stepEl.append(webflow.elementPresets.DOM);
+    numEl.setTag('div');
+    numEl.setStyles([cmProcessNum]);
+    numEl.setTextContent(step.number);
+
+    const titleEl = stepEl.append(webflow.elementPresets.DOM);
+    titleEl.setTag('h3');
+    titleEl.setStyles([cmProcessTitle]);
+    titleEl.setTextContent(step.title);
+
+    const descEl = stepEl.append(webflow.elementPresets.DOM);
+    descEl.setTag('p');
+    descEl.setStyles([cmProcessDesc]);
+    descEl.setTextContent(step.desc);
+  });
+
+  await safeCall('append:process', () => body.append(processSection));
+  logDetail('Section 7: Process appended', 'ok');
+
+  // SECTION 8: CTA
+  log('Building Section 8: CTA...');
+  await buildCTASection(
+    body, v,
+    data.cta.heading,
+    data.cta.primaryBtn.text, data.cta.primaryBtn.href,
+    data.cta.secondaryBtn.text, data.cta.secondaryBtn.href,
+  );
+
+  // ═══════════════ APPLY STYLES ═══════════════
+  await applyCommercialStyleProps();
+
+  log(`${data.pageName} page built!`, 'success');
+  await webflow.notify({ type: 'Success', message: `${data.pageName} page created!` });
+}
+
+// ═══════════════════════════════════════════════════════════════
 // CITY PAGE BUILDER
 // ═══════════════════════════════════════════════════════════════
 
