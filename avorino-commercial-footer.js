@@ -107,6 +107,10 @@
      PRECON LIFECYCLE
      ═══════════════════════════════════════════════ */
   function teardownPrecon(rt) {
+    if (rt._preconTickerRef) {
+      gsap.ticker.remove(rt._preconTickerRef);
+      rt._preconTickerRef = null;
+    }
     rt.preconTriggers.forEach(function(st) { st.kill(); });
     rt.preconTriggers = [];
     if (rt.preconRenderer) {
@@ -537,10 +541,370 @@
   }
 
   /* ═══════════════════════════════════════════════
-     PLACEHOLDER: initCommercialPrecon (Task 7)
+     initCommercialPrecon — Pinned 4-Layer Three.js Reveal
      ═══════════════════════════════════════════════ */
   function initCommercialPrecon(rt) {
-    // Implemented in Task 7
+    var wrap = document.getElementById('cm-precon-canvas');
+    var pinTarget = document.querySelector('.cm-precon-desktop');
+    if (!wrap || !pinTarget || typeof THREE === 'undefined') return;
+
+    /* ── Colors ── */
+    var wireColor = 0xc9a96e;
+    var accentColor = 0xc8222a;
+    var creamColor = 0xf0ede8;
+
+    /* ── Scene + Camera + Renderer ── */
+    var isMobile = rt.isMobile;
+    var w = wrap.clientWidth, h = wrap.clientHeight;
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(50, w / h, 0.1, 150);
+    camera.position.set(16, 10, 18);
+    camera.lookAt(0, 2, 0);
+
+    var renderer = new THREE.WebGLRenderer({
+      alpha: true,
+      antialias: !isMobile,
+      powerPreference: 'high-performance',
+    });
+    renderer.setSize(w, h);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
+    renderer.setClearColor(0x000000, 0);
+    wrap.appendChild(renderer.domElement);
+    rt.preconRenderer = renderer;
+
+    /* ── Lights (ambient only initially; layer 4 adds point lights) ── */
+    scene.add(new THREE.AmbientLight(0xf0ede8, 0.2));
+
+    /* ── Material helpers ── */
+    function wireMat(color, maxOp) {
+      var m = new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: 0 });
+      m.userData = { maxOp: maxOp };
+      return m;
+    }
+    function meshMat(color, maxOp) {
+      var m = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0, side: THREE.DoubleSide });
+      m.userData = { maxOp: maxOp };
+      return m;
+    }
+
+    /* ── Building dimensions ── */
+    var fW = 14, fD = 10, hW = fW / 2, hD = fD / 2, wallH = 3.5;
+
+    /* ═══ LAYER 1 — Site Shell (0%-25%) ═══ */
+    var layer1 = new THREE.Group();
+
+    // Floor slab outline
+    layer1.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-hW, 0, -hD), new THREE.Vector3(hW, 0, -hD),
+      new THREE.Vector3(hW, 0, hD), new THREE.Vector3(-hW, 0, hD),
+      new THREE.Vector3(-hW, 0, -hD),
+    ]), wireMat(wireColor, 0.3)));
+
+    // Top ring
+    layer1.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-hW, wallH, -hD), new THREE.Vector3(hW, wallH, -hD),
+      new THREE.Vector3(hW, wallH, hD), new THREE.Vector3(-hW, wallH, hD),
+      new THREE.Vector3(-hW, wallH, -hD),
+    ]), wireMat(wireColor, 0.3)));
+
+    // 4 corner verticals
+    [[-hW, -hD], [hW, -hD], [hW, hD], [-hW, hD]].forEach(function(c) {
+      layer1.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(c[0], 0, c[1]), new THREE.Vector3(c[0], wallH, c[1]),
+      ]), wireMat(wireColor, 0.3)));
+    });
+
+    // Front wall (z = -hD) with 2 openings: door gap and window gap
+    // Segments: left edge to opening1, gap, mid segment, gap, right edge
+    var frontY0 = 0, frontY1 = wallH, fz = -hD;
+    // Bottom edge with gaps
+    layer1.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-hW, frontY0, fz), new THREE.Vector3(-4, frontY0, fz),
+    ]), wireMat(wireColor, 0.3)));
+    layer1.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-1, frontY0, fz), new THREE.Vector3(2, frontY0, fz),
+    ]), wireMat(wireColor, 0.3)));
+    layer1.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(5, frontY0, fz), new THREE.Vector3(hW, frontY0, fz),
+    ]), wireMat(wireColor, 0.3)));
+    // Top edge with gaps
+    layer1.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-hW, frontY1, fz), new THREE.Vector3(-4, frontY1, fz),
+    ]), wireMat(wireColor, 0.3)));
+    layer1.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-1, frontY1, fz), new THREE.Vector3(2, frontY1, fz),
+    ]), wireMat(wireColor, 0.3)));
+    layer1.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(5, frontY1, fz), new THREE.Vector3(hW, frontY1, fz),
+    ]), wireMat(wireColor, 0.3)));
+    // Verticals at opening edges
+    [-4, -1, 2, 5].forEach(function(x) {
+      layer1.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(x, frontY0, fz), new THREE.Vector3(x, frontY1, fz),
+      ]), wireMat(wireColor, 0.3)));
+    });
+
+    scene.add(layer1);
+
+    /* ═══ LAYER 2 — Code & MEP Overlay (25%-50%) ═══ */
+    var layer2 = new THREE.Group();
+    var ductY = 3.2;
+
+    // 3 HVAC trunk lines along ceiling
+    [-3, 0, 4].forEach(function(xPos) {
+      layer2.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(xPos, ductY, -hD), new THREE.Vector3(xPos, ductY, hD),
+      ]), wireMat(wireColor, 0.2)));
+    });
+
+    // 4 branch drops from trunks
+    [[-3, -2], [-3, 3], [0, 1], [4, -1]].forEach(function(bd) {
+      layer2.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(bd[0], ductY, bd[1]), new THREE.Vector3(bd[0], 2, bd[1]),
+      ]), wireMat(wireColor, 0.2)));
+    });
+
+    // 2 plumbing risers (floor to ceiling)
+    [-5, 3].forEach(function(xPos) {
+      layer2.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(xPos, 0, 2), new THREE.Vector3(xPos, wallH, 2),
+      ]), wireMat(accentColor, 0.25)));
+    });
+
+    // Fire sprinkler main + 6 drops
+    layer2.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-hW + 1, ductY + 0.15, 0), new THREE.Vector3(hW - 1, ductY + 0.15, 0),
+    ]), wireMat(accentColor, 0.25)));
+    for (var si = 0; si < 6; si++) {
+      var sx = -hW + 2 + si * ((fW - 4) / 5);
+      layer2.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(sx, ductY + 0.15, 0), new THREE.Vector3(sx, ductY - 0.3, 0),
+      ]), wireMat(accentColor, 0.25)));
+    }
+
+    scene.add(layer2);
+
+    /* ═══ LAYER 3 — Procurement & Schedule (50%-75%) ═══ */
+    var layer3 = new THREE.Group();
+
+    // 5 Gantt-style horizontal bars floating to the right of the building
+    var ganttBars = [
+      { y: 2.8, x0: 8, x1: 13.5 },
+      { y: 2.4, x0: 8.5, x1: 12 },
+      { y: 2.0, x0: 8, x1: 14 },
+      { y: 1.6, x0: 9, x1: 12.5 },
+      { y: 1.2, x0: 8, x1: 11 },
+    ];
+    ganttBars.forEach(function(bar) {
+      layer3.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(bar.x0, bar.y, 0), new THREE.Vector3(bar.x1, bar.y, 0),
+      ]), wireMat(wireColor, 0.15)));
+    });
+
+    // Connecting lines from bars to building edge
+    [
+      { bx: 8, by: 2.8, tx: hW, ty: wallH },
+      { bx: 8, by: 2.0, tx: hW, ty: wallH * 0.5 },
+      { bx: 8, by: 1.2, tx: hW, ty: 0 },
+    ].forEach(function(conn) {
+      layer3.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(conn.bx, conn.by, 0), new THREE.Vector3(conn.tx, conn.ty, 0),
+      ]), wireMat(wireColor, 0.1)));
+    });
+
+    scene.add(layer3);
+
+    /* ═══ LAYER 4 — Built Environment (75%-100%) ═══ */
+    var layer4 = new THREE.Group();
+
+    // Filled floor plane
+    var floorMesh = new THREE.Mesh(new THREE.PlaneGeometry(fW, fD), meshMat(creamColor, 0.06));
+    floorMesh.rotation.x = -Math.PI / 2;
+    floorMesh.position.set(0, 0.02, 0);
+    layer4.add(floorMesh);
+
+    // Ceiling plane
+    var ceilMesh = new THREE.Mesh(new THREE.PlaneGeometry(fW, fD), meshMat(creamColor, 0.04));
+    ceilMesh.rotation.x = -Math.PI / 2;
+    ceilMesh.position.set(0, wallH, 0);
+    layer4.add(ceilMesh);
+
+    // Interior partition lines (refined detail)
+    var partitions = [
+      [[-3, 0, -hD], [-3, 0, 2]],
+      [[-3, wallH, -hD], [-3, wallH, 2]],
+      [[-3, 0, 2], [-3, wallH, 2]],
+      [[4, 0, -3], [4, 0, hD]],
+      [[4, wallH, -3], [4, wallH, hD]],
+      [[4, 0, -3], [4, wallH, -3]],
+      [[-3, 0, 0], [4, 0, 0]],
+      [[-3, wallH, 0], [4, wallH, 0]],
+    ];
+    partitions.forEach(function(seg) {
+      layer4.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(seg[0][0], seg[0][1], seg[0][2]),
+        new THREE.Vector3(seg[1][0], seg[1][1], seg[1][2]),
+      ]), wireMat(wireColor, 0.2)));
+    });
+
+    // 3 point lights inside the space (start at intensity 0)
+    var pointLights = [];
+    [[-3, 1.8, -2], [1, 1.8, 2], [5, 1.8, -1]].forEach(function(pos) {
+      var pl = new THREE.PointLight(wireColor, 0, 12);
+      pl.position.set(pos[0], pos[1], pos[2]);
+      pl.userData = { maxIntensity: 0.3 };
+      layer4.add(pl);
+      pointLights.push(pl);
+    });
+
+    scene.add(layer4);
+
+    /* ── Gather all layers ── */
+    var layers = [layer1, layer2, layer3, layer4];
+    var layerStarts = [0, 0.25, 0.50, 0.75];
+    var layerFadeDur = 0.15; // each layer fades in over 15% of total scroll
+
+    /* ── DOM: Cards crossfade ── */
+    var cards = document.querySelectorAll('.cm-precon-card');
+    if (cards.length) {
+      cards.forEach(function(card, i) {
+        gsap.set(card, {
+          position: 'absolute', right: '8vw', top: '50%',
+          yPercent: -50, opacity: i === 0 ? 1 : 0,
+          visibility: i === 0 ? 'visible' : 'hidden',
+        });
+      });
+    }
+
+    /* ── DOM: Nav counter + progress ── */
+    var navEl = document.querySelector('.cm-precon-nav');
+    var counterEl = null;
+    var progressFill = null;
+    if (navEl) {
+      counterEl = navEl.querySelector('.cm-precon-counter');
+      if (!counterEl) {
+        counterEl = document.createElement('div');
+        counterEl.className = 'cm-precon-counter';
+        counterEl.textContent = '01 / 04';
+        navEl.appendChild(counterEl);
+      }
+      progressFill = navEl.querySelector('.cm-precon-progress-fill');
+      if (!progressFill) {
+        var progressBar = document.createElement('div');
+        progressBar.className = 'cm-precon-progress';
+        progressBar.style.cssText = 'width:100%;height:2px;background:rgba(201,169,110,0.15);border-radius:1px;overflow:hidden;';
+        progressFill = document.createElement('div');
+        progressFill.className = 'cm-precon-progress-fill';
+        progressFill.style.cssText = 'width:25%;height:100%;background:#c9a96e;transition:width 0.3s ease;';
+        progressBar.appendChild(progressFill);
+        navEl.appendChild(progressBar);
+      }
+    }
+
+    /* ── Update layer opacities based on scroll progress ── */
+    function updateLayers(p) {
+      layers.forEach(function(group, i) {
+        var start = layerStarts[i];
+        var localP = Math.max(0, Math.min(1, (p - start) / layerFadeDur));
+
+        group.traverse(function(child) {
+          if (child.material && child.material.userData && typeof child.material.userData.maxOp === 'number') {
+            child.material.opacity = child.material.userData.maxOp * localP;
+          }
+        });
+
+        // Layer 4 point lights
+        if (i === 3) {
+          pointLights.forEach(function(pl) {
+            pl.intensity = pl.userData.maxIntensity * localP;
+          });
+        }
+      });
+
+      // Current step (1-indexed)
+      var step = p < 0.25 ? 1 : p < 0.50 ? 2 : p < 0.75 ? 3 : 4;
+
+      // Card crossfade
+      if (cards.length) {
+        cards.forEach(function(card, i) {
+          var isActive = (i + 1) === step;
+          gsap.set(card, {
+            opacity: isActive ? 1 : 0,
+            visibility: isActive ? 'visible' : 'hidden',
+          });
+        });
+      }
+
+      // Counter + progress
+      if (counterEl) {
+        counterEl.textContent = ('0' + step).slice(-2) + ' / 04';
+      }
+      if (progressFill) {
+        progressFill.style.width = (step / 4 * 100) + '%';
+      }
+    }
+
+    /* ── ScrollTrigger pin ── */
+    var st = ScrollTrigger.create({
+      trigger: pinTarget,
+      start: 'top top',
+      end: '+=400%',
+      pin: true,
+      pinSpacing: true,
+      scrub: 1,
+      onUpdate: function(self) {
+        updateLayers(self.progress);
+      },
+    });
+    rt.preconTriggers.push(st);
+
+    /* ── Camera orbit state ── */
+    var baseAngle = 0;
+
+    /* ── Render loop via GSAP ticker ── */
+    function renderTick() {
+      if (!rt.preconRenderer) return;
+
+      baseAngle += 0.0006;
+
+      // Scrub-based camera: tighter as scroll progresses
+      var stProgress = st.progress || 0;
+      var radius = 20 - 6 * stProgress;
+      var camHeight = 10 - 3 * stProgress;
+
+      camera.position.set(
+        Math.cos(baseAngle) * radius,
+        camHeight,
+        Math.sin(baseAngle) * radius
+      );
+      camera.lookAt(0, 2, 0);
+
+      renderer.render(scene, camera);
+    }
+    gsap.ticker.add(renderTick);
+
+    // Store ticker ref for cleanup
+    rt._preconTickerRef = renderTick;
+
+    /* ── Resize handling ── */
+    var preconResizeST = ScrollTrigger.create({
+      trigger: pinTarget,
+      start: 'top bottom',
+      end: 'bottom top',
+      onToggle: function() {
+        var nw = wrap.clientWidth, nh = wrap.clientHeight;
+        if (nw && nh && rt.preconRenderer) {
+          camera.aspect = nw / nh;
+          camera.updateProjectionMatrix();
+          renderer.setSize(nw, nh);
+        }
+      },
+    });
+    rt.preconTriggers.push(preconResizeST);
+
+    // Initial render to avoid blank frame
+    updateLayers(0);
+    renderer.render(scene, camera);
   }
 
   /* ═══════════════════════════════════════════════
