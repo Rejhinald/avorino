@@ -783,11 +783,34 @@
   .cm-hero-content {
     padding: 120px var(--av-section-pad-x) var(--av-section-pad-y);
   }
-  /* Comparison: stack columns */
-  .cm-comparison-row,
+  /* Comparison: stack columns, hide header, show inline labels */
   .cm-comparison-header {
+    display: none;
+  }
+  .cm-comparison-row {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 16px;
+  }
+  .cm-comp-typical::before {
+    content: 'Typical Contractor';
+    display: block;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.3;
+    font-style: normal;
+    margin-bottom: 6px;
+    color: var(--av-cream);
+  }
+  .cm-comp-avorino::before {
+    content: 'Avorino';
+    display: block;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-bottom: 6px;
+    color: var(--av-gold);
   }
   .cm-comp-avorino {
     border-left: none;
