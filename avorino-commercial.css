@@ -634,10 +634,10 @@
 /* Dark cards on warm bg — glass-morphism feel */
 .cm-process-step {
   padding: 40px 32px;
-  background: var(--av-dark);
-  color: var(--av-cream);
+  background: var(--av-dark) !important;
+  color: var(--av-cream) !important;
   border-radius: var(--av-radius);
-  border-top: 2px solid rgba(201,169,110,0.2);
+  border-top: 2px solid rgba(201,169,110,0.2) !important;
   position: relative;
   overflow: hidden;
   transition: transform 0.5s cubic-bezier(0.23,1,0.32,1), box-shadow 0.5s ease;
@@ -655,7 +655,7 @@
 .cm-process-num {
   font-family: 'DM Serif Display', Georgia, serif;
   font-size: 48px;
-  color: var(--av-gold);
+  color: var(--av-gold) !important;
   opacity: 0.2;
   line-height: 1;
   margin-bottom: 16px;
@@ -666,14 +666,14 @@
   font-size: 24px;
   font-weight: 400;
   margin-bottom: 12px;
-  color: var(--av-cream);
+  color: var(--av-cream) !important;
   position: relative; z-index: 1;
 }
 .cm-process-desc {
   font-family: 'DM Sans', system-ui, sans-serif;
   font-size: var(--av-text-sm);
   line-height: 1.8;
-  color: var(--av-cream);
+  color: var(--av-cream) !important;
   opacity: 0.6;
   position: relative; z-index: 1;
 }
