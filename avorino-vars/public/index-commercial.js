@@ -3,7 +3,7 @@
 // Rename this to index.ts to build the Commercial service page.
 // ════════════════════════════════════════════════════════════════
 import { webflow, log, logDetail, clearErrorLog, createAllVariables, buildCommercialPage, CALENDLY_CSS, CALENDLY_JS, } from './shared.js';
-const CDN = '0a5bf9d';
+const CDN = '9e769ee';
 const HEAD_CODE = [
     `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-responsive.css">`,
     `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Rejhinald/avorino@${CDN}/avorino-nav-footer.css">`,

@@ -1751,7 +1751,7 @@ export async function buildCommercialPage(data: CommercialPageData) {
     await clearAndSet(await freshStyle('cm-hero-scroll-line'), 'cm-hero-scroll-line', {
       'width': '1px', 'height': '40px', 'background-color': '#c9a96e',
     });
-    await wait(500);
+    await wait(1000);
 
     // Trust Strip
     await clearAndSet(await freshStyle('cm-trust-strip'), 'cm-trust-strip', {
@@ -1782,13 +1782,14 @@ export async function buildCommercialPage(data: CommercialPageData) {
       'letter-spacing': '0.12em', 'text-transform': 'uppercase',
       'opacity': '0.35', 'margin-top': '2px',
     });
-    await wait(500);
+    await wait(1000);
 
     // Comparison
+    // Comparison — cream bg with dark text
     await clearAndSet(await freshStyle('cm-comparison'), 'cm-comparison', {
       'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
-      'background-color': v['av-dark'], 'color': v['av-cream'],
+      'background-color': v['av-cream'], 'color': v['av-dark'],
     });
     await clearAndSet(await freshStyle('cm-comparison-inner'), 'cm-comparison-inner', {
       'max-width': '1000px', 'margin-left': 'auto', 'margin-right': 'auto',
@@ -1796,20 +1797,20 @@ export async function buildCommercialPage(data: CommercialPageData) {
     await clearAndSet(await freshStyle('cm-comparison-header'), 'cm-comparison-header', {
       'display': 'grid', 'grid-template-columns': '1fr 1fr', 'grid-column-gap': '48px',
       'padding-bottom': '20px',
-      'border-bottom-width': '1px', 'border-bottom-style': 'solid', 'border-bottom-color': 'rgba(240,237,232,0.08)',
+      'border-bottom-width': '1px', 'border-bottom-style': 'solid', 'border-bottom-color': 'rgba(17,17,17,0.08)',
     });
     await clearAndSet(await freshStyle('cm-comparison-row'), 'cm-comparison-row', {
       'display': 'grid', 'grid-template-columns': '1fr 1fr', 'grid-column-gap': '48px',
       'padding-top': '28px', 'padding-bottom': '28px',
-      'border-bottom-width': '1px', 'border-bottom-style': 'solid', 'border-bottom-color': 'rgba(240,237,232,0.06)',
+      'border-bottom-width': '1px', 'border-bottom-style': 'solid', 'border-bottom-color': 'rgba(17,17,17,0.06)',
     });
     await clearAndSet(await freshStyle('cm-comp-typical'), 'cm-comp-typical', {
       'font-family': 'DM Sans', 'font-size': '15px', 'line-height': '1.7',
-      'opacity': '0.35', 'font-style': 'italic',
+      'opacity': '0.4', 'font-style': 'italic', 'color': v['av-dark'],
     });
     await clearAndSet(await freshStyle('cm-comp-avorino'), 'cm-comp-avorino', {
       'font-family': 'DM Sans', 'font-size': '15px', 'line-height': '1.7',
-      'opacity': '0.85', 'padding-left': '20px',
+      'opacity': '0.85', 'padding-left': '20px', 'color': v['av-dark'],
       'border-left-width': '2px', 'border-left-style': 'solid', 'border-left-color': '#c9a96e',
     });
     await clearAndSet(await freshStyle('cm-proof-stat'), 'cm-proof-stat', {
@@ -1829,7 +1830,7 @@ export async function buildCommercialPage(data: CommercialPageData) {
       'font-family': 'DM Sans', 'font-size': '15px', 'line-height': '1.6',
       'opacity': '0.6',
     });
-    await wait(500);
+    await wait(1000);
 
     // Preconstruction
     await clearAndSet(await freshStyle('cm-precon'), 'cm-precon', {
@@ -1895,7 +1896,7 @@ export async function buildCommercialPage(data: CommercialPageData) {
       'font-family': 'DM Sans', 'font-size': '15px',
       'line-height': '1.8', 'opacity': '0.55', 'padding-left': '64px',
     });
-    await wait(500);
+    await wait(1000);
 
     // Project Types
     await clearAndSet(await freshStyle('cm-types'), 'cm-types', {
@@ -1932,7 +1933,7 @@ export async function buildCommercialPage(data: CommercialPageData) {
       'font-family': 'DM Sans', 'font-size': '15px',
       'line-height': '1.7', 'opacity': '0.55', 'max-width': '640px',
     });
-    await wait(500);
+    await wait(1000);
 
     // Ideal Fit
     await clearAndSet(await freshStyle('cm-fit'), 'cm-fit', {
@@ -1969,13 +1970,14 @@ export async function buildCommercialPage(data: CommercialPageData) {
       'font-family': 'DM Sans', 'font-size': '14px', 'font-style': 'italic',
       'opacity': '0.45', 'margin-top': '48px', 'text-align': 'center',
     });
-    await wait(500);
+    await wait(1000);
 
     // Process
+    // Process — warm bg with dark glass-morphism cards
     await clearAndSet(await freshStyle('cm-process'), 'cm-process', {
       'padding-top': v['av-section-pad-y'], 'padding-bottom': v['av-section-pad-y'],
       'padding-left': v['av-section-pad-x'], 'padding-right': v['av-section-pad-x'],
-      'background-color': v['av-dark'], 'color': v['av-cream'],
+      'background-color': v['av-warm'], 'color': v['av-dark'],
     });
     await clearAndSet(await freshStyle('cm-process-inner'), 'cm-process-inner', {
       'max-width': '1100px', 'margin-left': 'auto', 'margin-right': 'auto',
@@ -1987,24 +1989,26 @@ export async function buildCommercialPage(data: CommercialPageData) {
     await clearAndSet(await freshStyle('cm-process-step'), 'cm-process-step', {
       'padding-top': '40px', 'padding-bottom': '40px',
       'padding-left': '32px', 'padding-right': '32px',
-      'background-color': 'rgba(240,237,232,0.03)',
+      'background-color': v['av-dark'], 'color': v['av-cream'],
       'border-top-left-radius': v['av-radius'], 'border-top-right-radius': v['av-radius'],
       'border-bottom-left-radius': v['av-radius'], 'border-bottom-right-radius': v['av-radius'],
-      'border-top-width': '1px', 'border-top-style': 'solid', 'border-top-color': 'rgba(240,237,232,0.06)',
+      'border-top-width': '2px', 'border-top-style': 'solid', 'border-top-color': 'rgba(201,169,110,0.2)',
+      'position': 'relative', 'overflow-x': 'hidden', 'overflow-y': 'hidden',
     });
     await clearAndSet(await freshStyle('cm-process-num'), 'cm-process-num', {
       'font-family': 'DM Serif Display', 'font-size': '48px',
-      'opacity': '0.12', 'line-height': '1', 'margin-bottom': '16px',
+      'color': '#c9a96e', 'opacity': '0.2', 'line-height': '1', 'margin-bottom': '16px',
     });
     await clearAndSet(await freshStyle('cm-process-title'), 'cm-process-title', {
       'font-family': 'DM Serif Display', 'font-size': '24px',
       'font-weight': '400', 'line-height': '1.2', 'margin-bottom': '12px',
+      'color': v['av-cream'],
     });
     await clearAndSet(await freshStyle('cm-process-desc'), 'cm-process-desc', {
       'font-family': 'DM Sans', 'font-size': '14px',
-      'line-height': '1.8', 'opacity': '0.5',
+      'line-height': '1.8', 'color': v['av-cream'], 'opacity': '0.6',
     });
-    await wait(500);
+    await wait(1000);
 
     await applyCTAStyleProps(v);
 
