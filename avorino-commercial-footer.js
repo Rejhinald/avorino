@@ -183,7 +183,7 @@
       var tl = gsap.timeline({
         scrollTrigger: { trigger: row, start: 'top 90%', once: true },
       });
-      if (typical) tl.fromTo(typical, { x: -20, opacity: 0 }, { x: 0, opacity: 0.35, duration: dur || 0.6, ease: 'power3.out' }, 0);
+      if (typical) tl.fromTo(typical, { x: -20, opacity: 0 }, { x: 0, opacity: 0.4, duration: dur || 0.6, ease: 'power3.out' }, 0);
       if (avorino) tl.fromTo(avorino, { x: 20, opacity: 0 }, { x: 0, opacity: 0.85, duration: dur || 0.6, ease: 'power3.out' }, 0.1);
     });
 
