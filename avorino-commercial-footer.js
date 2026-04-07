@@ -316,16 +316,320 @@
   }
 
   /* ═══════════════════════════════════════════════
-     HERO — Exploded Axonometric 3D Scene
-     5 layers of a commercial interior assemble on load
+     SHARED MODEL — Commercial Tenant Suite
+     Both hero and precon use this same floor plan.
+     ═══════════════════════════════════════════════ */
+  function createCommercialSuiteModel() {
+    var wireColor = 0xc9a96e;
+    var accentColor = 0xc8222a;
+    var creamColor = 0xf0ede8;
+
+    var root = new THREE.Group();
+
+    /* ── Material helpers ── */
+    function wireMat(color, maxOp) {
+      var m = new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: 0 });
+      m.userData = { maxOp: maxOp };
+      return m;
+    }
+    function meshMat(color, maxOp) {
+      var m = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0, side: THREE.DoubleSide });
+      m.userData = { maxOp: maxOp };
+      return m;
+    }
+
+    /* ── Dimensions: 14 wide x 10 deep, centered at origin ── */
+    var fW = 14, fD = 10, hW = fW / 2, hD = fD / 2, wallH = 3.5;
+
+    /* ═══ SHELL — perimeter walls, storefront, slab ═══ */
+    var shellGroup = new THREE.Group();
+
+    // Floor slab outline
+    shellGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-hW, 0, -hD), new THREE.Vector3(hW, 0, -hD),
+      new THREE.Vector3(hW, 0, hD), new THREE.Vector3(-hW, 0, hD),
+      new THREE.Vector3(-hW, 0, -hD),
+    ]), wireMat(wireColor, 0.3)));
+
+    // Top ring
+    shellGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-hW, wallH, -hD), new THREE.Vector3(hW, wallH, -hD),
+      new THREE.Vector3(hW, wallH, hD), new THREE.Vector3(-hW, wallH, hD),
+      new THREE.Vector3(-hW, wallH, -hD),
+    ]), wireMat(wireColor, 0.3)));
+
+    // 4 corner verticals
+    [[-hW, -hD], [hW, -hD], [hW, hD], [-hW, hD]].forEach(function(c) {
+      shellGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(c[0], 0, c[1]), new THREE.Vector3(c[0], wallH, c[1]),
+      ]), wireMat(wireColor, 0.3)));
+    });
+
+    // Storefront: front wall (z = -5) with glazing opening x=-4..4, door gap x=-1..1
+    var fz = -hD;
+    // Bottom segments with openings
+    shellGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-hW, 0, fz), new THREE.Vector3(-4, 0, fz),
+    ]), wireMat(wireColor, 0.3)));
+    shellGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(4, 0, fz), new THREE.Vector3(hW, 0, fz),
+    ]), wireMat(wireColor, 0.3)));
+    // Top segments with openings
+    shellGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-hW, wallH, fz), new THREE.Vector3(-4, wallH, fz),
+    ]), wireMat(wireColor, 0.3)));
+    shellGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(4, wallH, fz), new THREE.Vector3(hW, wallH, fz),
+    ]), wireMat(wireColor, 0.3)));
+    // Glazing frame verticals at opening edges
+    [-4, -1, 1, 4].forEach(function(x) {
+      shellGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(x, 0, fz), new THREE.Vector3(x, wallH, fz),
+      ]), wireMat(wireColor, 0.3)));
+    });
+    // Glazing transom bar (horizontal at 2.8)
+    shellGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-4, 2.8, fz), new THREE.Vector3(-1, 2.8, fz),
+    ]), wireMat(wireColor, 0.25)));
+    shellGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(1, 2.8, fz), new THREE.Vector3(4, 2.8, fz),
+    ]), wireMat(wireColor, 0.25)));
+
+    // Back wall, left wall, right wall (solid — no openings besides corners already drawn)
+    // Left wall bottom+top
+    shellGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-hW, 0, -hD), new THREE.Vector3(-hW, 0, hD),
+    ]), wireMat(wireColor, 0.25)));
+    shellGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-hW, wallH, -hD), new THREE.Vector3(-hW, wallH, hD),
+    ]), wireMat(wireColor, 0.25)));
+    // Right wall bottom+top
+    shellGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(hW, 0, -hD), new THREE.Vector3(hW, 0, hD),
+    ]), wireMat(wireColor, 0.25)));
+    shellGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(hW, wallH, -hD), new THREE.Vector3(hW, wallH, hD),
+    ]), wireMat(wireColor, 0.25)));
+    // Back wall bottom+top
+    shellGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-hW, 0, hD), new THREE.Vector3(hW, 0, hD),
+    ]), wireMat(wireColor, 0.25)));
+    shellGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-hW, wallH, hD), new THREE.Vector3(hW, wallH, hD),
+    ]), wireMat(wireColor, 0.25)));
+
+    // Service core: enclosed room at back-right (x=3..7, z=2..5)
+    var scX0 = 3, scX1 = 7, scZ0 = 2, scZ1 = 5;
+    // Bottom
+    shellGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(scX0, 0, scZ0), new THREE.Vector3(scX1, 0, scZ0),
+      new THREE.Vector3(scX1, 0, scZ1), new THREE.Vector3(scX0, 0, scZ1),
+      new THREE.Vector3(scX0, 0, scZ0),
+    ]), wireMat(wireColor, 0.2)));
+    // Top
+    shellGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(scX0, wallH, scZ0), new THREE.Vector3(scX1, wallH, scZ0),
+      new THREE.Vector3(scX1, wallH, scZ1), new THREE.Vector3(scX0, wallH, scZ1),
+      new THREE.Vector3(scX0, wallH, scZ0),
+    ]), wireMat(wireColor, 0.2)));
+    // 4 corner verticals of service core
+    [[scX0, scZ0], [scX1, scZ0], [scX1, scZ1], [scX0, scZ1]].forEach(function(c) {
+      shellGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(c[0], 0, c[1]), new THREE.Vector3(c[0], wallH, c[1]),
+      ]), wireMat(wireColor, 0.2)));
+    });
+
+    root.add(shellGroup);
+
+    /* ═══ PARTITIONS — interior walls creating 3 zones ═══ */
+    var partitionGroup = new THREE.Group();
+
+    // Wall at z=-1 from x=-7 to x=3 (front/middle divider) with door gap x=0..2
+    partitionGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-hW, 0, -1), new THREE.Vector3(0, 0, -1),
+    ]), wireMat(wireColor, 0.2)));
+    partitionGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(2, 0, -1), new THREE.Vector3(3, 0, -1),
+    ]), wireMat(wireColor, 0.2)));
+    partitionGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-hW, wallH, -1), new THREE.Vector3(0, wallH, -1),
+    ]), wireMat(wireColor, 0.2)));
+    partitionGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(2, wallH, -1), new THREE.Vector3(3, wallH, -1),
+    ]), wireMat(wireColor, 0.2)));
+    // Verticals at partition ends and door jambs
+    [-hW, 0, 2, 3].forEach(function(x) {
+      partitionGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(x, 0, -1), new THREE.Vector3(x, wallH, -1),
+      ]), wireMat(wireColor, 0.2)));
+    });
+
+    // Wall at z=2 from x=-7 to x=3 (middle/back divider) with door gap x=-2..0
+    partitionGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-hW, 0, 2), new THREE.Vector3(-2, 0, 2),
+    ]), wireMat(wireColor, 0.2)));
+    partitionGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(0, 0, 2), new THREE.Vector3(3, 0, 2),
+    ]), wireMat(wireColor, 0.2)));
+    partitionGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-hW, wallH, 2), new THREE.Vector3(-2, wallH, 2),
+    ]), wireMat(wireColor, 0.2)));
+    partitionGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(0, wallH, 2), new THREE.Vector3(3, wallH, 2),
+    ]), wireMat(wireColor, 0.2)));
+    [-hW, -2, 0, 3].forEach(function(x) {
+      partitionGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(x, 0, 2), new THREE.Vector3(x, wallH, 2),
+      ]), wireMat(wireColor, 0.2)));
+    });
+
+    root.add(partitionGroup);
+
+    /* ═══ CEILING — T-bar grid at y=3.2 ═══ */
+    var ceilingGroup = new THREE.Group();
+    var ceilY = 3.2;
+
+    // 6 lines along x (spaced across z)
+    for (var ci = 0; ci < 6; ci++) {
+      var cxPos = -hW + (fW / 5) * ci;
+      ceilingGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(cxPos, ceilY, -hD), new THREE.Vector3(cxPos, ceilY, hD),
+      ]), wireMat(wireColor, 0.15)));
+    }
+    // 4 lines along z (spaced across x)
+    for (var cj = 0; cj < 4; cj++) {
+      var czPos = -hD + (fD / 3) * cj;
+      ceilingGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(-hW, ceilY, czPos), new THREE.Vector3(hW, ceilY, czPos),
+      ]), wireMat(wireColor, 0.15)));
+    }
+
+    root.add(ceilingGroup);
+
+    /* ═══ HVAC — 3 main duct runs + 4 branch drops ═══ */
+    var hvacGroup = new THREE.Group();
+    var ductY = 3.2;
+
+    // 3 main duct runs along z-axis at x = -4, 0, 4
+    [-4, 0, 4].forEach(function(xPos) {
+      hvacGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(xPos, ductY, -hD), new THREE.Vector3(xPos, ductY, hD),
+      ]), wireMat(wireColor, 0.2)));
+    });
+
+    // 4 branch drops (short vertical segments)
+    [[-4, -2], [-4, 3], [0, 1], [4, -1]].forEach(function(bd) {
+      hvacGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(bd[0], ductY, bd[1]), new THREE.Vector3(bd[0], ductY - 0.5, bd[1]),
+      ]), wireMat(wireColor, 0.2)));
+    });
+
+    root.add(hvacGroup);
+
+    /* ═══ ELECTRICAL — 3 conduit runs + 6 junction boxes ═══ */
+    var electricalGroup = new THREE.Group();
+    var condY = 3.0;
+
+    // 3 horizontal conduit runs
+    electricalGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-hW, condY, -3), new THREE.Vector3(hW, condY, -3),
+    ]), wireMat(accentColor, 0.15)));
+    electricalGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-hW, condY, 0), new THREE.Vector3(hW, condY, 0),
+    ]), wireMat(accentColor, 0.15)));
+    electricalGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(-hW, condY, 3), new THREE.Vector3(hW, condY, 3),
+    ]), wireMat(accentColor, 0.15)));
+
+    // 6 junction box indicators (small crosses)
+    [[-5, -3], [-1, -3], [4, -3], [-3, 0], [2, 0], [5, 3]].forEach(function(jb) {
+      var sz = 0.2;
+      // Horizontal bar
+      electricalGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(jb[0] - sz, condY, jb[1]), new THREE.Vector3(jb[0] + sz, condY, jb[1]),
+      ]), wireMat(accentColor, 0.15)));
+      // Vertical bar
+      electricalGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(jb[0], condY, jb[1] - sz), new THREE.Vector3(jb[0], condY, jb[1] + sz),
+      ]), wireMat(accentColor, 0.15)));
+    });
+
+    root.add(electricalGroup);
+
+    /* ═══ SPRINKLER — 1 main + 5 drops ═══ */
+    var sprinklerGroup = new THREE.Group();
+
+    // Fire sprinkler main along z at x=2
+    sprinklerGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(2, ductY + 0.1, -hD), new THREE.Vector3(2, ductY + 0.1, hD),
+    ]), wireMat(accentColor, 0.15)));
+
+    // 5 drops
+    for (var si = 0; si < 5; si++) {
+      var sz2 = -hD + 1.5 + si * ((fD - 3) / 4);
+      sprinklerGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(2, ductY + 0.1, sz2), new THREE.Vector3(2, ductY - 0.4, sz2),
+      ]), wireMat(accentColor, 0.15)));
+    }
+
+    root.add(sprinklerGroup);
+
+    /* ═══ FINISHES — floor fill + ceiling fill ═══ */
+    var finishGroup = new THREE.Group();
+
+    // Floor plane
+    var floorMesh = new THREE.Mesh(new THREE.PlaneGeometry(fW, fD), meshMat(creamColor, 0.06));
+    floorMesh.rotation.x = -Math.PI / 2;
+    floorMesh.position.set(0, 0.02, 0);
+    finishGroup.add(floorMesh);
+
+    // Ceiling plane
+    var ceilMesh = new THREE.Mesh(new THREE.PlaneGeometry(fW, fD), meshMat(creamColor, 0.04));
+    ceilMesh.rotation.x = -Math.PI / 2;
+    ceilMesh.position.set(0, wallH, 0);
+    finishGroup.add(ceilMesh);
+
+    root.add(finishGroup);
+
+    /* ═══ POINT LIGHTS — 3 in each zone ═══ */
+    var pointLights = [];
+    [[-3, 1.8, -3], [0, 1.8, 0.5], [4, 1.8, 3]].forEach(function(pos) {
+      var pl = new THREE.PointLight(wireColor, 0, 12);
+      pl.position.set(pos[0], pos[1], pos[2]);
+      pl.userData = { maxIntensity: 0.3 };
+      root.add(pl);
+      pointLights.push(pl);
+    });
+
+    /* ═══ FIXTURES — empty group for future millwork ═══ */
+    var fixtureGroup = new THREE.Group();
+    root.add(fixtureGroup);
+
+    return {
+      root: root,
+      shell: shellGroup,
+      partitions: partitionGroup,
+      ceiling: ceilingGroup,
+      hvac: hvacGroup,
+      electrical: electricalGroup,
+      sprinkler: sprinklerGroup,
+      finishes: finishGroup,
+      lights: pointLights,
+      fixtures: fixtureGroup,
+    };
+  }
+
+  /* ═══════════════════════════════════════════════
+     HERO — Resolved Building, Fixed Camera
      ═══════════════════════════════════════════════ */
   function initCommercialHero(rt) {
     var hero = document.getElementById('cm-hero');
     if (!hero) return;
     var canvasWrap = document.getElementById('cm-hero-canvas');
     if (!canvasWrap) return;
+    if (typeof THREE === 'undefined') return;
 
-    /* ── Text entrance ── */
+    /* ── Text entrance (same pattern as initCommercialHeroText) ── */
     var h1 = hero.querySelector('h1');
     var goldLine = hero.querySelector('[class*="gold-line"]');
     var subtitle = hero.querySelector('[class*="subtitle"]');
@@ -357,15 +661,15 @@
       });
     }
 
-    /* ═══ Three.js Scene: Exploded axonometric commercial interior ═══ */
-    var scene = new THREE.Scene();
+    /* ═══ Three.js Scene ═══ */
     var isMobile = rt.isMobile;
     var dpr = Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2);
     var w = canvasWrap.clientWidth, h = canvasWrap.clientHeight;
 
-    var camera = new THREE.PerspectiveCamera(50, w / h, 0.1, 150);
-    camera.position.set(14, 10, 20);
-    camera.lookAt(0, 3, 0);
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(35, w / h, 0.1, 200);
+    camera.position.set(18, 14, 18);
+    camera.lookAt(0, 1.5, 0);
 
     var renderer = new THREE.WebGLRenderer({ powerPreference: 'high-performance', antialias: !isMobile, alpha: true });
     renderer.setSize(w, h); renderer.setPixelRatio(dpr);
@@ -374,200 +678,33 @@
     rt.heroRenderer = renderer;
 
     /* ── Lights ── */
-    scene.add(new THREE.AmbientLight(0xf0ede8, 0.25));
-    var pl = new THREE.PointLight(0xc9a96e, 0.6, 80);
-    pl.position.set(20, 25, 20); scene.add(pl);
+    scene.add(new THREE.AmbientLight(0xf0ede8, 0.3));
+    var dirLight = new THREE.DirectionalLight(0xffffff, 0.4);
+    dirLight.position.set(10, 15, 8);
+    scene.add(dirLight);
 
-    var wireColor = 0xc9a96e;
-    var accentColor = 0xc8222a;
+    /* ── Build model ── */
+    var model = createCommercialSuiteModel();
+    scene.add(model.root);
 
-    /* ── Helper: create LineBasicMaterial ── */
-    function wireMat(color, opacity) {
-      return new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: opacity });
-    }
-
-    /* ── All layer materials (start at opacity 0 for entrance) ── */
-    var floorWireMat = wireMat(wireColor, 0);
-    var floorFillMat = new THREE.MeshBasicMaterial({ color: wireColor, transparent: true, opacity: 0, side: THREE.DoubleSide });
-    var wallMat = wireMat(wireColor, 0);
-    var ductMat = wireMat(wireColor, 0);
-    var conduitMat = wireMat(accentColor, 0);
-    var ceilingMat = wireMat(wireColor, 0);
-
-    /* ── Target opacities for each layer ── */
-    var targetOpacities = [
-      { wire: 0.25, fill: 0.08 },  // floor
-      { wire: 0.25 },               // walls
-      { wire: 0.2 },                // ducts
-      { wire: 0.25 },               // conduit
-      { wire: 0.18 },               // ceiling
+    /* ── On-load fade: all groups from 0 → target opacity, staggered ── */
+    var groups = [
+      { group: model.shell, target: 0.25 },
+      { group: model.partitions, target: 0.2 },
+      { group: model.ceiling, target: 0.15 },
+      { group: model.hvac, target: 0.12 },
+      { group: model.electrical, target: 0.1 },
+      { group: model.finishes, target: 0.05 },
     ];
 
-    /* ── Layer 1: Floor plane (y=0) ── */
-    var floorGroup = new THREE.Group();
-    var fW = 14, fD = 10, hW = fW / 2, hD = fD / 2;
-
-    // Outline
-    floorGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(-hW, 0, -hD), new THREE.Vector3(hW, 0, -hD),
-      new THREE.Vector3(hW, 0, hD), new THREE.Vector3(-hW, 0, hD),
-      new THREE.Vector3(-hW, 0, -hD),
-    ]), floorWireMat));
-
-    // Solid fill
-    var floorMesh = new THREE.Mesh(new THREE.PlaneGeometry(fW, fD), floorFillMat);
-    floorMesh.rotation.x = -Math.PI / 2;
-    floorMesh.position.set(0, 0.01, 0);
-    floorGroup.add(floorMesh);
-    scene.add(floorGroup);
-
-    /* ── Layer 2: Demising walls (y=0 to y=3.5) ── */
-    var wallGroup = new THREE.Group();
-    var wallH = 3.5;
-
-    // Outer walls — box outline (bottom, top, verticals)
-    // Bottom
-    wallGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(-hW, 0, -hD), new THREE.Vector3(hW, 0, -hD),
-      new THREE.Vector3(hW, 0, hD), new THREE.Vector3(-hW, 0, hD),
-      new THREE.Vector3(-hW, 0, -hD),
-    ]), wallMat.clone()));
-    // Top
-    wallGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(-hW, wallH, -hD), new THREE.Vector3(hW, wallH, -hD),
-      new THREE.Vector3(hW, wallH, hD), new THREE.Vector3(-hW, wallH, hD),
-      new THREE.Vector3(-hW, wallH, -hD),
-    ]), wallMat.clone()));
-    // 4 corner verticals
-    [[-hW, -hD], [hW, -hD], [hW, hD], [-hW, hD]].forEach(function(c) {
-      wallGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(c[0], 0, c[1]), new THREE.Vector3(c[0], wallH, c[1]),
-      ]), wallMat.clone()));
-    });
-
-    // Internal partition at x=-3 (partial depth: z=-hD to z=2)
-    wallGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(-3, 0, -hD), new THREE.Vector3(-3, 0, 2),
-      new THREE.Vector3(-3, wallH, 2), new THREE.Vector3(-3, wallH, -hD),
-      new THREE.Vector3(-3, 0, -hD),
-    ]), wallMat.clone()));
-    // Internal partition at x=4 (partial depth: z=-3 to z=hD)
-    wallGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(4, 0, -3), new THREE.Vector3(4, 0, hD),
-      new THREE.Vector3(4, wallH, hD), new THREE.Vector3(4, wallH, -3),
-      new THREE.Vector3(4, 0, -3),
-    ]), wallMat.clone()));
-    // Short cross-wall at z=0 between x=-3 and x=4
-    wallGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(-3, 0, 0), new THREE.Vector3(4, 0, 0),
-      new THREE.Vector3(4, wallH, 0), new THREE.Vector3(-3, wallH, 0),
-      new THREE.Vector3(-3, 0, 0),
-    ]), wallMat.clone()));
-    scene.add(wallGroup);
-
-    /* ── Layer 3: Duct runs / HVAC (y=4 to y=4.5) ── */
-    var ductGroup = new THREE.Group();
-
-    // Main runs along length (x direction)
-    var ductY = 4.25;
-    [[-3, ductY, -4, -3, ductY, 4], [0, ductY, -4, 0, ductY, 4], [4, ductY, -4, 4, ductY, 4]].forEach(function(r) {
-      // Dashed effect: draw as segments with gaps
-      for (var dz = r[2]; dz < r[5]; dz += 1.2) {
-        var endZ = Math.min(dz + 0.8, r[5]);
-        ductGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-          new THREE.Vector3(r[0], r[1], dz), new THREE.Vector3(r[3], r[4], endZ),
-        ]), ductMat.clone()));
-      }
-    });
-
-    // Branch drops (vertical short segments)
-    [[-3, 2], [0, -1], [4, 3]].forEach(function(bd) {
-      ductGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(bd[0], 4.5, bd[1]), new THREE.Vector3(bd[0], 4.0, bd[1]),
-      ]), ductMat.clone()));
-    });
-
-    // A cross-run along z at x=1
-    for (var cz = -hD; cz < hD; cz += 1.2) {
-      var cEnd = Math.min(cz + 0.8, hD);
-      ductGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(1, ductY, cz), new THREE.Vector3(1, ductY, cEnd),
-      ]), ductMat.clone()));
-    }
-    scene.add(ductGroup);
-
-    /* ── Layer 4: Conduit / electrical (y=5 to y=5.3) ── */
-    var conduitGroup = new THREE.Group();
-    var condY = 5.15;
-
-    // Horizontal runs (shorter dotted segments)
-    [[-5, condY, -3, 2, condY, -3], [-4, condY, 1, 5, condY, 1], [-2, condY, 4, 6, condY, 4]].forEach(function(r) {
-      for (var cx = r[0]; cx < r[3]; cx += 0.8) {
-        var cxEnd = Math.min(cx + 0.4, r[3]);
-        conduitGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-          new THREE.Vector3(cx, r[1], r[2]), new THREE.Vector3(cxEnd, r[4], r[5]),
-        ]), conduitMat.clone()));
-      }
-    });
-
-    // Vertical drops (junction boxes)
-    [[-4, -3], [0, 1], [3, -3], [5, 4], [-2, 4]].forEach(function(jb) {
-      conduitGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(jb[0], 5.0, jb[1]), new THREE.Vector3(jb[0], 5.3, jb[1]),
-      ]), conduitMat.clone()));
-    });
-    scene.add(conduitGroup);
-
-    /* ── Layer 5: Ceiling grid (y=6) ── */
-    var ceilingGroup = new THREE.Group();
-    var ceilY = 6;
-
-    // 7 lines along z (spaced across x)
-    for (var ci = 0; ci < 7; ci++) {
-      var cx2 = -hW + (fW / 6) * ci;
-      ceilingGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(cx2, ceilY, -hD), new THREE.Vector3(cx2, ceilY, hD),
-      ]), ceilingMat.clone()));
-    }
-    // 5 lines along x (spaced across z)
-    for (var cj = 0; cj < 5; cj++) {
-      var cz2 = -hD + (fD / 4) * cj;
-      ceilingGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(-hW, ceilY, cz2), new THREE.Vector3(hW, ceilY, cz2),
-      ]), ceilingMat.clone()));
-    }
-    scene.add(ceilingGroup);
-
-    /* ═══ On-Load Assembly Animation ═══ */
-    var layers = [floorGroup, wallGroup, ductGroup, conduitGroup, ceilingGroup];
-    var finalYs = [0, 0, 0, 0, 0]; // groups already at correct y via geometry
-    var explodeOffsets = [60, 55, 50, 45, 40];
-    var layerTargetOpacity = [0.25, 0.25, 0.2, 0.25, 0.18];
-    var fillTargetOpacity = 0.08;
-
-    // Set initial exploded positions
-    layers.forEach(function(group, i) {
-      group.position.y = explodeOffsets[i];
-      group.position.z = (4 - i) * 1.5; // slight z stagger
-    });
-
-    // Animate each layer to final position
-    layers.forEach(function(group, i) {
-      var delay = 0.3 * i;
-
-      // Position tween
-      gsap.to(group.position, {
-        y: finalYs[i], z: 0,
-        duration: 2.5, delay: delay, ease: 'power3.out',
-      });
-
-      // Opacity tween for all children
-      group.traverse(function(child) {
+    groups.forEach(function(entry, i) {
+      var delay = 0.15 * i;
+      entry.group.traverse(function(child) {
         if (!child.material) return;
-        var isFloorFill = (i === 0 && child.type === 'Mesh');
-        var target = isFloorFill ? fillTargetOpacity : layerTargetOpacity[i];
+        var maxOp = child.material.userData && child.material.userData.maxOp;
+        var t = maxOp ? Math.min(maxOp, entry.target) : entry.target;
         gsap.to(child.material, {
-          opacity: target, duration: 2.5, delay: delay, ease: 'power2.out',
+          opacity: t, duration: 1.5, delay: delay, ease: 'power2.out',
         });
       });
     });
@@ -579,23 +716,22 @@
       mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
     });
 
-    /* ── Render loop ── */
-    var baseAngle = 0;
+    /* ── Render loop — fixed camera with tiny drift + mouse parallax ── */
+    var startTime = performance.now();
+    var baseCamX = 18, baseCamY = 14, baseCamZ = 18;
 
     function animate() {
       rt.heroRaf = requestAnimationFrame(animate);
       if (rt.heroDisposed) return;
 
-      baseAngle += 0.0008;
+      var time = (performance.now() - startTime) / 1000;
 
-      // Camera auto-orbit + mouse parallax
-      var radius = 26;
       camera.position.set(
-        Math.cos(baseAngle) * radius + mouseX * 0.25,
-        10 + mouseY * 2,
-        Math.sin(baseAngle) * radius
+        baseCamX + Math.sin(time * 0.3) * 0.02 + mouseX * 0.5,
+        baseCamY + Math.cos(time * 0.25) * 0.015 + mouseY * 0.3,
+        baseCamZ + Math.sin(time * 0.2) * 0.02
       );
-      camera.lookAt(0, 3, 0);
+      camera.lookAt(0, 1.5, 0);
 
       renderer.render(scene, camera);
     }
@@ -610,25 +746,23 @@
   }
 
   /* ═══════════════════════════════════════════════
-     initCommercialPrecon — Pinned 4-Layer Three.js Reveal
+     initCommercialPrecon — Sticky Canvas, 4 States
+     Cards scroll on left, canvas sticks on right.
      ═══════════════════════════════════════════════ */
   function initCommercialPrecon(rt) {
     var wrap = document.getElementById('cm-precon-canvas');
-    var pinTarget = document.querySelector('.cm-precon-desktop');
-    if (!wrap || !pinTarget || typeof THREE === 'undefined') return;
-
-    /* ── Colors ── */
-    var wireColor = 0xc9a96e;
-    var accentColor = 0xc8222a;
-    var creamColor = 0xf0ede8;
+    var desktop = document.querySelector('.cm-precon-desktop');
+    if (!wrap || !desktop || typeof THREE === 'undefined') return;
 
     /* ── Scene + Camera + Renderer ── */
     var isMobile = rt.isMobile;
     var w = wrap.clientWidth, h = wrap.clientHeight;
+    if (!w || !h) { w = 600; h = 500; }
+
     var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera(50, w / h, 0.1, 150);
-    camera.position.set(16, 10, 18);
-    camera.lookAt(0, 2, 0);
+    var camera = new THREE.PerspectiveCamera(35, w / h, 0.1, 200);
+    camera.position.set(18, 14, 18);
+    camera.lookAt(0, 1.5, 0);
 
     var renderer = new THREE.WebGLRenderer({
       alpha: true,
@@ -641,208 +775,76 @@
     wrap.appendChild(renderer.domElement);
     rt.preconRenderer = renderer;
 
-    /* ── Lights (ambient only initially; layer 4 adds point lights) ── */
-    scene.add(new THREE.AmbientLight(0xf0ede8, 0.2));
+    /* ── Lights ── */
+    scene.add(new THREE.AmbientLight(0xf0ede8, 0.3));
+    var dirLight = new THREE.DirectionalLight(0xffffff, 0.3);
+    dirLight.position.set(10, 15, 8);
+    scene.add(dirLight);
 
-    /* ── Material helpers ── */
-    function wireMat(color, maxOp) {
-      var m = new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: 0 });
-      m.userData = { maxOp: maxOp };
-      return m;
-    }
-    function meshMat(color, maxOp) {
-      var m = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0, side: THREE.DoubleSide });
-      m.userData = { maxOp: maxOp };
-      return m;
-    }
+    /* ── Build model ── */
+    var model = createCommercialSuiteModel();
+    scene.add(model.root);
 
-    /* ── Building dimensions ── */
-    var fW = 14, fD = 10, hW = fW / 2, hD = fD / 2, wallH = 3.5;
-
-    /* ═══ LAYER 1 — Site Shell (0%-25%) ═══ */
-    var layer1 = new THREE.Group();
-
-    // Floor slab outline
-    layer1.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(-hW, 0, -hD), new THREE.Vector3(hW, 0, -hD),
-      new THREE.Vector3(hW, 0, hD), new THREE.Vector3(-hW, 0, hD),
-      new THREE.Vector3(-hW, 0, -hD),
-    ]), wireMat(wireColor, 0.3)));
-
-    // Top ring
-    layer1.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(-hW, wallH, -hD), new THREE.Vector3(hW, wallH, -hD),
-      new THREE.Vector3(hW, wallH, hD), new THREE.Vector3(-hW, wallH, hD),
-      new THREE.Vector3(-hW, wallH, -hD),
-    ]), wireMat(wireColor, 0.3)));
-
-    // 4 corner verticals
-    [[-hW, -hD], [hW, -hD], [hW, hD], [-hW, hD]].forEach(function(c) {
-      layer1.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(c[0], 0, c[1]), new THREE.Vector3(c[0], wallH, c[1]),
-      ]), wireMat(wireColor, 0.3)));
-    });
-
-    // Front wall (z = -hD) with 2 openings: door gap and window gap
-    // Segments: left edge to opening1, gap, mid segment, gap, right edge
-    var frontY0 = 0, frontY1 = wallH, fz = -hD;
-    // Bottom edge with gaps
-    layer1.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(-hW, frontY0, fz), new THREE.Vector3(-4, frontY0, fz),
-    ]), wireMat(wireColor, 0.3)));
-    layer1.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(-1, frontY0, fz), new THREE.Vector3(2, frontY0, fz),
-    ]), wireMat(wireColor, 0.3)));
-    layer1.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(5, frontY0, fz), new THREE.Vector3(hW, frontY0, fz),
-    ]), wireMat(wireColor, 0.3)));
-    // Top edge with gaps
-    layer1.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(-hW, frontY1, fz), new THREE.Vector3(-4, frontY1, fz),
-    ]), wireMat(wireColor, 0.3)));
-    layer1.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(-1, frontY1, fz), new THREE.Vector3(2, frontY1, fz),
-    ]), wireMat(wireColor, 0.3)));
-    layer1.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(5, frontY1, fz), new THREE.Vector3(hW, frontY1, fz),
-    ]), wireMat(wireColor, 0.3)));
-    // Verticals at opening edges
-    [-4, -1, 2, 5].forEach(function(x) {
-      layer1.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(x, frontY0, fz), new THREE.Vector3(x, frontY1, fz),
-      ]), wireMat(wireColor, 0.3)));
-    });
-
-    scene.add(layer1);
-
-    /* ═══ LAYER 2 — Code & MEP Overlay (25%-50%) ═══ */
-    var layer2 = new THREE.Group();
-    var ductY = 3.2;
-
-    // 3 HVAC trunk lines along ceiling
-    [-3, 0, 4].forEach(function(xPos) {
-      layer2.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(xPos, ductY, -hD), new THREE.Vector3(xPos, ductY, hD),
-      ]), wireMat(wireColor, 0.2)));
-    });
-
-    // 4 branch drops from trunks
-    [[-3, -2], [-3, 3], [0, 1], [4, -1]].forEach(function(bd) {
-      layer2.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(bd[0], ductY, bd[1]), new THREE.Vector3(bd[0], 2, bd[1]),
-      ]), wireMat(wireColor, 0.2)));
-    });
-
-    // 2 plumbing risers (floor to ceiling)
-    [-5, 3].forEach(function(xPos) {
-      layer2.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(xPos, 0, 2), new THREE.Vector3(xPos, wallH, 2),
-      ]), wireMat(accentColor, 0.25)));
-    });
-
-    // Fire sprinkler main + 6 drops
-    layer2.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(-hW + 1, ductY + 0.15, 0), new THREE.Vector3(hW - 1, ductY + 0.15, 0),
-    ]), wireMat(accentColor, 0.25)));
-    for (var si = 0; si < 6; si++) {
-      var sx = -hW + 2 + si * ((fW - 4) / 5);
-      layer2.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(sx, ductY + 0.15, 0), new THREE.Vector3(sx, ductY - 0.3, 0),
-      ]), wireMat(accentColor, 0.25)));
-    }
-
-    scene.add(layer2);
-
-    /* ═══ LAYER 3 — Procurement & Schedule (50%-75%) ═══ */
-    var layer3 = new THREE.Group();
-
-    // 5 Gantt-style horizontal bars floating to the right of the building
-    var ganttBars = [
-      { y: 2.8, x0: 8, x1: 13.5 },
-      { y: 2.4, x0: 8.5, x1: 12 },
-      { y: 2.0, x0: 8, x1: 14 },
-      { y: 1.6, x0: 9, x1: 12.5 },
-      { y: 1.2, x0: 8, x1: 11 },
+    /* ── State definitions ── */
+    var states = [
+      /* State 0 — Shell */
+      { shell: 0.3, partitions: 0, ceiling: 0, hvac: 0, electrical: 0, sprinkler: 0, finishes: 0, lightsOn: false, fov: 35 },
+      /* State 1 — Code + MEP */
+      { shell: 0.3, partitions: 0.2, ceiling: 0, hvac: 0.2, electrical: 0.15, sprinkler: 0.15, finishes: 0, lightsOn: false, fov: 33 },
+      /* State 2 — Procurement */
+      { shell: 0.3, partitions: 0.2, ceiling: 0.1, hvac: 0.2, electrical: 0.15, sprinkler: 0.15, finishes: 0, lightsOn: false, fov: 32, pulseShell: true, pulseHvac: true },
+      /* State 3 — Built Environment */
+      { shell: 0.35, partitions: 0.25, ceiling: 0.2, hvac: 0.2, electrical: 0.15, sprinkler: 0.15, finishes: 0.06, lightsOn: true, fov: 30 },
     ];
-    ganttBars.forEach(function(bar) {
-      layer3.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(bar.x0, bar.y, 0), new THREE.Vector3(bar.x1, bar.y, 0),
-      ]), wireMat(wireColor, 0.15)));
-    });
 
-    // Connecting lines from bars to building edge
-    [
-      { bx: 8, by: 2.8, tx: hW, ty: wallH },
-      { bx: 8, by: 2.0, tx: hW, ty: wallH * 0.5 },
-      { bx: 8, by: 1.2, tx: hW, ty: 0 },
-    ].forEach(function(conn) {
-      layer3.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(conn.bx, conn.by, 0), new THREE.Vector3(conn.tx, conn.ty, 0),
-      ]), wireMat(wireColor, 0.1)));
-    });
+    var currentState = -1;
 
-    scene.add(layer3);
-
-    /* ═══ LAYER 4 — Built Environment (75%-100%) ═══ */
-    var layer4 = new THREE.Group();
-
-    // Filled floor plane
-    var floorMesh = new THREE.Mesh(new THREE.PlaneGeometry(fW, fD), meshMat(creamColor, 0.06));
-    floorMesh.rotation.x = -Math.PI / 2;
-    floorMesh.position.set(0, 0.02, 0);
-    layer4.add(floorMesh);
-
-    // Ceiling plane
-    var ceilMesh = new THREE.Mesh(new THREE.PlaneGeometry(fW, fD), meshMat(creamColor, 0.04));
-    ceilMesh.rotation.x = -Math.PI / 2;
-    ceilMesh.position.set(0, wallH, 0);
-    layer4.add(ceilMesh);
-
-    // Interior partition lines (refined detail)
-    var partitions = [
-      [[-3, 0, -hD], [-3, 0, 2]],
-      [[-3, wallH, -hD], [-3, wallH, 2]],
-      [[-3, 0, 2], [-3, wallH, 2]],
-      [[4, 0, -3], [4, 0, hD]],
-      [[4, wallH, -3], [4, wallH, hD]],
-      [[4, 0, -3], [4, wallH, -3]],
-      [[-3, 0, 0], [4, 0, 0]],
-      [[-3, wallH, 0], [4, wallH, 0]],
-    ];
-    partitions.forEach(function(seg) {
-      layer4.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(seg[0][0], seg[0][1], seg[0][2]),
-        new THREE.Vector3(seg[1][0], seg[1][1], seg[1][2]),
-      ]), wireMat(wireColor, 0.2)));
-    });
-
-    // 3 point lights inside the space (start at intensity 0)
-    var pointLights = [];
-    [[-3, 1.8, -2], [1, 1.8, 2], [5, 1.8, -1]].forEach(function(pos) {
-      var pl = new THREE.PointLight(wireColor, 0, 12);
-      pl.position.set(pos[0], pos[1], pos[2]);
-      pl.userData = { maxIntensity: 0.3 };
-      layer4.add(pl);
-      pointLights.push(pl);
-    });
-
-    scene.add(layer4);
-
-    /* ── Gather all layers ── */
-    var layers = [layer1, layer2, layer3, layer4];
-    var layerStarts = [0, 0.25, 0.50, 0.75];
-    var layerFadeDur = 0.15; // each layer fades in over 15% of total scroll
-
-    /* ── DOM: Cards crossfade ── */
-    var cards = document.querySelectorAll('.cm-precon-card');
-    if (cards.length) {
-      cards.forEach(function(card, i) {
-        gsap.set(card, {
-          position: 'absolute', right: '8vw', top: '50%',
-          yPercent: -50, opacity: i === 0 ? 1 : 0,
-          visibility: i === 0 ? 'visible' : 'hidden',
-        });
+    /* ── Helper: set group opacity ── */
+    function setGroupOpacity(group, targetMultiplier, duration) {
+      group.traverse(function(child) {
+        if (!child.material) return;
+        var maxOp = (child.material.userData && child.material.userData.maxOp) || 0.3;
+        var finalOp = Math.min(maxOp, targetMultiplier);
+        gsap.to(child.material, { opacity: finalOp, duration: duration, ease: 'power2.out' });
       });
+    }
+
+    function transitionToState(idx) {
+      if (idx === currentState) return;
+      currentState = idx;
+      var s = states[idx];
+      var dur = 0.6;
+
+      setGroupOpacity(model.shell, s.shell, dur);
+      setGroupOpacity(model.partitions, s.partitions, dur);
+      setGroupOpacity(model.ceiling, s.ceiling, dur);
+      setGroupOpacity(model.hvac, s.hvac, dur);
+      setGroupOpacity(model.electrical, s.electrical, dur);
+      setGroupOpacity(model.sprinkler, s.sprinkler, dur);
+      setGroupOpacity(model.finishes, s.finishes, dur);
+
+      // Point lights
+      model.lights.forEach(function(pl) {
+        gsap.to(pl, { intensity: s.lightsOn ? pl.userData.maxIntensity : 0, duration: dur, ease: 'power2.out' });
+      });
+
+      // FOV zoom
+      gsap.to(camera, { fov: s.fov, duration: dur, ease: 'power2.out', onUpdate: function() { camera.updateProjectionMatrix(); } });
+
+      // Procurement pulse effect (state 2 only)
+      if (s.pulseShell) {
+        // Briefly brighten storefront elements in shell
+        model.shell.traverse(function(child) {
+          if (!child.material) return;
+          gsap.to(child.material, { opacity: 0.5, duration: 0.3, yoyo: true, repeat: 1, ease: 'power1.inOut' });
+        });
+      }
+      if (s.pulseHvac) {
+        model.hvac.traverse(function(child) {
+          if (!child.material) return;
+          gsap.to(child.material, { opacity: 0.35, duration: 0.3, delay: 0.15, yoyo: true, repeat: 1, ease: 'power1.inOut' });
+        });
+      }
     }
 
     /* ── DOM: Nav counter + progress ── */
@@ -870,94 +872,55 @@
       }
     }
 
-    /* ── Update layer opacities based on scroll progress ── */
-    function updateLayers(p) {
-      layers.forEach(function(group, i) {
-        var start = layerStarts[i];
-        var localP = Math.max(0, Math.min(1, (p - start) / layerFadeDur));
-
-        group.traverse(function(child) {
-          if (child.material && child.material.userData && typeof child.material.userData.maxOp === 'number') {
-            child.material.opacity = child.material.userData.maxOp * localP;
-          }
-        });
-
-        // Layer 4 point lights
-        if (i === 3) {
-          pointLights.forEach(function(pl) {
-            pl.intensity = pl.userData.maxIntensity * localP;
-          });
-        }
-      });
-
-      // Current step (1-indexed)
-      var step = p < 0.25 ? 1 : p < 0.50 ? 2 : p < 0.75 ? 3 : 4;
-
-      // Card crossfade
-      if (cards.length) {
-        cards.forEach(function(card, i) {
-          var isActive = (i + 1) === step;
-          gsap.set(card, {
-            opacity: isActive ? 1 : 0,
-            visibility: isActive ? 'visible' : 'hidden',
-          });
-        });
-      }
-
-      // Counter + progress
-      if (counterEl) {
-        counterEl.textContent = ('0' + step).slice(-2) + ' / 04';
-      }
-      if (progressFill) {
-        progressFill.style.width = (step / 4 * 100) + '%';
-      }
+    function updateNav(step) {
+      if (counterEl) counterEl.textContent = ('0' + (step + 1)).slice(-2) + ' / 04';
+      if (progressFill) progressFill.style.width = ((step + 1) / 4 * 100) + '%';
     }
 
-    /* ── ScrollTrigger pin ── */
-    var st = ScrollTrigger.create({
-      trigger: pinTarget,
-      start: 'top top',
-      end: '+=400%',
-      pin: true,
-      pinSpacing: true,
-      scrub: 1,
-      onUpdate: function(self) {
-        updateLayers(self.progress);
-      },
-    });
-    rt.preconTriggers.push(st);
+    /* ── ScrollTrigger per card ── */
+    var cards = desktop.querySelectorAll('.cm-precon-card');
+    rt.preconTriggers = [];
 
-    /* ── Camera orbit state ── */
-    var baseAngle = 0;
+    cards.forEach(function(card, i) {
+      var st = ScrollTrigger.create({
+        trigger: card,
+        start: 'top center',
+        end: 'bottom center',
+        onEnter: function() { transitionToState(i); updateNav(i); },
+        onEnterBack: function() { transitionToState(i); updateNav(i); },
+      });
+      rt.preconTriggers.push(st);
+    });
+
+    // Start at state 0 if first card is already past center
+    transitionToState(0);
+    updateNav(0);
+
+    /* ── Camera drift (same as hero) ── */
+    var startTime = performance.now();
+    var baseCamX = 18, baseCamY = 14, baseCamZ = 18;
 
     /* ── Render loop via GSAP ticker ── */
     function renderTick() {
       if (!rt.preconRenderer) return;
 
-      baseAngle += 0.0006;
-
-      // Scrub-based camera: tighter as scroll progresses
-      var stProgress = st.progress || 0;
-      var radius = 20 - 6 * stProgress;
-      var camHeight = 10 - 3 * stProgress;
+      var time = (performance.now() - startTime) / 1000;
 
       camera.position.set(
-        Math.cos(baseAngle) * radius,
-        camHeight,
-        Math.sin(baseAngle) * radius
+        baseCamX + Math.sin(time * 0.3) * 0.02,
+        baseCamY + Math.cos(time * 0.25) * 0.015,
+        baseCamZ + Math.sin(time * 0.2) * 0.02
       );
-      camera.lookAt(0, 2, 0);
+      camera.lookAt(0, 1.5, 0);
 
       renderer.render(scene, camera);
     }
     gsap.ticker.add(renderTick);
-
-    // Store ticker ref for cleanup
     rt._preconTickerRef = renderTick;
 
     /* ── Resize handling ── */
     var preconResizeST = ScrollTrigger.create({
-      trigger: pinTarget,
+      trigger: desktop,
       start: 'top bottom',
       end: 'bottom top',
       onToggle: function() {
@@ -971,8 +934,7 @@
     });
     rt.preconTriggers.push(preconResizeST);
 
-    // Initial render to avoid blank frame
-    updateLayers(0);
+    // Initial render
     renderer.render(scene, camera);
   }
 
